@@ -276,8 +276,8 @@
     h += '<div class="ou-pair">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' +
       card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? (st.rerolled ? ' is-new is-rerolled' : ' is-new') : '')) + '</div>';
     h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
-    h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&larr; &uarr;</kbd></button>' +
-      '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&rarr; &darr;</kbd></button></div>';
+    h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&uarr;</kbd></button>' +
+      '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&darr;</kbd></button></div>';
     // The Reroll: the drafts' own wildcard button (the owner, 15 Oct 2026: "native, like the other games")
     h += '<div class="wildcards ou-wild"><button type="button" class="wc wc-reroll ou-rr" data-ou="rr"' + (rv ? ' disabled' : '') + ' title="Swap this player for a new one">' +
       '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> Reroll This Player</span><span class="wc-left">' + rrLabel() + '</span></button></div>';
@@ -387,12 +387,12 @@
     else if (a === 'board') { finish(); var CA = A(); if (CA && CA.openBoards) CA.openBoards([boardId(), 'week']); if (st.view === 'out') { var c2 = st.cat; st = { view: 'start', cat: c2 }; render(); } }
     else if (a === 'home') { if (st.view === 'play' && !st.reveal && st.streak && !window.confirm('Leave this run? Your streak ends here.')) return; finish(); var c3 = st.cat; st = { view: 'start', cat: c3 }; if (T.ouHome) T.ouHome(); }
   });
-  // Keyboard on a computer (the owner): Left or Up is Over (the left button), Right or Down is Under; O and U too
+  // Keyboard on a computer (the owner, 15 Oct 2026: just up and down): Up is Over, Down is Under; O and U too
   document.addEventListener('keydown', function (e) {
     if (st.view !== 'play' || document.body.getAttribute('data-screen') !== 'ou' || e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
-    if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'o' || k === 'O') { e.preventDefault(); call('O'); }
-    else if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'u' || k === 'U') { e.preventDefault(); call('U'); }
+    if (k === 'ArrowUp' || k === 'o' || k === 'O') { e.preventDefault(); call('O'); }
+    else if (k === 'ArrowDown' || k === 'u' || k === 'U') { e.preventDefault(); call('U'); }
   });
 
   T.ou = {
