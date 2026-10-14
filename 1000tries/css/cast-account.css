@@ -3603,8 +3603,8 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
   .ca-ov-tab .is-l { padding-left: 10px; }
 }
 /* Big-number blocks (15 Oct 2026): Today, 7 Days, All Time side by side, sized for six-figure counts on a phone */
-.ca-ov-per { display: grid; gap: 8px; margin-bottom: 8px; }
-@media (min-width: 700px) { .ca-ov-per { grid-template-columns: 1fr 1fr; } }
+.ca-ov-per { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-bottom: 8px; }
+@media (min-width: 700px) { .ca-ov-per { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .ca-ov-pb { padding: 12px 12px 10px; border-radius: 14px; background: rgba(255, 255, 255, .04); border: 1px solid var(--ca-line); }
 .ca-ov-pb.is-total { background: rgba(255, 255, 255, .07); }
 .ca-ov-pn { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
@@ -3640,3 +3640,28 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
 .ca-ov-big.is-hero b { font-size: 25px; }
 @media (min-width: 700px) { .ca-ov-glance.is-hero { grid-template-columns: 2fr 1fr; } .ca-ov-big.is-hero b { font-size: 32px; } }
 @media (max-width: 400px) { .ca-ov-big.is-hero b { font-size: 21px; } .ca-ov-big.is-hero em { font-size: 10.5px; } }
+
+/* Admin Sign-Ups graph (15 Oct 2026): bars of new profiles, the line of total profiles, tap a bar for its numbers */
+.ca-su { margin-bottom: 12px; padding: 10px 12px 12px; border-radius: 14px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .03); }
+.ca-su-read { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 2px 0 8px; font: 700 12px/1.2 Inter, sans-serif; color: var(--ca-muted); }
+.ca-su-read b { font: 900 20px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; }
+.ca-su-read em { flex-basis: 100%; font-style: normal; color: #cfd0de; }
+.ca-su-chart { position: relative; height: 150px; }
+.ca-su-chart.is-wait { display: grid; place-items: center; }
+.ca-su-chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ca-su-hit { position: absolute; inset: 0; display: grid; }
+.ca-su-hit button { border: 0; padding: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-su-hit button.is-on { background: rgba(255, 255, 255, .06); border-radius: 4px; }
+.ca-su-axis { position: relative; height: 16px; margin-top: 4px; }
+.ca-su-axis span { position: absolute; top: 0; transform: translateX(-50%); font: 700 10.5px/1 Inter, sans-serif; color: var(--ca-muted); white-space: nowrap; }
+.ca-su-axis span:first-child { transform: none; left: 0 !important; }
+.ca-su-axis span:last-child { transform: none; left: auto !important; right: 0; }
+.ca-su-key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font: 700 11px/1.3 Inter, sans-serif; color: var(--ca-muted); }
+.ca-su-key i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border-radius: 3px; vertical-align: -1px; }
+.ca-su-key i.is-line { height: 3px; border-radius: 2px; vertical-align: 3px; }
+/* The Overview never slides sideways on a phone (the owner's recording, 15 Oct 2026): long notes wrap, and nothing can
+   make the Admin page wider than the screen */
+.ca-ov-pb { min-width: 0; }
+.ca-ov-pn { min-width: 0; }
+.ca-ov-pn small { white-space: normal; }
+.ca-admin { max-width: 100%; overflow-x: clip; }

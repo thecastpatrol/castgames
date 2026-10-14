@@ -6689,6 +6689,51 @@
   }
   function admRefresh(key) { var x = mod[key] || {}; return '<div class="ca-lb-upd"><span>' + (x.loading ? (x.at ? 'Updated ' + ago(x.at) + ' &middot; Updating&hellip;' : 'Updating&hellip;') : x.at ? 'Updated ' + ago(x.at) : '') + '</span><button type="button" class="ca-lb-refresh" data-ca="adm-refresh" data-v="' + key + '"' + (x.loading ? ' disabled' : '') + '><span aria-hidden="true">&#x21BB;</span> Refresh</button></div>'; }
 
+  /* The Sign-Ups graph (15 Oct 2026, the owner: "new CAST Profiles in the last hour so I can see the hot times", and a
+     graph hour by hour or day by day of sign-ups and total profiles). Bars: new profiles in each hour or day; the line:
+     total profiles at the end of each. Tap a bar for its numbers. From adminSignups, fetched with the Overview */
+  var SU_C = { n: '74,222,128', t: '96,165,250' };
+  function suLabel(key, by, long) {
+    if (by === '30d') {
+      var p = key.split('-').map(Number), dt = new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+      return long ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dt.getUTCDay()] + ' ' + p[2] + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][p[1] - 1] : p[2] + '/' + p[1];
+    }
+    var hr = Number(key.slice(11, 13)), ap = (hr % 12 || 12) + (hr < 12 ? 'am' : 'pm');
+    return long ? ap + ' to ' + (((hr + 1) % 12) || 12) + ((hr + 1) % 24 < 12 ? 'am' : 'pm') : ap;
+  }
+  function admSignups(d, head, groupNote) {
+    var by = mod.suBy || '24h', x = mod['su_' + by];
+    admFetch('su_' + by, 'adminSignups', { by: by });
+    groupNote['Sign-Ups'] = 'New CAST Profiles by when they were made, in Sydney time: the last 24 hours hour by hour, or the last 30 days day by day. The line is total profiles at the end of each hour or day, worked back from today’s total, so a profile deleted since is not in it. Updates every 2 minutes; Refresh brings in the newest.';
+    var b = x && x.data && x.data.buckets, h = head('Sign-Ups', 'Sign-Ups');
+    var peak = null;
+    (b || []).forEach(function (r) { if (r.n != null && (!peak || r.n > peak.n)) peak = r; });
+    h += '<div class="ca-ov-glance is-hero">' +
+      '<button type="button" class="ca-ov-big is-tap" style="--oc:' + SU_C.n + '" data-ca="adm-list" data-v="newH" data-l="New in Last Hour"><small>New in Last Hour</small><b>' + admNum(d.newH) + '</b><em>CAST Profiles</em></button>' +
+      '<div class="ca-ov-big" style="--oc:251,146,60"><small>' + (by === '30d' ? 'Busiest Day' : 'Busiest Hour') + '</small><b>' + (peak ? fmt(peak.n) : admNum(null)) + '</b><em>' + (peak ? suLabel(peak.key, by, true) : (by === '30d' ? 'Last 30 days' : 'Last 24 hours')) + '</em></div>' +
+      '</div>';
+    h += '<div class="ca-su">' + admSeg([['24h', '24 Hours'], ['30d', '30 Days']], by, 'adm-su-by');
+    if (!b) return h + (x && x.err ? admWait(x) : '<div class="ca-su-chart is-wait">' + admWait(null) + '</div>') + '</div>';
+    var n = b.length, max = Math.max(1, peak ? peak.n : 0), tots = b.map(function (r) { return r.total; }).filter(function (v) { return v != null; });
+    var tMin = tots.length ? Math.min.apply(null, tots) : 0, tMax = tots.length ? Math.max.apply(null, tots) : 1, tSpan = Math.max(1, tMax - tMin);
+    var W = 100 * n, H = 100, gap = 18, sel = mod.suSel != null && mod.suSel < n ? mod.suSel : n - 1;
+    var bars = b.map(function (r, i) {
+      var bh = r.n ? Math.max(1.5, r.n / max * 88) : 0;
+      return '<rect x="' + (i * 100 + gap / 2) + '" y="' + (H - bh) + '" width="' + (100 - gap) + '" height="' + bh + '" rx="6" fill="rgb(' + SU_C.n + ')" fill-opacity="' + (i === sel ? 1 : .55) + '"/>';
+    }).join('');
+    var pts = b.map(function (r, i) { return r.total == null ? null : (i * 100 + 50) + ',' + (H - 8 - (r.total - tMin) / tSpan * 80).toFixed(1); }).filter(Boolean).join(' ');
+    var s = b[sel], ticks = by === '30d' ? [0, 7, 14, 21, 29] : [0, 6, 12, 18, 23];
+    h += '<div class="ca-su-read"><span><b style="color:rgb(' + SU_C.n + ')">' + (s.n == null ? '&hellip;' : fmt(s.n)) + '</b> new</span><span><b style="color:rgb(' + SU_C.t + ')">' + admNum(s.total) + '</b> total</span><em>' + suLabel(s.key, by, true) + (sel === n - 1 ? ' (so far)' : '') + '</em></div>' +
+      '<div class="ca-su-chart"><svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true">' +
+        '<line x1="0" y1="' + H + '" x2="' + W + '" y2="' + H + '" stroke="rgba(255,255,255,.15)" stroke-width="1" vector-effect="non-scaling-stroke"/>' + bars +
+        (pts ? '<polyline points="' + pts + '" fill="none" stroke="rgb(' + SU_C.t + ')" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' : '') + '</svg>' +
+        '<div class="ca-su-hit" style="grid-template-columns:repeat(' + n + ',minmax(0,1fr))">' + b.map(function (r, i) {
+          return '<button type="button" data-ca="adm-su-pick" data-v="' + i + '" aria-label="' + esc(suLabel(r.key, by, true)) + ': ' + (r.n == null ? 'unknown' : r.n) + ' new"' + (i === sel ? ' class="is-on"' : '') + '></button>';
+        }).join('') + '</div></div>' +
+      '<div class="ca-su-axis">' + ticks.map(function (i) { return '<span style="left:' + ((i + .5) / n * 100).toFixed(2) + '%">' + suLabel(b[i].key, by) + '</span>'; }).join('') + '</div>' +
+      '<div class="ca-su-key"><span><i style="background:rgb(' + SU_C.n + ')"></i>New Sign-Ups</span><span><i class="is-line" style="background:rgb(' + SU_C.t + ')"></i>Total Profiles ' + (tots.length ? fmt(tMin) + ' to ' + fmt(tMax) : '') + '</span></div>';
+    return h + '</div>';
+  }
   function admOverview() {
     admOv();
     if (mod.owner) wcPeek(); // the World Cup tries card's check goes alongside, not after
@@ -6830,6 +6875,7 @@
     if (ou) grows.push(['Six Again', ou.runs.d, ou.runs.w, ou.runs.all, onB(ou.cats && ou.cats[0] ? ou.cats[0].players : null, todayN(ou.players.d))]);
     if (G4ON || AFL) grows.push(['4000 GOALS', [d.g4000d, 'g4000d', '4000 GOALS Games (24 Hours)'], [d.g4000, 'g4000', '4000 GOALS Games (7 Days)'], [d.g4000all, 'g4000all', '4000 GOALS Games (All Time)'], '']);
     var gTot = ['All Games', [d.games1, 'games1', 'Games in 24 Hours'], [d.games7, 'games7', 'Games in 7 Days'], (d.g270all != null && d.g1000all != null ? d.g270all + d.g1000all + (d.g4000all || 0) : null), 'Signed-in players']; gTot.total = true; grows.push(gTot);
+    h += admSignups(d, head, groupNote);
     h += head('Games', 'Games Saved by CAST Profiles') + periods(grows) +
       list([['Average 1000+ Score', av && av.avg != null ? fmt(av.avg) + ' tries' : null], ['1000+ Games That Hit 1000', av && av.hitPct != null ? av.hitPct + '%' : null]]);
     h += head('Everyone Today', 'Everyone Today (Google Analytics)') + table(['Site', 'Players', 'Finished'], [
@@ -8815,6 +8861,8 @@
       case 'adm-clear': mod.look = null; mod.lookQ = ''; mod.lookConfirm = null; mod.birthOpen = false; mod.trophy = null; render(); break;
       case 'adm-list': { var lk = t.getAttribute('data-v'); if (lk.charAt(0) === '#') { mod.tab = lk.slice(1); mod.list = null; } else mod.list = { kind: lk, label: t.getAttribute('data-l') }; render(); break; }
       case 'adm-list-back': mod.list = null; render(); break;
+      case 'adm-su-by': { mod.suBy = t.getAttribute('data-v'); mod.suSel = null; render(); break; }
+      case 'adm-su-pick': { mod.suSel = Number(t.getAttribute('data-v')); render(); break; }
       case 'adm-ov-info': { var iv = t.getAttribute('data-v'); mod.ovInfo = mod.ovInfo === iv ? null : iv; render(); break; }
       case 'adm-list-refresh':
         if (mod.list && /^sales/.test(mod.list.kind)) { admFetch('sales', 'adminSales', { fresh: true }, true); render(); }
@@ -8856,7 +8904,7 @@
       case 'adm-wc': admWc(t.getAttribute('data-v') === 'on'); break;
       case 'adm-imm-cancel': mod.immL = {}; render(); break;
       case 'adm-imm': admImm(t.getAttribute('data-v') === 'on'); break;
-      case 'adm-refresh': { var ak = t.getAttribute('data-v'); admFetch(ak, { ov: 'adminOverview', flags: 'adminFlags', log: 'adminLog', fans: 'adminFans' }[ak], ak === 'ov' ? { fresh: true } : {}, true); render(); break; }
+      case 'adm-refresh': { var ak = t.getAttribute('data-v'); admFetch(ak, { ov: 'adminOverview', flags: 'adminFlags', log: 'adminLog', fans: 'adminFans' }[ak], ak === 'ov' ? { fresh: true } : {}, true); if (ak === 'ov') { var sb = mod.suBy || '24h'; admFetch('su_' + sb, 'adminSignups', { by: sb, fresh: true }, true); } render(); break; }
       case 'adm-fans-cat': mod.fansCat = t.getAttribute('data-v'); render(); break;
       case 'adm-fans-per': mod.fansPer = t.getAttribute('data-v'); render(); break;
       case 'adm-spend-by': mod.spendBy = t.getAttribute('data-v'); render(); break;
