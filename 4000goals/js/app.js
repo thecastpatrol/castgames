@@ -321,6 +321,16 @@
     if (wcOn() && sydneyToday() <= '2026-11-15') { if (last.nextSibling !== d) last.parentNode.insertBefore(d, last.nextSibling); }
     else if (dailyMark.nextSibling !== d) dailyMark.parentNode.insertBefore(d, dailyMark.nextSibling);
   }
+  // Play On's card (15 Oct 2026, the owner): straight under the Daily Challenge, wherever the Daily sits, once it's on
+  function placeOu() {
+    var d = $('dailyCard'), c = $('ouHome');
+    if (!d) return;
+    if (!c) { c = document.createElement('div'); c.id = 'ouHome'; c.className = 'ou-home'; }
+    var on = !!(T.ou && T.ou.on());
+    c.hidden = !on;
+    c.innerHTML = on ? R.ouCard() : '';
+    if (d.nextSibling !== c) d.parentNode.insertBefore(c, d.nextSibling);
+  }
   T.firstVisit = firstVisit;
   // World Cup 200+ (4 Oct 2026): on once the owner launches it (or ?castwc=1 for an admin's visit); signed-in players only
   function wcOn() { return false; } // 4000 GOALS: no World Cup mode (that's 1000TRIES')
@@ -339,10 +349,11 @@
     // and the Daily Challenge, and a guest's first visit has no spot (js/cast-account.js asks CAST_ACCOUNT.firstVisit)
     var first = firstVisit(), fs = $('firstSteps');
     // guest: Sign In to Play once today's free World Cup is played (Play Free until then, 12 Oct 2026)
-    $('modePicker').innerHTML = R.modePicker(selectedMode, { ou: !!(T.ou && T.ou.on()), wc: wcPlace(first), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
+    $('modePicker').innerHTML = R.modePicker(selectedMode, { wc: wcPlace(first), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
     if (fs) fs.hidden = !first;
     placeModes(first);
     placeDaily();
+    placeOu();
     if (window.CastAccount && CastAccount.spot) CastAccount.spot();
     $('startBtn').setAttribute('data-pick', selectedMode); // Play now takes the picked mode's colour
   }

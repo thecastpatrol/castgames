@@ -71,7 +71,7 @@
      picks in order, for the share card and team sheet). The server's check (lib/boards.js) and the site's own record */
   function replay(list, cat, seed, calls) {
     if (!CATS[cat]) return { ok: false, why: 'category' };
-    if (typeof calls !== 'string' || !/^[OUTRB]{0,600}$/.test(calls)) return { ok: false, why: 'calls' };
+    if (typeof calls !== 'string' || !/^[OUTRB]{0,8000}$/.test(calls)) return { ok: false, why: 'calls' }; // more than any list has players (a 600 cap cut off real runs past 600, found 15 Oct 2026)
     var run = new Run(list, cat, seed), streak = 0, ribs = 0, rerolls = 0, out = false, seen = [list[run.left][0]];
     for (var k = 0; k < calls.length; k++) {
       var c = calls[k];

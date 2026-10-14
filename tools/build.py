@@ -50,6 +50,7 @@ GAMES = [
 # The old domains, and the folder each one is now
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
+SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
@@ -142,17 +143,33 @@ def main():
                 fit_page(os.path.join(dst, f), folder, gid, hide, play)
         print('built', folder)
     # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
-    for page, game, gid, key in (('six-again', '1000tries', 'six-again', 'ou'), ('play-on', '4000goals', 'play-on', 'po')):
+    for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On')):
         out = os.path.join(HERE, page)
         os.makedirs(out, exist_ok=True)
         src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
         src = src.replace("window.CG_GAME = '%s'" % game, "window.CG_GAME = '%s'" % gid)
         src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
                           '<script>if (!/[?&](play=ou|%s=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>\n'
-                          '<script src="../shared/cg.js?v=%s"></script>' % (key, CGV), 1)
+                          '<script src="../shared/cg.js?v=%s"></script>\n'
+                          # its back arrow goes to the CAST Games home (on its own page there's no game home to go to)
+                          '<script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>' % (key, CGV), 1)
         src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % game, src, count=1)
+        src = re.sub(r'<title>[^<]*</title>', '<title>%s | Over or Under | CAST Games</title>' % title, src, count=1)
         open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(src)
         print('built', page)
+    # Files the account code loads next to the page (assets/...): the home and sport pages need their own copy
+    for rel in ['assets/cast-pass-logo.png']:
+        shutil.copyfile(os.path.join(HERE, '1000tries', rel), os.path.join(HERE, rel))
+    # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only
+    home = open(os.path.join(HERE, 'index.html'), encoding='utf-8').read()
+    for sid, name in SPORT_PAGES:
+        out = os.path.join(HERE, sid)
+        os.makedirs(out, exist_ok=True)
+        pg = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../">', home, count=1)
+        pg = re.sub(r'<title>[^<]*</title>', '<title>%s Games | CAST Games</title>' % name, pg, count=1)
+        pg = pg.replace('<script src="js/home.js', '<script>window.CG_SPORT = %r;</script>\n<script src="js/home.js' % sid, 1)
+        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(pg)
+        print('built', sid)
     # Hidden until the switch-over: Google stays on the old domains
     open(os.path.join(HERE, 'robots.txt'), 'w').write('User-agent: *\n' + ('Allow: /\nSitemap: ' + SITE + 'sitemap.xml\n' if LIVE else 'Disallow: /\n'))
     idx = os.path.join(HERE, 'index.html')

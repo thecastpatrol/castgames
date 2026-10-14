@@ -1627,6 +1627,30 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch-row:first-child .slot, .pitch-row:last-child .slot { min-width: 0; }
 
 /* ---------- Play On (15 Oct 2026, js/overunder.js): 1000TRIES's Six Again block, kept in step with it ---------- */
+.ou-home { margin: 12px 0 4px; } .ou-home .mode-mini { width: 100%; min-height: 84px; }
+/* The home card's live look (15 Oct 2026): two mini player cards, pulsing arrows, NEW */
+.ou-home .oup { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; justify-items: start; gap: 14px; padding: 14px; text-align: left;
+  border: 1.5px solid rgba(56, 189, 248, .6); background: radial-gradient(120% 120% at 0% 0%, rgba(56, 189, 248, .22), transparent 55%), radial-gradient(90% 90% at 100% 100%, rgba(74, 222, 128, .14), transparent 60%), #0d1622; overflow: hidden; }
+.oup-new { position: absolute; top: 10px; right: 10px; padding: 4px 9px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 10.5px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; box-shadow: 0 0 14px rgba(56, 189, 248, .55); }
+.oup-pair { display: flex; align-items: center; gap: 6px; }
+.oup-card { display: grid; justify-items: center; width: 62px; padding: 6px 4px 7px; border-radius: 10px; background: linear-gradient(180deg, var(--club) 0 34%, #141a26 34%); border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 6px 14px rgba(0, 0, 0, .35); }
+.oup-card i { font: 900 9.5px/1 var(--font); font-style: normal; color: var(--club-text); letter-spacing: .5px; }
+.oup-card em { margin-top: 9px; font: 800 9.5px/1.1 var(--font); font-style: normal; color: #cbd5e1; max-width: 58px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oup-card b { margin-top: 3px; font: 900 21px/1 var(--font); color: #fff; }
+.oup-card.is-q b { color: #7dd3fc; animation: oupQ 1.6s ease-in-out infinite; }
+.oup-arrows { display: grid; gap: 3px; }
+.oup-arrows em { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; font-style: normal; font-size: 10px; color: #04121f; }
+.oup-arrows .is-up { background: #4ade80; animation: oupPulse 1.4s ease-in-out infinite; }
+.oup-arrows .is-dn { background: #f87171; animation: oupPulse 1.4s ease-in-out .7s infinite; }
+.oup-t { display: grid; gap: 3px; min-width: 0; }
+.oup-t b { padding-right: 46px; font: 900 19px/1.1 var(--font); color: #fff; } /* room for NEW */
+.oup-t small { text-wrap: balance; }
+.oup-t small { font: 600 12px/1.35 var(--font); color: #a5b4c8; }
+.oup-go { justify-self: start; margin-top: 6px; padding: 7px 14px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 12.5px/1 var(--font); }
+.oup-go i { font-style: normal; font-size: 9px; }
+@keyframes oupPulse { 0%, 100% { transform: scale(1); box-shadow: none; } 50% { transform: scale(1.12); box-shadow: 0 0 12px currentColor; } }
+@keyframes oupQ { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(.9); } }
+@media (prefers-reduced-motion: reduce) { .oup-arrows em, .oup-card.is-q b { animation: none; } }
 .mode-mini.is-ou { grid-column: 1 / -1; border-color: rgba(56, 189, 248, .55); background: linear-gradient(135deg, rgba(56, 189, 248, .16), rgba(74, 222, 128, .08)); }
 #screen-ou .wrap { max-width: 560px; margin: 0 auto; padding: 10px 14px 40px; }
 .ou-head { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px; font: 900 13px/1 var(--font); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
@@ -1702,8 +1726,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-call.is-over { background: linear-gradient(180deg, #5ee08f, #22c55e); color: #052e16; } .ou-call.is-under { background: linear-gradient(180deg, #fb8a8a, #ef4444); color: #450a0a; }
 .ou-call:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .22); }
 .ou-call:disabled { opacity: .45; cursor: default; }
-.ou-rr { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin-top: 10px; padding: 11px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 800 13px/1 var(--font); cursor: pointer; }
-.ou-rr small { color: var(--text); font: 800 12px/1 var(--font); }
+.ou-wild { grid-template-columns: 1fr; margin: 12px 0 0; } /* the Reroll: the drafts' wildcard button, full width */
 @media (max-width: 360px) { .ou-name { font-size: 16.5px; } .ou-num b { font-size: 32px; } .ou-card { min-height: 214px; } }
 
 /* Out */

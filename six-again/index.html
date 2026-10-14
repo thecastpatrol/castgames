@@ -3,7 +3,7 @@
 <head>
 <base href="../1000tries/">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=fbfe19a6540b">
+<link rel="stylesheet" href="../shared/cg.css?v=36b490a1540b">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -25,7 +25,7 @@
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
   }
 </script>
-<title>1000TRIES | Draft 1000 NRL Tries</title>
+<title>Six Again | Over or Under | CAST Games</title>
 <meta name="description" content="Draft a starting 13 of NRL players with their NRL tries hidden. Can you get to 1000? A free Rugby League game by The Cast Patrol.">
 <link rel="canonical" href="https://castgames.com.au/1000tries/">
 <meta name="theme-color" content="#0a0a0f">
@@ -56,14 +56,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=20260927.73">
-<link rel="stylesheet" href="css/cast-account.css?v=20260927.193">
+<link rel="stylesheet" href="css/main.css?v=20260927.74">
+<link rel="stylesheet" href="css/cast-account.css?v=20260927.194">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = 'six-again'; window.CG_PLAY = function () { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false; };</script>
 <script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>
-<script src="../shared/cg.js?v=fbfe19a6540b"></script>
+<script src="../shared/cg.js?v=36b490a1540b"></script>
+<script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>
 
 
 <header class="site-header">
@@ -122,6 +123,12 @@
         <a class="spot-promo" data-cast-launch="4000goals" hidden style="--sp:241,192,115" href="https://castgames.com.au/4000goals/?utm_source=1000tries&amp;utm_medium=spot&amp;utm_campaign=4000goals_launch" data-track="click_4000goals" data-where="spot">
           <img class="spot-promo-logo" src="assets/logos/4000goals.png" alt="4000 GOALS" width="1200" height="760" loading="lazy">
           <span class="spot-promo-txt"><b>Can You Draft 4000 AFL Goals?</b><small>Our new AFL game: roll 3, pick 1 and build an 18.</small></span>
+          <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
+        </a>
+        <!-- Six Again (15 Oct 2026, the owner: "no pop up, just the banner for now"): opens Six Again here (js/overunder.js data-ou-open) -->
+        <a class="spot-promo" data-cast-launch="ou" data-ou-open hidden style="--sp:56,189,248" href="?play=ou" data-track="click_over_or_under" data-where="spot">
+          <span class="spot-promo-logo spot-promo-mark" aria-hidden="true">&#x25B2;&#x25BC;</span>
+          <span class="spot-promo-txt"><b>New: Six Again</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
         <div data-cast-upgrades hidden></div>
@@ -256,12 +263,12 @@
 <script src="js/wildcards.js?v=20260927.19"></script>
 <script src="js/cast-nations.js?v=20261005.11"></script>
 <script src="js/cast-intl.js?v=20261008.23"></script>
-<script src="js/render.js?v=20260927.82"></script>
+<script src="js/render.js?v=20260927.83"></script>
 <script src="js/share-card.js?v=20260927.5"></script>
 <script src="js/cast-celebrate.js?v=20261008.6"></script>
-<script src="js/app.js?v=20261015.1"></script>
-<script src="js/ou-engine.js?v=20261015.1"></script>
-<script src="js/overunder.js?v=20261015.1"></script>
+<script src="js/app.js?v=20261015.2"></script>
+<script src="js/ou-engine.js?v=20261015.2"></script>
+<script src="js/overunder.js?v=20261015.2"></script>
 <script src="js/cast-daily.js?v=20260929.17"></script>
 <script src="js/daily.js?v=20260927.29"></script>
 <script>
@@ -278,7 +285,7 @@
 <script src="js/cast-upgrades.js?v=20261006.1"></script>
 <script src="js/cast-dual.js?v=20261014.3"></script>
 <script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=20260927.282"></script>
+<script src="js/cast-account.js?v=20260927.283"></script>
 <script src="js/cast-totw.js?v=20261015.1"></script>
 </body>
 </html>

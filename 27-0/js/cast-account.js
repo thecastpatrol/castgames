@@ -3732,13 +3732,16 @@
   function rerollsFresh() { return rrFresh && (rrSaved || 0) > 0; }
   // One saved Reroll or item used at a time (11 Oct 2026, the review: a double tap on a slow connection spent two)
   var useBusy = false;
+  /* Six Again and Play On (15 Oct 2026): while a run is on (js/overunder.js useFor('ou')), the Run It Backs and Rerolls it
+     uses are tagged, so the server notes them and the saved run can claim them (the server's anti-cheat) */
+  var useFor = null;
   function rrUse(game, done) {
     if (useBusy) return;
     useBusy = true;
     var was = rrSaved;
     rrFresh = false;
     rrSaved = was - 1; rrSeq++; rrChanged();
-    callFn('rerollShop', { act: 'use' }).then(function (r) {
+    callFn('rerollShop', useFor ? { act: 'use', for: useFor } : { act: 'use' }).then(function (r) {
       useBusy = false;
       rrSaved = r.left; rrSeq++; rrChanged(); track('reroll_saved_use', { game: game || CFG.game, left: r.left });
       afterUse('left', r.left);
@@ -3850,7 +3853,7 @@
     var I = ITM[item], was = itHave[item];
     itFresh[item] = false;
     itHave[item] = was - 1; rrSeq++; rrChanged();
-    callFn('rerollShop', { act: 'use', item: item }).then(function (r) {
+    callFn('rerollShop', useFor ? { act: 'use', item: item, for: useFor } : { act: 'use', item: item }).then(function (r) {
       useBusy = false;
       itHave[item] = r[I.field]; rrSeq++; rrChanged(); track(item + '_saved_use', { game: game || CFG.game, left: r[I.field] });
       afterUse(I.field, r[I.field]);
@@ -10951,7 +10954,7 @@
     // Any Pick ('toty', 'prem' or 'imm'): what its button shows, the payment pop-up, and taking one (js/picks.js)
     pickState: pickState, pickBuy: pickBuy, pickUse: pickUse, immOn: immOn,
     // World Cup mode: launched (or previewed with ?castwc=1 for this visit), and World Cup 200+'s tries from NRL.com
-    wcLive: wcOn, wcTries: wcTries, ouOn: ouOn, poOn: poOn,
+    wcLive: wcOn, wcTries: wcTries, ouOn: ouOn, poOn: poOn, useFor: function (t) { useFor = t === 'ou' ? 'ou' : null; },
     isLaunched: function (k) { return launchOn.indexOf(k) >= 0; }, // CAST Games (castgames.com.au): is a game in config/launch
     // World Cup games are saved: launched, not an admin's preview (whose practice games are never saved)
     wcSaved: function () { return !!wcLive; },

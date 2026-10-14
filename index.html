@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="1000tries/css/cast-account.css">
 <link rel="stylesheet" href="shared/cg.css?v=3">
-<link rel="stylesheet" href="css/home.css?v=1">
+<link rel="stylesheet" href="css/home.css?v=4">
 </head>
 <body>
 <main class="wrap" id="cgHome" aria-live="polite"></main>
@@ -31,8 +31,14 @@
     inGame: function () { return false; }, onHome: function () { return true; }, firstVisit: function () { return false; },
     promoPlay: function (mode) { location.href = mode === 'wc' ? '27-0/?play=wc' : '1000tries/?play=' + (mode || 'plus'); } };
 </script>
-<script src="shared/cg.js?v=4"></script>
+<script src="shared/cg.js?v=5"></script>
+<!-- The Daily calendars (the Daily Challenge cards say what today's is and its reward): the shared one (27-0, 1000TRIES),
+     then 4000 GOALS's, which takes the same name, so both are kept and the shared one put back -->
+<script src="1000tries/js/cast-daily.js"></script>
+<script>window.CG_DAILY_NRL = window.CAST_DAILY;</script>
+<script src="4000goals/js/afl-daily.js"></script>
+<script>window.CG_DAILY_AFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
 <script src="1000tries/js/cast-account.js"></script>
-<script src="js/home.js?v=1"></script>
+<script src="js/home.js?v=3"></script>
 </body>
 </html>

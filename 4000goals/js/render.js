@@ -99,6 +99,19 @@
   /* Home modes (29 Sep 2026, the user's call): 4000+ is the main mode, one big card with a clear Play button; the others
      are three small buttons in a row under it (each keeps its colour and one tag). A tap on any of them starts it. */
   var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Squads', nrlw: 'AFLW', wc: 'Test Goals', ou: 'New &middot; Beat the Clock' };
+  /* Play On's home card (15 Oct 2026, the owner: "lower, under the Daily, it shouldn't take away from the other modes"):
+     its own full-width card under the Daily Challenge (js/app.js placeOu), not in More Modes */
+  R.ouCard = function () {
+    // A small live look at the game (the owner, 15 Oct 2026: "more exciting, actual visuals"): two mini player cards in
+    // their club colours, one number showing and one hidden, the Over and Under arrows pulsing between them, and NEW
+    var mini = function (club, nm, num) {
+      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(T.club(club).abbr || '') + '</i><em>' + esc(nm) + '</em><b>' + (num || '?') + '</b></span>';
+    };
+    return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Play On">' +
+      '<span class="oup-new">New</span>' +
+      '<span class="oup-pair" aria-hidden="true">' + mini('ge', 'Cameron', '777') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('sy', 'Curnow', '') + '</span>' +
+      '<span class="oup-t"><b>Play On</b><small>More goals or fewer? Beat the clock.</small><span class="oup-go">Play <i aria-hidden="true">&#x25B6;</i></span></span></button>';
+  };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 4000+ until the final on
      15 Nov, in the World Cup nations' colours (flags when the owner's designs arrive), then a small one with the others.
      opt.wc: 'top', 'under' (a guest's first visit keeps 4000+ first), 'mini' or null; opt.guest: Sign In to Play */

@@ -47,20 +47,20 @@
     st = { view: 'play', cat: cat, seed: newSeed(), calls: '', streak: 0, rib: 0, rr: 0, ice: 0, iceBest: 0, ms: 0, done: false, busy: false, log: [] };
     st.run = new E.Run(D[cat], cat, st.seed);
     st.first = st.run.left; // the results ladder starts with him
-    // A CAST Pass holder's free Reroll, one a run (the owner, 14 Oct 2026); then the Vault's, then paid. Run It Back is
-    // never free (Vault or paid only)
-    var CA = A(); st.freeRR = CA && CA.hasPass && CA.hasPass() ? 1 : 0;
+    // Rerolls and Run It Backs: the Vault's first, then paid. Nothing free, CAST Pass included (the owner, 15 Oct 2026)
+    var CA = A(); st.rrPaid = 0;
+    if (CA && CA.useFor) CA.useFor('ou'); // this run's Run It Backs and Rerolls are noted on the server, for its check
     primeVault();
     T.track('ou_start', { category: cat });
     nextCall();
   }
   // Ask the account for the Vault's counts (it reads them once, then keeps them in step), so the buttons can say how many
   function primeVault() { var CA = A(); if (CA && CA.rerollsSaved) { CA.rerollsSaved(); if (CA.itemSaved) CA.itemSaved('rib'); } }
-  function rrLabel() { var CA = A(), n = CA && CA.rerollsSaved ? CA.rerollsSaved() : 0; return st.freeRR ? '1 Free &middot; CAST Pass' : n ? n + ' saved' : 'Buy &middot; $0.99'; }
+  function rrLabel() { var CA = A(), n = CA && CA.rerollsSaved ? CA.rerollsSaved() : 0; return n ? n + ' saved' : 'Buy &middot; $0.99'; }
   function ribLabel() { var CA = A(), n = CA && CA.itemSaved ? CA.itemSaved('rib') : 0; return n ? n + ' saved' : '$0.99'; }
   // The Vault's counts arrived or changed: the labels change in place (a full redraw would restart the clock bar)
   window.addEventListener('cast:rerolls', function () {
-    var a = document.querySelector('#ouRoot .ou-rr small'), b = document.querySelector('#ouRoot .ou-decide-rib small');
+    var a = document.querySelector('#ouRoot .ou-rr .wc-left'), b = document.querySelector('#ouRoot .ou-decide-rib small');
     if (a) a.innerHTML = rrLabel();
     if (b) b.innerHTML = ribLabel();
   });
@@ -103,7 +103,9 @@
        owner, 14 Oct 2026): Run It Back or End Run, which drains over OFFER_SECS and then ends the run by itself. The
        countdown waits while the Shop is open (st.hold). Nothing to keep at 0: straight to the results */
     st.hold = false;
-    if (st.streak > 0) { st.offer = OFFER_SECS; render(); startOffer(); }
+    // Every player in the list called (a perfect run to the end, NRLW's ~380): it ends there, nobody left to Run It Back to
+    st.cleared = !!(st.run && st.run.right < 0);
+    if (st.streak > 0 && !st.cleared) { st.offer = OFFER_SECS; render(); startOffer(); }
     else { st.offer = 0; finish(); render(); }
   }
   var OFFER_SECS = 10;
@@ -127,7 +129,7 @@
   // Run It Back: a Vault one, or buy (the account's own Shop flow); then play on with the same left player
   function runItBack() {
     var CA = A();
-    if (!CA || !CA.buyItem || st.view !== 'out') return;
+    if (!CA || !CA.buyItem || st.view !== 'out' || st.cleared) return;
     clearInterval(st.offerT); st.hold = true; render(); // the countdown waits while they choose
     T.track('ou_rib_tap', { category: st.cat, streak: st.streak });
     var hook = { kicker: 'Run It Back', title: 'Keep Your Streak', line: 'Keep your ' + st.streak + ' in a row and play on with a new player.',
@@ -146,21 +148,14 @@
     var CA = A();
     if (!CA || !CA.buyReroll || st.view !== 'play' || st.reveal) return;
     clearClock();
-    T.track('ou_reroll_tap', { category: st.cat, streak: st.streak, pass: st.freeRR ? 1 : 0 });
-    if (st.freeRR > 0) { // the CAST Pass one: straight away, no Shop
-      st.freeRR--; st.calls += 'R'; st.rr++; st.log.push({ rr: 1 });
-      st.run.right = st.run.draw(st.streak);
-      T.track('ou_reroll', { category: st.cat, streak: st.streak, pass: 1 });
-      nextCall();
-      return;
-    }
+    T.track('ou_reroll_tap', { category: st.cat, streak: st.streak });
     st.busy = true;
     var watch = null, back = function () { if (watch) clearInterval(watch); st.busy = false; if (st.view === 'play' && !st.reveal && !st.clock) nextCall(); };
     CA.buyReroll('1000tries', function () {
       if (watch) clearInterval(watch);
       st.busy = false;
       if (st.view !== 'play' || st.reveal) return;
-      st.calls += 'R'; st.rr++;
+      st.calls += 'R'; st.rr++; st.rrPaid++;
       st.log.push({ rr: 1 });
       st.run.right = st.run.draw(st.streak);
       T.track('ou_reroll', { category: st.cat, streak: st.streak });
@@ -174,6 +169,7 @@
   }
   // The run is over for good (Play Again, Home, the board, or leaving the page): saved once, trophies, then stats
   function finish() {
+    var C0 = A(); if (C0 && C0.useFor) C0.useFor(null); // the run is over (or left before a call): stop tagging uses
     if (!st.run || st.done || !(st.view === 'out' || st.view === 'play') || !/[OUT]/.test(st.calls)) return; // nothing called yet: nothing to save
     st.done = true;
     clearClock();
@@ -181,6 +177,7 @@
     if (!CA) return;
     var d = { cat: st.cat, seed: st.seed, calls: st.calls, ms: Math.round(st.ms) };
     if (st.rib) d.rib = st.rib;
+    if (st.rrPaid) d.rr = st.rrPaid; // every Reroll in the run (all Vault or paid), each one noted on the server
     try {
       CA.record({ game: '1000tries', mode: 'ou', score: st.streak, result: 'out', win: false, top: false, picks: [], d: d });
       var tr = [], n = st.streak;
@@ -256,7 +253,9 @@
     h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
     h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&larr; &uarr;</kbd></button>' +
       '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&rarr; &darr;</kbd></button></div>';
-    h += '<button type="button" class="ou-rr" data-ou="rr"' + (rv ? ' disabled' : '') + '>&#x1F504; Reroll This Player <small>' + rrLabel() + '</small></button>';
+    // The Reroll: the drafts' own wildcard button (the owner, 15 Oct 2026: "native, like the other games")
+    h += '<div class="wildcards ou-wild"><button type="button" class="wc wc-reroll ou-rr" data-ou="rr"' + (rv ? ' disabled' : '') + ' title="Swap this player for a new one">' +
+      '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> Reroll This Player</span><span class="wc-left">' + rrLabel() + '</span></button></div>';
     return h;
   }
   // The miss: the pair that got them and why, over the decision panel (Run It Back or End Run, End Run drains)
@@ -295,7 +294,7 @@
       return x.ok ? '<i class="is-ok">' + (x.c === 'O' ? '&#x25B2;' : '&#x25BC;') + '</i>' : '<i class="is-x">' + (x.c === 'T' ? '&#x23F0;' : '&#x2715;') + '</i>';
     }).join('');
     var h = '<div class="ou-res">' +
-      '<div class="ou-hero"><span class="ou-hero-k">' + (why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Out') + ' &middot; ' + esc(E.CATS[st.cat].name) + '</span>' +
+      '<div class="ou-hero"><span class="ou-hero-k">' + (st.cleared ? '&#x1F3C6; Every Player Called' : why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Out') + ' &middot; ' + esc(E.CATS[st.cat].name) + '</span>' +
         '<span class="ou-hero-n"><i aria-hidden="true">&#x1F525;</i>' + st.streak + '</span>' +
         '<span class="ou-hero-s">in a row' + (st.newBest && st.streak ? '<em class="ou-best">New Best</em>' : b ? '<em class="ou-best is-old">Best ' + b + '</em>' : '') + '</span>' +
         (strip ? '<span class="ou-strip" aria-hidden="true">' + strip + '</span>' : '') + '</div>' +
@@ -334,6 +333,9 @@
 
   function boardId() { return { nrl: '1000ou', caps: '1000oucaps', ttries: '1000outt', nrlw: '1000ounrlw' }[st.cat] || '1000ou'; }
   document.addEventListener('click', function (e) {
+    // The home banner (data-ou-open): open it here, no page load
+    var bn = e.target.closest && e.target.closest('[data-ou-open]');
+    if (bn && T.ou.on()) { e.preventDefault(); T.ou.open(); return; }
     var t = e.target.closest && e.target.closest('[data-ou]');
     if (!t || !root() || !root().contains(t)) return;
     var a = t.getAttribute('data-ou');

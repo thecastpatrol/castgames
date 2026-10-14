@@ -2,7 +2,7 @@
 <html lang="en-AU">
 <head>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=fbfe19a6540b">
+<link rel="stylesheet" href="../shared/cg.css?v=36b490a1540b">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -55,13 +55,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=20261015.1">
-<link rel="stylesheet" href="css/cast-account.css?v=20261015.1">
+<link rel="stylesheet" href="css/main.css?v=20261015.3">
+<link rel="stylesheet" href="css/cast-account.css?v=20261015.3">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = '4000goals'; window.CG_PLAY = function () { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=fbfe19a6540b"></script>
+<script src="../shared/cg.js?v=36b490a1540b"></script>
 
 
 <header class="site-header">
@@ -120,6 +120,12 @@
         <a class="spot-promo" data-cast-launch="ou" hidden style="--sp:56,189,248" href="https://castgames.com.au/1000tries/?play=ou&amp;utm_source=4000goals&amp;utm_medium=spot&amp;utm_campaign=over_or_under" onclick="if(typeof gtag!=='undefined')gtag('event','click_over_or_under',{placement:'spot'})">
           <img class="spot-promo-logo" src="assets/logos/1000tries.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
           <span class="spot-promo-txt"><b>New: Six Again</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
+          <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
+        </a>
+        <!-- Play On (15 Oct 2026): the same banner as Six Again's on 1000TRIES, opens Play On here (js/overunder.js data-ou-open) -->
+        <a class="spot-promo" data-cast-launch="po" data-ou-open hidden style="--sp:239,68,68" href="?play=ou" data-track="click_play_on" data-where="spot">
+          <span class="spot-promo-logo spot-promo-mark" aria-hidden="true">&#x25B2;&#x25BC;</span>
+          <span class="spot-promo-txt"><b>New: Play On</b><small>More goals or fewer? Call it before the clock runs out.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
         <div data-cast-upgrades hidden></div>
@@ -251,10 +257,10 @@
 <script src="js/wildcards.js?v=20260927.19"></script>
 <script src="js/cast-nations.js?v=20261005.11"></script>
 <script src="js/cast-intl.js?v=20261008.23"></script>
-<script src="js/render.js?v=20261015.1"></script>
+<script src="js/render.js?v=20261015.3"></script>
 <script src="js/share-card.js?v=20261012.3"></script>
 <script src="js/cast-celebrate.js?v=20261012.3"></script>
-<script src="js/app.js?v=20261015.1"></script>
+<script src="js/app.js?v=20261015.3"></script>
 <script src="js/cast-daily.js?v=20261014.1"></script>
 <script src="js/afl-daily.js?v=20261012.4"></script>
 <script src="js/daily.js?v=20261012.3"></script>
@@ -273,8 +279,8 @@
 <script src="js/upgrades-data.js?v=20261006.1"></script>
 <script src="js/cast-upgrades.js?v=20261006.1"></script>
 <script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=20261015.1"></script>
-<script src="js/ou-engine.js?v=20261015.1"></script>
-<script src="js/overunder.js?v=20261015.1"></script>
+<script src="js/cast-account.js?v=20261015.3"></script>
+<script src="js/ou-engine.js?v=20261015.3"></script>
+<script src="js/overunder.js?v=20261015.3"></script>
 </body>
 </html>

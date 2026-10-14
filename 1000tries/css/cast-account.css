@@ -2265,6 +2265,7 @@ button.ca-photo { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .spot-promo[hidden] { display: none; }
 @media (hover: hover) { .spot-promo:hover { border-color: rgba(var(--sp), .9); } }
 .spot-promo-logo { flex: none; width: 62px; height: auto; }
+.spot-promo-mark { display: grid; place-items: center; height: 40px; font: 900 22px/1 Inter, sans-serif; letter-spacing: 2px; color: rgb(var(--sp)); } /* Six Again and Play On: their arrows, no logo */
 .spot-promo-txt { flex: 1; min-width: 0; display: grid; gap: 3px; }
 .spot-promo-txt b { font-size: 15px; font-weight: 900; line-height: 1.2; color: #fff; }
 .spot-promo-txt small { font-size: 12.5px; line-height: 1.35; color: #b8b8cc; }

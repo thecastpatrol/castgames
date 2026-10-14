@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AFL Games | CAST Games</title>
+<meta name="description" content="Free sports draft games from The Cast Patrol: 27-0, 1000TRIES, Six Again and 4000 GOALS. Pick a sport, pick a game, climb the leaderboards.">
+<meta name="robots" content="noindex"><!-- CG_HIDDEN: until the switch-over -->
+<meta name="theme-color" content="#0a0a0f">
+<link rel="icon" href="assets/logos/castgames-600.png">
+<!-- Google tag (gtag.js): the CAST Games property (each game page keeps its own) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E52G6MVZFP"></script>
+<script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-E52G6MVZFP');</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="1000tries/css/cast-account.css">
+<link rel="stylesheet" href="shared/cg.css?v=3">
+<link rel="stylesheet" href="css/home.css?v=4">
+</head>
+<body>
+<main class="wrap" id="cgHome" aria-live="polite"></main>
+<footer class="cg-foot">
+  <a href="1000tries/privacy.html">Privacy</a><a href="1000tries/terms.html">Terms</a><a href="mailto:cast@thecastpatrol.com.au">Contact</a>
+  <small>Made by The Cast Patrol</small>
+</footer>
+<script>
+  // The account (js/cast-account.js from 1000TRIES's folder): the home page signs in, opens Stats, Boards, Friends, Shop and
+  // Profile, and reads the launch switches, like any game. It plays no game of its own
+  window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', hub: true, privacyUrl: '1000tries/privacy.html', termsUrl: '1000tries/terms.html',
+    track: function (e, p) { try { if (typeof gtag === 'function') gtag('event', e, p || {}); } catch (x) { /* no analytics */ } },
+    inGame: function () { return false; }, onHome: function () { return true; }, firstVisit: function () { return false; },
+    promoPlay: function (mode) { location.href = mode === 'wc' ? '27-0/?play=wc' : '1000tries/?play=' + (mode || 'plus'); } };
+</script>
+<script src="shared/cg.js?v=5"></script>
+<!-- The Daily calendars (the Daily Challenge cards say what today's is and its reward): the shared one (27-0, 1000TRIES),
+     then 4000 GOALS's, which takes the same name, so both are kept and the shared one put back -->
+<script src="1000tries/js/cast-daily.js"></script>
+<script>window.CG_DAILY_NRL = window.CAST_DAILY;</script>
+<script src="4000goals/js/afl-daily.js"></script>
+<script>window.CG_DAILY_AFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<script src="1000tries/js/cast-account.js"></script>
+<script>window.CG_SPORT = 'afl';</script>
+<script src="js/home.js?v=3"></script>
+</body>
+</html>

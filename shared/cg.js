@@ -18,11 +18,11 @@
   })();
 
   var SPORTS = [
-    { id: 'nrl', name: 'NRL', long: 'Rugby league', c: '34,197,94', status: 'live' },
-    { id: 'afl', name: 'AFL', long: 'Aussie rules', c: '239,68,68', status: 'live' },
+    { id: 'nrl', name: 'NRL', long: 'Rugby League', c: '34,197,94', status: 'live', path: 'nrl/' }, // path: its See All page
+    { id: 'afl', name: 'AFL', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
     { id: 'cricket', name: 'Cricket', long: 'Tests, ODIs and T20s', c: '56,189,248', status: 'soon' },
-    { id: 'nfl', name: 'NFL', long: 'American football', c: '129,140,248', status: 'soon' },
-    { id: 'racing', name: 'Racing', long: 'Horse racing', c: '250,204,21', status: 'soon' }
+    { id: 'nfl', name: 'NFL', long: 'American Football', c: '129,140,248', status: 'soon' },
+    { id: 'racing', name: 'Horse Racing', long: 'The Races', c: '250,204,21', status: 'soon' }
   ];
   var GAMES = [
     { id: '27-0', sport: 'nrl', name: '27-0', path: '27-0/', logo: 'assets/logos/27-0.png', c1: '#1f2a55', c2: '#11152a', status: 'live',
@@ -38,6 +38,10 @@
       line: 'Over or under? Call AFL players before the clock runs out.', short: 'Over or under, vs the clock' }
   ];
 
+  /* The home page's Most Popular four (the owner, 15 Oct 2026: the main ones for now; real weekly plays and an Admin pin can
+     take over later). The first four that are live right now, in this order; a sport's See All page uses it too */
+  var POPULAR = ['27-0', '1000tries', '4000goals', 'six-again', 'play-on'];
+
   function acct() { return window.CastAccount || null; }
   function launched(key) {
     if (!key) return true;
@@ -49,6 +53,13 @@
   }
   // The games a player sees right now
   function liveGames() { return GAMES.filter(function (g) { return g.status === 'live' && launched(g.launch); }); }
+  // Live games, most popular first (POPULAR, then the rest in list order); n: how many
+  function popular(n, sport) {
+    var rank = function (g) { var i = POPULAR.indexOf(g.id); return i < 0 ? 99 : i; };
+    var list = liveGames().filter(function (g) { return !sport || g.sport === sport; })
+      .map(function (g, i) { return [rank(g), i, g]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
+    return n ? list.slice(0, n) : list;
+  }
   function sportOf(id) { for (var i = 0; i < SPORTS.length; i++) if (SPORTS[i].id === id) return SPORTS[i]; return null; }
   function url(path) { return ROOT + path; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
@@ -141,6 +152,6 @@
     if (u.host === location.host || u.host === 'castgames.com.au' || u.host === 'www.castgames.com.au') a.removeAttribute('target');
   }, true);
 
-  window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, sportOf: sportOf, url: url, root: ROOT, openSwitcher: openSwitcher, track: track };
+  window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, popular: popular, sportOf: sportOf, url: url, root: ROOT, openSwitcher: openSwitcher, track: track };
   if (document.body) bar(); else document.addEventListener('DOMContentLoaded', bar);
 })();
