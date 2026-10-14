@@ -372,7 +372,7 @@
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.ou._answer = function () { return st.run && st.view === 'play' ? st.run.answer() : null; };
   // ?play=ou (a board's Play button, a share, the 27-0 banner) or the owner's private link (?ou=...): straight in once the
   // page (and the account module, which knows if it's on) has loaded
-  if (/[?&](play=ou|ou=[a-z0-9]+)(?=&|#|$)/.test(location.search)) {
+  if (T.ouWanted || /[?&](play=ou|ou=[a-z0-9]+)(?=&|#|$)/.test(location.search)) { // ouWanted: the page asked before this loaded (js/app.js playMode)
     window.addEventListener('load', function () { setTimeout(function () { if (T.ou.on()) T.ou.open(); }, 50); });
   }
 })();

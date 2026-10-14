@@ -1626,3 +1626,142 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch-row:first-child, .pitch-row:last-child { padding: 0 6%; }
 .pitch-row:first-child .slot, .pitch-row:last-child .slot { min-width: 0; }
 
+/* ---------- Play On (15 Oct 2026, js/overunder.js): 1000TRIES's Six Again block, kept in step with it ---------- */
+.mode-mini.is-ou { grid-column: 1 / -1; border-color: rgba(56, 189, 248, .55); background: linear-gradient(135deg, rgba(56, 189, 248, .16), rgba(74, 222, 128, .08)); }
+#screen-ou .wrap { max-width: 560px; margin: 0 auto; padding: 10px 14px 40px; }
+.ou-head { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px; font: 900 13px/1 var(--font); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.ou-back { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 17px; cursor: pointer; }
+.ou-load { padding: 60px 0; text-align: center; color: var(--muted); }
+
+/* Start */
+.ou-start { display: grid; gap: 14px; text-align: center; }
+.ou-logo { margin: 0; font: 900 clamp(30px, 9vw, 42px)/1 var(--font); letter-spacing: -.5px; text-transform: uppercase; color: #fff; }
+.ou-up { color: var(--good); } .ou-dn { color: var(--bad); }
+.ou-lede { margin: 0; color: var(--muted); font: 600 15px/1.45 var(--font); text-wrap: balance; } .ou-lede b { color: #fff; }
+.ou-pair.is-demo { pointer-events: none; transform: scale(.92); margin: -6px 0; }
+.ou-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ou-tiles > :last-child:nth-child(odd) { grid-column: 1 / -1; } /* three categories: the last runs full width, so the grid stays even */
+/* Category tiles: the name on the left, the best as a big number on the right, each category in its own colour (--oc) */
+.ou-tile { --oc: 148, 163, 184; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; min-height: 84px; padding: 11px 12px; border-radius: 14px; text-align: left; cursor: pointer;
+  border: 2px solid rgba(var(--oc), .45); background: linear-gradient(150deg, rgba(var(--oc), .30), rgba(var(--oc), .07) 70%), var(--card); color: var(--text); }
+.ou-c-goals { --oc: 239, 68, 68; } .ou-c-games { --oc: 59, 130, 246; } .ou-c-aflw { --oc: 168, 85, 247; } /* AFL red (the AFL section on CAST Games), blue, AFLW purple */
+.ou-tile-l { display: grid; justify-items: start; gap: 4px; min-width: 0; }
+.ou-tile-ico { font-size: 20px; }
+.ou-tile-l b { font: 900 15px/1.15 var(--font); color: #fff; text-wrap: balance; }
+.ou-tile-n { display: grid; justify-items: center; gap: 3px; }
+.ou-tile-n b { font: 900 40px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(var(--oc), .7); }
+.ou-tile-n small { font: 900 10px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; color: rgb(var(--oc)); filter: brightness(1.35); }
+.ou-tile-n.is-new b { font-size: 22px; color: rgba(255, 255, 255, .4); text-shadow: none; }
+.ou-tile.is-on { border-color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 6px 20px rgba(var(--oc), .3); }
+.ou-play { width: 100%; padding: 16px; border-radius: 14px; font: 900 16px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; }
+.ou-play i { font-style: normal; font-size: 12px; margin-left: 6px; }
+.ou-link { padding: 10px; border: 0; background: none; color: var(--muted); font: 800 13.5px/1.2 var(--font); cursor: pointer; }
+
+/* The run */
+.ou-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.ou-streak { display: inline-flex; align-items: baseline; gap: 6px; } .ou-streak i { font-style: normal; font-size: 20px; }
+.ou-streak b { font: 900 34px/1 var(--font); color: #fff; } .ou-streak small { font: 800 12px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.ou-catpill { padding: 7px 11px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font: 800 12px/1 var(--font); color: var(--text); }
+.ou-clock { height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .1); overflow: hidden; margin-bottom: 12px; }
+.ou-clock i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--bad), #fbbf24 35%, var(--good)); transform-origin: left; animation: ou-clock linear forwards; }
+.ou-clock.is-stop i { animation-play-state: paused; }
+@keyframes ou-clock { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .ou-clock i { animation: none; } }
+
+/* Two players side by side, each in his club's colours (R.clubVars: --club, --club-accent, --club-text) */
+.ou-pair { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ou-card { position: relative; display: grid; grid-template-rows: auto 1fr auto; min-height: 236px; overflow: hidden; border-radius: 16px; border: 2px solid var(--club);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--club) 34%, var(--card2)) 0%, var(--card2) 72%); box-shadow: 0 8px 22px rgba(0, 0, 0, .35); }
+.ou-card.is-new { animation: ouIn .3s ease both; }
+@keyframes ouIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+.ou-plate { position: relative; display: flex; align-items: center; gap: 7px; min-height: 40px; padding: 8px 10px; background: var(--club); color: var(--club-text); border-left: 6px solid var(--club-accent); overflow: hidden; }
+.ou-flag { flex: none; display: block; width: 36px; height: 24px; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255, 255, 255, .35); }
+.ou-flag svg { width: 100%; height: 100%; display: block; }
+.ou-abbr { flex: none; font: 900 11.5px/1 var(--font); letter-spacing: .8px; padding: 3px 6px; border-radius: 5px; background: var(--club-accent); color: var(--club); }
+.ou-club { min-width: 0; font: 800 11.5px/1.15 var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-body { display: grid; align-content: center; gap: 4px; padding: 12px 10px 6px; text-align: center; }
+.ou-name { font: 900 19px/1.12 var(--font); color: #fff; text-wrap: balance; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.ou-years { font: 700 11.5px/1.2 var(--font); color: var(--muted); }
+.ou-num { display: grid; justify-items: center; gap: 1px; margin: 0 8px 10px; padding: 10px 6px 8px; border-radius: 12px; background: rgba(0, 0, 0, .35); }
+.ou-num b { font: 900 40px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; }
+.ou-num small { font: 800 11px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.ou-num b.is-q { color: rgba(255, 255, 255, .35); animation: ouQ 1.4s ease-in-out infinite; }
+@keyframes ouQ { 50% { color: rgba(255, 255, 255, .7); } }
+.ou-card.is-good { box-shadow: 0 0 0 3px var(--good), 0 0 26px rgba(74, 222, 128, .45); } .ou-card.is-good .ou-num b { color: var(--good); }
+.ou-card.is-bad { box-shadow: 0 0 0 3px var(--bad), 0 0 26px rgba(248, 113, 113, .45); } .ou-card.is-bad .ou-num b { color: var(--bad); }
+.ou-vs { position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%); width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--line); font: 900 12px/1 var(--font); letter-spacing: .5px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .5); }
+.ou-q { margin: 12px 0 0; text-align: center; color: var(--muted); font: 600 14px/1.4 var(--font); text-wrap: balance; } .ou-q b { color: #fff; }
+.ou-calls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.ou-call { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 18px 10px; border-radius: 16px; border: 0; font: 900 20px/1 var(--font); letter-spacing: .6px;
+  text-transform: uppercase; cursor: pointer; touch-action: manipulation; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .22), 0 6px 16px rgba(0, 0, 0, .3); }
+.ou-call span { font-size: 16px; }
+/* The keys on a computer (hover and a fine pointer): Left or Up for Over, Right or Down for Under */
+.ou-key { display: none; margin-left: 4px; padding: 3px 6px; border-radius: 6px; background: rgba(0, 0, 0, .18); font: 800 11px/1 var(--font); letter-spacing: 1px; }
+@media (hover: hover) and (pointer: fine) { .ou-key { display: inline-block; } }
+.ou-call.is-over { background: linear-gradient(180deg, #5ee08f, #22c55e); color: #052e16; } .ou-call.is-under { background: linear-gradient(180deg, #fb8a8a, #ef4444); color: #450a0a; }
+.ou-call:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .22); }
+.ou-call:disabled { opacity: .45; cursor: default; }
+.ou-rr { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin-top: 10px; padding: 11px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 800 13px/1 var(--font); cursor: pointer; }
+.ou-rr small { color: var(--text); font: 800 12px/1 var(--font); }
+@media (max-width: 360px) { .ou-name { font-size: 16.5px; } .ou-num b { font-size: 32px; } .ou-card { min-height: 214px; } }
+
+/* Out */
+.ou-out { display: grid; gap: 12px; text-align: center; }
+.ou-out-h { font: 900 30px/1 var(--font); color: #fff; text-transform: uppercase; }
+.ou-pair.is-small .ou-card { min-height: 0; } .ou-pair.is-small .ou-name { font-size: 16px; } .ou-pair.is-small .ou-num b { font-size: 30px; }
+.ou-out-why { margin: 0; color: var(--muted); font: 600 14.5px/1.4 var(--font); text-wrap: balance; }
+.ou-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ou-again { padding: 14px; border-radius: 14px; font: 900 15px/1 var(--font); text-transform: uppercase; letter-spacing: .5px; }
+.ou-ghost { padding: 14px; border-radius: 14px; border: 1.5px solid rgba(255, 255, 255, .5); background: transparent; color: #fff; font: 900 15px/1 var(--font); text-transform: uppercase; letter-spacing: .5px; cursor: pointer; }
+.ou-note { text-align: center; color: var(--good); font: 700 13px/1.3 var(--font); }
+/* Run It Back: on the screen like the draft's Remove / Lock In (render.js R.decision), End Run drains over 10 s */
+.ou-decide { text-align: center; }
+.ou-decide .decision { padding: 0 2px; }
+.ou-decide .decision p { margin: 4px 0 0; text-wrap: balance; }
+.ou-decide .btn-row { margin: 14px 0 2px; }
+.ou-decide-rib { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.ou-decide-rib small { position: relative; z-index: 1; font: 800 11.5px/1 var(--font); color: #fbcfe8; }
+
+/* Results: the score, the strip of calls, three numbers, then Your Run */
+.ou-res { display: grid; gap: 12px; }
+.ou-hero { position: relative; display: grid; justify-items: center; gap: 4px; padding: 18px 14px 16px; border-radius: 18px; text-align: center; overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(74, 222, 128, .16), transparent 60%), linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); }
+.ou-hero-k { font: 900 12px/1.2 var(--font); letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+.ou-hero-n { display: inline-flex; align-items: center; gap: 6px; font: 900 76px/1 var(--font); color: #fff; letter-spacing: -2px; font-variant-numeric: tabular-nums; animation: ouPop .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+.ou-hero-n i { font-style: normal; font-size: 40px; letter-spacing: 0; }
+.ou-hero-s { display: inline-flex; align-items: center; gap: 8px; font: 800 13px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; color: var(--muted); }
+.ou-best { padding: 4px 8px; border-radius: 999px; font: 900 11px/1 var(--font); font-style: normal; letter-spacing: .6px; background: var(--good); color: #052e16; }
+.ou-best.is-old { background: rgba(255, 255, 255, .1); color: var(--text); }
+.ou-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 100%; margin-top: 8px; }
+.ou-strip i { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 6px; font: 900 10px/1 var(--font); font-style: normal; animation: ouIn .25s ease both; }
+.ou-strip .is-ok { background: rgba(74, 222, 128, .2); color: var(--good); box-shadow: inset 0 0 0 1px rgba(74, 222, 128, .45); }
+.ou-strip .is-x { background: var(--bad); color: #450a0a; }
+.ou-strip .is-rib { background: rgba(236, 72, 153, .25); color: #fbcfe8; box-shadow: inset 0 0 0 1px rgba(236, 72, 153, .6); font-size: 9px; }
+.ou-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ou-stats span { display: grid; gap: 4px; justify-items: center; padding: 11px 6px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.ou-stats b { font: 900 20px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ou-stats small { font: 800 10.5px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.ou-run { padding-bottom: 8px; }
+.ou-ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 440px; overflow-y: auto; }
+.ou-step { display: grid; grid-template-columns: 22px 34px minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 12px; background: rgba(255, 255, 255, .03); }
+.ou-step.is-bad { background: rgba(248, 113, 113, .12); box-shadow: inset 0 0 0 1.5px rgba(248, 113, 113, .6); }
+.ou-step-i { font: 900 12px/1 var(--font); color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.ou-step.is-bad .ou-step-i { color: var(--bad); }
+.ou-chip { width: 34px; height: 24px; display: grid; place-items: center; border-radius: 6px; overflow: hidden; background: var(--club); color: var(--club-text); box-shadow: inset 3px 0 0 var(--club-accent); }
+.ou-chip b { font: 900 9.5px/1 var(--font); letter-spacing: .4px; }
+.ou-chip svg { width: 100%; height: 100%; display: block; }
+.ou-step-p { display: grid; gap: 2px; min-width: 0; text-align: left; }
+.ou-step-p b { font: 800 14px/1.15 var(--font); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-step-p small { font: 700 10.5px/1 var(--font); color: var(--dim); }
+.ou-step-v { font: 900 18px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; text-align: right; min-width: 30px; }
+.ou-step.is-bad .ou-step-v { color: var(--bad); } .ou-step.is-bad .ou-step-p small { color: #fca5a5; font-weight: 800; }
+.ou-tag { padding: 5px 7px; border-radius: 999px; font: 900 10px/1 var(--font); letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; min-width: 62px; text-align: center; }
+.ou-tag.is-o { background: rgba(74, 222, 128, .16); color: var(--good); }
+.ou-tag.is-u { background: rgba(251, 146, 60, .16); color: #fdba74; }
+.ou-tag.is-x { background: var(--bad); color: #450a0a; }
+.ou-tag.is-start { background: rgba(255, 255, 255, .08); color: var(--muted); }
+.ou-step-note { padding: 4px 0; text-align: center; font: 900 11px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; color: #f9a8d4; }
+@keyframes ouPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ou-hero-n, .ou-strip i { animation: none; } }
+@media (max-width: 360px) { .ou-step { grid-template-columns: 18px 30px minmax(0, 1fr) auto auto; gap: 6px; } .ou-tag { min-width: 0; } .ou-step-v { font-size: 16px; } }

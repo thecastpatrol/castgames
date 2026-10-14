@@ -11,7 +11,7 @@
   /* Screens */
 
   function show(name) {
-    ['home', 'draft', 'results'].forEach(function (n) {
+    ['home', 'draft', 'results', 'ou'].forEach(function (n) {
       $('screen-' + n).classList.toggle('is-active', n === name);
     });
     document.body.setAttribute('data-screen', name);
@@ -339,7 +339,7 @@
     // and the Daily Challenge, and a guest's first visit has no spot (js/cast-account.js asks CAST_ACCOUNT.firstVisit)
     var first = firstVisit(), fs = $('firstSteps');
     // guest: Sign In to Play once today's free World Cup is played (Play Free until then, 12 Oct 2026)
-    $('modePicker').innerHTML = R.modePicker(selectedMode, { wc: wcPlace(first), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
+    $('modePicker').innerHTML = R.modePicker(selectedMode, { ou: !!(T.ou && T.ou.on()), wc: wcPlace(first), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
     if (fs) fs.hidden = !first;
     placeModes(first);
     placeDaily();
@@ -649,6 +649,8 @@
     startGame(modeId);
   }
 
+  T.showScreen = show; // Play On's own screen (js/overunder.js)
+  T.ouHome = function () { goHome(); };
   function goHome() {
     closeSheet();
     busy = false;
@@ -1449,6 +1451,7 @@
       // One tap plays that mode (a scroll that starts on a card is never a tap). Players still loading: it starts once
       // they are in
       selectedMode = t.getAttribute('data-mode');
+      if (selectedMode === 'ou') { if (T.ou) T.ou.open(); return; } // Play On has its own screen (js/overunder.js)
       renderHome();
       if (T.players.length) newGame(selectedMode); else { startWhenReady = selectedMode; $('startBtn').hidden = false; }
       return;
@@ -1657,6 +1660,8 @@
   function playMode(modeId) {
     modeId = gameMode(modeId);
     if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
+    // Play On (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
+    if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
     if (!T.MODES[modeId]) return;
     if (!T.players.length) { startWhenReady = modeId; return; } // back from signing in on a phone before the players loaded
     var mid = document.body.getAttribute('data-screen') === 'draft' && !T.state().finished && T.filledCount() > 0;
@@ -1666,7 +1671,7 @@
   window.addEventListener('cast:play', function (e) { var d = e.detail || {}; if (d.game === '4000goals') playMode(d.mode); });
   // World Cup launched (or taken down), or a sign-in: the home page redraws its World Cup card
   function homeAgain() { if (document.body.getAttribute('data-screen') === 'home') renderHome(); }
-  window.addEventListener('cast:launch', function (e) { if (e.detail && e.detail.game === 'wc') { wcBits(); homeAgain(); } });
+  window.addEventListener('cast:launch', function (e) { if (e.detail && e.detail.game === 'wc') { wcBits(); homeAgain(); } if (e.detail && e.detail.game === 'po') homeAgain(); });
   // The home FAQ's World Cup 200+ entry ([data-cast-wc]): shows once World Cup mode is on, like the How It Works notes
   function wcBits() {
     var on = !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive());
@@ -1954,7 +1959,7 @@
     btn.hidden = true;
     homeAgain(); // the account has loaded by now: World Cup's card (when it's on) and Sign In to Play
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
-    var play = /[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily)(?=&|#|$)/.exec(location.search);
+    var play = /[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]po=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?po=: the owner's private Play On link
     if (!play) offerResume();
     if (play) {
       try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address as it is */ }

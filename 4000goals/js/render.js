@@ -92,12 +92,13 @@
     plus:  { ico: '&#x1F3C9;', line: 'Get to 4000 or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] },
     spin:  { ico: '&#x1F3B0;', line: 'Pick a position, then spin', chips: ['Spin, Pick 1', '3 Wildcards'] },
     nrlw:  { ico: '&#x2B50;', line: 'The AFLW stars. Get to ' + T.DATASETS.nrlw.target + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'AFLW Players'] },
-    wc:    { ico: '&#x1F30F;', line: 'Get to ' + T.DATASETS.wc.target + ' Test goals or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'Test Players'] }
+    wc:    { ico: '&#x1F30F;', line: 'Get to ' + T.DATASETS.wc.target + ' Test goals or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'Test Players'] },
+    ou:    { ico: '&#x2195;&#xFE0F;', line: 'More or fewer? Call it before the clock runs out' } // Play On (15 Oct 2026)
   };
 
   /* Home modes (29 Sep 2026, the user's call): 4000+ is the main mode, one big card with a clear Play button; the others
      are three small buttons in a row under it (each keeps its colour and one tag). A tap on any of them starts it. */
-  var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Squads', nrlw: 'AFLW', wc: 'Test Goals' };
+  var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Squads', nrlw: 'AFLW', wc: 'Test Goals', ou: 'New &middot; Beat the Clock' };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 4000+ until the final on
      15 Nov, in the World Cup nations' colours (flags when the owner's designs arrive), then a small one with the others.
      opt.wc: 'top', 'under' (a guest's first visit keeps 4000+ first), 'mini' or null; opt.guest: Sign In to Play */
@@ -131,12 +132,13 @@
       '<span class="mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>' +
       '</button>';
     var wc = opt.wc === 'top' || opt.wc === 'under' ? R.wcCard(selected, opt.guest, opt.free) : '';
-    var more = ['exact', 'spin', 'nrlw'].concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
-      var mm = T.MODES[id];
+    // Play On (15 Oct 2026, 1000TRIES's Six Again for AFL): first in More Modes once it's on (launched, or the private link)
+    var more = (opt.ou ? ['ou'] : []).concat(['exact', 'spin', 'nrlw']).concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
+      var mm = T.MODES[id] || { name: 'Play On' };
       return '<button type="button" class="mode-mini is-' + id + (id === selected ? ' is-on' : '') + '" data-mode="' + id + '" aria-label="Play ' + esc(mm.name) + '">' +
         '<span class="mm-ico" aria-hidden="true">' + MODE_CARD[id].ico + '</span><span class="mm-name">' + esc(mm.name) + '</span><span class="mm-tag">' + MINI_TAG[id] + '</span></button>';
     });
-    return (opt.wc === 'top' ? wc + main : main + wc) + '<div class="mode-more-kicker">More Modes</div><div class="mode-more" style="--n:' + more.length + '">' + more.join('') + '</div>';
+    return (opt.wc === 'top' ? wc + main : main + wc) + '<div class="mode-more-kicker">More Modes</div><div class="mode-more" style="--n:' + (more.length - (opt.ou ? 1 : 0)) + '">' + more.join('') + '</div>';
   };
 
   /* DRAFT */

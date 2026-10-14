@@ -1,4 +1,4 @@
-/* Over or Under (14 Oct 2026, the owner's BUILD IT): a higher-or-lower run for 1000TRIES. Two players: you see the left
+/* Over or Under (14 Oct 2026, the owner's BUILD IT): a higher-or-lower run for 1000TRIES (Six Again) and 4000 GOALS (Play On). Two players: you see the left
    one's number and call whether the right one's is Over or Under it. Right, and the right card becomes the left with a new
    player in; wrong (or out of time), and you're out, unless you Run It Back.
 
@@ -16,8 +16,14 @@
     nrl: { name: 'NRL-Era Tries', unit: 'NRL-era tries', one: 'NRL-era try', base: 150, step: 45 }, // since 1998 only (the owner)
     caps: { name: 'Test Caps', unit: 'Tests', one: 'Test', base: 120, step: 40 },
     ttries: { name: 'Test Tries', unit: 'Test tries', one: 'Test try', base: 90, step: 30 },
-    nrlw: { name: 'NRLW Tries', unit: 'tries', one: 'try', base: 45, step: 14 }
+    nrlw: { name: 'NRLW Tries', unit: 'tries', one: 'try', base: 45, step: 14 },
+    // Play On (15 Oct 2026): 4000 GOALS's version, since 1990 (the AFL era) like the game itself. game: the site whose
+    // board it is (the others are 1000TRIES's)
+    goals: { name: 'AFL-Era Goals', unit: 'AFL-era goals', one: 'AFL-era goal', base: 150, step: 45, game: '4000goals' },
+    games: { name: 'AFL-Era Games', unit: 'AFL-era games', one: 'AFL-era game', base: 150, step: 45, game: '4000goals' },
+    aflw: { name: 'AFLW Goals', unit: 'goals', one: 'goal', base: 45, step: 14, game: '4000goals' }
   };
+  function gameOf(cat) { return (CATS[cat] && CATS[cat].game) || '1000tries'; }
   // The relative gap a pair aims for, by streak: |a - b| / max(a, b). Far apart early, close later
   var BANDS = [[0, 0.3, 0.75], [3, 0.18, 0.5], [6, 0.1, 0.32], [10, 0.06, 0.24], [16, 0.03, 0.18]]; // hard, never a coin flip (the owner: trophies a human can get)
   // Seconds a call gets (the owner, 14 Oct 2026): 10 for the first call, then 7, then 5, then 4
@@ -88,7 +94,7 @@
     return { ok: true, streak: streak, ribs: ribs, rerolls: rerolls, ended: out, players: seen };
   }
 
-  var api = { CATS: CATS, BANDS: BANDS, callTime: callTime, Run: Run, replay: replay, gap: gap };
+  var api = { CATS: CATS, BANDS: BANDS, callTime: callTime, Run: Run, replay: replay, gap: gap, gameOf: gameOf };
   root.OU_ENGINE = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

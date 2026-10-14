@@ -6,7 +6,7 @@ one into its folder here and fits it to CAST Games, so there's only ever one ver
 
     27-0 Game/27-0-nrl  -> 27-0/
     1000TRIES Game      -> 1000tries/   (and six-again/, its Six Again page)
-    4000 GOALS Game     -> 4000goals/
+    4000 GOALS Game     -> 4000goals/   (and play-on/, its Play On page)
 
 For each copied page: the CAST Games bar (shared/cg.js, cg.css) at the top, the game's own header hidden, links to the
 other games' domains pointed at their folders here, and (until the switch-over) noindex so Google keeps the old domains.
@@ -141,17 +141,18 @@ def main():
             if f.endswith('.html'):
                 fit_page(os.path.join(dst, f), folder, gid, hide, play)
         print('built', folder)
-    # Six Again: 1000TRIES's page opened on Six Again, with its own address (the owner's call)
-    six = os.path.join(HERE, 'six-again')
-    os.makedirs(six, exist_ok=True)
-    src = open(os.path.join(HERE, '1000tries', 'index.html'), encoding='utf-8').read()
-    src = src.replace("window.CG_GAME = '1000tries'", "window.CG_GAME = 'six-again'")
-    src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
-                      '<script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>\n'
-                      '<script src="../shared/cg.js?v=%s"></script>' % CGV, 1)
-    src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../1000tries/">', src, count=1)
-    open(os.path.join(six, 'index.html'), 'w', encoding='utf-8').write(src)
-    print('built six-again')
+    # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
+    for page, game, gid, key in (('six-again', '1000tries', 'six-again', 'ou'), ('play-on', '4000goals', 'play-on', 'po')):
+        out = os.path.join(HERE, page)
+        os.makedirs(out, exist_ok=True)
+        src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
+        src = src.replace("window.CG_GAME = '%s'" % game, "window.CG_GAME = '%s'" % gid)
+        src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
+                          '<script>if (!/[?&](play=ou|%s=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>\n'
+                          '<script src="../shared/cg.js?v=%s"></script>' % (key, CGV), 1)
+        src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % game, src, count=1)
+        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(src)
+        print('built', page)
     # Hidden until the switch-over: Google stays on the old domains
     open(os.path.join(HERE, 'robots.txt'), 'w').write('User-agent: *\n' + ('Allow: /\nSitemap: ' + SITE + 'sitemap.xml\n' if LIVE else 'Disallow: /\n'))
     idx = os.path.join(HERE, 'index.html')

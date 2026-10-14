@@ -1622,7 +1622,8 @@
   // 27-0 (?play=exact): straight into that mode, asking first if a team is half built
   function playMode(modeId) {
     if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
-    if (modeId === 'ou') { if (T.ou && T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; } // Six Again (js/overunder.js)
+    // Six Again (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
+    if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
     if (!T.MODES[modeId]) return;
     if (!T.players.length) { startWhenReady = modeId; return; } // back from signing in on a phone before the players loaded
     var mid = document.body.getAttribute('data-screen') === 'draft' && !T.state().finished && T.filledCount() > 0;
