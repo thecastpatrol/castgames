@@ -88,13 +88,14 @@
       document.body.appendChild(el);
       setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
     }
-    setTimeout(function () { st.busy = false; if (st.view === 'play') { st.rerolled = true; nextCall(); } }, reduce ? 0 : 1000);
+    setTimeout(function () { st.busy = false; if (st.view === 'play') { st.rerolled = true; nextCall(st.free); } }, reduce ? 0 : 1000); // a no-clock call stays one
   }
-  function nextCall() {
+  // free: no clock for this call (the first one after a Run It Back)
+  function nextCall(free) {
     clearClock();
-    st.view = 'play'; st.reveal = null; st.secs = E.callTime(st.streak); st.callAt = Date.now();
+    st.view = 'play'; st.reveal = null; st.secs = E.callTime(st.streak); st.free = !!free; st.callAt = Date.now();
     st.fresh = true; render(); st.fresh = false; st.rerolled = false; // only the new player slides in (redraws never replay it)
-    st.clock = setTimeout(function () { call('T'); }, st.secs * 1000);
+    if (!st.free) st.clock = setTimeout(function () { call('T'); }, st.secs * 1000);
   }
   function call(c) {
     if (st.view !== 'play' || st.reveal || st.busy) return;
@@ -163,12 +164,15 @@
       if (st.view !== 'out' || st.done) return;
       st.calls += 'B'; st.rib++; st.offer = 0; st.hold = false;
       st.log.push({ rib: 1 });
+      // the rewind plays over the pair that got them, never the next player (the owner, 15 Oct 2026: his number showed as it loaded)
+      st.missed = st.run.right;
       st.run.right = st.run.draw(st.streak);
       T.track('ou_rib', { category: st.cat, streak: st.streak });
       // The rewind (the owner, 15 Oct 2026: "a cooler animation to get you back into the game"): a moment on screen, then
       // the clock starts on the new pair
       st.view = 'rewind'; render();
-      setTimeout(function () { if (st.view === 'rewind') nextCall(); }, 1500);
+      // the first call back has no clock (the owner, 15 Oct 2026)
+      setTimeout(function () { if (st.view === 'rewind') nextCall(true); }, 1500);
     }, hook);
   }
   // Reroll: swap the right-hand player (a Vault Reroll, or buy). The clock stops while the Shop is open
@@ -275,7 +279,7 @@
   }
   function playView() {
     var L = D[st.cat], a = L[st.run.left], b = L[st.run.right], rv = st.reveal;
-    var h = topBar() + '<div class="ou-clock' + (rv ? ' is-stop' : '') + '"><i style="animation-duration:' + st.secs + 's"></i></div>';
+    var h = topBar() + (st.free ? '<div class="ou-clock is-free"><span>&#x23EA; No Clock This Call</span></div>' : '<div class="ou-clock' + (rv ? ' is-stop' : '') + '"><i style="animation-duration:' + st.secs + 's"></i></div>');
     h += '<div class="ou-pair">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' +
       card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? (st.rerolled ? ' is-new is-rerolled' : ' is-new') : '')) + '</div>';
     h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
@@ -288,7 +292,7 @@
   }
   // The miss: the pair that got them and why, over the decision panel (Run It Back or End Run, End Run drains)
   function decideView() {
-    var L = D[st.cat], a = L[st.run.left], b = L[st.run.right], why = st.reveal && st.reveal.timeout;
+    var L = D[st.cat], a = L[st.run.left], b = L[st.view === 'rewind' && st.missed != null ? st.missed : st.run.right], why = st.reveal && st.reveal.timeout;
     return '<div class="ou-out"><div class="ou-out-h">' + (why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Wrong Call') + '</div>' +
       '<div class="ou-pair is-small">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' + card(b, true, 'is-right', 'is-bad') + '</div>' +
       '<p class="ou-out-why">' + esc(b[0]) + ' was ' + (b[1] > a[1] ? 'over' : 'under') + ', with ' + T.fmt(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +

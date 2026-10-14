@@ -298,6 +298,9 @@
   function firstVisit() {
     try {
       if (localStorage.getItem('1000tries_played')) return false;
+      // a CAST Profile is never a first visit (the owner, 15 Oct 2026: on castgames.com.au, a new address with no games
+      // saved yet, his banner sat at the bottom under the first-visit layout)
+      if (localStorage.getItem('cast_signed_in') === '1' || signedIn()) return false;
       var g = JSON.parse(localStorage.getItem('cast_games_v1') || '[]');
       return !(Array.isArray(g) && g.some(function (x) { return x && x.game === '1000tries'; }));
     } catch (e) { return false; }
@@ -357,6 +360,7 @@
     var ouB = document.querySelector('.spot-promo[data-ou-open]');
     if (ouB && !ouB.getAttribute('data-rich') && R.ouBanner) { ouB.innerHTML = R.ouBanner(); ouB.setAttribute('data-rich', '1'); ouB.classList.add('is-ou'); }
     if (window.CastAccount && CastAccount.spot) CastAccount.spot();
+    if (window.CastNations && CastNations.fit) CastNations.fit($('modePicker')); // the World Cup card's flags at their real size
     $('startBtn').setAttribute('data-pick', selectedMode); // Play now takes the picked mode's colour
   }
 
@@ -1914,6 +1918,7 @@
     };
     window.addEventListener('cast-account', on);
   }
+  window.addEventListener('cast-account', function () { setTimeout(homeAgain, 0); }); // signed in or out: the home's layout follows (first visit or not)
   document.addEventListener('visibilitychange', function () { if (document.hidden) keepDraft(); });
   window.addEventListener('pagehide', keepDraft);
 

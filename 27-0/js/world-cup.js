@@ -1310,8 +1310,10 @@
     // The card's ten nation chips carry their looks (once)
     Array.prototype.forEach.call(big.querySelectorAll('.cp-wc-strip i:not(.has-look)'), function (el) {
       var k = String(el.textContent || '').trim().toLowerCase(), lk = NATIONS[k] ? look(k, 30, 22, 2) : '';
+      if (lk) lk = lk.replace(/^<span class="([^"]*)"/, '<span class="$1" data-nat-fit="' + k + ' 2"'); // drawn again at its real size (CastNations.fit)
       if (lk) { el.innerHTML = lk + '<span>' + esc(el.textContent) + '</span>'; el.classList.add('has-look'); }
     });
+    if (window.CastNations && CastNations.fit) CastNations.fit(big);
     var more = mini.parentNode;
     if (more) more.style.setProperty('--n', more.querySelectorAll('.cp-mode-mini:not([hidden])').length);
     if (live && !squads) load().catch(function () { /* tried again at the tap */ });

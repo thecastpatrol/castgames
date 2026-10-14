@@ -1165,6 +1165,9 @@
   function firstVisit() {
     try {
       if (localStorage.getItem('270_played')) return false;
+      // a CAST Profile is never a first visit (the owner, 15 Oct 2026: on castgames.com.au, a new address with no seasons
+      // saved yet, the banner sat at the bottom under the first-visit layout)
+      if (localStorage.getItem('cast_signed_in') === '1' || (window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn())) return false;
       var g = JSON.parse(localStorage.getItem('cast_games_v1') || '[]');
       return !(Array.isArray(g) && g.some(function (x) { return x && x.game === '27-0'; }));
     } catch (e) { return false; }

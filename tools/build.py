@@ -160,6 +160,13 @@ def main():
     # Files the account code loads next to the page (assets/...): the home and sport pages need their own copy
     for rel in ['assets/cast-pass-logo.png']:
         shutil.copyfile(os.path.join(HERE, '1000tries', rel), os.path.join(HERE, rel))
+    # The home page's files from the games' folders (the account, Daily calendars, flags) carry a version from their own
+    # contents, so a change reaches everyone at once instead of an old copy kept by the browser (15 Oct 2026)
+    idx = os.path.join(HERE, 'index.html')
+    hs = open(idx, encoding='utf-8').read()
+    hs2 = re.sub(r'((?:1000tries|4000goals|27-0)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    if hs2 != hs:
+        open(idx, 'w', encoding='utf-8').write(hs2)
     # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only
     home = open(os.path.join(HERE, 'index.html'), encoding='utf-8').read()
     for sid, name in SPORT_PAGES:

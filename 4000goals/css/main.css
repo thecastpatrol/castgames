@@ -1687,6 +1687,8 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-clock { height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .1); overflow: hidden; margin-bottom: 12px; }
 .ou-clock i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--bad), #fbbf24 35%, var(--good)); transform-origin: left; animation: ou-clock linear forwards; }
 .ou-clock.is-stop i { animation-play-state: paused; }
+.ou-clock.is-free { height: auto; overflow: visible; background: none; text-align: center; } /* the first call after a Run It Back */
+.ou-clock.is-free span { display: inline-block; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(244, 114, 182, .5); background: rgba(244, 114, 182, .12); color: #f9a8d4; font: 800 12px/1.2 Inter, sans-serif; }
 @keyframes ou-clock { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (prefers-reduced-motion: reduce) { .ou-clock i { animation: none; } }
 

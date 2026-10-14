@@ -6905,8 +6905,8 @@
           '<small>All Sales</small><b>' + (rev ? money(rev.pass + (itemsTot || 0) + (picksTot || 0)) : admNum(null)) + '</b><em>' + (rev ? 'Today ' + money(allPerTop.d) + ' &middot; 7 Days ' + money(allPerTop.w) : 'All time') + '</em>' + (mod.owner && rev ? '</button>' : '</div>') +
         '<button type="button" class="ca-ov-big is-tap is-hero" style="--oc:241,192,115" data-ca="adm-list" data-v="pass" data-l="CAST Pass Holders"><small>CAST Pass Monthly</small><b>' + (mrr == null ? admNum(null) : money(mrr)) + '</b><em>Expected each month' + (d.passPaid != null ? ' &middot; ' + fmt(d.passPaid) + ' paying' : '') + '</em></button>' +
       '</div>' +
-      '<div class="ca-ov-glance is-3">' + [['CAST Pass', rev ? rev.pass : null, 'pass'], ['Items', itemsTot, ''], ['Picks', picksTot, '']].map(function (x) {
-        return '<div class="ca-ov-big" style="--oc:' + { 'CAST Pass': '241,192,115', Items: '45,212,191', Picks: '244,114,182' }[x[0]] + '"><small>' + x[0] + '</small><b>' + (x[1] == null ? admNum(null) : money(x[1])) + '</b><em>All time</em></div>';
+      '<div class="ca-ov-glance is-3">' + [['CAST Pass', rev ? rev.pass : null, 'pass'], ['Wildcards', itemsTot, ''], ['Picks', picksTot, '']].map(function (x) {
+        return '<div class="ca-ov-big" style="--oc:' + { 'CAST Pass': '241,192,115', Wildcards: '45,212,191', Picks: '244,114,182' }[x[0]] + '"><small>' + x[0] + '</small><b>' + (x[1] == null ? admNum(null) : money(x[1])) + '</b><em>All time</em></div>';
       }).join('') + '</div>';
     if (rev) {
       var srows = [pk('CAST Pass', 'pass', rev.pass, null)]
@@ -7690,7 +7690,7 @@
         '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-cancel">Cancel</button></span>' : '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-ask">&#x1F3C6; Make Player of the Week</button>') +
       (!(mod.trophy && mod.trophy.name === u.name) ? '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-trophy-open">&#x1F3C5; Give Trophy</button>' : '')) + trophyGiveAdmin(u) : '');
     // Give Items (the owner only; the server checks it's the owner too): anything from the Vault, a pop-up tells them
-    h += mod.owner ? sec('Give Items', giveItemsAdmin(r)) : '';
+    h += mod.owner ? sec('Give Wildcards', giveItemsAdmin(r)) : ''; // Wildcards, not Items, everywhere in Admin (the owner, 15 Oct 2026)
     // Details: who they are and how they play, and (the owner) correcting a date of birth typed wrong at sign-up
     // Their account ID and email, each with Copy, to find them in Firebase or Stripe (11 Oct 2026, the owner; every admin)
     var idRow = function (k, label, v, note) {
@@ -7758,7 +7758,7 @@
   }
   function giveItemsAdmin(r) {
     var G = mod.give;
-    if (!G || G.uid !== r.uid) return '<div class="ca-adm-btns"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-open">&#x1F381; Give Items</button></div>';
+    if (!G || G.uid !== r.uid) return '<div class="ca-adm-btns"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-open">&#x1F381; Give Wildcards</button></div>';
     var v = r.vault || {}, what = giveSummary(G.items);
     return '<div class="ca-adm-give"><ul class="ca-give-list">' + GIVE_ITEMS.map(function (x) {
       var n = G.items[x[0]] || 0, has = v[x[0]] || 0;
@@ -7768,7 +7768,7 @@
     }).join('') + '</ul>' +
       (what ? '<p class="ca-give-sum">To give: <b>' + esc(what) + '</b></p>' : '') +
       '<div class="ca-row">' + (G.busy ? '<span class="ca-muted">Giving&hellip;</span>' :
-        '<button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-give"' + (what ? '' : ' disabled') + '>' + (!what ? 'Choose Items' : G.confirm ? 'Tap Again to Give' : 'Give Items') + '</button>') +
+        '<button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-give"' + (what ? '' : ' disabled') + '>' + (!what ? 'Choose Wildcards' : G.confirm ? 'Tap Again to Give' : 'Give Wildcards') + '</button>') +
       '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-cancel">Close</button></div>' +
       '<p class="ca-muted">They get a pop-up next visit saying what came, from The Cast Patrol.</p></div>';
   }
@@ -8417,7 +8417,7 @@
 
   var LOG_ACTION = { verify: 'Verified', unverify: 'Removed the tick from', hide: 'Hid', unhide: 'Unhid', rename: 'Force renamed', dismiss: 'Dismissed reports for',
     'auto-hide': 'Auto-hid (5 reports)', 'approve-score': 'Approved a score for', 'dismiss-flag': 'Dismissed a flag for', 'reject-flag': 'Rejected a score of', 'keep-score': 'Kept a flagged score for', 'remove-score': 'Removed a score of', 'block-word': 'Blocked the word',
-    'unblock-word': 'Unblocked the word', 'unblock-name': 'Unblocked the name', launch: 'Launched', unlaunch: 'Hid again', upsell: 'Set the reward prompt to', pass: 'Gave CAST Pass to', unpass: 'Took CAST Pass from', admin: 'Made an admin:', unadmin: 'Removed admin from', qd: 'Allowed Quick Draft for', unqd: 'Removed Quick Draft from', birth: 'Corrected the date of birth for' , refund: 'Refunded in full (CAST Pass ended) for', logo: 'Set the creator logo for', unlogo: 'Removed the creator logo for', trophy: 'Gave a trophy to', 'give-items': 'Gave items to'};
+    'unblock-word': 'Unblocked the word', 'unblock-name': 'Unblocked the name', launch: 'Launched', unlaunch: 'Hid again', upsell: 'Set the reward prompt to', pass: 'Gave CAST Pass to', unpass: 'Took CAST Pass from', admin: 'Made an admin:', unadmin: 'Removed admin from', qd: 'Allowed Quick Draft for', unqd: 'Removed Quick Draft from', birth: 'Corrected the date of birth for' , refund: 'Refunded in full (CAST Pass ended) for', logo: 'Set the creator logo for', unlogo: 'Removed the creator logo for', trophy: 'Gave a trophy to', 'give-items': 'Gave wildcards to'};
   function admLog() {
     admFetch('log', 'adminLog');
     var d = mod.log && mod.log.data;

@@ -127,7 +127,7 @@
     var m = T.MODES.wc, c = MODE_CARD.wc;
     var strip = WC_NATIONS.map(function (k) {
       var cl = T.club(k);
-      var lk = look(k, 30, 22, 2);
+      var lk = look(k, 30, 22, 2).replace('<span class="wc-look"', '<span class="wc-look" data-nat-fit="' + k + ' 2"'); // drawn again at its real size (CastNations.fit)
       return '<i' + (lk ? ' class="has-look"' : '') + ' style="--n1:' + cl.primary + ';--n2:' + cl.secondary + ';--n3:' + (cl.third || cl.secondary) + '">' + (lk ? lk + '<span>' + cl.abbr + '</span>' : cl.abbr) + '</i>';
     }).join('');
     return '<button type="button" class="mode-card mode-main is-wc' + (selected === 'wc' ? ' is-on' : '') + '" data-mode="wc" aria-label="' + (guest ? 'Sign in to play ' : free ? 'Play free: ' : 'Play ') + esc(m.name) + '">' +
