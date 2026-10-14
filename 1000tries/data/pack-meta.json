@@ -1,0 +1,31 @@
+{
+  "pack": "1000TRIES-players-v1",
+  "updated": "2026-09-23T08:52:54+10:00",
+  "snapshot_date": "2026-09-23",
+  "playable_rule": "confirmed tries_1998_plus only (incl proven 0); nulls parked",
+  "player_count_playable": 2011,
+  "player_count_parked_unresolved": 144,
+  "universe_total": 2155,
+  "proven_zeros": 66,
+  "tries_min": 0,
+  "tries_median": 10.0,
+  "tries_max": 240,
+  "nonzero_min": 1,
+  "nonzero_median": 11.0,
+  "host_url": null,
+  "no_host_url": true,
+  "parked_file": "1000TRIES-unresolved-parked.json",
+  "last_promotions": [
+    "Blake Mueller=0",
+    "Brad Davis=0",
+    "Bradley Deitz=0",
+    "Brendan O'Meara=0",
+    "Brendan Oake=0",
+    "Brenton Pomery=0",
+    "Brett Clements=0"
+  ],
+  "session_note": "light pass: Chris Smith alias + short-span/rookie AFL/RLP confirms",
+  "finals_update": "2026-09-23: added NRL finals week 2 tries (semi-finals 19-20 Sep) for 11 players, verified against NRL match data and AFL Tables. Week 1 was already included.",
+  "name_merge_fixes": "2026-09-23: split merged namesakes, keeping the modern player only: Sione Katoa (Sharks W), William Kennedy (Sharks FB, 62), Nathan Brown (modern forward, 8). Verified on AFL Tables.",
+  "name_fixes": "2026-09-23: Selumiela Halasima shown as Leka Halasima (Warriors 2024-26, SR/C); Jermaine Mcewen shown as Jermaine McEwen. 2026-09-26: Mc and Mac surnames capitalised properly (40 players, e.g. Josh McGuire, Adam MacDougall, Duncan MacGillivray); Macdonald, Mackay and Macnamara left as spelled."
+}

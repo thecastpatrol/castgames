@@ -1,0 +1,134 @@
+/* CAST Games (castgames.com.au, 15 Oct 2026, the owner: every game under one address, picked by sport, then game).
+
+   CG.SPORTS and CG.GAMES are the one list of what's on the site: a new game or a new sport is one more entry here, and
+   the home page, the game switcher and the bar all follow. status: 'live' (shown), 'soon' (a Coming Soon tile on the
+   home page), 'hidden' (nowhere). A game with launch: shows once that key is in config/launch (CastAccount.launched)
+   or the device has its preview switch on.
+
+   The bar (one for the home page and every game, the owner's call: "consistent tab at the top"): the cast logo (home),
+   the game switcher, the account button (js/cast-account.js fills any [data-cast-account]), then the tabs Play, Stats,
+   Boards, Friends and Shop. Inside a game it hides the game's own header (CG_GAME_HIDE in the page) and Play goes back to
+   that game's home, or its New Game when a game is under way. */
+(function () {
+  'use strict';
+  var ROOT = (function () {
+    // The site's root from this script's own address (/shared/cg.js), so pages at any depth link back correctly
+    var s = document.currentScript && document.currentScript.src;
+    return s ? s.replace(/shared\/cg\.js.*$/, '') : '/';
+  })();
+
+  var SPORTS = [
+    { id: 'nrl', name: 'NRL', long: 'Rugby league', c: '34,197,94', status: 'live' },
+    { id: 'afl', name: 'AFL', long: 'Aussie rules', c: '239,68,68', status: 'live' },
+    { id: 'cricket', name: 'Cricket', long: 'Tests, ODIs and T20s', c: '56,189,248', status: 'soon' },
+    { id: 'nfl', name: 'NFL', long: 'American football', c: '129,140,248', status: 'soon' },
+    { id: 'racing', name: 'Racing', long: 'Horse racing', c: '250,204,21', status: 'soon' }
+  ];
+  var GAMES = [
+    { id: '27-0', sport: 'nrl', name: '27-0', path: '27-0/', logo: 'assets/logos/27-0.png', c1: '#1f2a55', c2: '#11152a', status: 'live',
+      line: 'Draft a 13 from any NRL season since 1998 and go undefeated.', short: 'Draft a 13 and go undefeated', daily: true, stats: '27-0' },
+    { id: '1000tries', sport: 'nrl', name: '1000TRIES', path: '1000tries/', logo: 'assets/logos/1000tries.png', c1: '#3b1d5e', c2: '#160f24', status: 'live',
+      line: 'Draft 13 NRL players and reach 1000 career tries.', short: 'Draft 13 to 1000 tries', daily: true, stats: '1000tries' },
+    { id: 'six-again', sport: 'nrl', name: 'Six Again', path: 'six-again/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#0f4a4a', c2: '#0a1a1f', status: 'live', launch: 'ou', badge: 'New',
+      line: 'Over or under? Call it before the clock runs out.', short: 'Over or under, vs the clock' },
+    { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', logo: 'assets/logos/4000goals.png', c1: '#5a1620', c2: '#1c0b10', status: 'live',
+      line: 'Draft an AFL 18 and reach 4000 career goals.', short: 'Draft an 18 to 4000 goals', daily: true, stats: '4000goals' }
+  ];
+
+  function acct() { return window.CastAccount || null; }
+  function launched(key) {
+    if (!key) return true;
+    var A = acct();
+    try { if (A && A.isLaunched && A.isLaunched(key)) return true; } catch (e) { /* not ready */ }
+    if (key === 'ou' && A && A.ouOn) { try { return !!A.ouOn(); } catch (e) { return false; } }
+    return false;
+  }
+  // The games a player sees right now
+  function liveGames() { return GAMES.filter(function (g) { return g.status === 'live' && launched(g.launch); }); }
+  function sportOf(id) { for (var i = 0; i < SPORTS.length; i++) if (SPORTS[i].id === id) return SPORTS[i]; return null; }
+  function url(path) { return ROOT + path; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
+
+  /* ---------- The bar ---------- */
+  var HERE = window.CG_GAME || ''; // the game this page is ('' on the home page)
+  function currentGame() { for (var i = 0; i < GAMES.length; i++) if (GAMES[i].id === HERE) return GAMES[i]; return null; }
+  var TABS = [
+    ['play', '&#x1F3AE;', 'Play'], ['stats', '&#x1F4CA;', 'Stats'], ['boards', '&#x1F3C6;', 'Boards'],
+    ['friends', '&#x1F465;', 'Friends'], ['shop', '&#x1F6D2;', 'Shop'] // the cart, the same as the games' Shop and Vault
+  ];
+  function bar() {
+    var g = currentGame();
+    var el = document.createElement('div');
+    el.className = 'cg-bar';
+    el.innerHTML = '<div class="cg-in">' +
+      '<a class="cg-logo" href="' + url('') + '" aria-label="CAST Games home"><img src="' + url('assets/logos/castgames.png') + '" alt="CAST Games" width="300" height="150"></a>' +
+      '<button type="button" class="cg-game" data-cg="switch" aria-haspopup="dialog">' + esc(g ? g.name : 'All Games') + ' <i aria-hidden="true">&#x25BE;</i></button>' +
+      '<nav class="cg-tabs" aria-label="CAST Games">' + TABS.map(function (t) {
+        return '<button type="button" class="cg-tab' + (t[0] === 'play' ? ' is-on' : '') + '" data-cg="' + t[0] + '"><i aria-hidden="true">' + t[1] + '</i><span>' + t[2] + '</span></button>';
+      }).join('') + '</nav>' +
+      '<span class="cg-sp"></span>' +
+      '<span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span>' +
+      '</div>';
+    document.body.insertBefore(el, document.body.firstChild);
+    document.documentElement.classList.add('cg-on');
+    if (HERE) document.documentElement.classList.add('cg-in-game', 'cg-g-' + HERE);
+    el.addEventListener('click', onBar);
+    var A = acct(); if (A && A.refresh) { try { A.refresh(); } catch (e) { /* later */ } }
+  }
+  function onBar(e) {
+    var b = e.target.closest('[data-cg]');
+    if (!b) return;
+    var a = b.getAttribute('data-cg'), A = acct();
+    track('cg_tab', { tab: a, game: HERE || 'home' });
+    if (a === 'switch') { openSwitcher(); return; }
+    if (a === 'play') { play(); return; }
+    if (!A) return;
+    if (a === 'stats') A.openProfile ? A.openProfile('stats') : A.open('stats');
+    else if (a === 'boards') A.openBoards(null);
+    else if (a === 'friends') A.openFriends ? A.openFriends() : A.open('friends');
+    else if (a === 'shop') A.openShop ? A.openShop() : A.open('shop');
+  }
+  // Play: on the home page, the top; in a game, its New Game when a game is under way, else that game's home
+  function play() {
+    if (!HERE) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    var hook = window.CG_PLAY;
+    if (typeof hook === 'function') { try { if (hook() !== false) return; } catch (e) { /* the page's own */ } }
+    location.href = url(currentGame().path);
+  }
+
+  /* ---------- The game switcher: every sport, then its games (soon sports at the end) ---------- */
+  var sheet = null;
+  function openSwitcher() {
+    if (!sheet) {
+      sheet = document.createElement('div');
+      sheet.className = 'cg-sheet';
+      sheet.hidden = true;
+      sheet.setAttribute('role', 'dialog');
+      sheet.setAttribute('aria-modal', 'true');
+      sheet.setAttribute('aria-label', 'Pick a game');
+      document.body.appendChild(sheet);
+      sheet.addEventListener('click', function (e) { if (e.target === sheet || e.target.closest('[data-cg-x]')) shut(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') shut(); });
+    }
+    var live = liveGames();
+    sheet.innerHTML = '<div class="cg-sheet-box"><button type="button" class="cg-x" data-cg-x aria-label="Close">&#x2715;</button>' +
+      '<a class="cg-home-link" href="' + url('') + '">&#x1F3E0; All Games</a>' +
+      SPORTS.filter(function (s) { return s.status !== 'hidden'; }).map(function (s) {
+        var gs = live.filter(function (g) { return g.sport === s.id; });
+        if (!gs.length && s.status !== 'soon') return '';
+        return '<div class="cg-sp-h" style="--sc:' + s.c + '"><b>' + esc(s.name) + '</b><small>' + esc(s.long) + '</small></div>' +
+          (gs.length ? '<div class="cg-sp-list">' + gs.map(function (g) {
+            return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
+              (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
+          }).join('') + '</div>' : '<p class="cg-soon">Coming soon</p>');
+      }).join('') + '</div>';
+    sheet.hidden = false;
+    document.documentElement.classList.add('cg-sheet-open');
+  }
+  function shut() { if (sheet && !sheet.hidden) { sheet.hidden = true; document.documentElement.classList.remove('cg-sheet-open'); } }
+
+  function track(ev, p) { try { if (typeof gtag === 'function') gtag('event', ev, p || {}); } catch (e) { /* no analytics */ } }
+
+  window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, sportOf: sportOf, url: url, root: ROOT, openSwitcher: openSwitcher, track: track };
+  if (document.body) bar(); else document.addEventListener('DOMContentLoaded', bar);
+})();
