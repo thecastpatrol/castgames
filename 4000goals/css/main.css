@@ -1800,3 +1800,9 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @keyframes ouRwIco { 0% { transform: scale(.3) rotate(0deg); opacity: 0; } 60% { transform: scale(1.15) rotate(-360deg); opacity: 1; } 100% { transform: scale(1) rotate(-360deg); } }
 @keyframes ouRwPop { from { transform: scale(.6) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .ou-rewind, .ou-rw-rays, .ou-rw-ico, .ou-rw-t, .ou-rw-s { animation: none; } }
+/* A Reroll (15 Oct 2026): the old card flips away, the new one flips in with a teal glow (the drafts' Reroll colour) */
+.ou-card.is-rr-out { animation: ouRrOut .35s ease-in both; }
+.ou-card.is-rerolled { animation: ouRrIn .6s cubic-bezier(.2, .9, .3, 1.15) both; box-shadow: 0 0 0 2px #2dd4bf, 0 0 28px rgba(45, 212, 191, .55); }
+@keyframes ouRrOut { to { transform: perspective(600px) rotateY(90deg) scale(.9); opacity: 0; } }
+@keyframes ouRrIn { 0% { transform: perspective(600px) rotateY(-90deg) scale(.9); opacity: 0; } 60% { transform: perspective(600px) rotateY(8deg) scale(1.03); opacity: 1; } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ou-card.is-rr-out, .ou-card.is-rerolled { animation: none; } }

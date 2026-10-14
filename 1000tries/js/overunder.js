@@ -31,12 +31,16 @@
     return loading;
   }
   function newSeed() { var s = '', c = 'abcdefghijkmnpqrstuvwxyz23456789'; for (var i = 0; i < 12; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
-  // The plate's name: a nation in full, a club by its nickname (South Sydney Rabbitohs: Rabbitohs), so it never cuts off
+  // The plate's name (15 Oct 2026, the owner: "Eagles for Sea Eagles"): today's clubs by their nickname, the clubs that are
+  // gone by their full name (two Tigers and two sets of Eagles once played), Test sides by the nation in full
+  var NICK = { broncos: 'Broncos', bulldogs: 'Bulldogs', cowboys: 'Cowboys', dolphins: 'Dolphins', dragons: 'Dragons', eels: 'Eels', knights: 'Knights',
+    panthers: 'Panthers', rabbitohs: 'Rabbitohs', raiders: 'Raiders', roosters: 'Roosters', seaeagles: 'Sea Eagles', sharks: 'Sharks', storm: 'Storm',
+    tigers: 'Wests Tigers', titans: 'Titans', warriors: 'Warriors', adelaide: 'Adelaide Rams', balmain: 'Balmain Tigers', bears: 'North Sydney Bears',
+    northerneagles: 'Northern Eagles', steelers: 'Illawarra Steelers', stgeorge: 'St George Dragons', wmagpies: 'Wests Magpies' };
   function where(p) {
     var code = p[2] || '';
     if (st.cat === 'caps' || st.cat === 'ttries') return NATION[code] || code.toUpperCase();
-    var n = (T.CLUBS && T.CLUBS[code] && T.CLUBS[code].name) || '';
-    return n.split(' ').pop();
+    return NICK[code] || (T.CLUBS && T.CLUBS[code] && T.CLUBS[code].name) || '';
   }
   function years(p) { var y = String(p[3] || '').split('-'); return !y[0] ? '' : !y[1] || y[1] === y[0] ? y[0] : y[0] + ' to ' + y[1]; }
   function unit(n) { var c = E.CATS[st.cat]; return n === 1 ? c.one : c.unit; }
@@ -65,10 +69,29 @@
     if (b) b.innerHTML = ribLabel();
   });
   function clearClock() { if (st.clock) { clearTimeout(st.clock); st.clock = null; } }
+  /* A Reroll's moment (the owner, 15 Oct 2026: "show the animation for a new player, make the wildcards special"): the
+     old card flips away under the drafts' own teal Reroll burst, then the new one flips in glowing. The clock waits */
+  function rerollShow() {
+    clearClock();
+    st.busy = true;
+    var old = document.querySelector('#ouRoot .ou-card.is-right');
+    if (old) old.classList.add('is-rr-out');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      var el = document.createElement('div');
+      el.className = 'wc-burst wc-burst-reroll';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = '<span class="wcb-ring"></span><span class="wcb-ring wcb-ring2"></span><span class="wcb-card"><span class="wcb-ico">&#x1F504;</span>' +
+        '<span class="wcb-title">Reroll!</span><span class="wcb-sub">A new player to call</span></span>';
+      document.body.appendChild(el);
+      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
+    }
+    setTimeout(function () { st.busy = false; if (st.view === 'play') { st.rerolled = true; nextCall(); } }, reduce ? 0 : 1000);
+  }
   function nextCall() {
     clearClock();
     st.view = 'play'; st.reveal = null; st.secs = E.callTime(st.streak); st.callAt = Date.now();
-    st.fresh = true; render(); st.fresh = false; // only the new player slides in (redraws never replay it)
+    st.fresh = true; render(); st.fresh = false; st.rerolled = false; // only the new player slides in (redraws never replay it)
     st.clock = setTimeout(function () { call('T'); }, st.secs * 1000);
   }
   function call(c) {
@@ -162,7 +185,7 @@
       st.log.push({ rr: 1 });
       st.run.right = st.run.draw(st.streak);
       T.track('ou_reroll', { category: st.cat, streak: st.streak });
-      nextCall();
+      rerollShow();
     }, { title: 'Stuck On This One?', line: 'Swap him for a new player and keep your ' + st.streak + ' in a row.' });
     // The Shop closed without a buy (or a sign-in prompt went away): the clock starts again on the same pair
     setTimeout(function () {
@@ -252,7 +275,7 @@
     var L = D[st.cat], a = L[st.run.left], b = L[st.run.right], rv = st.reveal;
     var h = topBar() + '<div class="ou-clock' + (rv ? ' is-stop' : '') + '"><i style="animation-duration:' + st.secs + 's"></i></div>';
     h += '<div class="ou-pair">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' +
-      card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? ' is-new' : '')) + '</div>';
+      card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? (st.rerolled ? ' is-new is-rerolled' : ' is-new') : '')) + '</div>';
     h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
     h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&larr; &uarr;</kbd></button>' +
       '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&rarr; &darr;</kbd></button></div>';
@@ -303,7 +326,7 @@
         (strip ? '<span class="ou-strip" aria-hidden="true">' + strip + '</span>' : '') + '</div>' +
       '<div class="ou-stats"><span><b>' + (avg ? secs(avg) : '&ndash;') + '</b><small>Avg Call</small></span>' +
         '<span><b>' + (fast ? secs(fast) : '&ndash;') + '</b><small>Fastest</small></span>' +
-        '<span><b>' + (st.rib || st.rr ? (st.rib ? '&#x23EA; ' + st.rib : '') + (st.rib && st.rr ? ' ' : '') + (st.rr ? '&#x1F504; ' + st.rr : '') : '&#x2714;') + '</b><small>' + (st.rib || st.rr ? 'Help Used' : 'No Help') + '</small></span></div>';
+        '<span><b>' + (st.rib || st.rr ? (st.rib ? '&#x23EA; ' + st.rib : '') + (st.rib && st.rr ? ' ' : '') + (st.rr ? '&#x1F504; ' + st.rr : '') : '&#x2714;') + '</b><small>' + (st.rib || st.rr ? 'Wildcards Used' : 'No Wildcards') + '</small></span></div>';
     // Play Again and Share straight under the score (the owner, 15 Oct 2026: under a long run they were too far down)
     // The game's own results buttons (the owner: "native like the rest"): Play Again, then Share and Leaderboard, then Change Mode
     h += '<div class="res-acts ou-acts">' +

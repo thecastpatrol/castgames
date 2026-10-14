@@ -142,8 +142,8 @@
   // Fan profile choices (must match validFan in firebase/firestore.rules). Colours match 1000TRIES.
   var TEAM_LIST = [
     ['broncos', 'Broncos', 'Brisbane Broncos', 'BRI', '#6B0046', '#F5A623'],
-    ['raiders', 'Raiders', 'Canberra Raiders', 'CAN', '#36AD2D', '#FFFFFF'],
-    ['bulldogs', 'Bulldogs', 'Canterbury-Bankstown Bulldogs', 'CBY', '#00468B', '#FFFFFF'],
+    ['raiders', 'Raiders', 'Canberra Raiders', 'CBR', '#36AD2D', '#FFFFFF'],
+    ['bulldogs', 'Bulldogs', 'Canterbury-Bankstown Bulldogs', 'BUL', '#00468B', '#FFFFFF'],
     ['sharks', 'Sharks', 'Cronulla-Sutherland Sharks', 'CRO', '#0182BB', '#000000'],
     ['dolphins', 'Dolphins', 'Dolphins', 'DOL', '#FB141C', '#FFFFFF'],
     ['titans', 'Titans', 'Gold Coast Titans', 'GCT', '#00A2E0', '#001F5B'],
@@ -153,10 +153,10 @@
     ['warriors', 'Warriors', 'New Zealand Warriors', 'NZW', '#000000', '#FFFFFF'],
     ['cowboys', 'Cowboys', 'North Queensland Cowboys', 'NQC', '#0B233F', '#C4A84B'],
     ['eels', 'Eels', 'Parramatta Eels', 'PAR', '#002D71', '#FFD700'],
-    ['panthers', 'Panthers', 'Penrith Panthers', 'PEN', '#000000', '#FFFFFF'],
+    ['panthers', 'Panthers', 'Penrith Panthers', 'PTH', '#000000', '#FFFFFF'],
     ['bears', 'Bears', 'Perth Bears', 'PER', '#CC0000', '#000000'],
     ['chiefs', 'Chiefs', 'PNG Chiefs', 'PNG', '#CE1126', '#FCD116'],
-    ['rabbitohs', 'Rabbitohs', 'South Sydney Rabbitohs', 'SOU', '#003C1A', '#CC0000'],
+    ['rabbitohs', 'Rabbitohs', 'South Sydney Rabbitohs', 'SSR', '#003C1A', '#CC0000'],
     ['dragons', 'Dragons', 'St George Illawarra Dragons', 'SGI', '#D22730', '#FFFFFF'],
     ['roosters', 'Roosters', 'Sydney Roosters', 'SYD', '#012D5C', '#CC0000'],
     ['tigers', 'Tigers', 'Wests Tigers', 'WST', '#F37221', '#000000']
