@@ -1766,3 +1766,17 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @keyframes ouPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .ou-hero-n, .ou-strip i { animation: none; } }
 @media (max-width: 360px) { .ou-step { grid-template-columns: 18px 30px minmax(0, 1fr) auto auto; gap: 6px; } .ou-tag { min-width: 0; } .ou-step-v { font-size: 16px; } }
+/* Run It Back's rewind (15 Oct 2026): a burst of light, the rewind icon spinning backwards, the streak saved, ~1.5 s */
+.ou-rewind { position: fixed; inset: 0; z-index: 60; display: grid; place-content: center; justify-items: center; gap: 10px; background: rgba(6, 8, 14, .82); animation: ouRwIn .25s ease both, ouRwOut .3s ease 1.25s forwards; overflow: hidden; }
+.ou-rw-rays { position: absolute; left: 50%; top: 50%; width: 900px; height: 900px; margin: -450px 0 0 -450px; background: repeating-conic-gradient(from 0deg, rgba(236, 72, 153, .16) 0 8deg, transparent 8deg 22deg); animation: ouRwSpin 1.5s linear both; mask-image: radial-gradient(circle, #000 0 30%, transparent 62%); -webkit-mask-image: radial-gradient(circle, #000 0 30%, transparent 62%); }
+.ou-rw-ico { position: relative; font-size: 64px; line-height: 1; filter: drop-shadow(0 0 22px rgba(236, 72, 153, .8)); animation: ouRwIco .9s cubic-bezier(.2, .9, .3, 1.2) both; }
+.ou-rw-t { position: relative; font: 900 italic 34px/1 var(--font); letter-spacing: .5px; text-transform: uppercase; color: #fff; text-shadow: 0 0 18px rgba(236, 72, 153, .7); animation: ouRwPop .5s cubic-bezier(.2, .9, .3, 1.3) .15s both; }
+.ou-rw-s { position: relative; display: inline-flex; align-items: baseline; gap: 6px; padding: 8px 14px; border-radius: 999px; background: rgba(74, 222, 128, .14); border: 1px solid rgba(74, 222, 128, .5); font: 900 22px/1 var(--font); color: #86efac; animation: ouRwPop .5s cubic-bezier(.2, .9, .3, 1.3) .45s both; }
+.ou-rw-s small { font: 800 12px/1 var(--font); text-transform: uppercase; letter-spacing: .6px; }
+.ou-rw-s i { font-style: normal; font-size: 18px; }
+@keyframes ouRwIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ouRwOut { to { opacity: 0; } }
+@keyframes ouRwSpin { from { transform: rotate(0deg) scale(.6); opacity: 0; } 20% { opacity: 1; } to { transform: rotate(-200deg) scale(1.1); opacity: .6; } }
+@keyframes ouRwIco { 0% { transform: scale(.3) rotate(0deg); opacity: 0; } 60% { transform: scale(1.15) rotate(-360deg); opacity: 1; } 100% { transform: scale(1) rotate(-360deg); } }
+@keyframes ouRwPop { from { transform: scale(.6) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ou-rewind, .ou-rw-rays, .ou-rw-ico, .ou-rw-t, .ou-rw-s { animation: none; } }

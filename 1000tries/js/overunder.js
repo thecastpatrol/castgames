@@ -27,7 +27,7 @@
   function A() { return window.CastAccount || null; }
   function load() {
     if (D) return Promise.resolve(D);
-    if (!loading) loading = fetch('data/ou.json?v=20261014.2').then(function (r) { return r.json(); }).then(function (d) { D = d; return d; });
+    if (!loading) loading = fetch('data/ou.json?v=20261015.4').then(function (r) { return r.json(); }).then(function (d) { D = d; return d; });
     return loading;
   }
   function newSeed() { var s = '', c = 'abcdefghijkmnpqrstuvwxyz23456789'; for (var i = 0; i < 12; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
@@ -140,7 +140,10 @@
       st.log.push({ rib: 1 });
       st.run.right = st.run.draw(st.streak);
       T.track('ou_rib', { category: st.cat, streak: st.streak });
-      nextCall();
+      // The rewind (the owner, 15 Oct 2026: "a cooler animation to get you back into the game"): a moment on screen, then
+      // the clock starts on the new pair
+      st.view = 'rewind'; render();
+      setTimeout(function () { if (st.view === 'rewind') nextCall(); }, 1500);
     }, hook);
   }
   // Reroll: swap the right-hand player (a Vault Reroll, or buy). The clock stops while the Shop is open
@@ -301,6 +304,13 @@
       '<div class="ou-stats"><span><b>' + (avg ? secs(avg) : '&ndash;') + '</b><small>Avg Call</small></span>' +
         '<span><b>' + (fast ? secs(fast) : '&ndash;') + '</b><small>Fastest</small></span>' +
         '<span><b>' + (st.rib || st.rr ? (st.rib ? '&#x23EA; ' + st.rib : '') + (st.rib && st.rr ? ' ' : '') + (st.rr ? '&#x1F504; ' + st.rr : '') : '&#x2714;') + '</b><small>' + (st.rib || st.rr ? 'Help Used' : 'No Help') + '</small></span></div>';
+    // Play Again and Share straight under the score (the owner, 15 Oct 2026: under a long run they were too far down)
+    // The game's own results buttons (the owner: "native like the rest"): Play Again, then Share and Leaderboard, then Change Mode
+    h += '<div class="res-acts ou-acts">' +
+      '<button type="button" class="btn btn-res btn-res-again btn-block" data-ou="again"><span aria-hidden="true">&#x1F504;</span> Play Again</button>' +
+      '<div class="res-two"><button type="button" class="btn btn-res btn-res-share" data-ou="share"><span aria-hidden="true">&#x1F4E4;</span> Share</button>' +
+      '<button type="button" class="btn btn-res btn-res-mode" data-ou="board"><span aria-hidden="true">&#x1F3C6;</span> Leaderboard</button></div>' +
+      '<button type="button" class="btn btn-res btn-res-mode btn-block" data-ou="home"><span aria-hidden="true">&#x1F3AE;</span> Change Mode</button></div>';
     // Your Run: the first player, then each one they called, in order (a Reroll's swapped player isn't shown)
     var rows = '', n = 0, prev = L[st.first];
     rows += '<li class="ou-step is-start"><span class="ou-step-i">&#x25B6;</span>' + chip(prev) + '<span class="ou-step-p"><b>' + esc(prev[0]) + '</b><small>' + esc(years(prev)) + '</small></span>' +
@@ -316,17 +326,22 @@
       if (x.ok) prev = p;
     });
     h += '<div class="panel ou-run"><div class="panel-head"><span class="panel-title">Your Run</span><span class="panel-meta">' + esc(E.CATS[st.cat].unit) + '</span></div><ol class="ou-ladder">' + rows + '</ol></div>';
-    h += '<div class="ou-row"><button type="button" class="btn btn-primary ou-again" data-ou="again">Play Again</button><button type="button" class="ou-ghost" data-ou="share">Share</button></div>' +
-      '<div class="ou-row"><button type="button" class="ou-link" data-ou="board">&#x1F3C6; Leaderboard</button><button type="button" class="ou-link" data-ou="home">Home</button></div></div>';
+    h += '</div>';
     return h;
   }
   function outView() { return st.done ? resultsView() : decideView(); }
+  // Run It Back: the rewind (st.view 'rewind'), over the miss, before the next pair
+  function rewindView() {
+    return decideView() + '<div class="ou-rewind" role="status"><div class="ou-rw-rays" aria-hidden="true"></div>' +
+      '<span class="ou-rw-ico" aria-hidden="true">&#x23EA;</span><b class="ou-rw-t">Run It Back</b>' +
+      '<span class="ou-rw-s"><i aria-hidden="true">&#x1F525;</i>' + st.streak + ' <small>in a row saved</small></span></div>';
+  }
   function render() {
     var el = root();
     if (!el) return;
     var h = '<div class="ou-head"><button type="button" class="ou-back" data-ou="home" aria-label="Back to home">&larr;</button>' + (st.view === 'start' ? '' : '<span>Six Again</span>') + '</div>';
     if (!D) h += '<div class="ou-load">Loading the players&hellip;</div>';
-    else h += st.view === 'play' ? playView() : st.view === 'out' ? outView() : startView();
+    else h += st.view === 'play' ? playView() : st.view === 'out' ? outView() : st.view === 'rewind' ? rewindView() : startView();
     if (st.note) h += '<p class="ou-note" role="status">' + esc(st.note) + '</p>';
     el.innerHTML = h;
   }
