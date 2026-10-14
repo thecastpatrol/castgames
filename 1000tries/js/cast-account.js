@@ -447,6 +447,8 @@
     try { window.dispatchEvent(new CustomEvent('cast-account', { detail: { status: s } })) } catch (e) { /* old browser */ }
     tierChanged();
     if (s === 'signed-in' && passReturn) setTimeout(handlePassReturn, 0);
+    // Signed in within the hour after Six Again's guest wall: noted once for Admin's Six Again card (15 Oct 2026)
+    if (s === 'signed-in') { var ow = +(lsGet('cast_ou_wall') || 0); if (ow) { try { localStorage.removeItem('cast_ou_wall'); } catch (e) { /* blocked */ } if (Date.now() - ow < 3600000) callFn('rerollShop', { act: 'ousignup', site: CFG.game }).catch(function () {}); } }
     if (s === 'signed-in' && pendingPlay) { var go = pendingPlay; pendingPlay = null; pendingMode = null; close(); setTimeout(go, 60); }
     // Signed in with a friend's challenge link waiting: straight into it (once there is a leaderboard name)
     if (s === 'signed-in' && invite && invite.kind === 'challenge' && named()) { var chId = invite.code; invite = null; setTimeout(function () { playChallenge(chId); }, 300); }
@@ -2687,6 +2689,7 @@
     if (o.day !== day) o = { day: day };
     if ((o[CFG.game] || 0) >= GUEST_OU_MAX) {
       pendingPlay = then || null; pendingMode = null; wallWhy = 'ouused';
+      ctaFrom = 'ou_wall'; lsSet('cast_ou_wall', String(Date.now())); // a sign-in from here is counted in Admin (setStatus)
       track('guest_wall', { game: CFG.game, why: 'ouused', where: 'ou' });
       open('wall');
       return false;
@@ -3760,7 +3763,7 @@
     var was = rrSaved;
     rrFresh = false;
     rrSaved = was - 1; rrSeq++; rrChanged();
-    callFn('rerollShop', useFor ? { act: 'use', for: useFor } : { act: 'use' }).then(function (r) {
+    callFn('rerollShop', useFor ? { act: 'use', for: useFor, site: CFG.game } : { act: 'use' }).then(function (r) {
       useBusy = false;
       rrSaved = r.left; rrSeq++; rrChanged(); track('reroll_saved_use', { game: game || CFG.game, left: r.left });
       afterUse('left', r.left);
@@ -3872,7 +3875,7 @@
     var I = ITM[item], was = itHave[item];
     itFresh[item] = false;
     itHave[item] = was - 1; rrSeq++; rrChanged();
-    callFn('rerollShop', useFor ? { act: 'use', item: item, for: useFor } : { act: 'use', item: item }).then(function (r) {
+    callFn('rerollShop', useFor ? { act: 'use', item: item, for: useFor, site: CFG.game } : { act: 'use', item: item }).then(function (r) {
       useBusy = false;
       itHave[item] = r[I.field]; rrSeq++; rrChanged(); track(item + '_saved_use', { game: game || CFG.game, left: r[I.field] });
       afterUse(I.field, r[I.field]);
@@ -4246,7 +4249,7 @@
     var mine = rr;
     rr.stage = 'starting'; rr.pack = pack; rrRender();
     track((PACKS[pack] && PACKS[pack].key ? 'keys' : packItem(pack)) + '_checkout', { game: rr.game, pack: pack });
-    callFn('rerollShop', { act: 'checkout', pack: pack, site: CFG.game }).then(function (r) {
+    callFn('rerollShop', useFor ? { act: 'checkout', pack: pack, site: CFG.game, src: useFor } : { act: 'checkout', pack: pack, site: CFG.game }).then(function (r) { // src: bought inside Six Again (Admin)
       if (rr !== mine) return null;
       rr.session = r.id; rr.n = r.n || null;
       return loadStripeJs().then(function (S) {
@@ -6744,22 +6747,133 @@
           : 'Stripe did not answer just now. Try Refresh.')],
       ['Moderation', [['Reports (7 Days)', d.reports7, '#reports'], ['Flagged Scores', d.flags, '#flags'], ['Open Reports', mod.open, '#reports']]]
     ];
-    var tile = function (t) {
-      var val = typeof t[1] === 'string' ? t[1] : admNum(t[1]);
-      return t[2] ? '<button type="button" class="ca-adm-tile is-tap" data-ca="adm-list" data-v="' + t[2] + '" data-l="' + esc(t[3] || t[0]) + '"><b>' + val + '</b><small>' + t[0] + '</small></button>'
-        : '<div class="ca-adm-tile"><b>' + val + '</b><small>' + t[0] + '</small></div>';
-    };
-    // no Immortal Pick Launch card since 10 Oct 2026: the owner launched it, and the button is gone (the owner's call)
-    // The numbers first; the launch cards and tools (Check NRL.com) at the bottom (13 Oct 2026, the owner: they took up the
-    // top of the page), and any new launch card goes there too
+    /* The Overview's layout (15 Oct 2026, the owner: "messy, numbers everywhere", make it consistent): Today at a Glance
+       on top, then each section as the same label-and-number list or table, every explanation behind an (i), Six Again's
+       own card under Launches and Tools. A row with a list key opens who is behind the number, as the tiles did */
+    // The launch cards and tools (Check NRL.com) at the bottom (13 Oct 2026, the owner); any new launch card goes there too
     var tools = launchCard(d) + ouLaunchCard(d) + ouLaunchCard(d, 'po') + totwCard() + wcTriesCard();
-    return admRefresh('ov') + groups.map(function (g) {
-      return '<h3 class="ca-h3">' + g[0] + '</h3><div class="ca-adm-tiles">' + g[1].map(tile).join('') + '</div>' + (g[2] ? '<p class="ca-small">' + esc(g[2]) + '</p>' : '');
-    }).join('') +
-      '<h3 class="ca-h3">Players on Each Board</h3><ul class="ca-adm-list">' + d.boards.map(function (b) {
-        return '<li><span>' + esc(boardName(b.id)) + (/_\d{4}-/.test(b.id) ? ' <small>Today</small>' : ' <small>All Time</small>') + '</span><b>' + fmt(b.players) + '</b></li>';
-      }).join('') + '</ul>' +
-      (tools ? '<h3 class="ca-h3">Launches and Tools</h3>' + tools : '');
+    var groupNote = {};
+    groups.forEach(function (g) { groupNote[g[0]] = g[2] || ''; });
+    var info = function (key) {
+      var txt = groupNote[key] || key, open = mod.ovInfo === key;
+      return '<button type="button" class="ca-ov-i' + (open ? ' is-on' : '') + '" data-ca="adm-ov-info" data-v="' + esc(key) + '" aria-label="About ' + esc(key) + '" aria-expanded="' + open + '">i</button>';
+    };
+    var head = function (title, key) { return '<div class="ca-ov-h"><h3 class="ca-h3">' + title + '</h3>' + (key && groupNote[key] ? info(key) : '') + '</div>' + (key && mod.ovInfo === key ? '<p class="ca-ov-note">' + esc(groupNote[key]) + '</p>' : ''); };
+    var cell = function (v) { return typeof v === 'string' ? v : admNum(v); };
+    // A label-and-number list: [label, value, list key, list heading]
+    var list = function (rows) {
+      return '<div class="ca-ov-list">' + rows.map(function (t) {
+        var inner = '<span>' + t[0] + '</span><b>' + cell(t[1]) + '</b>';
+        return t[2] ? '<button type="button" class="ca-ov-row is-tap" data-ca="adm-list" data-v="' + t[2] + '" data-l="' + esc(t[3] || t[0]) + '">' + inner + '</button>' : '<div class="ca-ov-row">' + inner + '</div>';
+      }).join('') + '</div>';
+    };
+    // A table: heads, then rows of cells (a cell: a value, or [value, list key, list heading] to tap)
+    var table = function (heads, rows, cls) {
+      return '<div class="ca-ov-tab' + (cls ? ' ' + cls : '') + '"><table><thead><tr>' + heads.map(function (h, i) { return '<th' + (i ? '' : ' class="is-l"') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        rows.map(function (r) {
+          return '<tr' + (r.total ? ' class="is-total"' : '') + '>' + r.map(function (c, i) {
+            if (i === 0) return '<th class="is-l">' + c + '</th>';
+            if (Array.isArray(c)) return '<td>' + (c[1] ? '<button type="button" class="ca-ov-tap" data-ca="adm-list" data-v="' + c[1] + '" data-l="' + esc(c[2] || '') + '">' + cell(c[0]) + '</button>' : cell(c[0])) + '</td>';
+            return '<td>' + (c === '' ? '<span class="ca-muted">&ndash;</span>' : cell(c)) + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+    };
+    /* Big numbers (the owner, 15 Oct 2026: "not small numbers, a table won't work"): a block per row with Today, 7 Days and
+       All Time side by side in big type, and a small line under the name. row: [name, today, week, all, small line] */
+    var periods = function (rows) {
+      return '<div class="ca-ov-per">' + rows.map(function (r) {
+        var one = function (lbl, c) {
+          var v = Array.isArray(c) ? c[0] : c, k = Array.isArray(c) ? c[1] : null, inner = '<small>' + lbl + '</small><b>' + (v === '' ? '&ndash;' : cell(v)) + '</b>';
+          return k ? '<button type="button" class="ca-ov-pv is-tap" data-ca="adm-list" data-v="' + k + '" data-l="' + esc(c[2] || '') + '">' + inner + '</button>' : '<div class="ca-ov-pv">' + inner + '</div>';
+        };
+        return '<div class="ca-ov-pb' + (r.total ? ' is-total' : '') + '"><div class="ca-ov-pn"><b>' + r[0] + '</b>' + (r[4] ? '<small>' + r[4] + '</small>' : '') + '</div>' +
+          '<div class="ca-ov-pg">' + one('Today', r[1]) + one('7 Days', r[2]) + one('All Time', r[3]) + '</div></div>';
+      }).join('') + '</div>';
+    };
+    // Money lines: the item, Today and 7 Days small under it, All Time big on the right. row: [name, today, week, all, key]
+    var moneyList = function (rows) {
+      return '<div class="ca-ov-list is-money">' + rows.map(function (r) {
+        var inner = '<span><em>' + r[0] + '</em><small>Today ' + r[1] + ' &middot; 7 Days ' + r[2] + '</small></span><b>' + r[3] + '</b>';
+        return r[4] != null && r[4] !== false ? '<button type="button" class="ca-ov-row is-tap" data-ca="adm-list" data-v="' + r[4] + '" data-l="' + esc(r[5] || r[0]) + '">' + inner + '</button>' : '<div class="ca-ov-row">' + inner + '</div>';
+      }).join('') + '</div>';
+    };
+    var delta = function (cur, prev) {
+      if (cur == null || !prev) return '';
+      var p = Math.round((cur - prev) / prev * 100);
+      return '<span class="ca-ov-d ' + (p >= 0 ? 'is-up' : 'is-dn') + '">' + (p >= 0 ? '&#x25B2; ' : '&#x25BC; ') + Math.abs(p) + '%</span>';
+    };
+    var playersToday = g27 || g10 ? (g27 ? g27.users || 0 : 0) + (g10 ? g10.users || 0 : 0) : null;
+    var glance = [
+      ['CAST Profiles', admNum(d.accounts), 'All time', 'accounts', 'Accounts'],
+      ['New Accounts', admNum(d.new1), 'Last 24 hours ' + delta(d.new1, d.newPrev), 'new1', 'New in 24 Hours'],
+      ['Players Today', admNum(playersToday), 'Everyone, guests too', null],
+      ['Games Today', admNum(d.games1), 'Last 24 hours ' + delta(d.games1, d.gamesPrev), 'games1', 'Games in 24 Hours']
+    ];
+    var h = admRefresh('ov') + '<div class="ca-ov-h"><h3 class="ca-h3">Today at a Glance</h3></div><div class="ca-ov-glance">' + glance.map(function (x) {
+      var inner = '<small>' + x[0] + '</small><b>' + x[1] + '</b><em>' + x[2] + '</em>';
+      return x[3] ? '<button type="button" class="ca-ov-big is-tap" data-ca="adm-list" data-v="' + x[3] + '" data-l="' + esc(x[4]) + '">' + inner + '</button>' : '<div class="ca-ov-big">' + inner + '</div>';
+    }).join('') + '</div>';
+    // Games: one table, a row per game and mode, the board's players alongside
+    var bp = {}; (d.boards || []).forEach(function (b) { bp[b.id] = b.players; });
+    var wc = d.wc || {}, ou = d.ou || null;
+    var onB = function (n, more) { return (n != null ? fmt(n) + ' on board' : '') + (more ? (n != null ? ' &middot; ' : '') + more : ''); };
+    var todayN = function (n) { return n != null ? fmt(n) + ' today' : ''; };
+    var grows = [
+      ['27-0', [d.g270d, 'g270d', '27-0 Games (24 Hours)'], [d.g270, 'g270', '27-0 Games (7 Days)'], [d.g270all, 'g270all', '27-0 Games (All Time)'], onB(bp['270best_all'])],
+      ['World Cup 8-0', wc.g270d != null ? wc.g270d : null, '', wc.g270all != null ? wc.g270all : null, onB(bp['270wc_all'], todayN(wc.p270d))],
+      ['1000TRIES', [d.g1000d, 'g1000d', '1000TRIES Games (24 Hours)'], [d.g1000, 'g1000', '1000TRIES Games (7 Days)'], [d.g1000all, 'g1000all', '1000TRIES Games (All Time)'], onB(bp['1000plus_all'])],
+      ['World Cup 200+', wc.g1000d != null ? wc.g1000d : null, '', wc.g1000all != null ? wc.g1000all : null, onB(bp['1000wc_all'], todayN(wc.p1000d))]
+    ];
+    if (ou) grows.push(['Six Again', ou.runs.d, ou.runs.w, ou.runs.all, onB(ou.cats && ou.cats[0] ? ou.cats[0].players : null, todayN(ou.players.d))]);
+    if (G4ON || AFL) grows.push(['4000 GOALS', [d.g4000d, 'g4000d', '4000 GOALS Games (24 Hours)'], [d.g4000, 'g4000', '4000 GOALS Games (7 Days)'], [d.g4000all, 'g4000all', '4000 GOALS Games (All Time)'], '']);
+    var gTot = ['All Games', [d.games1, 'games1', 'Games in 24 Hours'], [d.games7, 'games7', 'Games in 7 Days'], (d.g270all != null && d.g1000all != null ? d.g270all + d.g1000all + (d.g4000all || 0) : null), 'Signed-in players']; gTot.total = true; grows.push(gTot);
+    h += head('Games', 'Games Saved by CAST Profiles') + periods(grows) +
+      list([['Average 1000+ Score', av && av.avg != null ? fmt(av.avg) + ' tries' : null], ['1000+ Games That Hit 1000', av && av.hitPct != null ? av.hitPct + '%' : null]]);
+    h += head('Everyone Today', 'Everyone Today (Google Analytics)') + table(['Site', 'Players', 'Finished'], [
+      ['27-0', g27 ? g27.users : null, g27 ? g27.finished : null], ['1000TRIES', g10 ? g10.users : null, g10 ? g10.finished : null]]);
+    h += head('CAST Profiles', 'CAST Profiles (Signed In)') + list([['New in Last Hour', d.newH, 'newH'], ['New in 7 Days', d.new7, 'new7'], ['Usernames', d.names, 'names'],
+      ['Email Opt-ins', d.optIn, 'optIn'], ['Partner Opt-ins', d.partner, 'partner'], ['Verified', d.verified, 'verified'], ['Hidden by You', d.modHidden, 'modHidden'], ['Hidden Themselves', d.selfHidden, 'selfHidden']]);
+    // Sales: three totals, then a table of every item (money, purchases underneath), Six Again its own row
+    var per = (rev && rev.per) || {}, pk = function (name, k, all, buysAll) {
+      var p = per[k] || { d: 0, w: 0, nd: 0, nw: 0 };
+      return [name, money(p.d || 0) + (p.nd ? ' (' + p.nd + ')' : ''), money(p.w || 0) + (p.nw ? ' (' + p.nw + ')' : ''), money(all || 0) + (buysAll ? '<small>' + fmt(buysAll) + ' bought</small>' : ''), sk(k), SALE_HEADS[k]];
+    };
+    var ITEMS_K = [['rerolls', 'Rerolls', 'rerollBuys'], ['removes', 'Remove Players', 'removeBuys'], ['reveals', 'Reveals', 'revealBuys'], ['keys', 'Keys', 'keyBuys'], ['ribs', 'Run It Backs', 'ribBuys'],
+      ['freezes', 'Streak Freezes', 'freezeBuys'], ['restores', 'Streak Restores', 'restoreBuys']];
+    var PICKS_K = [['goats', 'GOAT', 'goatBuys'], ['totys', 'Team of the Year Picks', 'totyBuys'], ['prems', 'Premiers Picks', 'premBuys'], ['imms', 'Immortal Picks', 'immBuys'], ['wcps', '88+ Picks', 'wcpBuys'], ['ilegs', 'World Legend Picks', 'ilegBuys']];
+    var sumOf = function (ks) { return rev ? ks.reduce(function (t, k) { return t + (rev[k[0]] || 0); }, 0) : null; };
+    var itemsTot = sumOf(ITEMS_K), picksTot = sumOf(PICKS_K);
+    h += head('CAST Pass', 'CAST Pass and Sales') + list([['Holders', d.passes, 'pass', 'CAST Pass Holders'], ['Paying', d.passPaid, 'pass', 'CAST Pass Holders'],
+      ['Monthly Revenue', d.passMonthly == null ? null : money(passMrr(d.passMonthly, d.passAnnual || 0, d)), 'pass', 'CAST Pass Holders'],
+      ['Cancelling', d.passCancel, 'passDrops', 'Cancelled CAST Passes'], ['Cancelled (30 Days)', d.passDrop30, 'passDrops', 'Cancelled CAST Passes'], ['Cancelled All Time', d.passDropAll, 'passDrops', 'Cancelled CAST Passes'],
+      ['Paused', d.passPaused, 'passDrops', 'Cancelled CAST Passes'], ['Came Back', d.passBack, 'passDrops', 'Cancelled CAST Passes']]);
+    h += '<div class="ca-ov-h"><h3 class="ca-h3">Sales</h3>' + info('CAST Pass and Sales') + '</div>' +
+      '<div class="ca-ov-glance is-3">' + [['CAST Pass', rev ? rev.pass : null, 'pass'], ['Items', itemsTot, ''], ['Picks', picksTot, '']].map(function (x) {
+        return '<div class="ca-ov-big"><small>' + x[0] + '</small><b>' + (x[1] == null ? admNum(null) : money(x[1])) + '</b><em>All time</em></div>';
+      }).join('') + '</div>';
+    if (rev) {
+      var allPer = Object.keys(per).reduce(function (t, k) { t.d += per[k].d || 0; t.w += per[k].w || 0; return t; }, { d: 0, w: 0 });
+      var srows = [['All Sales', money(allPer.d), money(allPer.w), money(rev.pass + (itemsTot || 0) + (picksTot || 0)), sk(''), 'All Sales'], pk('CAST Pass', 'pass', rev.pass, null)]
+        .concat(ITEMS_K.map(function (k) { return pk(k[1], k[0], rev[k[0]], rev[k[2]]); })).concat(PICKS_K.map(function (k) { return pk(k[1], k[0], rev[k[0]], rev[k[2]]); }));
+      if (rev.ou) srows.push(['Bought Inside Six Again', money(rev.ou.d), money(rev.ou.w), money(rev.ou.all) + (rev.ou.n ? '<small>' + fmt(rev.ou.n) + ' bought</small>' : ''), false]);
+      h += moneyList(srows);
+    }
+    h += head('Moderation', '') + list([['Reports (7 Days)', d.reports7, '#reports'], ['Flagged Scores', d.flags, '#flags'], ['Open Reports', mod.open, '#reports']]);
+    // Six Again's own card (the owner's BUILD IT, 15 Oct 2026), under Launches and Tools
+    var ouCard = '';
+    if (ou) {
+      var um = (d.ou && d.ou.money) || (rev && rev.ou) || null, CN = { nrl: 'NRL-Era Tries', caps: 'Test Caps', ttries: 'Test Tries', nrlw: 'NRLW Tries' };
+      ouCard = '<div class="ca-ov-card"><div class="ca-ov-h"><h3 class="ca-h3">Six Again</h3></div>' +
+        periods([
+          ['Runs', ou.runs.d, ou.runs.w, ou.runs.all], ['Players', ou.players.d, '', ou.players.all],
+          ['Money', um ? money(um.d) : null, um ? money(um.w) : null, um ? money(um.all) : null, 'Run It Backs and Rerolls bought in a run'],
+          ['Vault Run It Backs Used', ou.used.rib.d, ou.used.rib.w, ou.used.rib.all], ['Vault Rerolls Used', ou.used.rr.d, ou.used.rr.w, ou.used.rr.all],
+          ['Sign-Ins From the Guest Limit', ou.signups.d, '', ou.signups.all, 'Guests who used their 2 free runs, then signed in']]) +
+        table(['Category', 'Runs', 'Avg', 'Best', 'Board'], ou.cats.map(function (c) { return [CN[c.cat] || c.cat, c.runs, c.avg == null ? '' : String(c.avg), c.best == null ? '' : c.best, c.players]; })) +
+        '<p class="ca-ov-note">Counted from 15 Oct 2026, when tracking began. Money: Run It Backs and Rerolls bought from inside a run. Average and Best are streaks.</p></div>';
+    }
+    h += head('Players on Each Board', '') + table(['Board', 'Players'], (d.boards || []).map(function (b) { return [esc(boardName(b.id)) + (/_\d{4}-/.test(b.id) ? ' <small>Today</small>' : ''), b.players]; }));
+    return h + ((tools || ouCard) ? '<div class="ca-ov-h"><h3 class="ca-h3">Launches and Tools</h3></div>' + ouCard + tools : '');
   }
 
   // When someone joined, short and with the time (the time matters most here): 27/09/26 · 9:41pm
@@ -8689,6 +8803,7 @@
       case 'adm-clear': mod.look = null; mod.lookQ = ''; mod.lookConfirm = null; mod.birthOpen = false; mod.trophy = null; render(); break;
       case 'adm-list': { var lk = t.getAttribute('data-v'); if (lk.charAt(0) === '#') { mod.tab = lk.slice(1); mod.list = null; } else mod.list = { kind: lk, label: t.getAttribute('data-l') }; render(); break; }
       case 'adm-list-back': mod.list = null; render(); break;
+      case 'adm-ov-info': { var iv = t.getAttribute('data-v'); mod.ovInfo = mod.ovInfo === iv ? null : iv; render(); break; }
       case 'adm-list-refresh':
         if (mod.list && /^sales/.test(mod.list.kind)) { admFetch('sales', 'adminSales', { fresh: true }, true); render(); }
         else if (mod.list) { admFetch('list_' + mod.list.kind, 'adminList', { kind: mod.list.kind }, true); render(); }
