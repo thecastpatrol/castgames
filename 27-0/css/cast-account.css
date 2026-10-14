@@ -3634,3 +3634,9 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
 .ca-ov-row[style*="--oc"] em { color: rgb(var(--oc)); }
 .ca-ov-h .ca-h3::before { content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 2px; background: #38bdf8; vertical-align: middle; }
 .ca-ov-card .ca-ov-h .ca-h3::before { background: #2dd4bf; }
+/* Sales' headline row (15 Oct 2026): All Sales and the CAST Pass monthly, bigger than the rest */
+.ca-ov-glance.is-hero { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 8px; }
+.ca-ov-big.is-hero { padding: 14px; }
+.ca-ov-big.is-hero b { font-size: 25px; }
+@media (min-width: 700px) { .ca-ov-glance.is-hero { grid-template-columns: 2fr 1fr; } .ca-ov-big.is-hero b { font-size: 32px; } }
+@media (max-width: 400px) { .ca-ov-big.is-hero b { font-size: 21px; } .ca-ov-big.is-hero em { font-size: 10.5px; } }

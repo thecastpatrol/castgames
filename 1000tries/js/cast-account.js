@@ -6850,16 +6850,23 @@
       ['Monthly Revenue', d.passMonthly == null ? null : money(passMrr(d.passMonthly, d.passAnnual || 0, d)), 'pass', 'CAST Pass Holders'],
       ['Cancelling', d.passCancel, 'passDrops', 'Cancelled CAST Passes'], ['Cancelled (30 Days)', d.passDrop30, 'passDrops', 'Cancelled CAST Passes'], ['Cancelled All Time', d.passDropAll, 'passDrops', 'Cancelled CAST Passes'],
       ['Paused', d.passPaused, 'passDrops', 'Cancelled CAST Passes'], ['Came Back', d.passBack, 'passDrops', 'Cancelled CAST Passes']]);
+    // All Sales and the CAST Pass's expected monthly revenue up top (the owner, 15 Oct 2026: "ALL sales more prominent")
+    var allPerTop = Object.keys((rev && rev.per) || {}).reduce(function (t, k) { t.d += rev.per[k].d || 0; t.w += rev.per[k].w || 0; return t; }, { d: 0, w: 0 });
+    var mrr = d.passMonthly == null ? null : passMrr(d.passMonthly, d.passAnnual || 0, d);
     h += '<div class="ca-ov-h"><h3 class="ca-h3">Sales</h3>' + info('CAST Pass and Sales') + '</div>' +
+      '<div class="ca-ov-glance is-hero">' +
+        (mod.owner && rev ? '<button type="button" class="ca-ov-big is-tap is-hero" style="--oc:74,222,128" data-ca="adm-list" data-v="sales" data-l="All Sales">' : '<div class="ca-ov-big is-hero" style="--oc:74,222,128">') +
+          '<small>All Sales</small><b>' + (rev ? money(rev.pass + (itemsTot || 0) + (picksTot || 0)) : admNum(null)) + '</b><em>' + (rev ? 'Today ' + money(allPerTop.d) + ' &middot; 7 Days ' + money(allPerTop.w) : 'All time') + '</em>' + (mod.owner && rev ? '</button>' : '</div>') +
+        '<button type="button" class="ca-ov-big is-tap is-hero" style="--oc:241,192,115" data-ca="adm-list" data-v="pass" data-l="CAST Pass Holders"><small>CAST Pass Monthly</small><b>' + (mrr == null ? admNum(null) : money(mrr)) + '</b><em>Expected each month' + (d.passPaid != null ? ' &middot; ' + fmt(d.passPaid) + ' paying' : '') + '</em></button>' +
+      '</div>' +
       '<div class="ca-ov-glance is-3">' + [['CAST Pass', rev ? rev.pass : null, 'pass'], ['Items', itemsTot, ''], ['Picks', picksTot, '']].map(function (x) {
         return '<div class="ca-ov-big" style="--oc:' + { 'CAST Pass': '241,192,115', Items: '45,212,191', Picks: '244,114,182' }[x[0]] + '"><small>' + x[0] + '</small><b>' + (x[1] == null ? admNum(null) : money(x[1])) + '</b><em>All time</em></div>';
       }).join('') + '</div>';
     if (rev) {
-      var allPer = Object.keys(per).reduce(function (t, k) { t.d += per[k].d || 0; t.w += per[k].w || 0; return t; }, { d: 0, w: 0 });
-      var srows = [['All Sales', money(allPer.d), money(allPer.w), money(rev.pass + (itemsTot || 0) + (picksTot || 0)), sk(''), 'All Sales'], pk('CAST Pass', 'pass', rev.pass, null)]
+      var srows = [pk('CAST Pass', 'pass', rev.pass, null)]
         .concat(ITEMS_K.map(function (k) { return pk(k[1], k[0], rev[k[0]], rev[k[2]]); })).concat(PICKS_K.map(function (k) { return pk(k[1], k[0], rev[k[0]], rev[k[2]]); }));
-      srows[0].c = '226,232,240'; srows[1].c = '241,192,115'; // all sales, then the CAST Pass in its gold
-      srows.forEach(function (r, i) { if (i > 1 && !r.c) r.c = i < 2 + ITEMS_K.length ? '45,212,191' : '244,114,182'; }); // items teal, picks pink
+      srows[0].c = '241,192,115'; // the CAST Pass in its gold (All Sales is the big tile above)
+      srows.forEach(function (r, i) { if (i > 0 && !r.c) r.c = i < 1 + ITEMS_K.length ? '45,212,191' : '244,114,182'; }); // items teal, picks pink
       if (rev.ou) srows.push(['Bought Inside Six Again', money(rev.ou.d), money(rev.ou.w), money(rev.ou.all) + (rev.ou.n ? '<small>' + fmt(rev.ou.n) + ' bought</small>' : ''), false]); srows[srows.length - 1].c = '74,222,128';
       h += moneyList(srows);
     }
