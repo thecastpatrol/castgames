@@ -1791,4 +1791,5 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .spot-promo.is-ou .oup-pair { flex: none; }
 .spot-promo.is-ou .spot-promo-txt b { font-size: 17px; }
 .oup-kick { font: 900 9.5px/1 var(--font); font-style: normal; letter-spacing: 1.2px; text-transform: uppercase; color: #7dd3fc; }
-.oup-play { flex: none; padding: 8px 14px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 12.5px/1 var(--font); box-shadow: 0 0 14px rgba(56, 189, 248, .45); }
+.oup-play { flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding-left: 2px; box-sizing: border-box; border-radius: 50%; background: #38bdf8; color: #04121f; font-size: 13px; box-shadow: 0 0 14px rgba(56, 189, 248, .45); } /* a round play button (the owner: the text was squashed) */
+.spot-promo.is-ou .spot-promo-txt small { text-wrap: balance; }
