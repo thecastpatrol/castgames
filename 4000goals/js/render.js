@@ -105,7 +105,7 @@
     // A small live look at the game (the owner, 15 Oct 2026: "more exciting, actual visuals"): two mini player cards in
     // their club colours, one number showing and one hidden, the Over and Under arrows pulsing between them, and NEW
     var mini = function (club, nm, num) {
-      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '" title="' + esc(nm) + '"><i>' + esc(T.club(club).abbr || '') + '</i><b>' + (num || '?') + '</b></span>';
+      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; // the player's name in his club's colours (the owner)
     };
     return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Play On">' +
       '<span class="oup-new">New</span>' +

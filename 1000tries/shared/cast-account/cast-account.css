@@ -3557,3 +3557,7 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
 .ca-tw-opt b { font: 800 15px/1.2 inherit; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ca-tw-opt span { font: 700 12px/1.2 inherit; color: #a5dcf7; }
 @media (hover: hover) { .ca-tw-opt:hover { border-color: rgba(56, 189, 248, .6); } }
+/* The board's foot (15 Oct 2026): the note centred with room under it, Report a Name centred on its own row */
+.ca-lb-foot { margin: 12px auto 0; max-width: 420px; text-wrap: balance; }
+.ca-lb-report-row { display: flex; justify-content: center; margin: 14px 0 4px; }
+.ca-lb-report-row .ca-lb-report { margin: 0; }

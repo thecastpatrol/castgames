@@ -113,7 +113,7 @@
         if (st.run.right < 0) { out(); return; } // (never in practice: thousands of players in every list)
         nextCall();
       } else out();
-    }, right ? 750 : 1100);
+    }, right ? 450 : 1000); // quicker picks (the owner, 15 Oct 2026): a right call moves on in under half a second
   }
   function out() {
     clearClock();

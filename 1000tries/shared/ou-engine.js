@@ -26,8 +26,8 @@
   function gameOf(cat) { return (CATS[cat] && CATS[cat].game) || '1000tries'; }
   // The relative gap a pair aims for, by streak: |a - b| / max(a, b). Far apart early, close later
   var BANDS = [[0, 0.3, 0.75], [3, 0.18, 0.5], [6, 0.1, 0.32], [10, 0.06, 0.24], [16, 0.03, 0.18]]; // hard, never a coin flip (the owner: trophies a human can get)
-  // Seconds a call gets (the owner, 14 Oct 2026): 10 for the first call, then 7, then 5, then 4
-  function callTime(streak) { var n = streak || 0; return n < 1 ? 10 : n < 10 ? 7 : n < 20 ? 5 : 4; }
+  // Seconds a call gets (the owner, 14 Oct 2026; a second quicker each 15 Oct): 9 for the first call, then 6, 4, 3
+  function callTime(streak) { var n = streak || 0; return n < 1 ? 9 : n < 10 ? 6 : n < 20 ? 4 : 3; }
 
   function hash(s) { var h = 2166136261; s = String(s); for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function rng(seed) { var a = hash(seed); return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }

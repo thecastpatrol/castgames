@@ -4583,7 +4583,7 @@
       : /^(1000|4000)ou/.test(lb.board) ? 'Your longest run of right calls. Level players: fewer Run It Backs first.'
       : /^trophies/.test(lb.board) ? 'Every trophy you&rsquo;ve unlocked counts' + (lb.board === 'trophies' ? ', 27-0 and 1000TRIES together' : '') + '. Level players rank by who got there first.' : '';
     var ranked = me && !profile.lbHidden && canRank, upd = updText(c);
-    var foot = (ranked && upd ? '<p class="ca-lb-updated">' + upd + '</p>' : '') + (note ? '<p class="ca-muted ca-lb-note ca-lb-foot">' + note + '</p>' : '');
+    var foot = (ranked && upd ? '<p class="ca-lb-updated">' + upd + '</p>' : '') + (note ? '<p class="ca-muted ca-center ca-lb-note ca-lb-foot">' + note + '</p>' : '');
     // Your rank, in the same size box whether it is checking, ranked or not ranked yet, so switching boards never moves the
     // list, with Refresh beside it (without a rank: "Updated" and Refresh on their own line)
     h += ranked ? '<div class="ca-lb-rankrow">' + rankBox(rk) + refreshBtn(c, true) + '</div>' : refreshRow(c);
@@ -8321,7 +8321,7 @@
   // Report a name: pick one from this board (signed-in players only)
   function reportBox(id, top) {
     if (lb.reportMsg) return '<p class="ca-muted ca-center ca-lb-note">' + esc(lb.reportMsg) + '</p>';
-    if (!lb.reportOpen) return '<button type="button" class="ca-link ca-lb-report" data-ca="lb-report-open">Report a Name</button>';
+    if (!lb.reportOpen) return '<div class="ca-lb-report-row"><button type="button" class="ca-link ca-lb-report" data-ca="lb-report-open">Report a Name</button></div>'; // its own centred row (the owner, 15 Oct 2026: it sat jammed under the note)
     if (status !== 'signed-in') return '<p class="ca-muted ca-center ca-lb-note">Sign in to report a name. Or email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p>';
     var mine = profile && profile.username;
     return '<div class="ca-lb-name"><label for="caReport"><b>Which Name Is Offensive?</b></label><div class="ca-lb-name-row">' +
@@ -9996,8 +9996,22 @@
   function spotOff() { return status !== 'signed-in' && typeof CFG.firstVisit === 'function' && !!CFG.firstVisit(); }
   /* A card can ask for its place in the turn (6 Oct 2026, the Ratings Upgrades card): data-spot-pos="2" sits second,
      "mid" halfway through the others, "end" last; every other card keeps the page's order */
+  /* Six Again's banner (the owner, 15 Oct 2026): second for its first week (to 22 Oct), then the middle like any promo */
+  function spotPlace(box) {
+    var ou = box.querySelector('[data-cast-launch="ou"]');
+    if (ou) ou.setAttribute('data-spot-pos', sydDay(Date.now()) <= '2026-10-22' ? '2' : 'mid');
+  }
+  /* At most 6 cards (the owner, 15 Oct 2026: optimised for CAST Pass sign-ups, ~36 s a lap so every card is seen). Over
+     6, the least important wait for another visit, in this order; a challenge waiting for you is never left out */
+  var SPOT_MAX = 6, SPOT_DROP = ['[data-cast-upgrades]', '[data-cast-trophy]', '[data-cast-dual]', '.spot-promo:not([data-cast-launch])', '[data-cast-wild2]', '[data-cast-wcx]', '[data-cast-launch="4000goals"]'];
   function spotItems(box) {
+    spotPlace(box);
     var all = Array.prototype.filter.call(box.children, function (c) { return !c.hidden && !!c.innerHTML.trim(); });
+    var ouB = box.querySelector('[data-cast-launch="ou"]'), ouFirst = ouB && ouB.getAttribute('data-spot-pos') === '2';
+    for (var di = 0; all.length > SPOT_MAX && di < SPOT_DROP.length; di++) {
+      var drop = all.filter(function (c) { return c.matches(SPOT_DROP[di]); })[0];
+      if (drop) all.splice(all.indexOf(drop), 1);
+    }
     var rest = all.filter(function (c) { return !c.hasAttribute('data-spot-pos'); });
     var rank = function (c) { var p = c.getAttribute('data-spot-pos'); return p === 'mid' ? 1e3 : p === 'end' ? 1e4 : parseInt(p, 10) || 1; };
     all.filter(function (c) { return c.hasAttribute('data-spot-pos'); }).sort(function (a, b) { return rank(a) - rank(b); }).forEach(function (c) {
@@ -10006,6 +10020,9 @@
       var at = p === 'mid' ? Math.ceil(rest.length / 2) : p === 'end' ? rest.length : Math.max(0, (parseInt(p, 10) || 1) - 1);
       rest.splice(Math.min(at, rest.length), 0, c);
     });
+    // Six Again's launch week: second outright, ahead of the other cards that ask for second
+    var oi = ouFirst ? rest.indexOf(ouB) : -1;
+    if (oi > 1) { rest.splice(oi, 1); rest.splice(1, 0, ouB); }
     return rest;
   }
   /* The spot holds its full height from the first frame (5 Oct 2026, the owner's call: the home page jolted when the

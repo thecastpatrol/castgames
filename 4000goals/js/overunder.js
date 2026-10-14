@@ -1,6 +1,6 @@
 /* Play On (15 Oct 2026, the owner: "an AFL equivalent for Six Again"): 1000TRIES's Six Again for 4000 GOALS. Named for
    the umpire's call to keep going: every right call plays on. You see the left player's number and call whether the right
-   one's is over or under it, against a clock: 10 seconds for the first call, then 7, 5 and 4. Right: the right card becomes
+   one's is over or under it, against a clock: 9 seconds for the first call, then 6, 4 and 3. Right: the right card becomes
    the left and a new player comes in. Wrong, or out of time: you're out, unless you Run It Back (a Vault item, or $0.99 /
    3 for $1.99, the Shop's price) to play on with your streak. Stuck on a pair: Reroll it (your Vault Rerolls, or buy more).
    No free continues (paid or Vault only), a CAST Pass holder's one free Reroll a run, like Six Again.
@@ -110,7 +110,7 @@
         if (st.run.right < 0) { out(); return; } // (never in practice: thousands of players in every list)
         nextCall();
       } else out();
-    }, right ? 750 : 1100);
+    }, right ? 450 : 1000); // quicker picks (the owner, 15 Oct 2026): a right call moves on in under half a second
   }
   function out() {
     clearClock();
