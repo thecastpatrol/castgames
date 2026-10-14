@@ -10000,6 +10000,7 @@
   function wcIntro(tries) {
     var c = WCI[CFG.game];
     if (!c || !wcLive || lsGet(LS_WCI) || (wciEl && !wciEl.hidden)) return;
+    if (CFG.hub || window.CG) return; // never on CAST Games (castgames.com.au), home or game pages (the owner, 15 Oct 2026)
     if ((typeof CFG.inGame === 'function' && CFG.inGame()) || (typeof CFG.onHome === 'function' && !CFG.onHome())) return;
     if (mailGift() || (mailGiftEl && !mailGiftEl.hidden)) return; // an email gift link waiting: the gift comes first
     var busy = document.documentElement.classList.contains('ca-open') || (dmEl && !dmEl.hidden) || (rrEl && !rrEl.hidden) ||
