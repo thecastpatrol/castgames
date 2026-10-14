@@ -6823,9 +6823,9 @@
     var todayN = function (n) { return n != null ? fmt(n) + ' today' : ''; };
     var grows = [
       ['27-0', [d.g270d, 'g270d', '27-0 Games (24 Hours)'], [d.g270, 'g270', '27-0 Games (7 Days)'], [d.g270all, 'g270all', '27-0 Games (All Time)'], onB(bp['270best_all'])],
-      ['World Cup 8-0', wc.g270d != null ? wc.g270d : null, '', wc.g270all != null ? wc.g270all : null, onB(bp['270wc_all'], todayN(wc.p270d))],
+      ['World Cup 8-0', wc.g270d != null ? wc.g270d : null, wc.g270w != null ? wc.g270w : null, wc.g270all != null ? wc.g270all : null, onB(bp['270wc_all'], todayN(wc.p270d))],
       ['1000TRIES', [d.g1000d, 'g1000d', '1000TRIES Games (24 Hours)'], [d.g1000, 'g1000', '1000TRIES Games (7 Days)'], [d.g1000all, 'g1000all', '1000TRIES Games (All Time)'], onB(bp['1000plus_all'])],
-      ['World Cup 200+', wc.g1000d != null ? wc.g1000d : null, '', wc.g1000all != null ? wc.g1000all : null, onB(bp['1000wc_all'], todayN(wc.p1000d))]
+      ['World Cup 200+', wc.g1000d != null ? wc.g1000d : null, wc.g1000w != null ? wc.g1000w : null, wc.g1000all != null ? wc.g1000all : null, onB(bp['1000wc_all'], todayN(wc.p1000d))]
     ];
     if (ou) grows.push(['Six Again', ou.runs.d, ou.runs.w, ou.runs.all, onB(ou.cats && ou.cats[0] ? ou.cats[0].players : null, todayN(ou.players.d))]);
     if (G4ON || AFL) grows.push(['4000 GOALS', [d.g4000d, 'g4000d', '4000 GOALS Games (24 Hours)'], [d.g4000, 'g4000', '4000 GOALS Games (7 Days)'], [d.g4000all, 'g4000all', '4000 GOALS Games (All Time)'], '']);
