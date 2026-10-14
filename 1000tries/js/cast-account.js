@@ -10194,7 +10194,8 @@
   /* Six Again's banner (the owner, 15 Oct 2026): second for its first week (to 22 Oct), then the middle like any promo */
   function spotPlace(box) {
     var ou = box.querySelector('[data-cast-launch="ou"]');
-    if (ou) ou.setAttribute('data-spot-pos', sydDay(Date.now()) <= '2026-10-22' ? '2' : 'mid');
+    // the middle (the owner, 15 Oct 2026: it earns less than the draft games, so the money cards go first; it was 2nd)
+    if (ou) ou.setAttribute('data-spot-pos', 'mid');
   }
   /* At most 6 cards (the owner, 15 Oct 2026: optimised for CAST Pass sign-ups, ~36 s a lap so every card is seen). Over
      6, the least important wait for another visit, in this order; a challenge waiting for you is never left out */
