@@ -6780,21 +6780,23 @@
     };
     /* Big numbers (the owner, 15 Oct 2026: "not small numbers, a table won't work"): a block per row with Today, 7 Days and
        All Time side by side in big type, and a small line under the name. row: [name, today, week, all, small line] */
+    var OV_C = { '27-0': '96,165,250', 'World Cup 8-0': '56,189,248', '1000TRIES': '192,132,252', 'World Cup 200+': '34,211,238', 'Six Again': '45,212,191', '4000 GOALS': '248,113,113', 'All Games': '226,232,240',
+      Runs: '45,212,191', Players: '192,132,252', Money: '74,222,128', 'Vault Run It Backs Used': '244,114,182', 'Vault Rerolls Used': '45,212,191', 'Sign-Ins From the Guest Limit': '96,165,250' };
     var periods = function (rows) {
       return '<div class="ca-ov-per">' + rows.map(function (r) {
         var one = function (lbl, c) {
           var v = Array.isArray(c) ? c[0] : c, k = Array.isArray(c) ? c[1] : null, inner = '<small>' + lbl + '</small><b>' + (v === '' ? '&ndash;' : cell(v)) + '</b>';
           return k ? '<button type="button" class="ca-ov-pv is-tap" data-ca="adm-list" data-v="' + k + '" data-l="' + esc(c[2] || '') + '">' + inner + '</button>' : '<div class="ca-ov-pv">' + inner + '</div>';
         };
-        return '<div class="ca-ov-pb' + (r.total ? ' is-total' : '') + '"><div class="ca-ov-pn"><b>' + r[0] + '</b>' + (r[4] ? '<small>' + r[4] + '</small>' : '') + '</div>' +
+        return '<div class="ca-ov-pb' + (r.total ? ' is-total' : '') + '"' + (OV_C[r[0]] ? ' style="--oc:' + OV_C[r[0]] + '"' : '') + '><div class="ca-ov-pn"><b>' + r[0] + '</b>' + (r[4] ? '<small>' + r[4] + '</small>' : '') + '</div>' +
           '<div class="ca-ov-pg">' + one('Today', r[1]) + one('7 Days', r[2]) + one('All Time', r[3]) + '</div></div>';
       }).join('') + '</div>';
     };
     // Money lines: the item, Today and 7 Days small under it, All Time big on the right. row: [name, today, week, all, key]
     var moneyList = function (rows) {
       return '<div class="ca-ov-list is-money">' + rows.map(function (r) {
-        var inner = '<span><em>' + r[0] + '</em><small>Today ' + r[1] + ' &middot; 7 Days ' + r[2] + '</small></span><b>' + r[3] + '</b>';
-        return r[4] != null && r[4] !== false ? '<button type="button" class="ca-ov-row is-tap" data-ca="adm-list" data-v="' + r[4] + '" data-l="' + esc(r[5] || r[0]) + '">' + inner + '</button>' : '<div class="ca-ov-row">' + inner + '</div>';
+        var inner = '<span><em>' + r[0] + '</em><small>Today ' + r[1] + ' &middot; 7 Days ' + r[2] + '</small></span><b>' + r[3] + '</b>', st = r.c ? ' style="--oc:' + r.c + '"' : '';
+        return r[4] != null && r[4] !== false ? '<button type="button" class="ca-ov-row is-tap"' + st + ' data-ca="adm-list" data-v="' + r[4] + '" data-l="' + esc(r[5] || r[0]) + '">' + inner + '</button>' : '<div class="ca-ov-row"' + st + '>' + inner + '</div>';
       }).join('') + '</div>';
     };
     var delta = function (cur, prev) {
@@ -6811,7 +6813,8 @@
     ];
     var h = admRefresh('ov') + '<div class="ca-ov-h"><h3 class="ca-h3">Today at a Glance</h3></div><div class="ca-ov-glance">' + glance.map(function (x) {
       var inner = '<small>' + x[0] + '</small><b>' + x[1] + '</b><em>' + x[2] + '</em>';
-      return x[3] ? '<button type="button" class="ca-ov-big is-tap" data-ca="adm-list" data-v="' + x[3] + '" data-l="' + esc(x[4]) + '">' + inner + '</button>' : '<div class="ca-ov-big">' + inner + '</div>';
+      var gc = ' style="--oc:' + ['96,165,250', '74,222,128', '192,132,252', '251,146,60'][glance.indexOf(x)] + '"';
+      return x[3] ? '<button type="button" class="ca-ov-big is-tap"' + gc + ' data-ca="adm-list" data-v="' + x[3] + '" data-l="' + esc(x[4]) + '">' + inner + '</button>' : '<div class="ca-ov-big"' + gc + '>' + inner + '</div>';
     }).join('') + '</div>';
     // Games: one table, a row per game and mode, the board's players alongside
     var bp = {}; (d.boards || []).forEach(function (b) { bp[b.id] = b.players; });
@@ -6849,13 +6852,15 @@
       ['Paused', d.passPaused, 'passDrops', 'Cancelled CAST Passes'], ['Came Back', d.passBack, 'passDrops', 'Cancelled CAST Passes']]);
     h += '<div class="ca-ov-h"><h3 class="ca-h3">Sales</h3>' + info('CAST Pass and Sales') + '</div>' +
       '<div class="ca-ov-glance is-3">' + [['CAST Pass', rev ? rev.pass : null, 'pass'], ['Items', itemsTot, ''], ['Picks', picksTot, '']].map(function (x) {
-        return '<div class="ca-ov-big"><small>' + x[0] + '</small><b>' + (x[1] == null ? admNum(null) : money(x[1])) + '</b><em>All time</em></div>';
+        return '<div class="ca-ov-big" style="--oc:' + { 'CAST Pass': '241,192,115', Items: '45,212,191', Picks: '244,114,182' }[x[0]] + '"><small>' + x[0] + '</small><b>' + (x[1] == null ? admNum(null) : money(x[1])) + '</b><em>All time</em></div>';
       }).join('') + '</div>';
     if (rev) {
       var allPer = Object.keys(per).reduce(function (t, k) { t.d += per[k].d || 0; t.w += per[k].w || 0; return t; }, { d: 0, w: 0 });
       var srows = [['All Sales', money(allPer.d), money(allPer.w), money(rev.pass + (itemsTot || 0) + (picksTot || 0)), sk(''), 'All Sales'], pk('CAST Pass', 'pass', rev.pass, null)]
         .concat(ITEMS_K.map(function (k) { return pk(k[1], k[0], rev[k[0]], rev[k[2]]); })).concat(PICKS_K.map(function (k) { return pk(k[1], k[0], rev[k[0]], rev[k[2]]); }));
-      if (rev.ou) srows.push(['Bought Inside Six Again', money(rev.ou.d), money(rev.ou.w), money(rev.ou.all) + (rev.ou.n ? '<small>' + fmt(rev.ou.n) + ' bought</small>' : ''), false]);
+      srows[0].c = '226,232,240'; srows[1].c = '241,192,115'; // all sales, then the CAST Pass in its gold
+      srows.forEach(function (r, i) { if (i > 1 && !r.c) r.c = i < 2 + ITEMS_K.length ? '45,212,191' : '244,114,182'; }); // items teal, picks pink
+      if (rev.ou) srows.push(['Bought Inside Six Again', money(rev.ou.d), money(rev.ou.w), money(rev.ou.all) + (rev.ou.n ? '<small>' + fmt(rev.ou.n) + ' bought</small>' : ''), false]); srows[srows.length - 1].c = '74,222,128';
       h += moneyList(srows);
     }
     h += head('Moderation', '') + list([['Reports (7 Days)', d.reports7, '#reports'], ['Flagged Scores', d.flags, '#flags'], ['Open Reports', mod.open, '#reports']]);

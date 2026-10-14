@@ -3626,3 +3626,11 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
 @media (min-width: 700px) { .ca-ov-list.is-money { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 480px) { .ca-ov-glance.is-3 { gap: 6px; } .ca-ov-glance.is-3 .ca-ov-big { padding: 10px; } .ca-ov-glance.is-3 .ca-ov-big b { font-size: 17px; } }
 .ca-ov-big b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Colour (15 Oct 2026, the owner: "a bit more colour"): each block and line carries its own accent (--oc), a stripe on the
+   left and a soft wash; gold only on the CAST Pass */
+.ca-ov-big[style*="--oc"], .ca-ov-pb[style*="--oc"] { border-color: rgba(var(--oc), .35); background: linear-gradient(135deg, rgba(var(--oc), .14), rgba(var(--oc), .03) 70%); box-shadow: inset 3px 0 0 rgb(var(--oc)); }
+.ca-ov-big[style*="--oc"] small, .ca-ov-pb[style*="--oc"] .ca-ov-pn b { color: rgb(var(--oc)); }
+.ca-ov-row[style*="--oc"] { box-shadow: inset 3px 0 0 rgb(var(--oc)); background: linear-gradient(90deg, rgba(var(--oc), .1), transparent 60%); }
+.ca-ov-row[style*="--oc"] em { color: rgb(var(--oc)); }
+.ca-ov-h .ca-h3::before { content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 2px; background: #38bdf8; vertical-align: middle; }
+.ca-ov-card .ca-ov-h .ca-h3::before { background: #2dd4bf; }
