@@ -1609,27 +1609,25 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 
 /* ---------- Six Again (14 Oct 2026, js/overunder.js; redesigned the same day: the teams' real colours) ---------- */
 .ou-home { margin: 12px 0 4px; } .ou-home .mode-mini { width: 100%; min-height: 84px; }
-/* The home card's live look (15 Oct 2026): two mini player cards, pulsing arrows, NEW */
-.ou-home .oup { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; justify-items: start; gap: 14px; padding: 14px; text-align: left;
-  border: 1.5px solid rgba(56, 189, 248, .6); background: radial-gradient(120% 120% at 0% 0%, rgba(56, 189, 248, .22), transparent 55%), radial-gradient(90% 90% at 100% 100%, rgba(74, 222, 128, .14), transparent 60%), #0d1622; overflow: hidden; }
-.oup-new { position: absolute; top: 10px; right: 10px; padding: 4px 9px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 10.5px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; box-shadow: 0 0 14px rgba(56, 189, 248, .55); }
-.oup-pair { display: flex; align-items: center; gap: 6px; }
-.oup-card { display: grid; justify-items: center; width: 62px; padding: 6px 4px 7px; border-radius: 10px; background: linear-gradient(180deg, var(--club) 0 34%, #141a26 34%); border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 6px 14px rgba(0, 0, 0, .35); }
-.oup-card i { font: 900 9.5px/1 var(--font); font-style: normal; color: var(--club-text); letter-spacing: .5px; }
-.oup-card em { margin-top: 9px; font: 800 9.5px/1.1 var(--font); font-style: normal; color: #cbd5e1; max-width: 58px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.oup-card b { margin-top: 3px; font: 900 21px/1 var(--font); color: #fff; }
+/* The home card's live look (15 Oct 2026; made shorter the same day, the owner: "too tall and crammed"): two small player
+   cards with pulsing arrows, the name and line, a play arrow; the whole card is the button */
+.ou-home .oup { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; justify-items: start; gap: 12px; min-height: 0; padding: 10px 12px; text-align: left;
+  border: 1.5px solid rgba(56, 189, 248, .6); background: radial-gradient(120% 140% at 0% 0%, rgba(56, 189, 248, .22), transparent 55%), radial-gradient(90% 120% at 100% 100%, rgba(74, 222, 128, .14), transparent 60%), #0d1622; overflow: hidden; }
+.oup-new { position: absolute; top: 8px; right: 8px; padding: 3px 7px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 9.5px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; box-shadow: 0 0 12px rgba(56, 189, 248, .55); }
+.oup-pair { display: flex; align-items: center; gap: 5px; }
+.oup-card { display: grid; justify-items: center; width: 44px; padding: 4px 2px 6px; border-radius: 8px; background: linear-gradient(180deg, var(--club) 0 38%, #141a26 38%); border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 4px 10px rgba(0, 0, 0, .35); }
+.oup-card i { font: 900 8.5px/1 var(--font); font-style: normal; color: var(--club-text); letter-spacing: .4px; }
+.oup-card b { margin-top: 7px; font: 900 16px/1 var(--font); color: #fff; }
 .oup-card.is-q b { color: #7dd3fc; animation: oupQ 1.6s ease-in-out infinite; }
 .oup-arrows { display: grid; gap: 3px; }
-.oup-arrows em { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; font-style: normal; font-size: 10px; color: #04121f; }
+.oup-arrows em { display: grid; place-items: center; width: 17px; height: 17px; border-radius: 5px; font-style: normal; font-size: 8px; color: #04121f; }
 .oup-arrows .is-up { background: #4ade80; animation: oupPulse 1.4s ease-in-out infinite; }
 .oup-arrows .is-dn { background: #f87171; animation: oupPulse 1.4s ease-in-out .7s infinite; }
 .oup-t { display: grid; gap: 3px; min-width: 0; }
-.oup-t b { padding-right: 46px; font: 900 19px/1.1 var(--font); color: #fff; } /* room for NEW */
-.oup-t small { text-wrap: balance; }
-.oup-t small { font: 600 12px/1.35 var(--font); color: #a5b4c8; }
-.oup-go { justify-self: start; margin-top: 6px; padding: 7px 14px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 12.5px/1 var(--font); }
-.oup-go i { font-style: normal; font-size: 9px; }
-@keyframes oupPulse { 0%, 100% { transform: scale(1); box-shadow: none; } 50% { transform: scale(1.12); box-shadow: 0 0 12px currentColor; } }
+.oup-t b { padding-right: 40px; font: 900 17px/1.1 var(--font); color: #fff; }
+.oup-t small { font: 600 12px/1.3 var(--font); color: #a5b4c8; text-wrap: balance; }
+.oup-go { align-self: end; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #38bdf8; color: #04121f; font-size: 11px; }
+@keyframes oupPulse { 0%, 100% { transform: scale(1); box-shadow: none; } 50% { transform: scale(1.12); box-shadow: 0 0 10px currentColor; } }
 @keyframes oupQ { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(.9); } }
 @media (prefers-reduced-motion: reduce) { .oup-arrows em, .oup-card.is-q b { animation: none; } }
 .mode-mini.is-ou { grid-column: 1 / -1; border-color: rgba(56, 189, 248, .55); background: linear-gradient(135deg, rgba(56, 189, 248, .16), rgba(74, 222, 128, .08)); }
