@@ -354,6 +354,8 @@
     placeModes(first);
     placeDaily();
     placeOu();
+    var ouB = document.querySelector('.spot-promo[data-ou-open]');
+    if (ouB && !ouB.getAttribute('data-rich') && R.ouBanner) { ouB.innerHTML = R.ouBanner(); ouB.setAttribute('data-rich', '1'); ouB.classList.add('is-ou'); }
     if (window.CastAccount && CastAccount.spot) CastAccount.spot();
     $('startBtn').setAttribute('data-pick', selectedMode); // Play now takes the picked mode's colour
   }

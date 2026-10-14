@@ -111,6 +111,14 @@
       '<span class="oup-pair" aria-hidden="true">' + mini('rabbitohs', 'Inglis', '149') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('storm', 'Slater', '') + '</span>' +
       '<span class="oup-t"><b>Six Again</b><small>More tries or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
   };
+  // The same live look for its banner in the home slider (the owner, 15 Oct 2026: "more enticing, like the card below")
+  R.ouBanner = function () {
+    var mini = function (club, nm, num) {
+      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
+    };
+    return '<span class="oup-pair" aria-hidden="true">' + mini('rabbitohs', 'Inglis', '149') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('storm', 'Slater', '') + '</span>' +
+      '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>Six Again</b><small>More tries or fewer? Beat the clock.</small></span><span class="oup-play">Play</span>';
+  };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 1000+ until the final on
      15 Nov, in the World Cup nations' colours (flags when the owner's designs arrive), then a small one with the others.
      opt.wc: 'top', 'under' (a guest's first visit keeps 1000+ first), 'mini' or null; opt.guest: Sign In to Play */
