@@ -129,6 +129,14 @@
 
   function track(ev, p) { try { if (typeof gtag === 'function') gtag('event', ev, p || {}); } catch (e) { /* no analytics */ } }
 
+  // A link to another game on this site opens in the same tab, even one a game made with a new tab in mind
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[target="_blank"][href]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+    if (u.host === location.host || u.host === 'castgames.com.au' || u.host === 'www.castgames.com.au') a.removeAttribute('target');
+  }, true);
+
   window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, sportOf: sportOf, url: url, root: ROOT, openSwitcher: openSwitcher, track: track };
   if (document.body) bar(); else document.addEventListener('DOMContentLoaded', bar);
 })();

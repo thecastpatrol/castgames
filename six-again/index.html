@@ -3,7 +3,7 @@
 <head>
 <base href="../1000tries/">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css">
+<link rel="stylesheet" href="../shared/cg.css?v=dcba8e9d540b">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -63,7 +63,7 @@
 <body>
 <script>window.CG_GAME = 'six-again'; window.CG_PLAY = function () { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false; };</script>
 <script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>
-<script src="../shared/cg.js"></script>
+<script src="../shared/cg.js?v=dcba8e9d540b"></script>
 
 
 <header class="site-header">
@@ -95,7 +95,7 @@
           <span class="cast-logo-fx"><img class="hero-logo" src="assets/logos/1000tries.png" alt="1000TRIES" width="1200" height="760" data-fallback="hero-wordmark">
           <span class="hero-wordmark" hidden><span class="wm-num">1000</span><span class="wm-word">TRIES</span></span></span>
         </h1>
-        <p class="hero-pitch">From the makers of <a href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="hero">27-0</a>, Rugby League&rsquo;s most addictive game, The Cast Patrol brings you <strong>1000TRIES</strong>. Draft your 13 and attempt to hit <strong>1000+ NRL tries</strong> combined.</p>
+        <p class="hero-pitch">From the makers of <a href="https://castgames.com.au/27-0/" data-track="click_27_0" data-where="hero">27-0</a>, Rugby League&rsquo;s most addictive game, The Cast Patrol brings you <strong>1000TRIES</strong>. Draft your 13 and attempt to hit <strong>1000+ NRL tries</strong> combined.</p>
       </div>
 
       <!-- First visit only (js/app.js firstVisit): how it works in three steps. Gone once they finish a game -->
@@ -113,13 +113,13 @@
         <div data-cast-wild hidden></div>
         <div data-cast-pass-banner hidden></div>
         <div data-cast-wild2 hidden></div>
-        <a class="spot-promo" href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="spot">
+        <a class="spot-promo" href="https://castgames.com.au/27-0/" data-track="click_27_0" data-where="spot">
           <img class="spot-promo-logo" src="assets/logos/27-0.png" alt="27-0" width="601" height="358" loading="lazy">
           <span class="spot-promo-txt"><b>Can Your NRL Era Team Go 27-0?</b><small>Our other game: spin, draft and simulate a full season.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
         <!-- 4000 GOALS (13 Oct 2026): our AFL game, shown once it's launched (js/cast-account.js showLaunchBits). No pop-up -->
-        <a class="spot-promo" data-cast-launch="4000goals" hidden style="--sp:241,192,115" href="https://castgames.com.au/4000goals/?utm_source=1000tries&amp;utm_medium=spot&amp;utm_campaign=4000goals_launch" target="_blank" rel="noopener" data-track="click_4000goals" data-where="spot">
+        <a class="spot-promo" data-cast-launch="4000goals" hidden style="--sp:241,192,115" href="https://castgames.com.au/4000goals/?utm_source=1000tries&amp;utm_medium=spot&amp;utm_campaign=4000goals_launch" data-track="click_4000goals" data-where="spot">
           <img class="spot-promo-logo" src="assets/logos/4000goals.png" alt="4000 GOALS" width="1200" height="760" loading="lazy">
           <span class="spot-promo-txt"><b>Can You Draft 4000 AFL Goals?</b><small>Our new AFL game: roll 3, pick 1 and build an 18.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
@@ -146,7 +146,7 @@
 
       <div id="homeAd"></div>
 
-      <a class="promo-card" href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="home">
+      <a class="promo-card" href="https://castgames.com.au/27-0/" data-track="click_27_0" data-where="home">
         <img class="promo-logo" src="assets/logos/27-0.png" alt="27-0" width="601" height="358" loading="lazy">
         <span class="promo-kicker">More from Cast</span>
         <span class="promo-title">Can Your NRL Era Team Go 27-0?</span>
@@ -180,7 +180,7 @@
           <details class="faq-item" name="faq"><summary><span>Which tries count?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>NRL premiership tries from 1998 to now. The 1997 Super League and ARL seasons are not included, and neither are Origin, Tests or other representative games. Legends and Immortals in 1000+ count their whole premiership careers. In NRLW 250+, NRLW premiership tries from 2018 to now count, including finals.</p></details>
           <details class="faq-item" name="faq"><summary><span>Where do the try numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>They are compiled by The Cast Patrol from publicly available records, with NRLW numbers from Rugby League Project checked against official club pages. Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p></details>
           <details class="faq-item" name="faq"><summary><span>Is 1000TRIES free to play?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Completely free. No download needed. Open your browser, draft your 13 and play.</p></details>
-          <details class="faq-item" name="faq"><summary><span>Who made 1000TRIES?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the Rugby League podcast and content team behind <a href="https://castgames.com.au/27-0/" target="_blank" rel="noopener">27-0</a>.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Who made 1000TRIES?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the Rugby League podcast and content team behind <a href="https://castgames.com.au/27-0/">27-0</a>.</p></details>
           <details class="faq-item" name="faq"><summary><span>Is 1000TRIES affiliated with the NRL?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. 1000TRIES is an independent, fan-made game. It is not affiliated with, endorsed by, or associated with the NRL or any NRL club.</p></details>
           <details class="faq-item" name="faq"><summary><span>Where can I listen to The Cast Patrol podcast?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Search The Cast Patrol wherever you get your podcasts, or watch on <a href="https://www.youtube.com/@thecastpatrol/videos" target="_blank" rel="noopener">YouTube</a>.</p></details>
         </details>

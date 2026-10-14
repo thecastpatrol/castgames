@@ -2,7 +2,7 @@
 <html lang="en-AU">
 <head>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css">
+<link rel="stylesheet" href="../shared/cg.css?v=dcba8e9d540b">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -61,7 +61,7 @@
 </head>
 <body>
 <script>window.CG_GAME = '4000goals'; window.CG_PLAY = function () { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js"></script>
+<script src="../shared/cg.js?v=dcba8e9d540b"></script>
 
 
 <header class="site-header">
@@ -93,7 +93,7 @@
           <span class="cast-logo-fx"><img class="hero-logo" src="assets/logos/4000goals.png?v=2" alt="4000 GOALS" width="1200" height="760" data-fallback="hero-wordmark">
           <span class="hero-wordmark" hidden><span class="wm-num">4000</span><span class="wm-word">GOALS</span></span></span>
         </h1>
-        <p class="hero-pitch">From the makers of <a href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="hero">27-0</a> and <a href="https://castgames.com.au/1000tries/" target="_blank" rel="noopener" data-track="click_1000tries" data-where="hero">1000TRIES</a>, The Cast Patrol brings you <strong>4000 GOALS</strong>. Draft your 18 and attempt to hit <strong>4000+ AFL goals</strong> combined.</p>
+        <p class="hero-pitch">From the makers of <a href="https://castgames.com.au/27-0/" data-track="click_27_0" data-where="hero">27-0</a> and <a href="https://castgames.com.au/1000tries/" data-track="click_1000tries" data-where="hero">1000TRIES</a>, The Cast Patrol brings you <strong>4000 GOALS</strong>. Draft your 18 and attempt to hit <strong>4000+ AFL goals</strong> combined.</p>
       </div>
 
       <!-- First visit only (js/app.js firstVisit): how it works in three steps. Gone once they finish a game -->
@@ -111,13 +111,13 @@
         <div data-cast-wild hidden></div>
         <div data-cast-pass-banner hidden></div>
         <div data-cast-wild2 hidden></div>
-        <a class="spot-promo" href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="spot">
+        <a class="spot-promo" href="https://castgames.com.au/27-0/" data-track="click_27_0" data-where="spot">
           <img class="spot-promo-logo" src="assets/logos/27-0.png" alt="27-0" width="601" height="358" loading="lazy">
           <span class="spot-promo-txt"><b>Can Your NRL Team Go 27-0?</b><small>Our other game: spin, draft and simulate a full season.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
         <!-- Six Again (14 Oct 2026): hidden until the owner presses Launch in Admin (config/launch "ou") -->
-        <a class="spot-promo" data-cast-launch="ou" hidden style="--sp:56,189,248" href="https://castgames.com.au/1000tries/?play=ou&amp;utm_source=4000goals&amp;utm_medium=spot&amp;utm_campaign=over_or_under" target="_blank" rel="noopener" onclick="if(typeof gtag!=='undefined')gtag('event','click_over_or_under',{placement:'spot'})">
+        <a class="spot-promo" data-cast-launch="ou" hidden style="--sp:56,189,248" href="https://castgames.com.au/1000tries/?play=ou&amp;utm_source=4000goals&amp;utm_medium=spot&amp;utm_campaign=over_or_under" onclick="if(typeof gtag!=='undefined')gtag('event','click_over_or_under',{placement:'spot'})">
           <img class="spot-promo-logo" src="assets/logos/1000tries.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
           <span class="spot-promo-txt"><b>New: Six Again</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
@@ -142,7 +142,7 @@
 
       <div id="homeAd"></div>
 
-      <a class="promo-card" href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="home">
+      <a class="promo-card" href="https://castgames.com.au/27-0/" data-track="click_27_0" data-where="home">
         <img class="promo-logo" src="assets/logos/27-0.png" alt="27-0" width="601" height="358" loading="lazy">
         <span class="promo-kicker">More from Cast</span>
         <span class="promo-title">Can Your NRL Team Go 27-0?</span>
@@ -175,7 +175,7 @@
           <details class="faq-item" name="faq"><summary><span>Which goals count?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>VFL/AFL premiership goals from 1990, when the competition became the AFL, to now, finals included. Pre-season, State of Origin and international rules games are not included. Legends count their whole VFL/AFL careers.</p></details>
           <details class="faq-item" name="faq"><summary><span>Where do the goal numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>From AFL Tables (afltables.com), the public record of every VFL/AFL game since 1897. Each player&rsquo;s position (back, midfield or forward) is worked out from his career stats. Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p></details>
           <details class="faq-item" name="faq"><summary><span>Is 4000 GOALS free to play?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Completely free. No download needed. Open your browser, draft your 18 and play.</p></details>
-          <details class="faq-item" name="faq"><summary><span>Who made 4000 GOALS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the podcast and content team behind <a href="https://castgames.com.au/27-0/" target="_blank" rel="noopener">27-0</a> and <a href="https://castgames.com.au/4000goals/" target="_blank" rel="noopener">1000TRIES</a>.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Who made 4000 GOALS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the podcast and content team behind <a href="https://castgames.com.au/27-0/">27-0</a> and <a href="https://castgames.com.au/4000goals/">1000TRIES</a>.</p></details>
           <details class="faq-item" name="faq"><summary><span>Is 4000 GOALS affiliated with the AFL?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. 4000 GOALS is an independent, fan-made game. It is not affiliated with, endorsed by, or associated with the AFL or any AFL club.</p></details>
           <details class="faq-item" name="faq"><summary><span>Where can I listen to The Cast Patrol podcast?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Search The Cast Patrol wherever you get your podcasts, or watch on <a href="https://www.youtube.com/@thecastpatrol/videos" target="_blank" rel="noopener">YouTube</a>.</p></details>
         </details>

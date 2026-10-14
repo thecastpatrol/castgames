@@ -28,6 +28,14 @@ GAMES_DIR = os.path.dirname(HERE)  # CAST Games
 LIVE = '--live' in sys.argv
 SITE = 'https://castgames.com.au/'
 
+
+def _ver(rel):
+    import hashlib
+    return hashlib.md5(open(os.path.join(HERE, rel), 'rb').read()).hexdigest()[:8]
+
+
+CGV = _ver('shared/cg.js') + _ver('shared/cg.css')[:4]  # the bar's version, so a change reaches every game page
+
 GAMES = [
     # (folder here, source repo, id for cg.js, CSS that hides the game's own header, Play's hook)
     ('27-0', '27-0 Game/27-0-nrl', '27-0',
@@ -66,15 +74,17 @@ def rewrite_links(text, in_js):
 def fit_page(path, folder, gid, hide_css, play_js, base=None):
     s = open(path, encoding='utf-8').read()
     s = rewrite_links(s, False)
+    # Another game is on this site now: open it in the same tab (the point of one address)
+    s = re.sub(r'(href="' + re.escape(SITE) + r'[^"]*")\s+target="_blank"(\s+rel="noopener")?', r'\1', s)
     head = ''
     if base:
         head += '<base href="%s">\n' % base
     if not LIVE:
         head += '<meta name="robots" content="noindex">\n'
-    head += '<link rel="stylesheet" href="../shared/cg.css">\n<style>html.cg-in-game %s { display: none !important; }</style>\n' % hide_css
+    head += '<link rel="stylesheet" href="../shared/cg.css?v=%s">\n<style>html.cg-in-game %s { display: none !important; }</style>\n' % (CGV, hide_css)
     s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + head, s, count=1)
     body = ('<script>window.CG_GAME = %r; window.CG_PLAY = function () { %s };</script>\n'
-            '<script src="../shared/cg.js"></script>\n') % (gid, play_js)
+            '<script src="../shared/cg.js?v=%s"></script>\n') % (gid, play_js, CGV)
     s = re.sub(r'(<body[^>]*>)', lambda m: m.group(1) + '\n' + body, s, count=1)
     open(path, 'w', encoding='utf-8').write(s)
 
@@ -136,9 +146,9 @@ def main():
     os.makedirs(six, exist_ok=True)
     src = open(os.path.join(HERE, '1000tries', 'index.html'), encoding='utf-8').read()
     src = src.replace("window.CG_GAME = '1000tries'", "window.CG_GAME = 'six-again'")
-    src = src.replace('<script src="../shared/cg.js"></script>',
+    src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
                       '<script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>\n'
-                      '<script src="../shared/cg.js"></script>', 1)
+                      '<script src="../shared/cg.js?v=%s"></script>' % CGV, 1)
     src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../1000tries/">', src, count=1)
     open(os.path.join(six, 'index.html'), 'w', encoding='utf-8').write(src)
     print('built six-again')

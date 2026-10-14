@@ -10914,6 +10914,7 @@
     pickState: pickState, pickBuy: pickBuy, pickUse: pickUse, immOn: immOn,
     // World Cup mode: launched (or previewed with ?castwc=1 for this visit), and World Cup 200+'s tries from NRL.com
     wcLive: wcOn, wcTries: wcTries, ouOn: ouOn,
+    isLaunched: function (k) { return launchOn.indexOf(k) >= 0; }, // CAST Games (castgames.com.au): is a game in config/launch
     // World Cup games are saved: launched, not an admin's preview (whose practice games are never saved)
     wcSaved: function () { return !!wcLive; },
     wcGate: wcGate,
