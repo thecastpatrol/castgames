@@ -10042,6 +10042,9 @@
     // Six Again's launch week: second outright, ahead of the other cards that ask for second
     var oi = ouFirst ? rest.indexOf(ouB) : -1;
     if (oi > 1) { rest.splice(oi, 1); rest.splice(1, 0, ouB); }
+    // The Shop's wildcard offer ahead of the Player of the Week (the owner, 15 Oct 2026: the slider sells first)
+    var wi = rest.findIndex(function (c) { return c.hasAttribute('data-cast-wild'); }), fi = rest.findIndex(function (c) { return c.hasAttribute('data-cast-fan'); });
+    if (wi > fi && fi >= 0) { var w = rest.splice(wi, 1)[0]; rest.splice(fi, 0, w); }
     return rest;
   }
   /* The spot holds its full height from the first frame (5 Oct 2026, the owner's call: the home page jolted when the
