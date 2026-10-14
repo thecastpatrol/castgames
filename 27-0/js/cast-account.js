@@ -2677,6 +2677,24 @@
     track('guest_wc_free', { game: CFG.game });
     return true;
   }
+  /* Six Again and Play On for a guest (the owner, 15 Oct 2026): 2 free runs a day of their own (not the draft games'), then
+     the wall, and then() once they've signed in. true lets the run start (and counts it) */
+  var LS_GUEST_OU = 'cast_guest_ou_v1', GUEST_OU_MAX = 2;
+  function ouGate(then) {
+    if (!ENABLED || !tiersOn() || status === 'signed-in' || likelySignedIn()) return true;
+    var day = sydneyDate(Date.now()), o = {};
+    try { o = JSON.parse(lsGet(LS_GUEST_OU) || '{}') || {}; } catch (e) { o = {}; }
+    if (o.day !== day) o = { day: day };
+    if ((o[CFG.game] || 0) >= GUEST_OU_MAX) {
+      pendingPlay = then || null; pendingMode = null; wallWhy = 'ouused';
+      track('guest_wall', { game: CFG.game, why: 'ouused', where: 'ou' });
+      open('wall');
+      return false;
+    }
+    o[CFG.game] = (o[CFG.game] || 0) + 1;
+    lsSet(LS_GUEST_OU, JSON.stringify(o));
+    return true;
+  }
   // Something for signed-in players only (the Daily, wildcards): true if they are; otherwise the wall, and then() once
   // they have signed in. mode: the game mode then() starts, so a sign-in in this tab (phones) can start it after the reload
   function requireSignIn(then, why, mode) {
@@ -2709,6 +2727,7 @@
       daily: ['The Daily Is for CAST Profile Players', 'Sign in free to play today&rsquo;s Daily.'],
       wildcards: ['Wildcards Come With a Free Profile', 'Sign in free for wildcards every game. Your game carries on right where you left it.'],
       wc: ['World Cup Mode Is for CAST Profile Players', 'Sign in free to play the World Cup. It starts as soon as you&rsquo;re in.'],
+      ouused: ['You&rsquo;ve Had Your ' + GUEST_OU_MAX + ' Free ' + (CFG.game === '4000goals' ? 'Play On' : 'Six Again') + ' Runs Today', 'Sign in free to play as many runs as you like, save your streaks and climb the board.'],
       wcused: ['You&rsquo;ve Had Your Free World Cup Today', 'Sign in free to play as many as you like, save your results and climb the World Cup board.'],
       gift: ['Sign In to Claim Your Gift', 'Your free World Legend Pick is waiting. Sign in with the account your CAST Games emails go to.']
     }[wallWhy] || ['Sign In Free', 'Sign in to keep playing.'];
@@ -11005,7 +11024,7 @@
     wildcardCount: wildcardCount,
     hasPass: hasPass,
     totw: totwNow, // World Cup Team of the Week on now ({ id, label, from, until, set: [{ s, n, k, b }] }), else null
-    guestGate: guestGate,
+    guestGate: guestGate, ouGate: ouGate,
     requireSignIn: requireSignIn,
     needsSignIn: needsSignIn,
     openPass: function (from) { openPass(from); },

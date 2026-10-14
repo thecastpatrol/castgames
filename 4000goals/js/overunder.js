@@ -44,6 +44,8 @@
 
   // ---------- The run ----------
   function start() {
+    var CG = A();
+    if (CG && CG.ouGate && !CG.ouGate(function () { if (T.ou) T.ou.open(); })) { st = { view: 'start', cat: st.cat }; render(); return; } // a guest's 2 free runs a day (cast-account.js ouGate); the start screen waits behind the sign-in
     var cat = st.cat;
     st = { view: 'play', cat: cat, seed: newSeed(), calls: '', streak: 0, rib: 0, rr: 0, ice: 0, iceBest: 0, ms: 0, done: false, busy: false, log: [] };
     st.run = new E.Run(D[cat], cat, st.seed);
