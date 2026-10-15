@@ -3666,7 +3666,145 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
 .ca-ov-pn small { white-space: normal; }
 .ca-admin { max-width: 100%; overflow-x: clip; }
 
+/* 25000 RUNS team sheets (15 Oct 2026; redrawn 16 Oct like the game's ground): a true oval with mowing stripes, the
+   boundary rope, a dashed 30-yard circle and a faint pitch with its creases under the keeper */
+.ca-pitch.is-ground { position: relative; isolation: isolate; border-radius: 50%; padding: 52px 22px; border: 2px solid #2f7a4a;
+  background:
+    linear-gradient(180deg, transparent calc(50% - 42px), rgba(255, 255, 255, .22) calc(50% - 42px), rgba(255, 255, 255, .22) calc(50% - 41px), transparent calc(50% - 41px), transparent calc(50% + 41px), rgba(255, 255, 255, .22) calc(50% + 41px), rgba(255, 255, 255, .22) calc(50% + 42px), transparent calc(50% + 42px)) 50% 50% / 26px 100% no-repeat,
+    linear-gradient(90deg, transparent, rgba(222, 200, 150, .13) 25%, rgba(222, 200, 150, .13) 75%, transparent) 50% 50% / 16px 96px no-repeat,
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, .28) 100%),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .035) 0 24px, transparent 24px 48px),
+    linear-gradient(180deg, #17512f, #0f3b22); }
+.ca-pitch.is-ground::before, .ca-pitch.is-ground::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; z-index: -1; }
+.ca-pitch.is-ground::before { inset: 8px; border: 2px solid rgba(255, 255, 255, .28); }
+.ca-pitch.is-ground::after { inset: 21% 15%; border: 1.5px dashed rgba(255, 255, 255, .2); }
+.ca-pitch.is-ground .ca-pitch-row:first-child, .ca-pitch.is-ground .ca-pitch-row:last-child { padding: 0 14%; }
+
+/* Nothing under an open panel moves (16 Oct 2026, the owner's video: Admin blinked on desktop Chrome at any page zoom but
+   100%). The home page's looping animations (logo glint, Six Again arrows, Play shine, the slider) kept repainting under
+   the panel, and at a fractional zoom Chrome repaints the whole screen for them. Paused, not removed: they carry on when
+   the panel closes */
+html.ca-open body > :not(.ca), html.ca-open body > :not(.ca) * { animation-play-state: paused !important; }
 /* 25000 RUNS team sheets (15 Oct 2026): a cricket ground, the oval with its 30-yard circle and the pitch down the middle */
 .ca-pitch.is-ground { border-radius: 50% / 16%; padding: 26px 16px;
   background: linear-gradient(90deg, transparent calc(50% - 22px), rgba(214, 190, 140, .30) calc(50% - 22px), rgba(214, 190, 140, .30) calc(50% + 22px), transparent calc(50% + 22px)) 50% 50% / 100% 34% no-repeat,
     radial-gradient(ellipse 40% 30% at 50% 50%, transparent 0 97%, rgba(255, 255, 255, .16) 97% 100%, transparent 100%), linear-gradient(180deg, #14482a, #0c3220); }
+
+/* ---------------- World Champions (cast-wch.js, 15 Oct 2026, the owner's calls) ----------------
+   Premium World Cup blue foil, never gold (gold is the CAST Pass's): a foil edge with a shine, a filled foil rating box,
+   a trophy after each name. The Team of the Week's solid World Cup blue is the base; the Player of the Final has a
+   pearl-white edge. A home spot card, the pop-up with the starting 13, the last 24 hours' banner, the Pick's payment
+   pop-up, the Shop, the Vault and Admin's card */
+.ca-home-spot > [data-cast-wch] { display: flex; }
+.cp-wch-spot { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 3px; width: 100%; box-sizing: border-box; padding: 4px 10px 5px; border-radius: 14px;
+  border: 1.5px solid transparent; background: linear-gradient(135deg, #0f3d6e, #071a33 70%) padding-box, linear-gradient(120deg, #0369a1, #7dd3fc 30%, #f0f9ff 45%, #38bdf8 60%, #0369a1) border-box;
+  box-shadow: 0 0 18px rgba(56, 189, 248, .35); color: #fff; font-family: Inter, sans-serif; text-align: left; text-decoration: none; cursor: pointer; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+.cp-wch-spot::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .16) 48%, transparent 60%); background-size: 250% 100%; animation: cpWchShine 5s ease-in-out infinite; pointer-events: none; }
+@keyframes cpWchShine { 0%, 40% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
+@media (hover: hover) { .cp-wch-spot:hover { box-shadow: 0 0 24px rgba(56, 189, 248, .55); } }
+.cp-wch-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cp-wch-head b { font: 900 13px/1 Inter, sans-serif; letter-spacing: 1.4px; text-transform: uppercase; }
+.cp-wch-head b span { color: #7dd3fc; }
+.cp-wch-all { flex: none; font: 800 10.5px/1 Inter, sans-serif; padding: 4px 8px; border-radius: 999px; background: rgba(125, 211, 252, .2); color: #f0f9ff; }
+.cp-wch-row { display: flex; justify-content: center; align-items: flex-end; gap: 5px; margin-top: 5px; }
+/* One champion's card: the foil edge (a gradient border), a shine across it, the rating in a filled foil box */
+.cp-wch-c { position: relative; display: flex; flex-direction: column; align-items: center; flex: 0 1 56px; min-width: 0; height: 42px; box-sizing: border-box; padding: 6px 3px 4px; border-radius: 8px 8px 12px 12px; overflow: hidden;
+  border: 1.5px solid transparent; background: linear-gradient(160deg, #1f6aa8, #0f3d6e 40%, #071d38) padding-box, linear-gradient(135deg, #0c4a6e, #38bdf8 25%, #f0f9ff 45%, #7dd3fc 60%, #0369a1 85%) border-box;
+  box-shadow: 0 0 10px rgba(56, 189, 248, .4), 0 3px 8px rgba(0, 0, 0, .45); color: #fff; }
+.cp-wch-c.is-big { flex-basis: 62px; height: 48px; box-shadow: 0 0 16px rgba(125, 211, 252, .6), 0 3px 8px rgba(0, 0, 0, .45); }
+.cp-wch-c.is-medal { background: linear-gradient(160deg, #1f6aa8, #0f3d6e 40%, #071d38) padding-box, linear-gradient(135deg, #7dd3fc, #ffffff 30%, #bae6fd 55%, #ffffff 75%, #7dd3fc) border-box; }
+.cp-wch-c .cw-shine { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .22) 50%, transparent 62%); pointer-events: none; }
+.cp-wch-c .cw-r { position: relative; display: inline-block; min-width: 24px; padding: 1px 4px; border-radius: 5px; font: 900 14px/1.15 Inter, sans-serif; text-align: center; color: #04121f;
+  background: linear-gradient(135deg, #7dd3fc, #f0f9ff 45%, #38bdf8 70%, #e0f2fe); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5); }
+.cp-wch-c.is-big .cw-r { font-size: 16px; }
+.cp-wch-c.is-medal .cw-r { background: linear-gradient(135deg, #e0f2fe, #ffffff 45%, #bae6fd 70%, #ffffff); }
+.cp-wch-c .cw-n { position: relative; margin-top: auto; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 900 7.5px/1.1 Inter, sans-serif; }
+.cp-wch-c .cw-mk { margin-left: 1px; }
+/* The pop-up */
+html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
+.cp-wch { position: fixed; inset: 0; z-index: 10060; display: flex; align-items: flex-end; justify-content: center; background: rgba(3, 5, 10, .84); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.cp-wch[hidden] { display: none; }
+.cp-wch-box { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 460px; max-height: 94vh; max-height: 94dvh; box-sizing: border-box; border-radius: 20px 20px 0 0; overflow: hidden;
+  border-top: 2px solid #7dd3fc; background: radial-gradient(120% 45% at 50% 0%, rgba(125, 211, 252, .28), transparent 60%), linear-gradient(180deg, #0a2a4f, #050d1a 55%); color: #fff; font-family: Inter, sans-serif;
+  box-shadow: 0 -10px 40px rgba(56, 189, 248, .25); }
+.cp-wch-x { position: absolute; top: 12px; right: 12px; z-index: 2; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .07); color: #fff; font-size: 14px; cursor: pointer; }
+.cp-wch-top { flex: none; padding: 16px 48px 2px; text-align: center; }
+.cp-wch-k { margin: 0; font: 800 11px/1.3 Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: #7dd3fc; }
+.cp-wch-k.is-last { color: #fde68a; }
+.cp-wch-k.is-last span { font-variant-numeric: tabular-nums; color: #fff; }
+.cp-wch-k.is-last.is-final { color: #fca5a5; }
+.cp-wch-t { margin: 4px 0 2px; font: 900 28px/1.1 Inter, sans-serif; text-wrap: balance;
+  background: linear-gradient(100deg, #bae6fd, #ffffff 35%, #7dd3fc 55%, #ffffff 75%, #bae6fd); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #fff; }
+.cp-wch-nm { margin: 2px 0 6px; }
+.cp-wch-nm span { display: inline-block; padding: 4px 12px; border-radius: 999px; font: 900 14px/1.2 Inter, sans-serif; color: #04121f; background: linear-gradient(135deg, #7dd3fc, #f0f9ff 50%, #7dd3fc); }
+.cp-wch-s { margin: 0 auto; max-width: 38ch; font: 600 12.5px/1.45 Inter, sans-serif; color: #c9d7ea; text-wrap: pretty; }
+.cp-wch-field { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; display: grid; gap: 12px; margin: 10px 12px 6px; padding: 14px 8px 10px; border-radius: 16px;
+  background: repeating-linear-gradient(180deg, #14532d 0 34px, #166534 34px 68px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .15), inset 0 0 40px rgba(0, 0, 0, .35); }
+.cp-wch-line { display: flex; justify-content: center; gap: 6px; }
+.cp-wch-field .cp-wch-c { flex: 0 1 78px; height: 78px; padding: 7px 4px 5px; }
+.cp-wch-field .cp-wch-c .cw-top { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 2px; }
+.cp-wch-field .cp-wch-c .cw-top b { font: 900 9px/1 Inter, sans-serif; color: #bae6fd; }
+.cp-wch-field .cp-wch-c .cw-top i { font: 900 8px/1 Inter, sans-serif; font-style: normal; padding: 2px 3px; border-radius: 3px; }
+.cp-wch-field .cp-wch-c .cw-r { margin-top: 4px; font-size: 18px; min-width: 34px; }
+.cp-wch-field .cp-wch-c .cw-n { font-size: 9.5px; white-space: nowrap; text-align: center; overflow: visible; text-overflow: clip; }
+.cp-wch-medal { flex: none; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 4px 8px; margin: 2px 16px 0; font: 700 12.5px/1.3 Inter, sans-serif; color: #bae6fd; text-align: center; }
+.cp-wch-medal b { color: #fff; font-weight: 900; }
+.cp-wch-foot { flex: none; padding: 8px 20px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid rgba(255, 255, 255, .06); }
+.cp-wch-pick { display: flex; align-items: center; gap: 10px; margin: 0 auto 8px; max-width: 360px; padding: 8px 10px; border-radius: 12px; border: 1px solid rgba(125, 211, 252, .45); background: rgba(56, 189, 248, .1); text-align: left; }
+.cp-wch-pick.is-have { justify-content: center; font: 700 12.5px/1.35 Inter, sans-serif; color: #e0f2fe; }
+.cp-wch-pick-t { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.cp-wch-pick-t b { font: 900 13px/1.2 Inter, sans-serif; }
+.cp-wch-pick-t small { font: 600 11.5px/1.3 Inter, sans-serif; color: #bae6fd; text-wrap: pretty; }
+.cp-wch-pick-go { flex: none; border: 0; border-radius: 999px; padding: 9px 14px; font: 900 13px/1 Inter, sans-serif; color: #04121f; background: linear-gradient(135deg, #7dd3fc, #f0f9ff 50%, #7dd3fc); cursor: pointer; }
+.cp-wch-go { display: block; box-sizing: border-box; width: 100%; max-width: 320px; margin: 0 auto; padding: 14px 20px; border: 0; border-radius: 999px; cursor: pointer; font: 900 16px/1 Inter, sans-serif; color: #04121f; text-align: center; text-decoration: none;
+  background: linear-gradient(100deg, #7dd3fc, #f0f9ff 45%, #38bdf8 70%, #bae6fd); box-shadow: 0 0 20px rgba(56, 189, 248, .4); }
+.cp-wch-end { margin: 8px 0 0; font: 700 11px/1.3 Inter, sans-serif; color: #93a9c4; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .cp-wch { -webkit-backdrop-filter: none; backdrop-filter: none; } .cp-wch-spot::after { animation: none; } }
+/* Its last 24 hours: the banner above the home spot (like the Premiers', in World Cup blue foil; red in the final hour) */
+.cp-wch-tl-box { margin: 0 0 10px; }
+.cp-wch-tl-box[hidden] { display: none; }
+.cp-wch-tl { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; color: #f0f9ff; text-align: left; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  border: 1.5px solid transparent; background: linear-gradient(135deg, #0f3d6e, #071a33 80%) padding-box, linear-gradient(120deg, #0369a1, #7dd3fc 30%, #f0f9ff 45%, #38bdf8 60%, #0369a1) border-box; box-shadow: 0 0 18px rgba(56, 189, 248, .35); }
+@media (hover: hover) { .cp-wch-tl:hover { filter: brightness(1.06); } }
+.cp-wch-tl-ico { font-size: 22px; line-height: 1; flex: none; }
+.cp-wch-tl-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.cp-wch-tl-txt b { font: 900 13.5px/1.2 Inter, sans-serif; text-wrap: balance; }
+.cp-wch-tl-txt small { font: 700 12px/1.3 Inter, sans-serif; color: #bae6fd; }
+.cp-wch-tl-clock { font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: .3px; }
+.cp-wch-tl-go { flex: none; border: 0; border-radius: 999px; padding: 9px 14px; font: 900 12.5px/1 Inter, sans-serif; color: #04121f; cursor: pointer; white-space: nowrap; background: linear-gradient(135deg, #7dd3fc, #f0f9ff 50%, #7dd3fc); }
+.cp-wch-tl.is-final { border-color: #f87171; background: linear-gradient(135deg, #7f1d1d, #2a0a0a 80%); box-shadow: 0 0 22px rgba(248, 113, 113, .4); animation: caTlPulse 2s ease-in-out infinite; }
+.cp-wch-tl.is-final .cp-wch-tl-txt small { color: #fecaca; }
+.cp-wch-tl.is-final .cp-wch-tl-go { background: #fff; color: #7f1d1d; }
+@media (prefers-reduced-motion: reduce) { .cp-wch-tl.is-final { animation: none; } }
+/* The Pick's payment pop-up, its three sample champions, the Shop, the Vault and the slider's Picks card */
+.ca-rr.is-wch .ca-rr-panel { background: radial-gradient(120% 70% at 50% 0%, #0f3d6e, #071224 72%); border-color: rgba(125, 211, 252, .7); }
+.ca-rr.is-wch .ca-rr-kicker, .ca-rr.is-wch .ca-rr-pack small strong { color: #bae6fd; }
+.ca-rr.is-wch .ca-rr-badge { border-color: #7dd3fc !important; box-shadow: 0 0 26px rgba(56, 189, 248, .4) !important; background: linear-gradient(180deg, #0f3d6e, #071224) !important; }
+.ca-rr.is-wch .ca-rr-hook { border-color: rgba(125, 211, 252, .5); background: rgba(56, 189, 248, .1); color: #fff; }
+.ca-rr.is-wch .ca-rr-pack { border-color: rgba(125, 211, 252, .4); background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02)); }
+.ca-rr.is-wch .ca-rr-pack.is-best { border-color: #7dd3fc; background: linear-gradient(160deg, rgba(56, 189, 248, .24), rgba(56, 189, 248, .05)); box-shadow: 0 0 22px rgba(56, 189, 248, .35); }
+.ca-rr.is-wch .ca-rr-pack em { background: linear-gradient(135deg, #7dd3fc, #f0f9ff 50%, #7dd3fc); color: #04121f; }
+.ca-rr.is-wch .ca-rr-pack em.is-quick { background: #fff; color: #111; }
+.ca-rr.is-wch .ca-rr-save { background: rgba(56, 189, 248, .2); color: #e0f2fe; }
+@media (hover: hover) { .ca-rr.is-wch .ca-rr-pack:hover { border-color: #e0f2fe; } }
+.ca-rr-tc.is-wch { border: 2px solid transparent; background: linear-gradient(160deg, #1f6aa8, #0f3d6e 40%, #071d38) padding-box, linear-gradient(135deg, #0c4a6e, #38bdf8 25%, #f0f9ff 45%, #7dd3fc 60%, #0369a1 85%) border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .45), 0 0 14px rgba(56, 189, 248, .45); }
+.ca-rr-tc.is-wch.is-medal { background: linear-gradient(160deg, #1f6aa8, #0f3d6e 40%, #071d38) padding-box, linear-gradient(135deg, #7dd3fc, #ffffff 30%, #bae6fd 55%, #ffffff 75%, #7dd3fc) border-box; }
+.ca-rr-tc.is-wch .ca-rr-tc-top b, .ca-rr-tc.is-wch .ca-rr-tc-t { color: #bae6fd; }
+.ca-rr-tc.is-wch .ca-rr-tc-r { display: inline-block; padding: 1px 8px; border-radius: 7px; font-size: 24px; color: #04121f; background: linear-gradient(135deg, #7dd3fc, #f0f9ff 45%, #38bdf8 70%, #e0f2fe); }
+.ca-shop-it.is-wch { --it: 56, 189, 248; --itc: #38bdf8; --itl: #e0f2fe; --itd: #04121f; border-color: rgba(125, 211, 252, .6); background: radial-gradient(120% 90% at 50% 0%, rgba(125, 211, 252, .16), transparent 55%), linear-gradient(180deg, #0f2a47, #0b1220 80%); }
+.ca-vl-row.is-wch { --it: 56, 189, 248; --itl: #e0f2fe; }
+.ca-vl-chip.is-wch { --it: 56, 189, 248; --itl: #e0f2fe; }
+.ca-wild.is-wch { --it: 56, 189, 248; --itc: #38bdf8; --itl: #e0f2fe; --itd: #04121f; border-color: rgba(125, 211, 252, .75); background: linear-gradient(135deg, rgba(15, 61, 110, .95), rgba(7, 18, 36, .8)); }
+.is-src-wch { --src: #7dd3fc; }
+/* Admin's World Champions card: big nation buttons (no dropdowns, the owner's iPhone) */
+.ca-wch-h { display: block; margin: 12px 0 6px; font: 900 12px/1.2 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; color: #7dd3fc; }
+.ca-wch-nats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.ca-wch-nat { min-height: 44px; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(125, 211, 252, .35); background: rgba(56, 189, 248, .06); color: #e0f2fe; font: 800 15px/1.2 inherit; text-align: center; cursor: pointer; }
+.ca-wch-nat.is-on { border-color: #e0f2fe; background: linear-gradient(135deg, #0369a1, #0f3d6e); color: #fff; box-shadow: 0 0 12px rgba(56, 189, 248, .4); }
+
+/* Admin Overview: the Launches row (16 Oct 2026): every launch card is one tap in, so nothing goes live by accident */
+.ca-adm-launches-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 10px; width: 100%; margin: 10px 0 4px; padding: 14px 14px; box-sizing: border-box; border-radius: 14px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .04); color: #fff; font: 800 15px/1.2 Inter, sans-serif; text-align: left; cursor: pointer; }
+.ca-adm-launches-row small { color: var(--ca-muted); font: 700 12px/1 Inter, sans-serif; }
+.ca-adm-launches-row i { font-style: normal; font-size: 20px; color: var(--ca-muted); }
+@media (hover: hover) { .ca-adm-launches-row:hover { background: rgba(255, 255, 255, .08); } }

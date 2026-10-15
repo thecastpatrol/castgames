@@ -3802,3 +3802,9 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-wch-nats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .ca-wch-nat { min-height: 44px; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(125, 211, 252, .35); background: rgba(56, 189, 248, .06); color: #e0f2fe; font: 800 15px/1.2 inherit; text-align: center; cursor: pointer; }
 .ca-wch-nat.is-on { border-color: #e0f2fe; background: linear-gradient(135deg, #0369a1, #0f3d6e); color: #fff; box-shadow: 0 0 12px rgba(56, 189, 248, .4); }
+
+/* Admin Overview: the Launches row (16 Oct 2026): every launch card is one tap in, so nothing goes live by accident */
+.ca-adm-launches-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 10px; width: 100%; margin: 10px 0 4px; padding: 14px 14px; box-sizing: border-box; border-radius: 14px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .04); color: #fff; font: 800 15px/1.2 Inter, sans-serif; text-align: left; cursor: pointer; }
+.ca-adm-launches-row small { color: var(--ca-muted); font: 700 12px/1 Inter, sans-serif; }
+.ca-adm-launches-row i { font-style: normal; font-size: 20px; color: var(--ca-muted); }
+@media (hover: hover) { .ca-adm-launches-row:hover { background: rgba(255, 255, 255, .08); } }

@@ -7137,12 +7137,26 @@
       '<div class="ca-su-key"><span><i style="background:rgb(' + SU_C.n + ')"></i>New Sign-Ups</span><span><i class="is-line" style="background:rgb(' + SU_C.t + ')"></i>Total Profiles ' + (tots.length ? fmt(tMin) + ' to ' + fmt(tMax) : '') + '</span></div>';
     return h + '</div>';
   }
+  // The Launches page (16 Oct 2026): every launch card on its own page, behind the Launches row on Overview
+  function admLaunchCount(d) {
+    var on = d.launched || [], n = LAUNCH_CARDS.filter(function (x) { return on.indexOf(x[0]) < 0; }).length;
+    ['ou', 'po'].forEach(function (k) { if (on.indexOf(k) < 0) n++; });
+    if (!wchNow()) n++;
+    return n;
+  }
+  function admLaunches(d) {
+    return '<button type="button" class="ca-link ca-back" data-ca="adm-launches-back">&larr; Overview</button>' +
+      '<div class="ca-ov-h"><h3 class="ca-h3">Launches</h3></div>' +
+      '<p class="ca-ov-note">Each of these goes live for everyone. Every one asks you to confirm first.</p>' +
+      launchCard(d) + ouLaunchCard(d) + ouLaunchCard(d, 'po') + wchCard();
+  }
   function admOverview() {
     admOv();
     if (mod.owner) wcPeek(); // the World Cup tries card's check goes alongside, not after
     var d = mod.ov && mod.ov.data;
     if (!d) return admWait(mod.ov);
     if (mod.list) return admListView();
+    if (mod.launchesOpen) return admLaunches(d);
     // In groups, each saying where its numbers come from. Tap a number to see who is behind it (players or the latest
     // games); reports and flags open their tabs. A tile: [label, value, list (none: just the number), list heading]
     var ga = d.ga || {}, g27 = ga['27-0'], g10 = ga['1000tries'], rev = d.rev, tot = rev ? rev.pass + rev.rerolls + (rev.keys || 0) + (rev.removes || 0) + (rev.reveals || 0) + (rev.ribs || 0) + (rev.freezes || 0) + (rev.goats || 0) + (rev.totys || 0) + (rev.prems || 0) + (rev.imms || 0) + (rev.wcps || 0) + (rev.ilegs || 0) + (rev.wchs || 0) + (rev.restores || 0) : null;
@@ -7200,7 +7214,11 @@
        on top, then each section as the same label-and-number list or table, every explanation behind an (i), Six Again's
        own card under Launches and Tools. A row with a list key opens who is behind the number, as the tiles did */
     // The launch cards and tools (Check NRL.com) at the bottom (13 Oct 2026, the owner); any new launch card goes there too
-    var tools = launchCard(d) + ouLaunchCard(d) + ouLaunchCard(d, 'po') + wchCard() + totwCard() + wcTriesCard();
+    // Launch cards live one tap in (16 Oct 2026, the owner: "don't wanna accidentally launch anything" while using the
+    // World Cup tools here): Overview shows a Launches row with how many are waiting, and the tools stay out here
+    var waiting = admLaunchCount(d);
+    var tools = totwCard() + wcTriesCard() + (mod.owner ? '<button type="button" class="ca-adm-launches-row" data-ca="adm-launches"><span>&#x1F680;</span><b>Launches</b>' +
+      '<small>' + (waiting ? waiting + ' waiting' : 'Nothing waiting') + '</small><i aria-hidden="true">&rsaquo;</i></button>' : '');
     var groupNote = {};
     groups.forEach(function (g) { groupNote[g[0]] = g[2] || ''; });
     var info = function (key) {
@@ -9430,7 +9448,7 @@
       case 'mod-act': modAct(+t.getAttribute('data-i'), t.getAttribute('data-a')); break;
       case 'mod-verify': { var vi = document.getElementById('caVerify'); mod.vdraft = vi ? vi.value : ''; modVerify(mod.vdraft, true); break; }
       case 'mod-unverify': modVerify(t.getAttribute('data-n'), false); break;
-      case 'adm-tab': mod.tab = t.getAttribute('data-v'); mod.moreOpen = false; mod.lookConfirm = null; mod.flagConfirm = null; mod.list = null; render(); break;
+      case 'adm-tab': mod.tab = t.getAttribute('data-v'); mod.moreOpen = false; mod.launchesOpen = false; mod.lookConfirm = null; mod.flagConfirm = null; mod.list = null; render(); break;
       case 'adm-more': mod.moreOpen = !mod.moreOpen; render(); break;
       case 'adm-clear': mod.look = null; mod.lookQ = ''; mod.lookConfirm = null; mod.birthOpen = false; mod.trophy = null; render(); break;
       case 'adm-list': { var lk = t.getAttribute('data-v'); if (lk.charAt(0) === '#') { mod.tab = lk.slice(1); mod.list = null; } else mod.list = { kind: lk, label: t.getAttribute('data-l') }; render(); break; }
@@ -9509,6 +9527,8 @@
       case 'adm-give-step': { if (!mod.give || mod.give.busy) break; var gk = t.getAttribute('data-k'), gn = (mod.give.items[gk] || 0) + (+t.getAttribute('data-d')); mod.give.items[gk] = Math.max(0, Math.min(20, gn)); mod.give.confirm = false; render(); break; }
       case 'adm-give': giveItems(); break;
       case 'adm-wct-fold': mod.wctOpen = !mod.wctOpen; render(); break;
+      case 'adm-launches': mod.launchesOpen = true; render(); { var lp = el.querySelector('.ca-panel'); if (lp) lp.scrollTop = 0; } break;
+      case 'adm-launches-back': mod.launchesOpen = false; render(); break;
       case 'adm-wch-fold': mod.wch = mod.wch || {}; mod.wch.open = !mod.wch.open; render(); break;
       case 'adm-wch-edit': mod.wch = { open: true, edit: wchDraft() }; twSquads().then(function () { if (mod.wch && mod.wch.edit) { wchFill(mod.wch.edit); render(); } }, function () { if (mod.wch) { mod.wch.err = 'The World Cup squads did not load. Check your connection and try again.'; render(); } }); render(); break;
       case 'adm-wch-close': mod.wch = { open: true }; render(); break;
@@ -9746,7 +9766,7 @@
     mod.confirm = null;
     // The Admin button always opens fresh on Overview (7 Oct 2026, the owner after a play: Overview first): no player from last
     // time, no list left open ("View in Admin" on a team sheet still opens straight on that player)
-    mod.tab = 'overview'; mod.moreOpen = false; mod.list = null; mod.look = null; mod.lookQ = ''; mod.lookWho = null; mod.lookConfirm = null; mod.flagConfirm = null; mod.birthOpen = false; mod.trophy = null;
+    mod.tab = 'overview'; mod.moreOpen = false; mod.launchesOpen = false; mod.list = null; mod.look = null; mod.lookQ = ''; mod.lookWho = null; mod.lookConfirm = null; mod.flagConfirm = null; mod.birthOpen = false; mod.trophy = null;
     loadMod(true);
     open('admin');
   }
