@@ -3,7 +3,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: #f0f0f0; font-family: Inter, -apple-system, system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
 a { color: inherit; }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 14px 16px 28px; }
+.wrap { max-width: var(--cg-max, 1080px); margin: 0 auto; padding: 14px 16px 28px; } /* the bar's width too (shared/cg.css), audit L10 16 Oct 2026 */
 .cg-sec { margin-top: 24px; }
 .cg-sec h2 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 10px; font: 900 13px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: var(--muted); }
 .cg-sec h2 small { font: 800 11.5px/1 Inter, sans-serif; letter-spacing: .2px; text-transform: none; color: var(--sky); }
@@ -15,6 +15,7 @@ a { color: inherit; }
 .cg-k { font: 900 11px/1 Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sky); }
 .cg-promo b { font: 900 22px/1.15 Inter, sans-serif; }
 .cg-promo p { margin: 0; font: 600 13.5px/1.4 Inter, sans-serif; color: #c9d2e3; }
+.cg-promo-art { display: none; }
 .cg-btn { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border-radius: 999px; background: var(--sky); color: #04121f; font: 900 13.5px/1 Inter, sans-serif; }
 .cg-btn.is-white { background: #fff; color: #0a0a0f; width: 100%; margin-top: auto; }
 /* Small cards: Continue and Daily (three in a row, all the same size) */
@@ -92,12 +93,24 @@ a { color: inherit; }
 .cg-wide span { grid-row: span 2; font-size: 26px; }
 .cg-wide b { font: 900 16px/1.2 Inter, sans-serif; } .cg-wide small { font: 600 12.5px/1.35 Inter, sans-serif; color: var(--muted); }
 .cg-wide.is-pass { border: 1.5px solid #f1c073; background: linear-gradient(135deg, #2a2418, #14110a); } .cg-wide.is-pass b { color: #f1c073; }
-.cg-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; padding: 20px 16px 40px; border-top: 1px solid var(--line); font: 700 13px/1 Inter, sans-serif; }
-.cg-foot a { color: var(--muted); text-decoration: none; } .cg-foot small { flex-basis: 100%; text-align: center; color: #6b6b80; }
+/* One footer pattern on the home page and in every game (audit L4/L5, 16 Oct 2026): pill links, then the copyright */
+.cg-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 20px 16px 40px; border-top: 1px solid var(--line); }
+.cg-foot a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); color: #d6d6e4; font: 800 12.5px/1 Inter, sans-serif; text-decoration: none; }
+@media (hover: hover) { .cg-foot a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
+.cg-foot small { flex-basis: 100%; margin-top: 6px; text-align: center; color: #78788e; font: 700 12px/1.4 Inter, sans-serif; }
 @media (min-width: 900px) {
   .wrap { padding: 24px 16px 40px; }
   .cg-hero { grid-template-columns: 2fr 1fr; } .cg-hero:has(.cg-promo:only-child) { grid-template-columns: 1fr; }
   .cg-promo { min-height: 230px; } .cg-promo b { font-size: 28px; }
+  /* One promo on its own: a banner with its logo on the right, not a tall empty box (audit L10, 16 Oct 2026) */
+  .cg-hero:has(.cg-promo:only-child) .cg-promo { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-auto-rows: auto; align-content: center; justify-items: start; column-gap: 32px; row-gap: 8px; min-height: 0; padding: 24px 28px; }
+  .cg-hero:has(.cg-promo:only-child) .cg-promo > :not(.cg-promo-art) { grid-column: 1; }
+  .cg-hero:has(.cg-promo:only-child) .cg-btn { margin-top: 6px; }
+  .cg-hero:has(.cg-promo:only-child) .cg-promo-art { display: block; grid-column: 2; grid-row: 1 / span 4; align-self: center; width: auto; height: 130px; max-width: 300px; object-fit: contain; }
+  /* Four or more Dailies: the full width, in even rows (7 = 4 + 3, 5 and 6 = rows of 3) */
+  .cg-two:has(.cg-daily-all) { grid-template-columns: 1fr; }
+  .cg-cards.n4, .cg-cards.n7, .cg-cards.n8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cg-cards.n5, .cg-cards.n6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cg-two { grid-template-columns: 1fr 1fr; }
   .cg-sports { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
   .cg-games.n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }

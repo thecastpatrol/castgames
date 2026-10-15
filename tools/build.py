@@ -93,18 +93,58 @@ def rewrite_links(text, in_js):
 EXPLAIN = {
     '1000tries': 'Roll 3, pick 1 and draft 13 NRL players with their tries hidden. Can you reach <strong>1000 career tries</strong>?',
     '4000goals': 'Draft an AFL 18 with their goals hidden. Can you reach <strong>4000 career goals</strong>?',
-    '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25,000 BBL runs</strong>?',
-    '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60,000 Test runs</strong>?',
+    '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25000 BBL runs</strong>?',
+    '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60000 Test runs</strong>?',
     '700tds': 'Draft an NFL offence with their touchdowns hidden. Can you reach <strong>700 career touchdowns</strong>?',
     'g1winner': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
 }
 
 
+# Every title in one pattern on CAST Games, "<GAME> | <short line> | CAST Games" (audit B8, 16 Oct 2026); the games' own
+# sites keep theirs. A game whose home title runs long gets a shorter line here
+NAMES = {'27-0': '27-0', '1000tries': '1000TRIES', '4000goals': '4000 GOALS', '25000runs': '25000 RUNS', '60000runs': '60000 RUNS',
+         '700tds': '700 TDS', 'g1winner': 'G1 WINNER SPINNER'}
+HOME_LINE = {'27-0': 'Build an NRL 13 and Go Undefeated'}
+# The games' old homes, written out in their copy (the privacy pages' "available at", 27-0's install steps): their folder
+# here instead (audit T4, 16 Oct 2026)
+BARE = ['27-0.thecastpatrol.com.au', '27-0.app', '1000tries.com.au', '1000tries.app', '4000goals.com.au', 'castgames.com.au']
+
+
+def retitle(s, folder, fname):
+    name = NAMES.get(folder)
+    m = re.search(r'<title>([^<]*)</title>', s)
+    if not name or not m:
+        return s
+    parts = [x.strip() for x in m.group(1).split('|')]
+    if parts[-1] == name and len(parts) == 2:  # "How It Works | 1000TRIES"
+        line = parts[0]
+    elif parts[0] == name:  # "1000TRIES | Draft 1000 NRL Tries"
+        line = HOME_LINE.get(folder) if fname == 'index.html' and folder in HOME_LINE else ' | '.join(parts[1:])
+    else:
+        return s
+    title = '%s | %s | CAST Games' % (name, line)
+    s = s.replace(m.group(0), '<title>%s</title>' % title, 1)
+    if fname == 'index.html':
+        s = re.sub(r'(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*"', lambda x: x.group(1) + title + '"', s)
+    return s
+
+
 def fit_page(path, folder, gid, hide_css, play_js, base=None):
     s = open(path, encoding='utf-8').read()
+    fname = os.path.basename(path)
     if folder in EXPLAIN:
         s = re.sub(r'<p class="hero-pitch">From the makers of.*?</p>', lambda m: '<p class="hero-pitch">' + EXPLAIN[folder] + '</p>', s, count=1, flags=re.S)
+    s = retitle(s, folder, fname)
+    s = s.replace('<meta property="og:site_name" content="The Cast Patrol">', '<meta property="og:site_name" content="CAST Games">')
+    # A bare old address in the copy (not a link: those follow below): this game's folder here
+    for dom in BARE:
+        s = re.sub(r'(>\s*)' + re.escape(dom) + r'/?(\s*<)', lambda m: m.group(1) + 'castgames.com.au/' + folder + '/' + m.group(2), s)
+    s = s.replace(' Play now at 27-0.app.', '')  # 27-0's description: it is played here
     s = rewrite_links(s, False)
+    # A 404 page is shown at any address, however deep, so its own files and links go from the site's root (audit X2, X6:
+    # every game's 404 came up unstyled, 27-0's wordmark missing)
+    if fname == '404.html':
+        s = re.sub(r'((?:href|src)=")/(?!/)', lambda m: m.group(1) + '/' + folder + '/', s)
     # Another game is on this site now: open it in the same tab (the point of one address)
     s = re.sub(r'(href="' + re.escape(SITE) + r'[^"]*")\s+target="_blank"(\s+rel="noopener")?', r'\1', s)
     head = GATE
@@ -117,6 +157,8 @@ def fit_page(path, folder, gid, hide_css, play_js, base=None):
     body = ('<script>window.CG_GAME = %r; window.CG_PLAY = function () { %s };</script>\n'
             '<script src="../shared/cg.js?v=%s"></script>\n') % (gid, play_js, CGV)
     s = re.sub(r'(<body[^>]*>)', lambda m: m.group(1) + '\n' + body, s, count=1)
+    if fname == '404.html':
+        s = s.replace('"../shared/', '"/shared/')
     open(path, 'w', encoding='utf-8').write(s)
 
 
@@ -164,6 +206,68 @@ def clear_byline(path):
             return
 
 
+# Each over/under page's own description and share card (audit B6, 16 Oct 2026: they carried their game's). The picture
+# stays the game's (no card of their own yet)
+OU_META = {
+    'six-again': ('NRL', 'Over or under? Call NRL players\' career tries before the clock runs out. A free NRL game from The Cast Patrol.'),
+    'play-on': ('AFL', 'Over or under? Call AFL players\' career goals before the clock runs out. A free AFL game from The Cast Patrol.'),
+    'free-hit': ('BBL', 'Over or under? Call Big Bash runs and wickets before the clock runs out. A free cricket game from The Cast Patrol.'),
+    'follow-on': ('Test', 'Over or under? Call Test runs and wickets before the clock runs out. A free cricket game from The Cast Patrol.'),
+    'two-point': ('NFL', 'Over or under? Call NFL career touchdowns before the clock runs out. A free NFL game from The Cast Patrol.'),
+    'photo-finish': ('Racing', 'Over or under? Call jockeys, big races and horses before the clock runs out. A free horse racing game from The Cast Patrol.'),
+}
+
+
+def ou_meta(src, page, title):
+    line, desc = OU_META[page]
+    full = '%s | %s Over or Under | CAST Games' % (title, line)
+    tags = [(r'<meta name="description" content="[^"]*">', '<meta name="description" content="%s">' % desc),
+            (r'<link rel="canonical" href="[^"]*">', '<link rel="canonical" href="%s%s/">' % (SITE, page)),
+            (r'<meta property="og:url" content="[^"]*">', '<meta property="og:url" content="%s%s/">' % (SITE, page)),
+            (r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="%s">' % full),
+            (r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % desc),
+            (r'<meta name="twitter:title" content="[^"]*">', '<meta name="twitter:title" content="%s">' % full),
+            (r'<meta name="twitter:description" content="[^"]*">', '<meta name="twitter:description" content="%s">' % desc)]
+    for pat, rep in tags:
+        src = re.sub(pat, lambda m: rep, src, count=1)
+    return src
+
+
+# An over/under page before its Launch (audit X7, 16 Oct 2026: /play-on/ showed the whole 4000 GOALS home): an Opens Soon
+# card instead, until CastAccount says it is on (the owner's Launch, or his private preview link). page: (the account's
+# check, its game's folder, its game, its sport's words)
+SOON = {'play-on': ('poOn', '4000goals', '4000 GOALS', 'Call AFL players\' career goals over or under before the clock runs out.')}
+SOON_CSS = ('<style>html.cg-soon-on body > *:not(.cg-bar):not(#cgSoon):not(script) { display: none !important; }'
+            '#cgSoon { display: grid; place-items: center; min-height: calc(100vh - var(--cg-bar-h, 112px)); min-height: calc(100dvh - var(--cg-bar-h, 112px)); padding: 32px 16px; box-sizing: border-box;'
+            ' background: radial-gradient(70% 50% at 50% 20%, rgba(var(--soon-rgb), .35), transparent 70%), #0a0a0f; color: #fff; font-family: Inter, -apple-system, system-ui, sans-serif; }'
+            '#cgSoon[hidden] { display: none; }'
+            '.cg-soon-box { width: 100%; max-width: 420px; display: grid; gap: 12px; justify-items: center; text-align: center; }'
+            '.cg-soon-mark { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 22px; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .14); font: 900 30px/1 Inter, sans-serif; }'
+            '.cg-soon-k { font: 900 11px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: #a2a2b8; }'
+            '#cgSoon h1 { margin: 0; font: 900 28px/1.15 Inter, sans-serif; text-wrap: balance; }'
+            '#cgSoon p { margin: 0; color: #c9c9d8; font: 600 15px/1.45 Inter, sans-serif; text-wrap: balance; }'
+            '.cg-soon-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 50px; margin-top: 8px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 15px/1 Inter, sans-serif; text-decoration: none; }'
+            '.cg-soon-alt { display: inline-flex; align-items: center; min-height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: #fff; font: 800 13px/1 Inter, sans-serif; text-decoration: none; }'
+            '</style>\n')
+
+
+def soon(src, page, title):
+    check, game, gname, pitch = SOON[page]
+    g = [x for x in GAMES if x[0] == game]
+    head = '<script>document.documentElement.classList.add("cg-soon-on");</script>\n' + SOON_CSS
+    src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + head, src, count=1)
+    box = ('<div id="cgSoon" style="--c1:#5a1a1a;--c2:#1c0b10;--soon-rgb:150,40,52"><div class="cg-soon-box"><span class="cg-soon-mark" aria-hidden="true">&#x25B2;&#x25BC;</span>'
+           '<span class="cg-soon-k">%s</span><h1>%s Opens Soon</h1><p>%s</p>'
+           '<a class="cg-soon-btn" href="/%s/">Play %s</a><a class="cg-soon-alt" href="/">All Games</a></div></div>\n'
+           '<script>(function () {\n'
+           '  var el = document.getElementById("cgSoon");\n'
+           '  function on() { var A = window.CastAccount; try { return !!(A && A.%s && A.%s()); } catch (e) { return false; } }\n'
+           '  function check() { var off = !on(); el.hidden = !off; document.documentElement.classList.toggle("cg-soon-on", off); }\n'
+           '  check(); document.addEventListener("DOMContentLoaded", check); window.addEventListener("load", check); window.addEventListener("cast:launch", check);\n'
+           '})();</script>\n') % ('Over or Under', title, pitch, game, gname, check, check)
+    return src.replace('</body>', box + '</body>', 1) if g else src
+
+
 def main():
     # The home page's own copies of the logos lose the byline too (16 Oct 2026: 700 TDS' home card still said created by cast)
     for rel in LOGOS:
@@ -194,7 +298,10 @@ def main():
                           # its back arrow goes to the CAST Games home (on its own page there's no game home to go to)
                           '<script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>' % (key, CGV), 1)
         src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % game, src, count=1)
-        src = re.sub(r'<title>[^<]*</title>', '<title>%s | Over or Under | CAST Games</title>' % title, src, count=1)
+        src = re.sub(r'<title>[^<]*</title>', '<title>%s | %s Over or Under | CAST Games</title>' % (title, OU_META[page][0]), src, count=1)
+        src = ou_meta(src, page, title)
+        if page in SOON:
+            src = soon(src, page, title)
         open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(src)
         print('built', page)
     # Files the account code loads next to the page (assets/...): the home and sport pages need their own copy
@@ -204,7 +311,7 @@ def main():
     # contents, so a change reaches everyone at once instead of an old copy kept by the browser (15 Oct 2026)
     idx = os.path.join(HERE, 'index.html')
     hs = open(idx, encoding='utf-8').read()
-    hs2 = re.sub(r'((?:1000tries|4000goals|27-0)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|700tds|g1winner)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
     if hs2 != hs:
         open(idx, 'w', encoding='utf-8').write(hs2)
     # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only
@@ -231,6 +338,12 @@ def main():
     if LIVE and has:
         s = re.sub(r'<meta name="robots" content="noindex"><!-- CG_HIDDEN[^>]*-->\n?', '', s)
     open(idx, 'w', encoding='utf-8').write(s)
+    # The site's own 404 (16 Oct 2026) sits behind the tester password too, until the switch-over
+    nf = os.path.join(HERE, '404.html')
+    s = re.sub(r'<script src="/shared/cg-gate\.js[^"]*"></script><!-- CG_GATE -->\n?', '', open(nf, encoding='utf-8').read())
+    if GATE:
+        s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + GATE.rstrip('\n'), s, count=1)
+    open(nf, 'w', encoding='utf-8').write(s)
     print('done', 'LIVE' if LIVE else 'hidden')
 
 

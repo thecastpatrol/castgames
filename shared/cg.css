@@ -1,7 +1,7 @@
 /* CAST Games bar and game switcher (shared/cg.js): the same on the home page and in every game. Even sizes everywhere
    (the owner: "all even and consistent"): a 56px top line and 52px tabs on phones, one 64px line on desktop */
 .cg-bar { position: sticky; top: 0; z-index: 9000; background: rgba(10, 10, 15, .97); border-bottom: 1px solid rgba(255, 255, 255, .08); font-family: Inter, -apple-system, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-.cg-in { display: grid; grid-template-columns: auto auto 1fr auto; grid-template-areas: "logo game sp acct" "tabs tabs tabs tabs"; align-items: center; column-gap: 10px; max-width: 1180px; margin: 0 auto; padding: 0 12px; }
+.cg-in { display: grid; grid-template-columns: auto auto 1fr auto; grid-template-areas: "logo game sp acct" "tabs tabs tabs tabs"; align-items: center; column-gap: 10px; max-width: var(--cg-max, 1080px); margin: 0 auto; padding: 0 12px; } /* one width with the home page (css/home.css .wrap), audit L10 16 Oct 2026 */
 .cg-logo { grid-area: logo; display: flex; align-items: center; height: 56px; }
 .cg-logo img { height: 34px; width: auto; display: block; }
 .cg-game { grid-area: game; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: #141420; color: #fff; font: 900 13px/1 Inter, sans-serif; cursor: pointer; white-space: nowrap; }
@@ -30,6 +30,12 @@ html.cg-sheet-open, html.cg-sheet-open body { overflow: hidden; }
 @media (min-width: 900px) { .cg-sheet { align-items: flex-start; padding-top: 80px; } .cg-sheet-box { border-radius: 20px; border: 1px solid rgba(255, 255, 255, .12); } }
 .cg-x { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .06); color: #fff; font-size: 14px; cursor: pointer; }
 .cg-home-link { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #fff; font: 900 13px/1 Inter, sans-serif; text-decoration: none; }
+.cg-sw-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 6px; margin: 16px 0 4px; } /* wraps, never scrolls sideways */
+.cg-sw-chip { display: grid; justify-items: center; gap: 4px; min-width: 0; padding: 8px 4px 7px; border-radius: 12px; border: 1.5px solid rgba(255, 255, 255, .12); background: rgba(255, 255, 255, .04); color: #d6d6e4; cursor: pointer; font-family: inherit; }
+.cg-sw-chip span { font-size: 20px; line-height: 1; }
+.cg-sw-chip b { font: 800 12px/1.1 Inter, sans-serif; white-space: nowrap; }
+.cg-sw-chip.is-on { border-color: #fff; background: rgba(var(--sc), .35); color: #fff; }
+@media (hover: hover) { .cg-sw-chip:not(.is-on):hover { border-color: rgba(255, 255, 255, .4); } }
 .cg-sp-h { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 8px; padding-left: 10px; border-left: 4px solid rgb(var(--sc)); }
 .cg-sp-h b { font: 900 17px/1 Inter, sans-serif; }
 .cg-sp-h small { font: 700 12px/1 Inter, sans-serif; color: #a2a2b8; }

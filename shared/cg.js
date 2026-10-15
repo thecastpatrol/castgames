@@ -22,8 +22,9 @@
     { id: 'afl', name: 'AFL', ico: '&#x1F3C9;', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
     { id: 'cricket', name: 'Cricket', ico: '&#x1F3CF;', long: 'International & T20s', c: '255,122,46', status: 'live', path: 'cricket/' },
     { id: 'nfl', name: 'NFL', ico: '&#x1F3C8;', long: 'American Football', c: '139,92,246', status: 'live', path: 'nfl/' },
-    { id: 'racing', name: 'Horse Racing', ico: '&#x1F3C7;', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
+    { id: 'racing', name: 'Horse Racing', chip: 'Racing', ico: '&#x1F3C7;', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
   ];
+  // daily: the game has a Daily Challenge (the home page's Daily strip lists every live one, audit L9 16 Oct 2026)
   var GAMES = [
     { id: '27-0', sport: 'nrl', name: '27-0', path: '27-0/', logo: 'assets/logos/27-0.png', c1: '#1f2a55', c2: '#11152a', status: 'live',
       line: 'Draft a 13 from any NRL season since 1998 and go undefeated.', short: 'Draft a 13 and go undefeated', daily: true, stats: '27-0' },
@@ -35,16 +36,16 @@
       line: 'Draft an AFL 18 and reach 4000 career goals.', short: 'Draft an 18 to 4000 goals', daily: true, stats: '4000goals' },
     // 25000 RUNS (15 Oct 2026): the Big Bash game, a BBL XI to 25000 career runs
     { id: '25000runs', sport: 'cricket', name: '25000 RUNS', path: '25000runs/', logo: 'assets/logos/25000runs.png', c1: '#1a2148', c2: '#0b1022', status: 'live', badge: 'New',
-      line: 'Draft a Big Bash XI and reach 25000 career BBL runs.', short: 'Draft a BBL XI to 25000 runs' },
+      line: 'Draft a Big Bash XI and reach 25000 career BBL runs.', short: 'Draft a BBL XI to 25000 runs', daily: true },
     // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60000 career Test runs
     { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
-      line: 'Draft a Test XI from every Test since 1877 and reach 60000 career Test runs.', short: 'Draft a Test XI to 60000 runs' },
+      line: 'Draft a Test XI from every Test since 1877 and reach 60000 career Test runs.', short: 'Draft a Test XI to 60000 runs', daily: true },
     // 700 TDS (16 Oct 2026): the NFL game, an offence of 9 to 700 career touchdowns
     { id: '700tds', sport: 'nfl', name: '700 TDS', path: '700tds/', logo: 'assets/logos/700tds.png', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
-      line: 'Draft an NFL offence and reach 700 career touchdowns.', short: 'Draft 9 to 700 touchdowns' },
+      line: 'Draft an NFL offence and reach 700 career touchdowns.', short: 'Draft 9 to 700 touchdowns', daily: true },
     // G1 WINNER SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
     { id: 'g1winner', sport: 'racing', name: 'G1 WINNER SPINNER', path: 'g1winner/', logo: 'assets/logos/g1winner.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
-      line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s' },
+      line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s', daily: true },
     // The newer games' over/unders (16 Oct 2026, the owner: separate games, not modes inside the draft games)
     { id: 'free-hit', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
       line: 'Over or under? Call BBL runs and wickets before the clock runs out.', short: 'BBL over or under, vs the clock' },
@@ -153,8 +154,28 @@
     location.href = url(currentGame().path);
   }
 
-  /* ---------- The game switcher: every sport, then its games (soon sports at the end) ---------- */
-  var sheet = null;
+  /* ---------- The game switcher: sport chips, then that sport's games ---------- */
+  /* One sport at a time (16 Oct 2026, the owner: with a lot of games the list was very long, and no sideways scrolling on
+     phones): the chips wrap onto a second row rather than scroll, it opens on the sport you're in (on the home page the
+     last one picked), and a tap on a chip swaps the list below without closing */
+  var sheet = null, swSport = '';
+  function swSports(live) { return SPORTS.filter(function (s) { return s.status === 'live' && live.some(function (g) { return g.sport === s.id; }); }); }
+  function swDraw() {
+    var live = liveGames(), sps = swSports(live);
+    if (!sps.some(function (s) { return s.id === swSport; })) swSport = sps.length ? sps[0].id : '';
+    var sp = sportOf(swSport), gs = live.filter(function (g) { return g.sport === swSport; });
+    sheet.innerHTML = '<div class="cg-sheet-box"><button type="button" class="cg-x" data-cg-x aria-label="Close">&#x2715;</button>' +
+      '<a class="cg-home-link" href="' + url('') + '">&#x1F3E0; All Games</a>' +
+      '<div class="cg-sw-chips" role="tablist" aria-label="Sports">' + sps.map(function (s) {
+        return '<button type="button" role="tab" class="cg-sw-chip' + (s.id === swSport ? ' is-on' : '') + '" aria-selected="' + (s.id === swSport) + '" data-cg-sport="' + s.id + '" style="--sc:' + s.c + '">' +
+          '<span aria-hidden="true">' + (s.ico || '') + '</span><b>' + esc(s.chip || s.name) + '</b></button>';
+      }).join('') + '</div>' +
+      (sp ? '<div class="cg-sp-h" style="--sc:' + sp.c + '"><b>' + esc(sp.name) + '</b><small>' + esc(sp.long) + '</small></div>' : '') +
+      '<div class="cg-sp-list">' + gs.map(function (g) {
+        return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
+          (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
+      }).join('') + '</div></div>';
+  }
   function openSwitcher() {
     if (!sheet) {
       sheet = document.createElement('div');
@@ -164,21 +185,17 @@
       sheet.setAttribute('aria-modal', 'true');
       sheet.setAttribute('aria-label', 'Pick a game');
       document.body.appendChild(sheet);
-      sheet.addEventListener('click', function (e) { if (e.target === sheet || e.target.closest('[data-cg-x]')) shut(); });
+      sheet.addEventListener('click', function (e) {
+        var chip = e.target.closest('[data-cg-sport]');
+        if (chip) { swSport = chip.getAttribute('data-cg-sport'); try { localStorage.setItem('cg_sw_sport', swSport); } catch (x) { /* storage blocked */ } swDraw(); return; }
+        if (e.target === sheet || e.target.closest('[data-cg-x]')) shut();
+      });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') shut(); });
     }
-    var live = liveGames();
-    sheet.innerHTML = '<div class="cg-sheet-box"><button type="button" class="cg-x" data-cg-x aria-label="Close">&#x2715;</button>' +
-      '<a class="cg-home-link" href="' + url('') + '">&#x1F3E0; All Games</a>' +
-      SPORTS.filter(function (s) { return s.status !== 'hidden'; }).map(function (s) {
-        var gs = live.filter(function (g) { return g.sport === s.id; });
-        if (!gs.length && s.status !== 'soon') return '';
-        return '<div class="cg-sp-h" style="--sc:' + s.c + '"><b>' + esc(s.name) + '</b><small>' + esc(s.long) + '</small></div>' +
-          (gs.length ? '<div class="cg-sp-list">' + gs.map(function (g) {
-            return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
-              (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
-          }).join('') + '</div>' : '<p class="cg-soon">Coming soon</p>');
-      }).join('') + '</div>';
+    var g = currentGame(), last = '';
+    try { last = localStorage.getItem('cg_sw_sport') || ''; } catch (x) { /* storage blocked */ }
+    swSport = (g && g.sport) || window.CG_SPORT || last;
+    swDraw();
     sheet.hidden = false;
     document.documentElement.classList.add('cg-sheet-open');
   }

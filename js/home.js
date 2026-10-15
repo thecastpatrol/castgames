@@ -21,10 +21,10 @@
   // Promos on now: the World Cup (while World Cup mode is live) and the Team of the Week (while one is on)
   function promos() {
     var a = A(), out = [];
-    if (a && a.wcLive && a.wcLive()) out.push({ k: 'Featured · World Cup', t: 'World Cup 8-0', p: 'Spin a nation, draft from its 2026 squad and win all eight.', b: 'Play Now', href: '27-0/?play=wc' });
+    if (a && a.wcLive && a.wcLive()) out.push({ k: 'Featured · World Cup', t: 'World Cup 8-0', p: 'Spin a nation, draft from its 2026 squad and win all eight.', b: 'Play Now', href: '27-0/?play=wc', art: 'assets/logos/27-0.png' });
     var w = a && a.totw ? a.totw() : null;
     if (w) out.push({ k: 'World Cup · ' + w.label, t: 'Team of the Week', p: '13 players boosted in World Cup 8-0 this week.', b: 'See the 13', href: '27-0/?play=wc', side: true });
-    if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL, AFL, cricket, NFL and horse racing fans.', b: 'Browse Games', href: '#cgSports' });
+    if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL, AFL, cricket, NFL and horse racing fans.', b: 'Browse Games', href: '#cgSports', art: 'assets/logos/castgames.png' });
     return out;
   }
   // Drafts waiting on this device: 1000TRIES and 4000 GOALS keep theirs under their own names here, 27-0 under its own
@@ -67,16 +67,24 @@
      daily challenge is, or the reward"): the headline each game's home card shows (js/daily.js themeFor), and the reward */
   function sydDate() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   function fmt(n) { return String(n); } // no commas in numbers (the owner, 16 Oct 2026)
+  // Each game's calendar (index.html loads them) and the name its rewards go under
+  var CAL = { '27-0': ['CG_DAILY_NRL', '27-0'], '1000tries': ['CG_DAILY_NRL', '1000tries'], '4000goals': ['CG_DAILY_AFL', '4000goals'],
+    '25000runs': ['CG_DAILY_BBL', 'bigbash'], '60000runs': ['CG_DAILY_TESTS', 'tests'], '700tds': ['CG_DAILY_NFL', 'nfl'], 'g1winner': ['CG_DAILY_RACING', 'racing'] };
   function dailyOf(id) {
-    var C = id === '4000goals' ? window.CG_DAILY_AFL : window.CG_DAILY_NRL;
+    var cal = CAL[id], C = cal && window[cal[0]];
     if (!C || !C.day) return null;
     try {
-      var d = C.day(sydDate()), era = d.key.indexOf('era:') === 0, head;
+      var d = C.day(sydDate()), era = d.key.indexOf('era:') === 0, head, lead;
       if (id === '27-0') {
         var g = d.g270, region = d.key === 'sydney' || d.key === 'queensland';
         head = (era ? d.short.replace(/^The /, '') : region ? d.short.replace(/ Clubs$/, '') : d.short) + (g.wins ? ' 13 with ' + g.wins + '+ wins' : ' 13 rated ' + g.goal + '+');
-      } else head = fmt(d.g1000.target) + '+ ' + (era ? 'From ' : 'With ') + d.short;
-      var items = (d.reward || {})[id] || {}, k = Object.keys(items)[0];
+      } else {
+        // the words each game's own home card uses (its js/daily.js themeFor): "525+ From the 2010s", "46250+ With Australia"
+        if (id === 'g1winner') lead = /^(era|dec):/.test(d.key) ? (/^Since /.test(d.short) ? '' : d.key.indexOf('dec:') === 0 ? 'From the ' : 'From ') : d.g1000.ds ? '' : 'With ';
+        else lead = d.lead != null ? d.lead : era ? 'From ' : 'With ';
+        head = fmt(d.g1000.target) + '+ ' + lead + d.short;
+      }
+      var items = (d.reward || {})[cal[1]] || {}, k = Object.keys(items)[0];
       return { head: head, icon: d.icon || '', reward: k ? ((C.itemIcons && C.itemIcons[k]) || '') + ' ' + C.itemsText(items) : '' };
     } catch (e) { return null; }
   }
@@ -95,13 +103,16 @@
     var live = CG.liveGames(), h = '';
     // Featured
     h += '<section class="cg-hero">' + promos().map(function (p) {
-      return '<a class="cg-promo' + (p.side ? ' is-side' : '') + '" href="' + esc(p.href) + '"><span class="cg-k">' + esc(p.k) + '</span><b>' + esc(p.t) + '</b><p>' + esc(p.p) + '</p><span class="cg-btn">' + esc(p.b) + '</span></a>';
+      // its game's logo on the right when it has the row to itself on desktop (audit L10: the card was mostly empty)
+      return '<a class="cg-promo' + (p.side ? ' is-side' : '') + '" href="' + esc(p.href) + '"><span class="cg-k">' + esc(p.k) + '</span><b>' + esc(p.t) + '</b><p>' + esc(p.p) + '</p><span class="cg-btn">' + esc(p.b) + '</span>' +
+        (p.art ? '<img class="cg-promo-art" src="' + esc(p.art) + '" alt="" aria-hidden="true">' : '') + '</a>';
     }).join('') + '</section>';
     // Continue and Daily side by side on desktop
     var dr = drafts(), daily = live.filter(function (g) { return g.daily; });
     h += '<div class="cg-two">';
     if (dr.length) h += '<section class="cg-sec"><h2>Continue Playing</h2><div class="cg-cards">' + dr.slice(0, 3).map(function (d) { return card(d.g, [d.t, d.s], 'Continue', d.g.path); }).join('') + '</div></section>';
-    if (daily.length) h += '<section class="cg-sec"><h2>Daily Challenges <small>' + esc(nextDaily()) + '</small></h2><div class="cg-cards">' + daily.slice(0, 3).map(dailyCard).join('') + '</div></section>';
+    // every live game with a Daily (audit L9, 16 Oct 2026: it showed the first three only); four or more take the full width
+    if (daily.length) h += '<section class="cg-sec' + (daily.length > 3 ? ' cg-daily-all' : '') + '"><h2>Daily Challenges <small>' + esc(nextDaily()) + '</small></h2><div class="cg-cards n' + daily.length + '">' + daily.map(dailyCard).join('') + '</div></section>';
     h += '</div>';
     // Most Popular: the top four live games (CG.popular), two by two on phones, four across on desktop
     var top = CG.popular(4);
