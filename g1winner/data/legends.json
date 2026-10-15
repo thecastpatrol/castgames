@@ -9,161 +9,15 @@
 "id": "legend-damien-oliver",
 "name": "Damien Oliver",
 "tries_1998_plus": 129,
-"primary_club": "vic",
 "club_years": [
 {
-"club": "vic",
+"club": "g1",
 "from": 1990,
 "to": 2005
 },
 {
-"club": "sa",
-"from": 1991,
-"to": 1991
-},
-{
-"club": "nsw",
-"from": 1992,
-"to": 1993
-},
-{
-"club": "wa",
-"from": 1992,
-"to": 1992
-},
-{
-"club": "nsw",
-"from": 1995,
-"to": 1995
-},
-{
-"club": "nz",
-"from": 1995,
-"to": 1995
-},
-{
-"club": "nz",
-"from": 1998,
-"to": 1998
-},
-{
-"club": "nsw",
-"from": 1999,
-"to": 1999
-},
-{
-"club": "qld",
-"from": 1999,
-"to": 1999
-},
-{
-"club": "sa",
-"from": 1999,
-"to": 1999
-},
-{
-"club": "nsw",
-"from": 2001,
-"to": 2002
-},
-{
-"club": "nz",
-"from": 2001,
-"to": 2001
-},
-{
-"club": "sa",
-"from": 2001,
-"to": 2002
-},
-{
-"club": "qld",
-"from": 2002,
-"to": 2002
-},
-{
-"club": "nsw",
-"from": 2004,
-"to": 2004
-},
-{
-"club": "sa",
-"from": 2005,
-"to": 2005
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2007,
-"to": 2011
-},
-{
-"club": "qld",
-"from": 2007,
-"to": 2009
-},
-{
-"club": "vic",
-"from": 2007,
-"to": 2015
-},
-{
-"club": "wa",
-"from": 2009,
-"to": 2009
-},
-{
-"club": "nz",
-"from": 2010,
-"to": 2010
-},
-{
-"club": "sa",
-"from": 2012,
-"to": 2012
-},
-{
-"club": "qld",
-"from": 2014,
-"to": 2014
-},
-{
-"club": "nsw",
-"from": 2016,
-"to": 2018
-},
-{
-"club": "sa",
-"from": 2017,
-"to": 2017
-},
-{
-"club": "vic",
-"from": 2018,
-"to": 2021
-},
-{
-"club": "wa",
-"from": 2018,
-"to": 2018
-},
-{
-"club": "sa",
-"from": 2019,
-"to": 2019
-},
-{
-"club": "nsw",
-"from": 2022,
-"to": 2022
-},
-{
-"club": "qld",
-"from": 2023,
-"to": 2023
-},
-{
-"club": "vic",
-"from": 2023,
 "to": 2023
 }
 ],
@@ -174,17 +28,18 @@
 "position": "R",
 "active": false,
 "career_span": "1990-2023",
-"by_jur": {
-"vic": 79,
-"sa": 11,
-"nsw": 25,
-"wa": 3,
-"nz": 4,
-"qld": 7
-},
 "big": 18,
 "mc": 3,
 "cox": 2,
+"silks": {
+"horse": "Schillaci",
+"colours": [
+"#9aa3ad",
+"#d4202c"
+],
+"pattern": "stripes",
+"words": "Grey, red diagonal stripes (Bury Management, A. R. Bell)"
+},
 "tier": "legend",
 "record_name": "Damien Oliver (Legend)"
 },
@@ -192,126 +47,30 @@
 "id": "legend-jim-cassidy",
 "name": "Jim Cassidy",
 "tries_1998_plus": 101,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nz",
+"club": "g1",
 "from": 1983,
-"to": 1984
-},
-{
-"club": "vic",
-"from": 1983,
-"to": 1983
-},
-{
-"club": "nsw",
-"from": 1985,
-"to": 1986
-},
-{
-"club": "vic",
-"from": 1985,
-"to": 1987
-},
-{
-"club": "qld",
-"from": 1986,
-"to": 1986
-},
-{
-"club": "qld",
-"from": 1988,
-"to": 1988
-},
-{
-"club": "sa",
-"from": 1988,
-"to": 1988
-},
-{
-"club": "nsw",
-"from": 1989,
-"to": 1990
-},
-{
-"club": "vic",
-"from": 1989,
-"to": 1991
-},
-{
-"club": "qld",
-"from": 1991,
-"to": 1994
-},
-{
-"club": "nsw",
-"from": 1992,
 "to": 1995
 },
 {
-"club": "vic",
-"from": 1993,
-"to": 1995
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 1997,
-"to": 1997
-},
-{
-"club": "qld",
-"from": 1997,
-"to": 1997
-},
-{
-"club": "vic",
-"from": 1997,
-"to": 2000
-},
-{
-"club": "wa",
-"from": 1999,
-"to": 1999
-},
-{
-"club": "nsw",
-"from": 2000,
 "to": 2004
 },
 {
-"club": "sa",
-"from": 2001,
-"to": 2001
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2006,
 "to": 2006
 },
 {
-"club": "vic",
-"from": 2006,
-"to": 2006
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2009,
 "to": 2009
 },
 {
-"club": "qld",
+"club": "g1",
 "from": 2012,
-"to": 2013
-},
-{
-"club": "vic",
-"from": 2012,
-"to": 2013
-},
-{
-"club": "nsw",
-"from": 2013,
 "to": 2015
 }
 ],
@@ -322,17 +81,18 @@
 "position": "R",
 "active": false,
 "career_span": "1983-2015",
-"by_jur": {
-"nz": 4,
-"vic": 39,
-"nsw": 41,
-"qld": 14,
-"sa": 2,
-"wa": 1
-},
 "big": 14,
 "mc": 2,
 "cox": 1,
+"silks": {
+"horse": "Rough Habit",
+"colours": [
+"#7a0f2e",
+"#ffd100"
+],
+"pattern": "diamonds",
+"words": "Maroon, yellow diamond band, dark blue and yellow hooped sleeves, maroon and dark blue quartered cap"
+},
 "tier": "legend",
 "record_name": "Jim Cassidy (Legend)"
 },
@@ -340,62 +100,16 @@
 "id": "legend-shane-dye",
 "name": "Shane Dye",
 "tries_1998_plus": 92,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nz",
+"club": "g1",
 "from": 1984,
 "to": 1984
 },
 {
-"club": "nsw",
+"club": "g1",
 "from": 1986,
 "to": 2000
-},
-{
-"club": "qld",
-"from": 1989,
-"to": 1993
-},
-{
-"club": "vic",
-"from": 1989,
-"to": 1989
-},
-{
-"club": "sa",
-"from": 1991,
-"to": 1991
-},
-{
-"club": "vic",
-"from": 1991,
-"to": 1993
-},
-{
-"club": "qld",
-"from": 1995,
-"to": 1995
-},
-{
-"club": "vic",
-"from": 1995,
-"to": 2000
-},
-{
-"club": "qld",
-"from": 1997,
-"to": 1998
-},
-{
-"club": "sa",
-"from": 1997,
-"to": 1998
-},
-{
-"club": "nz",
-"from": 1998,
-"to": 1998
 }
 ],
 "positions_played": [
@@ -405,16 +119,18 @@
 "position": "R",
 "active": false,
 "career_span": "1984-2000",
-"by_jur": {
-"nz": 3,
-"nsw": 51,
-"vic": 22,
-"qld": 12,
-"sa": 4
-},
 "big": 10,
 "mc": 1,
 "cox": 1,
+"silks": {
+"horse": "Tie the Knot",
+"colours": [
+"#d4202c",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Red, white cap (O. P. Tait and J. G. Nivison)"
+},
 "tier": "legend",
 "record_name": "Shane Dye (Legend)"
 },
@@ -422,57 +138,21 @@
 "id": "legend-glen-boss",
 "name": "Glen Boss",
 "tries_1998_plus": 90,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nsw",
+"club": "g1",
 "from": 1994,
 "to": 1997
 },
 {
-"club": "vic",
-"from": 1996,
-"to": 1996
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 1999,
-"to": 2011
-},
-{
-"club": "qld",
-"from": 1999,
-"to": 2000
-},
-{
-"club": "vic",
-"from": 2000,
-"to": 2005
-},
-{
-"club": "qld",
-"from": 2003,
-"to": 2005
-},
-{
-"club": "vic",
-"from": 2009,
 "to": 2015
 },
 {
-"club": "nsw",
-"from": 2015,
-"to": 2015
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2019,
 "to": 2021
-},
-{
-"club": "vic",
-"from": 2020,
-"to": 2020
 }
 ],
 "positions_played": [
@@ -482,14 +162,18 @@
 "position": "R",
 "active": false,
 "career_span": "1994-2021",
-"by_jur": {
-"nsw": 52,
-"vic": 32,
-"qld": 6
-},
 "big": 21,
 "mc": 3,
 "cox": 4,
+"silks": {
+"horse": "Makybe Diva",
+"colours": [
+"#1f4fbf",
+"#ffffff"
+],
+"pattern": "stars",
+"words": "Royal blue, white stars (Southern Cross), red and white checks and checked cap (Tony Santic)"
+},
 "tier": "legend",
 "record_name": "Glen Boss (Legend)"
 },
@@ -497,82 +181,31 @@
 "id": "legend-darren-beadman",
 "name": "Darren Beadman",
 "tries_1998_plus": 81,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nsw",
+"club": "g1",
 "from": 1984,
 "to": 1984
 },
 {
-"club": "nsw",
+"club": "g1",
 "from": 1986,
 "to": 1986
 },
 {
-"club": "nsw",
+"club": "g1",
 "from": 1988,
-"to": 1989
-},
-{
-"club": "vic",
-"from": 1989,
-"to": 1990
-},
-{
-"club": "nsw",
-"from": 1991,
 "to": 1992
 },
 {
-"club": "vic",
-"from": 1992,
-"to": 1992
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 1994,
 "to": 1997
 },
 {
-"club": "vic",
-"from": 1995,
-"to": 1997
-},
-{
-"club": "nz",
-"from": 1996,
-"to": 1997
-},
-{
-"club": "qld",
-"from": 1996,
-"to": 1996
-},
-{
-"club": "vic",
+"club": "g1",
 "from": 2000,
-"to": 2000
-},
-{
-"club": "nsw",
-"from": 2001,
-"to": 2001
-},
-{
-"club": "vic",
-"from": 2002,
-"to": 2005
-},
-{
-"club": "nsw",
-"from": 2003,
 "to": 2009
-},
-{
-"club": "qld",
-"from": 2007,
-"to": 2007
 }
 ],
 "positions_played": [
@@ -582,15 +215,18 @@
 "position": "R",
 "active": false,
 "career_span": "1984-2009",
-"by_jur": {
-"nsw": 52,
-"vic": 23,
-"qld": 4,
-"nz": 2
-},
 "big": 9,
 "mc": 2,
 "cox": 1,
+"silks": {
+"horse": "Lonhro",
+"colours": [
+"#d81b60",
+"#d81b60"
+],
+"pattern": "plain",
+"words": "Cerise (Woodlands Stud, Ingham family)"
+},
 "tier": "legend",
 "record_name": "Darren Beadman (Legend)"
 },
@@ -598,60 +234,14 @@
 "id": "legend-mick-dittman",
 "name": "Mick Dittman",
 "tries_1998_plus": 67,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nsw",
+"club": "g1",
 "from": 1983,
-"to": 1993
-},
-{
-"club": "qld",
-"from": 1983,
-"to": 1983
-},
-{
-"club": "vic",
-"from": 1983,
-"to": 1986
-},
-{
-"club": "qld",
-"from": 1985,
-"to": 1985
-},
-{
-"club": "wa",
-"from": 1985,
-"to": 1985
-},
-{
-"club": "wa",
-"from": 1987,
-"to": 1989
-},
-{
-"club": "vic",
-"from": 1988,
-"to": 1988
-},
-{
-"club": "qld",
-"from": 1990,
-"to": 1991
-},
-{
-"club": "vic",
-"from": 1990,
 "to": 1995
 },
 {
-"club": "qld",
-"from": 1994,
-"to": 1995
-},
-{
-"club": "qld",
+"club": "g1",
 "from": 1998,
 "to": 1998
 }
@@ -663,15 +253,18 @@
 "position": "R",
 "active": false,
 "career_span": "1983-1998",
-"by_jur": {
-"nsw": 34,
-"qld": 8,
-"vic": 21,
-"wa": 4
-},
 "big": 9,
 "mc": 0,
 "cox": 2,
+"silks": {
+"horse": "Bounding Away",
+"colours": [
+"#1f4fbf",
+"#0f8a4b"
+],
+"pattern": "stripes",
+"words": "Blue, green stripes (T. J. Smith)"
+},
 "tier": "legend",
 "record_name": "Mick Dittman (Legend)"
 },
@@ -679,50 +272,14 @@
 "id": "legend-lance-o-sullivan",
 "name": "Lance O'Sullivan",
 "tries_1998_plus": 61,
-"primary_club": "nz",
 "club_years": [
 {
-"club": "nsw",
+"club": "g1",
 "from": 1984,
-"to": 1984
-},
-{
-"club": "nz",
-"from": 1985,
 "to": 1997
 },
 {
-"club": "nsw",
-"from": 1987,
-"to": 1987
-},
-{
-"club": "vic",
-"from": 1989,
-"to": 1989
-},
-{
-"club": "sa",
-"from": 1990,
-"to": 1990
-},
-{
-"club": "nsw",
-"from": 1991,
-"to": 1991
-},
-{
-"club": "vic",
-"from": 1991,
-"to": 1991
-},
-{
-"club": "qld",
-"from": 1992,
-"to": 1992
-},
-{
-"club": "nz",
+"club": "g1",
 "from": 1999,
 "to": 2003
 }
@@ -734,16 +291,18 @@
 "position": "R",
 "active": false,
 "career_span": "1984-2003",
-"by_jur": {
-"nsw": 5,
-"nz": 51,
-"vic": 2,
-"sa": 1,
-"qld": 2
-},
 "big": 1,
 "mc": 0,
 "cox": 1,
+"silks": {
+"horse": "Mr Tiz",
+"colours": [
+"#0b5d3b",
+"#d4202c"
+],
+"pattern": "checks",
+"words": "Fletcher tartan, red cap"
+},
 "tier": "legend",
 "record_name": "Lance O'Sullivan (Legend)"
 },
@@ -751,86 +310,20 @@
 "id": "legend-greg-childs",
 "name": "Greg Childs",
 "tries_1998_plus": 58,
-"primary_club": "vic",
 "club_years": [
 {
-"club": "nz",
+"club": "g1",
 "from": 1983,
 "to": 1985
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 1987,
-"to": 1989
-},
-{
-"club": "wa",
-"from": 1990,
-"to": 1990
-},
-{
-"club": "vic",
-"from": 1991,
 "to": 1993
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 1997,
-"to": 1997
-},
-{
-"club": "vic",
-"from": 1997,
-"to": 2002
-},
-{
-"club": "nsw",
-"from": 1998,
-"to": 1998
-},
-{
-"club": "nsw",
-"from": 2000,
-"to": 2000
-},
-{
-"club": "nz",
-"from": 2001,
-"to": 2003
-},
-{
-"club": "nsw",
-"from": 2002,
-"to": 2002
-},
-{
-"club": "qld",
-"from": 2004,
-"to": 2005
-},
-{
-"club": "sa",
-"from": 2004,
-"to": 2004
-},
-{
-"club": "vic",
-"from": 2004,
-"to": 2006
-},
-{
-"club": "sa",
-"from": 2006,
-"to": 2006
-},
-{
-"club": "qld",
-"from": 2007,
-"to": 2007
-},
-{
-"club": "sa",
-"from": 2008,
 "to": 2008
 }
 ],
@@ -841,17 +334,18 @@
 "position": "R",
 "active": false,
 "career_span": "1983-2008",
-"by_jur": {
-"nz": 14,
-"wa": 1,
-"vic": 27,
-"nsw": 8,
-"sa": 5,
-"qld": 3
-},
 "big": 8,
 "mc": 0,
 "cox": 2,
+"silks": {
+"horse": "Sunline",
+"colours": [
+"#6cace4",
+"#d4202c"
+],
+"pattern": "plain",
+"words": "Pale blue, red and yellow striped sleeves, yellow cap"
+},
 "tier": "legend",
 "record_name": "Greg Childs (Legend)"
 },
@@ -859,90 +353,34 @@
 "id": "legend-grant-cooksley",
 "name": "Grant Cooksley",
 "tries_1998_plus": 50,
-"primary_club": "nz",
 "club_years": [
 {
-"club": "nz",
+"club": "g1",
 "from": 1983,
 "to": 1983
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 1985,
 "to": 1987
 },
 {
-"club": "qld",
-"from": 1985,
-"to": 1985
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 1989,
-"to": 1995
-},
-{
-"club": "nz",
-"from": 1989,
-"to": 1991
-},
-{
-"club": "sa",
-"from": 1989,
-"to": 1989
-},
-{
-"club": "vic",
-"from": 1990,
-"to": 1990
-},
-{
-"club": "wa",
-"from": 1991,
-"to": 1991
-},
-{
-"club": "nz",
-"from": 1994,
-"to": 1998
-},
-{
-"club": "qld",
-"from": 1994,
-"to": 1995
-},
-{
-"club": "nsw",
-"from": 1997,
-"to": 1998
-},
-{
-"club": "vic",
-"from": 1997,
-"to": 1997
-},
-{
-"club": "vic",
-"from": 1999,
-"to": 1999
-},
-{
-"club": "nz",
-"from": 2000,
 "to": 2000
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 2003,
 "to": 2004
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 2006,
 "to": 2006
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 2017,
 "to": 2017
 }
@@ -954,17 +392,18 @@
 "position": "R",
 "active": false,
 "career_span": "1983-2017",
-"by_jur": {
-"nz": 24,
-"qld": 5,
-"sa": 1,
-"nsw": 15,
-"vic": 4,
-"wa": 1
-},
 "big": 2,
 "mc": 0,
 "cox": 0,
+"silks": {
+"horse": "Mouawad",
+"colours": [
+"#d81b60",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Cerise, white and dark blue halved sleeves, cerise and dark blue quartered cap"
+},
 "tier": "legend",
 "record_name": "Grant Cooksley (Legend)"
 },
@@ -972,81 +411,25 @@
 "id": "legend-corey-brown",
 "name": "Corey Brown",
 "tries_1998_plus": 49,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nsw",
+"club": "g1",
 "from": 1999,
 "to": 1999
 },
 {
-"club": "nsw",
+"club": "g1",
 "from": 2001,
-"to": 2001
-},
-{
-"club": "qld",
-"from": 2002,
-"to": 2002
-},
-{
-"club": "nsw",
-"from": 2003,
 "to": 2005
 },
 {
-"club": "vic",
-"from": 2003,
-"to": 2004
-},
-{
-"club": "qld",
-"from": 2004,
-"to": 2004
-},
-{
-"club": "sa",
-"from": 2007,
-"to": 2007
-},
-{
-"club": "vic",
+"club": "g1",
 "from": 2007,
 "to": 2012
 },
 {
-"club": "nsw",
-"from": 2008,
-"to": 2011
-},
-{
-"club": "qld",
-"from": 2008,
-"to": 2008
-},
-{
-"club": "qld",
-"from": 2010,
-"to": 2011
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2017,
-"to": 2019
-},
-{
-"club": "qld",
-"from": 2017,
-"to": 2017
-},
-{
-"club": "vic",
-"from": 2017,
-"to": 2017
-},
-{
-"club": "vic",
-"from": 2019,
 "to": 2019
 }
 ],
@@ -1057,15 +440,18 @@
 "position": "R",
 "active": false,
 "career_span": "1999-2019",
-"by_jur": {
-"nsw": 23,
-"qld": 9,
-"vic": 16,
-"sa": 1
-},
 "big": 6,
 "mc": 2,
 "cox": 0,
+"silks": {
+"horse": "Apache Cat",
+"colours": [
+"#7a0f2e",
+"#9bd13b"
+],
+"pattern": "plain",
+"words": "Burgundy, lime stars on sleeves and cap"
+},
 "tier": "legend",
 "record_name": "Corey Brown (Legend)"
 },
@@ -1073,100 +459,29 @@
 "id": "legend-steven-king",
 "name": "Steven King",
 "tries_1998_plus": 46,
-"primary_club": "vic",
 "club_years": [
 {
-"club": "sa",
+"club": "g1",
 "from": 1990,
-"to": 1990
-},
-{
-"club": "vic",
-"from": 1991,
 "to": 1994
 },
 {
-"club": "qld",
-"from": 1993,
-"to": 1993
-},
-{
-"club": "sa",
-"from": 1993,
-"to": 1993
-},
-{
-"club": "nsw",
-"from": 1996,
-"to": 1996
-},
-{
-"club": "qld",
-"from": 1996,
-"to": 1996
-},
-{
-"club": "vic",
+"club": "g1",
 "from": 1996,
 "to": 1998
 },
 {
-"club": "sa",
-"from": 1997,
-"to": 1997
-},
-{
-"club": "nsw",
-"from": 1998,
-"to": 1998
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2000,
 "to": 2000
 },
 {
-"club": "vic",
-"from": 2000,
-"to": 2000
-},
-{
-"club": "vic",
+"club": "g1",
 "from": 2002,
-"to": 2006
-},
-{
-"club": "nsw",
-"from": 2003,
-"to": 2003
-},
-{
-"club": "sa",
-"from": 2003,
-"to": 2003
-},
-{
-"club": "sa",
-"from": 2005,
-"to": 2005
-},
-{
-"club": "nsw",
-"from": 2006,
-"to": 2006
-},
-{
-"club": "sa",
-"from": 2007,
-"to": 2007
-},
-{
-"club": "vic",
-"from": 2008,
 "to": 2008
 },
 {
-"club": "sa",
+"club": "g1",
 "from": 2010,
 "to": 2010
 }
@@ -1178,15 +493,19 @@
 "position": "R",
 "active": false,
 "career_span": "1990-2010",
-"by_jur": {
-"sa": 8,
-"vic": 29,
-"qld": 2,
-"nsw": 7
-},
 "big": 7,
 "mc": 1,
 "cox": 1,
+"silks": {
+"horse": "Helenus",
+"colours": [
+"#ffffff",
+"#0f8a4b"
+],
+"pattern": "plain",
+"words": "White, green shamrock and quartered cap",
+"emblem": "shamrock"
+},
 "tier": "legend",
 "record_name": "Steven King (Legend)"
 },
@@ -1194,70 +513,14 @@
 "id": "legend-greg-hall",
 "name": "Greg Hall",
 "tries_1998_plus": 40,
-"primary_club": "vic",
 "club_years": [
 {
-"club": "wa",
+"club": "g1",
 "from": 1983,
-"to": 1983
-},
-{
-"club": "qld",
-"from": 1984,
-"to": 1985
-},
-{
-"club": "vic",
-"from": 1985,
 "to": 1994
 },
 {
-"club": "nsw",
-"from": 1987,
-"to": 1987
-},
-{
-"club": "qld",
-"from": 1988,
-"to": 1988
-},
-{
-"club": "sa",
-"from": 1988,
-"to": 1988
-},
-{
-"club": "sa",
-"from": 1990,
-"to": 1990
-},
-{
-"club": "nsw",
-"from": 1991,
-"to": 1992
-},
-{
-"club": "sa",
-"from": 1992,
-"to": 1993
-},
-{
-"club": "qld",
-"from": 1993,
-"to": 1993
-},
-{
-"club": "nsw",
-"from": 1994,
-"to": 1994
-},
-{
-"club": "nsw",
-"from": 1996,
-"to": 1996
-},
-{
-"club": "vic",
+"club": "g1",
 "from": 1996,
 "to": 1998
 }
@@ -1269,16 +532,18 @@
 "position": "R",
 "active": false,
 "career_span": "1983-1998",
-"by_jur": {
-"wa": 1,
-"qld": 5,
-"vic": 23,
-"nsw": 6,
-"sa": 5
-},
 "big": 8,
 "mc": 1,
 "cox": 1,
+"silks": {
+"horse": "Mahogany",
+"colours": [
+"#0b1f4b",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Navy blue, white armbands and cap (Lloyd Williams and Kerry Packer)"
+},
 "tier": "legend",
 "record_name": "Greg Hall (Legend)"
 },
@@ -1286,60 +551,24 @@
 "id": "legend-larry-cassidy",
 "name": "Larry Cassidy",
 "tries_1998_plus": 40,
-"primary_club": "nsw",
 "club_years": [
 {
-"club": "nz",
+"club": "g1",
 "from": 1989,
 "to": 1989
 },
 {
-"club": "nz",
+"club": "g1",
 "from": 1991,
-"to": 1992
-},
-{
-"club": "nsw",
-"from": 1992,
 "to": 2002
 },
 {
-"club": "qld",
-"from": 1995,
-"to": 1996
-},
-{
-"club": "qld",
-"from": 1998,
-"to": 1998
-},
-{
-"club": "vic",
-"from": 1998,
-"to": 1998
-},
-{
-"club": "qld",
-"from": 2000,
-"to": 2000
-},
-{
-"club": "nsw",
+"club": "g1",
 "from": 2004,
 "to": 2006
 },
 {
-"club": "qld",
-"from": 2005,
-"to": 2005
-},
-{
-"club": "vic",
-"from": 2005,
-"to": 2005
-},
-{
-"club": "qld",
+"club": "g1",
 "from": 2009,
 "to": 2009
 }
@@ -1351,15 +580,18 @@
 "position": "R",
 "active": false,
 "career_span": "1989-2009",
-"by_jur": {
-"nz": 6,
-"nsw": 24,
-"qld": 8,
-"vic": 2
-},
 "big": 4,
 "mc": 0,
 "cox": 0,
+"silks": {
+"horse": "Dracula",
+"colours": [
+"#d81b60",
+"#d81b60"
+],
+"pattern": "plain",
+"words": "Cerise"
+},
 "tier": "legend",
 "record_name": "Larry Cassidy (Legend)"
 }

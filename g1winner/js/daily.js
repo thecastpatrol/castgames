@@ -15,11 +15,12 @@
   var LEGACY = {};
   function themeFor(date) {
     if (date >= NEW_FORMAT && window.CAST_DAILY) {
-      var d = CAST_DAILY.day(date), g = d.g1000, era = d.key.indexOf('era:') === 0;
+      // A year day (an era or a decade: no states, 16 Oct 2026): "525+ From the 2010s", "510+ From 2000 to 2012", "515+ Since 2013"
+      var d = CAST_DAILY.day(date), g = d.g1000, era = /^(era|dec):/.test(d.key), from = /^Since /.test(d.short) ? '' : d.key.indexOf('dec:') === 0 ? 'From the ' : 'From ';
       return { key: d.key, name: d.name, short: d.short, who: d.who, icon: d.icon, title: d.title, story: d.story, onThisDay: d.onThisDay,
         target: g.target, only: g.only || null, years: g.years || null, nations: g.nations || null, ds: g.ds || null, unit: g.unit || 'Group 1 wins',
         hard: d.hard, planned: d.planned, random: true, reward: d.reward['racing'], rewardKind: d.rewardKind,
-        head: fmt(g.target) + '+ ' + (era ? 'From ' : g.ds ? '' : 'With ') + d.short,
+        head: fmt(g.target) + '+ ' + (era ? from : g.ds ? '' : 'With ') + d.short,
         task: 'Get <b>' + fmt(g.target) + '+</b> ' + esc(g.unit || 'Group 1 wins') + ' using only <b>' + esc(d.who) + '</b>.' };
     }
     var t = LEGACY[date] ? JSON.parse(JSON.stringify(LEGACY[date])) : {};
@@ -393,7 +394,7 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   // Admin > Dailies (cast-account.js): the next n Dailies from today, the planned ones marked
   window.CastDaily = window.CastDaily || {};
-  window.CastDaily.note = 'Every day is themed, with a random draft for each player. Days not planned follow the weekly pattern (jurisdiction days, an era, the Spring Carnival on Saturdays, Sunday a hard day).';
+  window.CastDaily.note = 'Every day is themed, with a random draft for each player. Days not planned follow the weekly pattern (decades and eras in turn, the Spring Carnival on Saturdays, Sunday a hard day).';
   window.CastDaily.otherTag = 'Standard';
   window.CastDaily.upcoming = function (n) {
     var out = [], p = today().split('-'), d0 = Date.UTC(+p[0], p[1] - 1, +p[2]);

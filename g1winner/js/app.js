@@ -428,6 +428,7 @@
     animateBar(shownTotal, total);
     shownTotal = total;
     $('pitch').innerHTML = R.pitch(S, flashIdx);
+    fitSlotNames();
     fitNames();
     $('pitch').classList.toggle('is-tweaking', !!S.tweakMode);
     $('pickCount').textContent = T.filledCount() + ' of ' + T.SLOTS.length;
@@ -533,58 +534,26 @@
   function renderDraft(flashIdx) {
     try { return renderDraft0(flashIdx); } finally { noteOffers(); }
   }
+  /* A race tile's surname on its silks pill (16 Oct 2026): whole, never cut off or broken mid-word. A name too wide for the
+     tile steps down half a pixel at a time (a two-word surname may wrap at its space) */
+  function fitSlotNames() {
+    Array.prototype.forEach.call(document.querySelectorAll('#pitch .slot.is-silks .slot-name'), function (el) {
+      el.style.fontSize = '';
+      var size = parseFloat(getComputedStyle(el).fontSize) || 11;
+      while (el.scrollWidth > el.clientWidth + 0.5 && size > 6.5) { size -= 0.5; el.style.fontSize = size + 'px'; }
+    });
+  }
+  window.addEventListener('resize', function () { if (document.body.getAttribute('data-screen') === 'draft') fitSlotNames(); });
   function renderDraft0(flashIdx) {
     var S = T.state();
     renderChrome(flashIdx);
     var panel = $('offerPanel');
     if (S.awaitingLock && !S.tweakMode && !S.lockHold) startLockTimer(S); else stopLockTimer();
     if (S.awaitingLock) panel.innerHTML = R.decision(S);
-    else if (S.mode.source === 'spin' && !S.offer && !S.spinPos && !S.tweakMode) panel.innerHTML = R.pickPosition(S);
-    else if (S.offer && S.offer.kind === 'spin') panel.innerHTML = R.offerSpin(S);
     else if (S.offer) panel.innerHTML = R.offerRoll(S);
     applyPlacing();
-    applySquadSearch();
-    watchSquadScroll();
     clockStart(); // Exactly: the shot clock
     keepDraft(); // Save the draft in progress
-  }
-
-  // Team Spin: show only players whose name matches the search (group headings hide when empty)
-  function applySquadSearch() {
-    var list = $('squadList');
-    if (!list || !T.squadSearch) return;
-    var q = String(T.squadSearch.q || '').trim().toLowerCase(), shown = 0, group = null, groupHits = 0;
-    Array.prototype.forEach.call(list.children, function (el) {
-      if (el.classList.contains('squad-group')) {
-        if (group) group.style.display = groupHits ? '' : 'none';
-        group = el; groupHits = 0; return;
-      }
-      if (!el.classList.contains('srow')) return;
-      var hit = !q || (el.getAttribute('data-name') || '').indexOf(q) >= 0;
-      el.style.display = hit ? '' : 'none';
-      if (hit) { shown++; groupHits++; }
-    });
-    if (group) group.style.display = groupHits ? '' : 'none';
-    var none = list.querySelector('.squad-none');
-    if (!shown && q) { if (!none) { none = document.createElement('p'); none.className = 'squad-none'; none.textContent = 'No one in this squad matches that name.'; list.appendChild(none); } }
-    else if (none) none.remove();
-  }
-  document.addEventListener('input', function (e) {
-    if (e.target && e.target.id === 'squadSearch') { T.squadSearch.q = e.target.value; applySquadSearch(); }
-  });
-
-  // Team Spin: fade + "Scroll for more" cue until the player scrolls or reaches the end
-  function watchSquadScroll() {
-    var list = $('squadList'), wrap = $('squadWrap');
-    if (!list || !wrap) return;
-    var update = function () {
-      var room = list.scrollHeight - list.clientHeight;
-      wrap.classList.toggle('no-scroll', room < 4);
-      wrap.classList.toggle('at-end', list.scrollTop >= room - 4);
-      if (list.scrollTop > 12) wrap.classList.add('scrolled');
-    };
-    list.addEventListener('scroll', update, { passive: true });
-    update();
   }
 
   /* Desktop placing: pick a player, then click a glowing spot on the field.
@@ -704,7 +673,7 @@
     shownTotal = 0;
     busy = false;
     // One event per mode so GA's Events list ranks the modes directly:
-    // classic_1000_plays (the main mode), hard_1000_plays (Exactly), team_spin_plays (Team Spin): the shared event names
+    // classic_1000_plays (the main mode), hard_1000_plays (Exactly): the shared event names
     T.track(T.MODES[modeId].event, { mode: T.MODES[modeId].name });
     show('draft');
     nextOffer();
@@ -714,16 +683,9 @@
     var S = T.state();
     if (S.finished) return;
     if (T.filledCount() === S.slots.length) { settle(); return; }
-    if (S.mode.source === 'spin') {
-      // No positions (16 Oct 2026): nothing to choose first, every spin is for the next open race
-      if (!S.spinPos) { S.spinPos = 'R'; S.spinSlot = null; }
-      spin();
-    }
-    else {
-      var offer = T.rollOffer();
-      if (offer && offer.il) { T.track('ileg_natural_shown', { mode: S.mode.name }); ilReveal([T.byId[offer.il]], false, renderDraft); }
-      else if (offer && offer.special) packIntro(offer.special, renderDraft, offer.lifeline); else renderDraft();
-    }
+    var offer = T.rollOffer();
+    if (offer && offer.il) { T.track('ileg_natural_shown', { mode: S.mode.name }); ilReveal([T.byId[offer.il]], false, renderDraft); }
+    else if (offer && offer.special) packIntro(offer.special, renderDraft, offer.lifeline); else renderDraft();
   }
 
   /* Legends Pick / Legend Pick: a short pack-opening moment before the three greats appear.
@@ -733,21 +695,23 @@
     T.track(imm ? 'immortal_pick_shown' : 'legends_pick_shown', { mode: T.state().mode.name, lifeline: lifeline ? 'yes' : 'no', paid: paid ? 'yes' : 'no' });
     if (reduceMotion) { done(); return; }
     /* The same reveal as the World Legends (8 Oct 2026, the owner: "improve legends pack pop up ... to match this",
-       js/cast-intl.js): the three greats' jurisdictions, in their colours, flash through and land one by one, with their
-       names and states (their wins stay hidden). Without it, the old pack card below */
+       js/cast-intl.js): the Legends' silks flash through and land one by one on the three greats', with their names and
+       their signature horses (their wins stay hidden). No states (16 Oct 2026). Without it, the old pack card below */
     var CI = window.CastIntl, S0 = T.state(), three = S0 && S0.offer ? S0.offer.players.slice(0, 3) : [];
     if (CI && CI.reveal && three.length) {
-      var sides = {}, side = function (k) {
+      // Each face: the jockey's silks as a jersey (hoops, stripes, a sash or a V in the silks' colours, else plain)
+      var JERSEY = { hoops: 'hoops', stripes: 'stripes', sash: 'sash', chevrons: 'v', chevron: 'v' };
+      var sides = {}, side = function (p) {
+        var k = p && p.id;
         if (!k || sides[k]) return;
-        var c = T.club(k), nm = String(c.name || k), last = nm.split(' ').pop();
-        var J = ((window.CastIntl && window.CastIntl.JERSEYS) || {})[k] || {}; // the club's real jersey (js/cast-intl.js), else a V in its colours
-        sides[k] = { name: nm, short: k === 'stgeorge' ? 'St George' : nm.length <= 15 ? nm : last, // St George, not Dragons: today's Dragons are another club
-          code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: J.glow || c.primary, // Eastern Suburbs in full, Rabbitohs for South Sydney Rabbitohs
-          pattern: J.pattern, base: J.base, colors: J.colors, count: J.count, dir: J.dir, sizes: J.sizes, collar: J.collar };
+        var L = T.look(p), sk = T.silksOf(p) || T.NEUTRAL_SILKS, pat = JERSEY[sk.pattern] || 'plain', nm = L.horse || 'Racing Silks';
+        sides[k] = { name: nm, short: nm, code: '', c1: L.primary, c2: L.accent, glow: L.primary,
+          pattern: pat, base: L.primary, colors: pat === 'hoops' || pat === 'stripes' ? [L.primary, L.accent] : [L.accent], count: pat === 'hoops' ? 8 : pat === 'stripes' ? 7 : undefined };
       };
-      var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
-      pool.forEach(side);
-      var reels = three.map(function (p) { var k = T.lastClub(p); side(k); return { nation: k, name: p.name, sub: T.club(k).name }; });
+      var greats = (T.LEGENDS || []).concat(three);
+      greats.forEach(side);
+      var pool = greats.map(function (p) { return p.id; }).filter(function (k, i, a) { return a.indexOf(k) === i; });
+      var reels = three.map(function (p) { return { nation: p.id, name: p.name, sub: '' }; });
       busy = true;
       sfx.win();
       try {
@@ -793,56 +757,12 @@
     } catch (e) { busy = false; done(); }
   }
 
-  function spin() {
-    var S = T.state();
-    var game = S;
-    var offer = T.spinOffer(); // decided up front; the reel is just theatre
-    if (!offer) { S.spinPos = null; S.spinSlot = null; S.offer = null; toast('No one left for that race. Pick another'); renderDraft(); return; }
-    if (reduceMotion) { renderDraft(); return; }
-    busy = true;
-    S.offer = null;
-    renderChrome();
-    $('offerPanel').innerHTML = R.spinning(S);
-    var reels = T.spinReelValues();
-    var yearEl = $('offerPanel').querySelector('.reel-year .reel-val');
-    var clubBox = $('offerPanel').querySelector('.reel-club');
-    var clubEl = clubBox.querySelector('.reel-val');
-    var n = 0, frames = 16;
-    // Only swap text and colours in place, so the layout never reflows mid-spin
-    var timer = setInterval(function () {
-      if (T.state() !== game) { clearInterval(timer); return; }
-      n++;
-      var c = T.club(reels.clubs[Math.floor(Math.random() * reels.clubs.length)]);
-      yearEl.textContent = reels.years[Math.floor(Math.random() * reels.years.length)];
-      clubEl.textContent = c.name;
-      clubBox.setAttribute('style', R.clubVars(c.slug));
-      sfx.tick();
-      if (n >= frames) {
-        clearInterval(timer);
-        S.offer = offer;
-        busy = false;
-        renderDraft();
-      }
-    }, 70);
-  }
-
-  // Team Spin: lock in a race (from the buttons or an empty spot on the track), then spin
-  function choosePosition(code, slotIdx) {
-    var S = T.state();
-    if (!S || busy || S.finished || S.mode.source !== 'spin' || S.offer || S.spinPos) return;
-    S.spinPos = code;
-    S.spinSlot = slotIdx == null ? null : slotIdx;
-    sfx.tick();
-    spin();
-  }
-
   function onPick(id) {
     var S = T.state();
     if (busy || S.finished || S.tweakMode) return;
     if (Date.now() - offerMovedAt < 700) { T.track('pick_after_shift', { mode: S.mode.id }); return; } // the cards just moved under the finger
     var p = T.byId[id];
     if (!p) return;
-    if (S.mode.source === 'spin' && S.spinPos) { place(id, S.spinPos, S.spinSlot); return; }
     var codes = T.openCodesFor(p);
     if (codes.length > 1 && isDesktop()) {
       setPlacing(placingId === id ? null : id);
@@ -896,7 +816,7 @@
     sfx.pick();
     busy = true;
     // Show the reveal before moving on
-    $('offerPanel').innerHTML = R.reveal(p, T.slotClub(S.slots[idx]));
+    $('offerPanel').innerHTML = R.reveal(p);
     renderChrome(idx);
     setTimeout(function () {
       if (T.state() !== S) return; // restarted mid-reveal
@@ -911,7 +831,7 @@
     return !out.win && out.reason === 'under' && S.mode.wildcards && S.wildcards.tweak < 1 &&
       !!(window.CastAccount && CastAccount.canBuyRemove && CastAccount.canBuyRemove());
   }
-  /* Go Higher (2 Oct 2026, the owner's call): a card that fills at the target or over (the main mode, Team Spin) asks
+  /* Go Higher (2 Oct 2026, the owner's call): a card that fills at the target or over (the main mode) asks
      before it locks in, every time it fills, like a short one: with a Remove Player still in hand (the game's own, CAST
      Pass's second, or saved ones) they can swap someone out and chase a bigger score; with none left, players 15+ get
      one for $0.99 (they may keep paying to climb). The 10-second countdown locks it in if they don't tap, and the new
@@ -950,7 +870,6 @@
   /* Wildcard theatre: using one should feel like a big moment */
   var WC_FX = {
     reroll: { ico: '\uD83D\uDD04', title: 'Reroll!', sub: 'New players to choose' },
-    respin: { ico: '\uD83D\uDD04', title: 'Respin!', sub: 'Back on the wheel' },
     scout:  { ico: '\uD83D\uDC40', title: 'Wins Revealed', sub: 'Your decision just got easier' },
     tweak:  { ico: '\u274C', title: 'Remove Jockey', sub: 'Tap a jockey on your card' },
     removed:{ ico: '\u274C', title: 'Removed!', sub: '' }
@@ -1008,13 +927,7 @@
     if (key === 'reroll') {
       if (!T.canUse('reroll')) return;
       sfx.wild();
-      if (S.mode.source === 'spin') {
-        S.wildcards.reroll--;
-        T.setBoost(T.bestOnOffer() + 1); // the new squad may quietly hold one who beats the best of this one (js/team-spin.js)
-        wildcardBurst('respin', 'reroll');
-        spin();
-        if (!S.wildcards.reroll && window.CastAccount && CastAccount.nudgeBonus) setTimeout(function () { CastAccount.nudgeBonus(grantBonus(S)); }, 2600);
-      } else {
+      {
         T.useReroll();
         var rolled = S.offer && S.offer.il ? T.byId[S.offer.il] : null; // a free World Legend dealt by the Reroll: his reveal first
         if (rolled) { T.track('ileg_natural_shown', { mode: S.mode.name }); ilReveal([rolled], false, renderDraft); } else renderDraft();
@@ -1069,10 +982,6 @@
   function onSlot(idx) {
     var S = T.state();
     if (S && S.subMode && !busy) { onSubSlot(idx); return; }
-    if (S && S.mode.source === 'spin' && !S.offer && !S.spinPos && !S.tweakMode && !S.awaitingLock && !busy && !S.slots[idx].player) {
-      choosePosition(S.slots[idx].code, idx);
-      return;
-    }
     if (S && placingId && !busy && !S.slots[idx].player) {
       var code = S.slots[idx].code;
       if (T.openCodesFor(T.byId[placingId]).indexOf(code) !== -1) place(placingId, code, idx);
@@ -1111,7 +1020,6 @@
       if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 5) ids.push('photo'); // just over: within 5 of the target (1000TRIES' 9 tries, scaled)
       if (total >= T.TARGET * 0.99 && total < T.TARGET) ids.push('soclose'); // the last 1% under, as 1000TRIES' 990 to 999
       if (S.mode.wildcards && total >= T.TARGET && !usedWild) ids.push('nowild');
-      if (mode === 'spin' && total >= T.TARGET) ids.push('spin');
       // Top Ten: 3 of the 10 biggest Group 1 winners in the pool on one card
       var top10 = T.players.slice().sort(function (a, b) { return b.tries_1998_plus - a.tries_1998_plus; }).slice(0, 10);
       if (players.filter(function (p) { return top10.indexOf(p) >= 0; }).length >= 3) ids.push('goats');
@@ -1135,22 +1043,16 @@
     if (full && mode !== 'wc') {
       if (T.luckPct() != null && T.luckPct() >= 30) ids.push('lucky');
       if (S.slots.every(function (x) { return x.top; })) ids.push('read'); // Perfect Read: js/draft.js marks each pick
-      clubTrophies(players, ids);
+      // No One State or True Colours: no states (16 Oct 2026), and a jockey has no club
     }
     return ids;
   }
   /* The racing game's own trophies (15 Oct 2026, ids rc_*, in place of the cricket twin's own set; the distance ones went
-     with the positions, 16 Oct 2026): the card's
-     jurisdictions, the big races and the Legends. Their names and pictures go in the shared trophy list
-     (js/cast-account.js TROPHIES.racing) with the accounts hookup */
+     with the positions, 16 Oct 2026): the big races and the Legends. The state ones (Every State, Home Track, Spring
+     Carnival, Across the Ditch, One State) went with the states, 16 Oct 2026. Their names and pictures go in the shared
+     trophy list (js/cast-account.js TROPHIES.racing) with the accounts hookup */
   function racingTrophies(S, out, players, ids, hit) {
     if (players.filter(function (p) { return p.tries_1998_plus >= 50; }).length >= 3) ids.push('rc_biggun'); // Big Guns: 3 on 50+
-    var where = {}; S.slots.forEach(function (s) { if (s.player) { var k = T.slotClub(s); where[k] = (where[k] || 0) + 1; } });
-    if (Object.keys(where).length >= 6) ids.push('rc_map'); // Every Jurisdiction: all six on the card
-    if (Object.keys(where).some(function (k) { return where[k] >= 5; })) ids.push('rc_home'); // Home Track: 5 or more from one
-    var wonIn = function (k) { return players.every(function (p) { return T.playedFor(p, k); }); };
-    if (wonIn('vic')) ids.push('rc_spring'); // Flemington to Caulfield: all 8 have won a Group 1 in Victoria
-    if (wonIn('nz')) ids.push('rc_tasman'); // Across the Ditch: all 8 have won a Group 1 in New Zealand
     if (players.filter(function (p) { return (p.mc || 0) > 0; }).length >= 3) ids.push('rc_cup'); // Cup Riders: 3 Melbourne Cup winners
     if (players.filter(function (p) { return (p.cox || 0) > 0; }).length >= 3) ids.push('rc_cox'); // Plate Riders: 3 Cox Plate winners
     var legends = players.filter(function (p) { return p.tier; }).length;
@@ -1170,16 +1072,6 @@
     var CA = window.CastAccount;
     if (CA && CA.nameTrophies) CA.nameTrophies(players.map(function (p) { return p.name; })).forEach(function (id) { ids.push(id); });
   }
-  // One Jurisdiction (all 8 have won a Group 1 in one of them) and True Colours (5+ from the profile's club, as the shared
-  // code reads it)
-  function clubTrophies(players, ids) {
-    var CA = window.CastAccount || {}, home = CA.homeClub || function (c) { return c; };
-    var sets = players.map(function (p) { var o = {}; (p.club_years || []).forEach(function (cy) { o[home(cy.club)] = 1; }); return o; });
-    if (Object.keys(sets[0] || {}).some(function (c) { return sets.every(function (o) { return o[c]; }); })) ids.push('clubleg');
-    var fan = CA.fanClub && CA.fanClub();
-    if (fan && sets.filter(function (o) { return o[fan]; }).length >= 5) ids.push('colours');
-  }
-
   // Follow us for a free reroll (cast-account.js): add it to this game when granted
   // Tier wildcards: every kind starts at n (guests 0, shown locked with "Sign in"). S.wcStart remembers the starting
   // counts, so a sign-in mid-game adds the difference and wildcards already played stay played.
@@ -1216,16 +1108,18 @@
     };
   }
 
-  /* CAST account team sheets: jurisdiction colours and wins from the game's own lists (Legends included).
-     Attached once the page has loaded: the account config is set up after this script. */
+  /* CAST account team sheets: each jockey's silks colour and wins from the game's own lists (Legends included). No
+     states (16 Oct 2026): a game saved with a state in d.sq shows no badge. Attached once the page has loaded: the
+     account config is set up after this script. */
   function sheetHooks() {
     if (!window.CAST_ACCOUNT) return;
     window.CAST_ACCOUNT.startChallenge = function (c) { return startChallenge(c); };
     window.CAST_ACCOUNT.quickDraft = function (c) { return quickDraft(c); };
     window.CAST_ACCOUNT.club = function (id) {
-      if (!T.CLUB_COLORS[id]) return null;
-      var c = T.club(id);
-      return { abbr: c.abbr, bg: c.primary, fg: c.text, name: c.name };
+      var p = id && T.byId[id];
+      if (!p) return null; // a state from an old game, or nothing
+      var L = T.look(p);
+      return { abbr: '', bg: L.primary, fg: L.text, name: L.horse ? 'Silks of ' + L.horse : 'Racing silks' };
     };
     var sheetNames = null, sheetCount = -1;
     var wcNames = null, wcCount = -1;
@@ -1268,11 +1162,12 @@
         game: 'racing', mode: acctMode(S.mode.id), score: out.total, result: out.reason === 'noclub' ? 'under' : out.reason, win: out.win, top: out.reason === 'exact',
         // Legends are saved as "Damien Oliver (Legend)" so the server scores them from the Legends list
         picks: S.slots.filter(function (s) { return s.player; }).map(function (s) { return s.player.record_name || s.player.name; }),
-        // sq: each pick's jurisdiction (Team Spin: jurisdiction|year spun), in pick order, for the leaderboard team sheet.
+        // sq: each pick's look key (the jockey's id: the team sheet shows the silks colour, CAST_ACCOUNT.club), in pick
+        // order, for the leaderboard team sheet.
         // The luck of the draw goes with it: lk (percent against an average draw), lf (a lifeline pick), wc (wildcards played)
         d: Object.assign({ sq: S.slots.filter(function (s) { return s.player; }).map(function (s) {
           var src = S.srcOf && S.srcOf[s.player.id];
-          return (T.slotClub(s) || '') + (s.year || src ? '|' + (s.year || '') : '') + (src ? '||' + src : ''); // "nzl|||F"
+          return (src ? '|||' + src : ''); // the team sheet finds each jockey's silks by name (CAST_ACCOUNT.player); "|||F" marks a special card
         }) },
           S.special && S.specialDone ? { pack: S.special } : {}, S.lifelineUsed ? { lf: 1 } : {},
           T.luckPct() != null ? { lk: T.luckPct() } : {}, T.wildcardsUsed() != null ? { wc: T.wildcardsUsed() } : {},
@@ -1302,9 +1197,10 @@
   function celebrate(S, out, then) {
     if (out.reason !== 'exact' || S.qd || !window.CastCelebrate) { then(); return; }
     var A = window.CastAccount, C = window.CAST_ACCOUNT;
+    // Each card in the jockey's silks colour (no states: no badge letters)
     var club = function (id) {
       var c = C && C.club ? C.club(id) : null;
-      return c ? { abbr: c.abbr, bg: c.bg, fg: c.fg } : { abbr: String(id || '?').slice(0, 3).toUpperCase(), bg: '#2a2a3a', fg: '#fff' };
+      return c ? { abbr: c.abbr, bg: c.bg, fg: c.fg } : { abbr: '', bg: '#2a2a3a', fg: '#fff' };
     };
     // The order they went in: each spot's last pick (a swap or a pick after a Remove counts from when it went in)
     var when = {};
@@ -1317,13 +1213,12 @@
       sum += t;
       return Object.assign(club(T.slotClub(x.s)), { n: sum, label: T.surname(x.s.player.name) + ' +' + T.fmt(t) });
     });
-    var last = joined[joined.length - 1], counts = {}, clubs = 0;
-    filled.forEach(function (x) { var id = T.slotClub(x.s); if (!id) return; if (!counts[id]) clubs++; counts[id] = (counts[id] || 0) + 1; });
-    // The player's club (their CAST Profile), else the jurisdiction most of the card comes from
+    var last = joined[joined.length - 1];
+    // The player's club (their CAST Profile), else the silks of the card's biggest winner
     var b = A && A.myBadge ? A.myBadge() : null, colours = b && b.c1 ? [b.c1, b.c2] : null;
     if (!colours) {
-      var top = Object.keys(counts).sort(function (x, y) { return counts[y] - counts[x]; })[0], tc = top && A && A.teamColours ? A.teamColours(top) : null;
-      colours = tc ? [tc.c1, tc.c2] : ['#ffffff', '#9aa4b2'];
+      var big = filled.map(function (x) { return x.s.player; }).sort(function (x, y) { return (y.tries_1998_plus || 0) - (x.tries_1998_plus || 0); })[0], bl = big ? T.look(big) : null;
+      colours = bl ? [bl.primary, bl.accent] : ['#ffffff', '#9aa4b2'];
     }
     var wins = filled.map(function (x) { return x.s.player.tries_1998_plus || 0; });
     var aj = (T.players || []).concat(T.LEGENDS || []).filter(function (p) { return p.name === 'Damien Oliver'; })[0];
@@ -1337,7 +1232,7 @@
         return { pos: T.raceLabel(S.slots.indexOf(s)), name: T.surname(s.player.name), val: T.fmt(s.player.tries_1998_plus || 0), vc: '#fff', abbr: c.abbr, bg: c.bg, fg: c.fg };
       }),
       rows: [[0, 1], [2, 3], [4, 5], [6, 7]], teamLabel: 'Your Card', // the card: Race 1 to Race 8, two at a time
-      stats: [{ label: 'Biggest Pick', value: Math.max.apply(null, wins) }, { label: 'Smallest Pick', value: Math.min.apply(null, wins) }, { label: 'States', value: clubs }]
+      stats: [{ label: 'Biggest Pick', value: Math.max.apply(null, wins) }, { label: 'Smallest Pick', value: Math.min.apply(null, wins) }, { label: 'Average Pick', value: Math.round(sum / Math.max(1, filled.length)) }]
         .concat(wc != null ? [{ label: 'Wildcards', value: wc }] : []),
       star: last ? { label: 'The Last Pick', value: last.s.player.name, extra: '+' + T.fmt(last.s.player.tries_1998_plus || 0) } : null,
       history: aj ? { head: 'The Record', text: 'Damien Oliver holds it with ' + T.fmt(aj.tries_1998_plus) + ' Group 1 wins since 1983. Your card: exactly ' + T.fmt(T.TARGET) + '.' } : null,
@@ -1511,9 +1406,9 @@
         var bs = T.state();
         if (!bs || !window.CastAccount || !CastAccount.buyReroll) break;
         // Where the draft is at, for the top of the sheet: "430 wins with 2 picks to go. 120 more and you hit 550."
-        var bTot = T.total(), bLeft = bs.slots.filter(function (x) { return !x.player; }).length, bWord = bs.mode.id === 'spin' ? 'spin' : 'pick';
+        var bTot = T.total(), bLeft = bs.slots.filter(function (x) { return !x.player; }).length, bWord = 'pick';
         var bHook = bTot < T.TARGET
-          ? { title: 'You\u2019re One Good ' + (bWord === 'spin' ? 'Spin' : 'Pick') + ' Away', line: T.fmt(bTot) + ' wins with ' + bLeft + ' ' + bWord + (bLeft === 1 ? '' : 's') + ' to go. ' + T.fmt(T.TARGET - bTot) + ' more and you hit ' + T.fmt(T.TARGET) + '.' }
+          ? { title: 'You\u2019re One Good ' + 'Pick' + ' Away', line: T.fmt(bTot) + ' wins with ' + bLeft + ' ' + bWord + (bLeft === 1 ? '' : 's') + ' to go. ' + T.fmt(T.TARGET - bTot) + ' more and you hit ' + T.fmt(T.TARGET) + '.' }
           : { title: 'Chase a Bigger Score', line: T.fmt(bTot) + ' wins already. One more good ' + bWord + ' could put you on top of the leaderboard.' };
         CastAccount.buyReroll('racing', function () {
           if (T.state() !== bs) return;
@@ -1527,9 +1422,9 @@
         var ms = T.state();
         if (!ms || !window.CastAccount || !CastAccount.buyRemove) break;
         if (ms.awaitingLock) { ms.lockHold = true; stopLockTimer(); } // squad full: the countdown waits while they choose
-        var mTot = T.total(), mOpen = ms.slots.filter(function (x) { return !x.player; }).length, mWord = ms.mode.id === 'spin' ? 'spin' : 'pick';
+        var mTot = T.total(), mOpen = ms.slots.filter(function (x) { return !x.player; }).length, mWord = 'pick';
         var mHook = mTot >= T.TARGET ? { title: 'Chase a Bigger Score', line: T.fmt(mTot) + ' wins already. Swap your lowest pick for someone better and climb the leaderboard.' }
-          : mOpen ? { title: 'Swap Out Your Weakest ' + (mWord === 'spin' ? 'Spin' : 'Pick'), line: T.fmt(mTot) + ' wins with ' + mOpen + ' ' + mWord + (mOpen === 1 ? '' : 's') + ' to go. Take one jockey off and draft that race again.' }
+          : mOpen ? { title: 'Swap Out Your Weakest ' + 'Pick', line: T.fmt(mTot) + ' wins with ' + mOpen + ' ' + mWord + (mOpen === 1 ? '' : 's') + ' to go. Take one jockey off and draft that race again.' }
           : { title: 'You’re ' + T.fmt(T.TARGET - mTot) + ' Wins Short', line: 'Your card has ' + T.fmt(mTot) + ' wins. Take one jockey off, draft that race again and chase ' + T.fmt(T.TARGET) + '.' };
         CastAccount.buyRemove('racing', function () {
           if (T.state() !== ms) return;
@@ -1622,30 +1517,16 @@
       case 'wc-signin': // a guest taps a locked wildcard: sign in free, and they unlock in this game
         if (window.CastAccount && CastAccount.requireSignIn) CastAccount.requireSignIn(null, 'wildcards');
         break;
-      case 'spin-pos': choosePosition(t.getAttribute('data-pos')); break;
-      case 'squad-search': {
-        T.squadSearch.open = !T.squadSearch.open;
-        if (!T.squadSearch.open) T.squadSearch.q = '';
-        renderDraft();
-        var si = $('squadSearch'); if (si) si.focus();
-        break;
-      }
-      case 'spin-sort': {
-        var key = t.getAttribute('data-sort');
-        T.spinSort = T.spinSort.key === key ? { key: key, dir: -T.spinSort.dir } : { key: key, dir: 1 };
-        renderDraft();
-        break;
-      }
     }
   });
 
   document.addEventListener('keydown', function (e) {
-    // Desktop keys (16 Oct 2026, the owner): 1, 2 and 3 pick that card (the Team Spin list too); while choosing a spot,
+    // Desktop keys (16 Oct 2026, the owner): 1, 2 and 3 pick that card; while choosing a spot,
     // the same keys choose among the spots he can go into. Never while typing, in a pop-up or a sheet
     var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
     if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
         $('sheet').hidden && !document.documentElement.classList.contains('ca-open')) {
-      var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.offer-cards [data-pick]:not([disabled]), .srow[data-pick]:not([disabled])');
+      var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.offer-cards [data-pick]:not([disabled])');
       var keyHit = Array.prototype.filter.call(keyList, function (x) { return x.offsetParent !== null; })[+e.key - 1];
       if (keyHit) { e.preventDefault(); keyHit.click(); return; }
     }
@@ -1726,75 +1607,59 @@
   /* Quick Draft (the owner's challenges, from the CAST Profile): drafts the strongest team from the challenge's own
      seeded offers, then finishes the game for real, so the result is checked and settled like any other. Later offers
      depend on earlier picks, so it searches ahead in the real engine (T.snapshot / T.restore): a beam of the best few
-     drafts, each scored by finishing it greedily. The main mode and Team Spin go for the most wins (under the server's
+     drafts, each scored by finishing it greedily. The main mode goes for the most wins (under the server's
      cap); Exactly for the most without going over. In the main mode it may spend your tier's rerolls on weak
      offers. Marked qd (private): off the leaderboards, no trophies or stats. */
   var QD_CAP = { nrl: 900 }; // above any real card (8 of the biggest, a Legend included, come to about 750)
-  // The choices at this state: each offered player in each open spot they play (Team Spin: each open spot's spin,
-  // its best few jockeys). Exactly leaves out any card that would go over.
-  function qdOptions(snap, spin, exact, per, codes) {
+  // The choices at this state: each offered player in each open spot they play. Exactly leaves out any card that
+  // would go over.
+  function qdOptions(snap, exact) {
     T.restore(snap);
     var S = T.state(), out = [], room = T.TARGET - T.total();
-    if (!spin) {
-      (S.offer ? S.offer.players : []).forEach(function (p) {
-        if (exact && p.tries_1998_plus > room) return;
-        T.openCodesFor(p).forEach(function (code) { out.push({ id: p.id, code: code, t: p.tries_1998_plus }); });
-      });
-      if (T.canUse('reroll')) out.push({ reroll: true, t: -1 }); // bin this offer for the next one
-      return out;
-    }
-    (codes || Object.keys(T.emptyCodes())).forEach(function (code) {
-      T.restore(snap);
-      var S2 = T.state();
-      S2.spinPos = code; S2.spinSlot = null;
-      var o = T.spinOffer();
-      if (!o) return;
-      o.players.filter(function (p) { return !S2.used[p.id] && T.positionsOf(p).indexOf(code) !== -1; })
-        .sort(function (a, b) { return b.tries_1998_plus - a.tries_1998_plus; }).slice(0, per || 1)
-        .forEach(function (p) { out.push({ id: p.id, code: code, t: p.tries_1998_plus }); });
+    (S.offer ? S.offer.players : []).forEach(function (p) {
+      if (exact && p.tries_1998_plus > room) return;
+      T.openCodesFor(p).forEach(function (code) { out.push({ id: p.id, code: code, t: p.tries_1998_plus }); });
     });
+    if (T.canUse('reroll')) out.push({ reroll: true, t: -1 }); // bin this offer for the next one
     return out;
   }
   // Make one choice from a copied state; returns the next copy (with the next offer dealt, as the game deals it)
-  function qdApply(snap, o, spin) {
+  function qdApply(snap, o) {
     T.restore(snap);
     var S = T.state();
     if (o.reroll) return T.useReroll() ? T.snapshot() : null;
-    if (spin) { S.spinPos = o.code; S.spinSlot = null; if (!T.spinOffer()) return null; }
     if (T.pick(o.id, o.code) == null) return null;
-    if (!spin && T.filledCount() < S.slots.length) T.rollOffer();
+    if (T.filledCount() < S.slots.length) T.rollOffer();
     return T.snapshot();
   }
-  // Finish greedily (the biggest card each time; Team Spin takes the first open spot's spin): { plan, total } or null
-  function qdRollout(snap, spin, exact) {
+  // Finish greedily (the biggest card each time): { plan, total } or null
+  function qdRollout(snap, exact) {
     var plan = [], s = snap;
     for (var guard = 0; guard < 20; guard++) {
       T.restore(s);
       if (T.filledCount() === T.state().slots.length) return { plan: plan, total: T.total() };
-      var opts = [];
-      if (spin) { var codes = Object.keys(T.emptyCodes()); for (var i = 0; i < codes.length && !opts.length; i++) opts = qdOptions(s, true, false, 1, [codes[i]]); }
-      else opts = qdOptions(s, false, exact).filter(function (x) { return !x.reroll; });
+      var opts = qdOptions(s, exact).filter(function (x) { return !x.reroll; });
       if (!opts.length) return null;
       var o = opts.reduce(function (a, b) { return b.t > a.t ? b : a; });
-      var nx = qdApply(s, o, spin);
+      var nx = qdApply(s, o);
       if (!nx) return null;
       plan.push(o); s = nx;
     }
     return null;
   }
-  function qdSearch(spin, exact, width) {
+  function qdSearch(exact, width) {
     var root = T.snapshot(), cap = QD_CAP[T.DATASET] || 900, best = null, beam = [{ snap: root, plan: [] }];
     function consider(plan, total) { if (total <= cap && (!best || total > best.total)) best = { plan: plan, total: total }; }
-    var first = qdRollout(root, spin, exact);
+    var first = qdRollout(root, exact);
     if (first) consider(first.plan, first.total);
     return new Promise(function (ok) {
       (function depth() {
         var kids = [];
         beam.forEach(function (b) {
-          qdOptions(b.snap, spin, exact, 2).forEach(function (o) {
-            var nx = qdApply(b.snap, o, spin);
+          qdOptions(b.snap, exact).forEach(function (o) {
+            var nx = qdApply(b.snap, o);
             if (!nx) return;
-            var plan = b.plan.concat([o]), r = qdRollout(nx, spin, exact);
+            var plan = b.plan.concat([o]), r = qdRollout(nx, exact);
             if (!r) return;
             consider(plan.concat(r.plan), r.total);
             kids.push({ snap: nx, plan: plan, full: !r.plan.length, score: r.total <= cap ? r.total : -1 });
@@ -1810,7 +1675,7 @@
   var qdOn = false;
   function quickDraft(c) {
     if (c && c.mode) c = Object.assign({}, c, { mode: gameMode(c.mode) });
-    if (!c || ['plus', 'spin', 'exact'].indexOf(c.mode) === -1) return Promise.reject(new Error('Quick Draft plays ' + T.GAME_NAME + ' challenges.'));
+    if (!c || ['plus', 'exact'].indexOf(c.mode) === -1) return Promise.reject(new Error('Quick Draft plays ' + T.GAME_NAME + ' challenges.'));
     var S0 = T.state();
     if (document.body.getAttribute('data-screen') === 'draft' && S0 && !S0.finished && T.filledCount() > 0) return Promise.reject(new Error('Finish or leave the team you are drafting first.'));
     if (qdOn) return Promise.reject(new Error('Quick Draft is already drafting.'));
@@ -1831,12 +1696,12 @@
       var tierW = window.CastAccount && CastAccount.wildcardCount ? CastAccount.wildcardCount() : null;
       if (S.mode.wildcards && !S.mode.paidOnly && tierW !== null) setTierWildcards(S, tierW);
       busy = true; // no taps while it drafts
-      var spin = S.mode.source === 'spin', exact = S.mode.rule === 'exact';
-      if (!spin) T.rollOffer(); // the first offer, as the game deals it
-      return qdSearch(spin, exact, spin ? 2 : 4).then(function (best) {
+      var exact = S.mode.rule === 'exact';
+      T.rollOffer(); // the first offer, as the game deals it
+      return qdSearch(exact, 4).then(function (best) {
         if (!best) throw new Error('Quick Draft could not find a team for this draft. It is still waiting.');
         var s = T.snapshot();
-        best.plan.forEach(function (o) { if (s) s = qdApply(s, o, spin); });
+        best.plan.forEach(function (o) { if (s) s = qdApply(s, o); });
         if (!s || T.filledCount() !== S.slots.length) throw new Error('Quick Draft lost its place in the draft. It is still waiting.');
         busy = false;
         finish(T.outcome(true));
@@ -1857,7 +1722,7 @@
   function draftRaw() { try { return JSON.parse(localStorage.getItem(LS_DRAFT) || 'null'); } catch (e) { return null; } }
   // Worth keeping: a pick made, or anything used or paid for before the first one (a key, a reroll, a Pick)
   function draftWorth(S) {
-    return T.filledCount() > 0 || S.offerNo > 1 || S.spinNo > 1 || !!(S.keysUsed || S.keyUsed || S.immUsed || S.ilegUsed || S.goatUsed || S.subUsed ||
+    return T.filledCount() > 0 || S.offerNo > 1 || !!(S.keysUsed || S.keyUsed || S.immUsed || S.ilegUsed || S.goatUsed || S.subUsed ||
       S.boughtRerolls || S.boughtScouts || S.boughtTweaks || Object.keys(S.paidUsed || {}).length);
   }
   function keepDraft() {
@@ -1974,7 +1839,7 @@
     btn.hidden = true;
     homeAgain(); // the account has loaded by now: World Cup's card (when it's on) and Sign In to Play
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
-    var play = /[?&]play=(plus|exact|spin|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]po=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?po=: the owner's private Photo Finish link
+    var play = /[?&]play=(plus|exact|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]po=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?po=: the owner's private Photo Finish link
     if (!play) offerResume();
     if (play) {
       try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address as it is */ }

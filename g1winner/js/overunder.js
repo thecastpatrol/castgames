@@ -23,8 +23,6 @@
   };
   Object.keys(RC_CATS).forEach(function (k) { if (!E.CATS[k]) E.CATS[k] = RC_CATS[k]; });
   var CAT_ORDER = ['jockeyg1', 'bigrace', 'horseg1'];
-  // The plate's name: the jurisdiction's short name, so it never cuts off
-  var NICK = { nsw: 'New South Wales', vic: 'Victoria', qld: 'Queensland', sa: 'South Australia', wa: 'Western Australia', nz: 'New Zealand' };
   var LS_CAT = 'racing_ou_cat_v1', LS_BEST = 'racing_ou_best_v1'; // its own: on castgames.com.au every game shares one address
   var D = null, loading = null;
   var st = { view: 'start', cat: 'jockeyg1' };
@@ -35,53 +33,34 @@
   function bests() { try { return JSON.parse(lsGet(LS_BEST) || '{}') || {}; } catch (e) { return {}; } }
   function root() { return document.getElementById('ouRoot'); }
   function A() { return window.CastAccount || null; }
-  /* Horses' racing silks (16 Oct 2026, the owner: each horse card wears that horse's real silks): data/silks.json
-     { name: { colours: [body, pattern], pattern, words, source } }, every one from a public source. A horse with none
-     confirmed gets a plain neutral card, never guessed colours */
+  /* Racing silks on every card (16 Oct 2026, the owner; no states anywhere). A horse wears its own real silks
+     (data/silks.json { name: { colours: [body, pattern], pattern, words, letter?, emblem?, epaulettes?, source } }, every
+     one from a public source; none confirmed: a plain neutral card, never guessed colours). A jockey wears his or her
+     signature horse's (data/players.json and legends.json silks: the row's third field is the jockey's id, js/data.js
+     T.look). Both drawn by js/data.js T.silksBg */
   var SILKS = {};
   function load() {
     if (D) return Promise.resolve(D);
     if (!loading) loading = Promise.all([
       fetch('data/ou.json?v=20261016.1').then(function (r) { return r.json(); }),
-      fetch('data/silks.json?v=20261016.1').then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })
+      fetch('data/silks.json?v=20261016.2').then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+      T.loadPlayers ? T.loadPlayers().catch(function () { return null; }) : null // the jockeys' silks (T.byId)
     ]).then(function (x) { SILKS = x[1] || {}; D = x[0]; return D; });
     return loading;
   }
   function hexOk(c) { return /^#[0-9a-f]{6}$/i.test(c || '') ? c : null; }
-  function textOn(hex) { var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return (0.299 * r + 0.587 * g + 0.114 * b) > 140 ? '#0B1220' : '#FFFFFF'; }
-  // The silks as a small repeating SVG in the horse's two colours, drawn behind the card's plate
-  function silksBg(a, b, pat) {
-    var t = { stripes: '<rect width="12" height="24" fill="B"/>', hoops: '<rect width="24" height="12" fill="B"/>',
-      spots: '<circle cx="12" cy="12" r="4.5" fill="B"/>', stars: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z" fill="B"/>',
-      diamonds: '<path d="M12 2l10 10-10 10L2 12z" fill="B"/>', 'triple diamond': '<path d="M12 2l10 10-10 10L2 12z" fill="B"/>',
-      checks: '<rect width="12" height="12" fill="B"/><rect x="12" y="12" width="12" height="12" fill="B"/>',
-      chevrons: '<path d="M0 6l12 8 12-8v6l-12 8L0 12z" fill="B"/>', chevron: '<path d="M0 6l12 8 12-8v6l-12 8L0 12z" fill="B"/>',
-      quarters: '<rect width="12" height="12" fill="B"/><rect x="12" y="12" width="12" height="12" fill="B"/>',
-      cross: '<rect x="9" width="6" height="24" fill="B"/><rect y="9" width="24" height="6" fill="B"/>',
-      braces: '<rect x="4" width="4" height="24" fill="B"/><rect x="16" width="4" height="24" fill="B"/>',
-      seams: '<rect x="11" width="2" height="24" fill="B"/>', epaulettes: '<rect width="24" height="6" fill="B"/>' }[pat];
-    var size = pat === 'quarters' ? 48 : 24;
-    if (pat === 'sash' || pat === 'halves' || pat === 'diabolo') {
-      return pat === 'sash' ? 'linear-gradient(120deg, ' + a + ' 0 38%, ' + b + ' 38% 58%, ' + a + ' 58%)'
-        : 'linear-gradient(90deg, ' + a + ' 0 50%, ' + b + ' 50%)';
-    }
-    if (!t) return a; // plain
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect width="24" height="24" fill="A"/>' + t + '</svg>';
-    svg = svg.replace(/A/g, a).replace(/fill="B"/g, 'fill="' + b + '"');
-    return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 0 0 / ' + size + 'px ' + size + 'px, ' + a;
-  }
-  // A card's look: a jurisdiction's colours, or (horses) the horse's silks or the neutral card
+  // A card's look: a jockey's silks (or the neutral look), a horse's silks or the neutral card
   function looks(p) {
-    if (st.cat !== 'horseg1') return { style: T.render && T.render.clubVars ? T.render.clubVars(p[2] || '') : '', cls: '' };
-    var sk = SILKS[p[0]], a = sk && sk.colours && hexOk(sk.colours[0]), b = sk && sk.colours && (hexOk(sk.colours[1]) || a);
+    if (st.cat !== 'horseg1') {
+      var j = T.byId && T.byId[p[2]], L = T.look(j || {});
+      return { style: '--club:' + L.primary + ';--club-accent:' + L.accent + ';--club-text:' + L.text + ';--silks:' + L.bg + ';', cls: ' is-silks' + (L.neutral ? ' is-plain' : ''), words: L.words, horse: L.horse };
+    }
+    var sk = SILKS[p[0]], a = sk && sk.colours && hexOk(sk.colours[0]);
     if (!a) return { style: '--club:#4b5563;--club-accent:#9ca3af;--club-text:#ffffff;', cls: ' is-neutral' };
-    return { style: '--club:' + a + ';--club-accent:' + b + ';--club-text:' + textOn(a) + ';--silks:' + silksBg(a, b, sk.pattern || 'plain').replace(/"/g, "'") + ';', cls: ' is-silks', words: sk.words || '' };
+    var L2 = T.look({ silks: sk });
+    return { style: '--club:' + L2.primary + ';--club-accent:' + L2.accent + ';--club-text:' + L2.text + ';--silks:' + L2.bg + ';', cls: ' is-silks', words: sk.words || '' };
   }
   function newSeed() { var s = '', c = 'abcdefghijkmnpqrstuvwxyz23456789'; for (var i = 0; i < 12; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
-  function where(p) {
-    var code = p[2] || '';
-    return NICK[code] || (T.CLUBS && T.CLUBS[code] && T.CLUBS[code].name) || '';
-  }
   function years(p) { var y = String(p[3] || '').split('-'); return !y[0] ? '' : !y[1] || y[1] === y[0] ? y[0] : y[0] + ' to ' + y[1]; }
   function unit(n) { var c = E.CATS[st.cat]; return n === 1 ? c.one : c.unit; }
 
@@ -289,7 +268,7 @@
         '<span class="ou-tile-n' + (b[k] ? '' : ' is-new') + '" aria-hidden="true"><b>' + (b[k] ? b[k] : '&ndash;') + '</b><small>' + (b[k] ? 'Best' : 'New') + '</small></span></button>';
     }).join('') + '</div>';
   }
-  // A sample pair for the start screen: two famous names in their jurisdictions' colours, the right one hidden
+  // A sample pair for the start screen: two famous names in their silks, the right one hidden
   function demoPair() {
     var L = D[st.cat];
     if (!L || L.length < 3) return '';
@@ -302,17 +281,15 @@
       '<button type="button" class="btn btn-primary ou-play" data-ou="play">Play ' + esc(E.CATS[st.cat].name) + ' <i aria-hidden="true">&#x25B6;</i></button>' +
       '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Photo Finish Leaderboard</button></div>';
   }
-  // One jockey (in the jurisdiction's colours) or horse (in its silks, or neutral), like the draft cards: the plate, the
-  // name and years, then the number
+  // One jockey or horse in its silks (or neutral), like the draft cards: the plate (a jockey's with the signature horse's
+  // name in a pill), the name and years, then the number
   function card(p, known, cls, mark) {
-    var code = p[2] || '', c = T.club ? T.club(code) : { abbr: code.toUpperCase(), name: where(p) }, y = years(p);
-    // A nation: its look as a small flag on a plate in its colour (the look behind the words left light ones unreadable)
-    var N = window.CastNations, lk = N && N.has && N.has(code) ? '<span class="ou-flag" aria-hidden="true">' + N.svg(code, 36, 24, { level: 2 }) + '</span>' : '';
+    var y = years(p);
     var val = known ? '<b>' + num(p[1]) + '</b><small>' + esc(unit(p[1])) + '</small>' : '<b class="is-q">?</b><small>' + esc(E.CATS[st.cat].unit) + '</small>'; // (was named num, which hid the num() helper)
     var look = looks(p);
     return '<div class="ou-card ' + cls + look.cls + (mark ? ' ' + mark : '') + '" style="' + esc(look.style) + '"' + (look.words ? ' title="Silks: ' + esc(look.words) + '"' : '') + '>' +
-      // Horses: the silks alone across the top, no state chips (16 Oct 2026, the owner: don't lean on the states)
-      (st.cat === 'horseg1' ? '<span class="ou-plate is-bare"></span>' : '<span class="ou-plate">' + (lk || '<span class="ou-abbr">' + esc(c.abbr) + '</span>') + '<span class="ou-club">' + esc(where(p) || c.name) + '</span></span>') +
+      // The silks across the top, no states (16 Oct 2026): a horse's alone, a jockey's with the horse's name small
+      '<span class="ou-plate is-bare">' + (look.horse ? '<span class="silks-horse">' + esc(look.horse) + '</span>' : '') + '</span>' +
       '<span class="ou-body"><span class="ou-name">' + esc(p[0]) + '</span>' + (y ? '<span class="ou-years">' + esc(y) + '</span>' : '') + '</span>' +
       '<span class="ou-num">' + val + '</span></div>';
   }
@@ -349,12 +326,10 @@
             '<span class="btn-decide-lbl">&#x1F3C1; End Run' + (st.hold ? '' : ' <b class="lock-secs">' + st.offer + '</b>') + '</span></button>' +
         '</div></div></div></div>';
   }
-  // A club (or nation) chip for the ladder, in its colours
+  // A silks swatch for the ladder
   function chip(p) {
-    var code = p[2] || '', N = window.CastNations, c = T.club ? T.club(code) : { abbr: code.toUpperCase() };
-    var inner = N && N.has && N.has(code) ? N.svg(code, 30, 20, { level: 2 }) : '<b>' + esc(c.abbr) + '</b>';
     var look = looks(p);
-    return '<span class="ou-chip' + look.cls + '" style="' + esc(look.style) + '" aria-hidden="true">' + inner + '</span>';
+    return '<span class="ou-chip' + look.cls + '" style="' + esc(look.style) + '" aria-hidden="true"></span>';
   }
   function secs(ms) { return (ms / 1000).toFixed(1) + 's'; }
   /* The results (14 Oct 2026, the owner: "show the results more clear and the picks order you got right... make it

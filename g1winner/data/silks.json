@@ -1,12 +1,14 @@
 {
 "Winx": {
 "colours": [
-"#0b1f4b",
+"#1d3f9e",
 "#ffffff"
 ],
-"pattern": "epaulettes",
+"pattern": "letter",
 "words": "Dark blue, white M, white epaulettes and pom pom (Magic Bloodstock)",
-"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html",
+"letter": "M",
+"epaulettes": true
 },
 "Black Caviar": {
 "colours": [
@@ -195,7 +197,8 @@
 ],
 "pattern": "plain",
 "words": "Navy blue, gold lightning bolt, gold and white armbands, gold cap (Rupert Legh and partners)",
-"source": "http://thecoloursofhorseracing.blogspot.com/2022/04/t-j-smith-stakes.html"
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/04/t-j-smith-stakes.html",
+"emblem": "bolt"
 },
 "Northerly": {
 "colours": [
@@ -247,9 +250,10 @@
 "#ffffff",
 "#d4202c"
 ],
-"pattern": "diamonds",
+"pattern": "plain",
 "words": "White, red diamond, yellow sleeves and cap (Muskoka Farms)",
-"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html",
+"emblem": "diamond"
 },
 "Pierro": {
 "colours": [
@@ -258,7 +262,8 @@
 ],
 "pattern": "plain",
 "words": "Royal blue, red lightning bolt and hooped sleeves, red cap with royal blue lightning bolt (G. and D. Kolivos)",
-"source": "https://thecoloursofhorseracing.blogspot.com/2014/12/the-golden-slipper.html"
+"source": "https://thecoloursofhorseracing.blogspot.com/2014/12/the-golden-slipper.html",
+"emblem": "bolt"
 },
 "Miss Finland": {
 "colours": [
@@ -402,7 +407,8 @@
 ],
 "pattern": "plain",
 "words": "Yellow, red square, lime and orange hooped sleeves, yellow and red quartered cap",
-"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html",
+"emblem": "square"
 },
 "Joliestar": {
 "colours": [
@@ -445,9 +451,10 @@
 "#ffffff",
 "#6b2fa0"
 ],
-"pattern": "stars",
+"pattern": "plain",
 "words": "White, purple star and hooped sleeves",
-"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/ajc-derby.html"
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/ajc-derby.html",
+"emblem": "star"
 },
 "Shoot Out": {
 "colours": [
@@ -607,9 +614,10 @@
 "#ffffff",
 "#6b2fa0"
 ],
-"pattern": "stars",
+"pattern": "plain",
 "words": "White, purple star and hooped sleeves (G. and B. White)",
-"source": "https://thecoloursofhorseracing.blogspot.com/2018/05/flight-stakes_14.html"
+"source": "https://thecoloursofhorseracing.blogspot.com/2018/05/flight-stakes_14.html",
+"emblem": "star"
 },
 "Slight Chance": {
 "colours": [

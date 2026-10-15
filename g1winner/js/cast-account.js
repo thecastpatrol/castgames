@@ -3724,7 +3724,7 @@
     // G1 WINNER SPINNER (16 Oct 2026): the same for racing. Photo Finish like Follow On: one chip with a category picker
     { id: 'rcplus', label: '550+', short: '550+', game: 'racing', periods: ['today', 'week', 'all'], unit: 'G1 wins' },
     { id: 'rcexact', label: 'Exactly 550', short: 'Exactly 550', tiny: 'Exact 550', game: 'racing', periods: ['today', 'week', 'all'], home: 'week' },
-    { id: 'rcspin', label: 'Team Spin', short: 'Team Spin', game: 'racing', periods: ['today', 'week', 'all'], unit: 'G1 wins' },
+    // (no rcspin: Team Spin was removed from G1 WINNER SPINNER, 16 Oct 2026)
     { id: 'rcou', label: 'Photo Finish', short: 'Photo Finish', tiny: 'Photo Finish', game: 'racing', periods: ['today', 'week', 'all'] },
     { id: 'rcoub', label: 'Photo Finish: Big Race Wins', short: 'Big Race Wins', game: 'racing', periods: ['today', 'week', 'all'], sub: 'rcou' },
     { id: 'rcouh', label: 'Photo Finish: Horses\u2019 Group 1 Wins', short: 'Horses\u2019 G1 Wins', game: 'racing', periods: ['today', 'week', 'all'], sub: 'rcou' },

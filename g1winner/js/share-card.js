@@ -8,7 +8,7 @@
   var W = 1080, H = 1350;
   var GOLD = '#f1c073'; // the GOAT's only (never here)
   // Each mode's own colour (matches the home cards and the in-game skin):
-  // the main mode royal blue (the silks), Exactly red, Team Spin purple.
+  // the main mode royal blue (the silks), Exactly red (spin: Team Spin's, no longer in this game).
   var MODE_SKIN = {
     plus:  { id: 'plus',  a: '#5b8cff', hi: '#dbe6ff', lo: '#2f5fe0', rgb: '91,140,255', pill: '#3a6cf0', ink: '#ffffff', icon: '',    bg: ['#0b2a18', '#03100a'] },
     exact: { id: 'exact', a: '#ef4444', hi: '#fecaca', lo: '#b91c1c', rgb: '239,68,68',   pill: '#dc2626', ink: '#ffffff', icon: '🔥 ', bg: ['#1d0a0d', '#08060a'] },
@@ -214,14 +214,15 @@
       ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round(22 * k) + 'px ' + F;
       ctx.fillText(T.raceLabel ? T.raceLabel(i) : sl.code, x0 + 18, ry + rowH / 2 + 8 * k);
       if (!p) { ctx.fillStyle = '#5c5c72'; ctx.font = '700 ' + Math.round(24 * k) + 'px ' + F; ctx.fillText('Not picked', x0 + 170 * k, ry + rowH / 2 + 8 * k); return; }
-      var club = T.club(T.slotClub(sl));
+      // The jockey's silks as a swatch (no states, 16 Oct 2026): the picture made before drawing (silksPics), else the
+      // body colour
+      var lk = T.look(p), pic = silksPics[p.id];
       var cx = x0 + 70 * k, cwid = 80 * k;
       ctx.save(); roundRect(ctx, cx, ry + 6 * k, cwid, rowH - 12 * k, 7); ctx.clip();
-      ctx.fillStyle = club.primary; ctx.fillRect(cx, ry + 6 * k, cwid, rowH - 12 * k);
-      ctx.fillStyle = club.accent; ctx.fillRect(cx, ry + 6 * k, 6 * k, rowH - 12 * k);
+      ctx.fillStyle = lk.primary; ctx.fillRect(cx, ry + 6 * k, cwid, rowH - 12 * k);
+      if (pic) ctx.drawImage(pic, cx, ry + 6 * k, cwid, rowH - 12 * k);
       ctx.restore();
-      ctx.fillStyle = club.text; ctx.font = '900 ' + Math.round(20 * k) + 'px ' + F; ctx.textAlign = 'center';
-      ctx.fillText(club.abbr, cx + cwid / 2 + 3, ry + rowH / 2 + 7 * k);
+      ctx.save(); roundRect(ctx, cx, ry + 6 * k, cwid, rowH - 12 * k, 7); ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
       ctx.textAlign = 'left';
       var nameFont = '800 ' + Math.round(27 * k) + 'px ' + F;
       ctx.fillStyle = T.isGoat(p) ? GOLD : '#f0f0f0'; ctx.font = nameFont;
@@ -276,9 +277,25 @@
     });
   }
 
+  /* Each pick's silks as a picture (js/data.js T.silksSvg), made before drawing: id -> Image. One that fails to load
+     leaves the plain body colour */
+  var silksPics = {};
+  function loadSilks(S) {
+    silksPics = {};
+    return Promise.all(S.slots.filter(function (sl) { return sl.player; }).map(function (sl) {
+      var p = sl.player;
+      return new Promise(function (ok) {
+        var img = new Image();
+        img.onload = function () { silksPics[p.id] = img; ok(); };
+        img.onerror = function () { ok(); };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(T.silksSvg(T.silksOf(p) || T.NEUTRAL_SILKS, 160, 88));
+      });
+    }));
+  }
+
   // Build both cards for the current result: { post, story }, each { file, blob, url, name } (or null)
   T.buildShareCard = function (S, out) {
-    return Promise.all([loadLogo(), loadCast(), fontsReady()]).then(function () {
+    return Promise.all([loadLogo(), loadCast(), fontsReady(), loadSilks(S)]).then(function () {
       return Promise.all([toCard(draw(S, out, false), 'my-' + T.GAME_SLUG + '.png'), toCard(draw(S, out, true), 'my-' + T.GAME_SLUG + '-story.png')]);
     }).then(function (r) { return r[0] || r[1] ? { post: r[0], story: r[1] } : null; })
       .catch(function () { return null; });

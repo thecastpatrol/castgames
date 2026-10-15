@@ -17,11 +17,7 @@
       blurb: 'Roll 3, pick 1. Get your 8 jockeys to ' + TGT + ' Group 1 wins or more.',
       rule: 'atleast', source: 'roll', wildcards: true
     },
-    spin: {
-      id: 'spin', event: 'team_spin_plays', name: 'Team Spin', short: 'Team Spin',
-      blurb: 'Choose a race, then spin a state and year and pick from its Group 1 winning jockeys. Aim for ' + TGT + '+.',
-      rule: 'atleast', source: 'spin', wildcards: true
-    },
+    // No Team Spin (the owner, 16 Oct 2026: "Get rid of Team Spin for horse racing")
     // The Daily (js/daily.js): the main mode's rules on a themed draft. No wildcards, no Legends Pick.
     daily: {
       id: 'daily', event: 'daily_1000_plays', name: 'Daily', short: 'Daily',
@@ -57,7 +53,7 @@
   T.ilFirstDone = function () { try { localStorage.setItem(ilFirstKey(), '1'); } catch (e) { /* storage blocked */ } };
 
   /* The main mode plays harder than every other mode, as on 1000TRIES: rarer Legends Picks and lifelines, and offers
-     that favour the big winners less. The Daily, Team Spin and Exactly keep the normal settings above. firstStar is the
+     that favour the big winners less. The Daily and Exactly keep the normal settings above. firstStar is the
      first offer's big winner, kept at the normal setting. The weight and the target were set together with the
      real-engine simulator (15 Oct 2026; its notes stay off the site) */
   T.HARD = { weight: 20, legends: 0.06, immortal: 0, lifeline: 0.08, firstStar: 0.7 };
@@ -85,7 +81,7 @@
   T.adopt = function (x) { S = x; return S; };
 
   /* Seeded draws: every game is dealt from a seed (S.seed), so a friend can be challenged to the same draft. Each draw
-     has its own stream (the first offer, the Legends Pick, each spin), and offers are chosen by weighted random keys per
+     has its own stream (the first offer, the Legends Pick), and offers are chosen by weighted random keys per
      player, so two players with the same open spots see the same cards. Without a seed it is plain Math.random. */
   function hash32(str) {
     var h = 2166136261;
@@ -118,18 +114,16 @@
       mode: mode,
       slots: T.SLOTS.map(function (code) { return { code: code, player: null }; }),
       used: {},          // id -> true for jockeys on the card
-      offer: null,       // { kind: 'roll', players: [] } or { kind: 'spin', year, club, players: [] }
+      offer: null,       // { kind: 'roll', players: [] }
       revealed: {},      // id -> true when Reveal Wins showed the wins
       wildcards: mode.wildcards && !mode.paidOnly ? { reroll: 1, scout: 1, tweak: 1 } : { reroll: 0, scout: 0, tweak: 0 },
       paidUsed: {},      // Hard Mode: the paid wildcards used this game (one of each)
       tweakMode: false,
-      spinPos: null,     // Team Spin: position chosen before the spin
-      spinSlot: null,    // Team Spin: exact field spot tapped, if any
       picks: 0,
       finished: false,
       awaitingLock: false,
       history: [],
-      seed: (opts && opts.seed) || T.newSeed(), offerNo: 0, spinNo: 0,
+      seed: (opts && opts.seed) || T.newSeed(), offerNo: 0,
       challenge: !!(opts && opts.challenge), // playing a friend's challenge: no Vault keys
       daily: (opts && opts.daily) || null    // a Daily go: { date, n, go }
     };
@@ -163,8 +157,8 @@
     return S;
   };
 
-  /* A themed Daily's jurisdiction rule (none of the racing Dailies use it yet): the card needs at least one jockey who has
-     won a Group 1 there. Until the card has one, every offer holds one. */
+  /* A themed Daily's club rule, from the shared engine (no racing Daily uses one: no states, the owner 16 Oct 2026): the
+     card needs at least one jockey from that club. Until the card has one, every offer holds one. */
   // (T.playedFor with no year, in js/data.js)
   T.dailyClub = function () { return (S && S.daily && S.daily.club) || null; };
   T.hasDailyClub = function () {
@@ -326,10 +320,10 @@
   T.promoTrophy = function () { return T.promoKind() === 'prem' ? 'prem26' : 'toty'; };
 
   /* Stronger wildcards (2 Oct 2026, the owner's call), toned down 3 Oct (2 better players every time was too easy to farm):
-     now and then (T.BOOST_CHANCE), a Reroll's new offer (Team Spin: the Respin's squad), and the first offer after
+     now and then (T.BOOST_CHANCE), a Reroll's new offer, and the first offer after
      Remove Player, hold T.BOOST_N jockey with more wins than the best one rerolled (or the one removed), when one fits
      your open races, and the other cards don't beat him; the rest of the time it's a plain offer. The roll is seeded, so
-     a friend's challenge rolls the same. The main mode and Team Spin; not Exactly (more wins isn't better there)
+     a friend's challenge rolls the same. The main mode; not Exactly (more wins isn't better there)
      or Quick Draft (it plans the plain draws). S.boost waits for the next offer. Boosted offers stay out of the luck of
      the draw (a wildcard isn't luck) */
   T.BOOST_N = 1;
@@ -391,7 +385,7 @@
     } else {
       players = weightedSample(pool, T.OFFER_SIZE, null, tag);
     }
-    // Themed Daily: no player from the day's jurisdiction on the card yet, and none on these cards: one takes a card's place
+    // Themed Daily: no player from the day's club on the card yet, and none on these cards: one takes a card's place
     // (never the first offer's big winner), chosen the same way for everyone with the same draft
     var club = T.dailyClub();
     if (club && !T.hasDailyClub() && !players.some(function (p) { return T.playedFor(p, club); })) {
@@ -435,7 +429,7 @@
 
   /* The luck of the draw, shown on the results screen and on leaderboard team sheets: the wins on every offer
      against what an average offer from the same jockeys would hold. Legends Picks and the first offer (its big winner
-     is there by design) are left out; rerolls count. Team Spin has no offers, so no luck. */
+     is there by design) are left out; rerolls count. */
   function noteLuck(pool, players) {
     var tw = 0, tt = 0;
     for (var i = 0; i < pool.length; i++) { var w = weightOf(pool[i]); tw += w; tt += w * pool[i].tries_1998_plus; }
@@ -494,16 +488,15 @@
   };
 
   /* The Hall of Fame Pick (bought, shared with 27-0; 2 Oct 2026, the owner's call; the account side is js/cast-account.js
-     pickState, pickBuy and pickUse): the offer in front of you becomes three Hall of Famers who fit your open spots (Team Spin:
-     the race you locked in), with their Group 1 wins. The main mode, Exactly and Team Spin, never the
+     pickState, pickBuy and pickUse): the offer in front of you becomes three Hall of Famers who fit your open spots, with
+     their Group 1 wins. The main mode and Exactly, never the
      Daily or a friend's challenge, and as many as you have in one 13 (the owner: they paid for it). Not over a Legends,
      Hall of Famer or GOAT offer. The Pick is only taken when you choose one (js/app.js place), and Keep My Offer puts the
      offer you had back. S.immUsed counts them for the leaderboards (d.imm) */
-  T.IMM_MODES = ['plus', 'exact', 'spin'];
+  T.IMM_MODES = ['plus', 'exact'];
   function immPool() {
-    var spot = S.mode.source === 'spin' ? S.spinPos : null;
     return (T.LEGENDS || []).filter(function (p) {
-      return T.isLegend(p) && !S.used[p.id] && (spot ? T.openCodesFor(p).indexOf(spot) !== -1 : T.fitsEmpty(p));
+      return T.isLegend(p) && !S.used[p.id] && T.fitsEmpty(p);
     });
   }
   T.immMode = function () { return !!S && T.DATASET === 'nrl' && T.IMM_MODES.indexOf(S.mode.id) !== -1 && !S.challenge && !S.daily; };
@@ -549,7 +542,7 @@
 
   // Place a player. code is optional when only one open slot type fits.
   // slotIdx (optional) is the exact spot clicked on the field.
-  T.showClub = function (p) { return T.lastClub(p); }; // the jockey's own state everywhere (js/data.js)
+  T.showClub = function (p) { return T.lastClub(p); }; // the jockey's own silks everywhere (js/data.js)
 
   T.pick = function (id, code, slotIdx) {
     var p = T.byId[id];
@@ -567,15 +560,10 @@
     var offer = (S.offer && S.offer.players) || [];
     S.slots[idx].top = offer.indexOf(p) >= 0 && offer.every(function (o) { return o === p || S.used[o.id] || !T.fitsEmpty(o) || o.tries_1998_plus <= p.tries_1998_plus; });
     S.slots[idx].player = p;
-    // Team Spin: remember the club this pick was spun from, so it keeps those colours
-    S.slots[idx].club = S.offer && S.offer.kind === 'spin' ? S.offer.club : null;
-    S.slots[idx].year = S.offer && S.offer.kind === 'spin' ? S.offer.year : null;
     S.used[id] = true;
     S.picks++;
     S.offer = null;
     S.revealed = {};
-    S.spinPos = null;
-    S.spinSlot = null;
     S.history.push({ type: 'pick', id: id, slot: idx });
     return idx;
   };

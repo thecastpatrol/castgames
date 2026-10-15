@@ -23,7 +23,7 @@
     if (!T.canUse('reroll')) return null;
     S.wildcards.reroll--;
     T.setBoost(T.bestOnOffer() + 1); // the new offer may hold one who beats the best one binned (js/draft.js rollOffer)
-    return S.mode.source === 'spin' ? T.spinOffer() : T.rollOffer();
+    return T.rollOffer();
   };
 
   // The most wins on the offer in front of you (what a Reroll's new offer has to beat)

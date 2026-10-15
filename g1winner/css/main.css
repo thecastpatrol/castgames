@@ -1,4 +1,4 @@
-/* The racing game (from 1000TRIES). Turf green, white running rail, royal blue silks; state colours up front.
+/* The racing game (from 1000TRIES). Turf green, white running rail, royal blue accents; every jockey in silks.
    Gold stays with the CAST Pass. The racing look is the last block in this file. */
 
 :root {
@@ -1852,7 +1852,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 /* ================= The racing look (15 Oct 2026) =================
    A racecourse from above: the turf track between a white outside rail and a white inside rail, the infield with the
    card's 8 races in two rows of four (sprints and miles, then middle distance and staying), and the winning post on
-   the home straight. Turf greens everywhere else, royal blue for the accent (the silks), state colours on the cards */
+   the home straight. Turf greens everywhere else, royal blue for the accent, each jockey's silks on the cards */
 body {
   background:
     radial-gradient(120% 60% at 50% -10%, rgba(91, 140, 255, .10), transparent 60%),
@@ -1925,12 +1925,41 @@ body {
 /* The hero wordmark if the logo can't load */
 .wm-num { color: #fff; text-shadow: 0 0 40px rgba(91, 140, 255, .45); }
 .wm-word { color: var(--gold); }
-/* The jurisdiction and race labels on a filled race stay small, so MILE and NSW never touch on a phone */
+/* The race label on a filled race stays small */
 .slot.is-filled .slot-code, .slot-abbr { font-size: 8.5px; }
-/* Photo Finish's horses (16 Oct 2026): the plate wears the horse's silks (js/overunder.js silksBg), the words sit on a dark
-   pill so they read on any pattern; a horse without confirmed silks gets the plain neutral card */
+/* Photo Finish (16 Oct 2026): the plate wears the horse's silks, or the jockey's signature horse's (js/data.js T.silksBg),
+   the words sit on a dark pill so they read on any pattern; a horse without confirmed silks gets the plain neutral card */
 .ou-card.is-silks .ou-plate { background: var(--silks); border-left-color: var(--club-accent); }
 .ou-card.is-silks .ou-abbr { background: rgba(8, 12, 20, .78); color: #fff; }
 .ou-card.is-silks .ou-club { padding: 3px 6px; border-radius: 5px; background: rgba(8, 12, 20, .62); color: #fff; }
 .ou-chip.is-silks { background: var(--silks); }
 .ou-chip.is-silks b { padding: 1px 3px; border-radius: 3px; background: rgba(8, 12, 20, .7); color: #fff; }
+
+/* ---- Silks (16 Oct 2026, the owner): every jockey wears the silks of his or her signature horse, no states anywhere ----
+   js/data.js T.look gives --club (the body colour), --club-accent, --club-text and --silks (the pattern, a letter or a
+   badge, epaulettes). Words always sit on a dark pill, so every pattern reads; nothing is cut off, long words wrap */
+.silks-horse { display: inline-block; max-width: 100%; padding: 3px 9px; border-radius: 999px; background: rgba(8, 12, 20, .82);
+  color: #fff; font: 800 11px/1.25 var(--font); letter-spacing: .2px; white-space: normal; overflow-wrap: break-word;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .2); text-wrap: balance; }
+.pcard-plate.is-silks { min-height: 42px; background: var(--silks); border-left: 0; box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25); }
+.pcard.is-legend .pcard-plate.is-silks, .chooser-card.is-legend .pcard-plate.is-silks { background: var(--silks); border-left: 0; text-shadow: none; }
+.pcard-plate.is-silks .pcard-tier { margin-left: auto; box-shadow: 0 0 0 1px rgba(0, 0, 0, .25); }
+.chooser-card .pcard-plate.is-silks { min-height: 42px; }
+/* A race tile: the silks across the whole tile, the race, name and wins on dark pills */
+.slot.is-filled.is-silks { background: var(--silks); border-color: rgba(255, 255, 255, .6); box-shadow: 0 4px 12px rgba(0, 0, 0, .45); text-shadow: none; }
+.slot.is-silks .slot-code, .slot.is-silks .slot-name, .slot.is-silks .slot-tries { color: #fff; background: rgba(8, 12, 20, .8); border-radius: 5px; opacity: 1; }
+.slot.is-silks .slot-code { padding: 1px 4px; }
+.slot.is-silks .slot-name { box-sizing: border-box; max-width: 100%; padding: 1px 3px; white-space: normal; overflow-wrap: normal; overflow: visible; } /* js/app.js fitSlotNames steps a long name down until it fits whole */
+.slot.is-silks .slot-tries { padding: 0 5px; margin-top: 3px; }
+.slot.is-legend.is-silks { border-color: #e7c08f; box-shadow: 0 0 14px rgba(217, 166, 107, .45); }
+.slot.is-legend.is-silks .slot-name, .slot.is-legend.is-silks .slot-tries { color: #e7c08f; }
+/* Results: the silks as a swatch, the signature horse small under the jockey */
+.rrow .rrow-club.is-silks { background: var(--silks); border-left: 0; box-shadow: inset -1px 0 0 rgba(255, 255, 255, .12); }
+.rrow-nm { display: grid; gap: 2px; min-width: 0; }
+.rrow-horse { font: 700 11px/1.2 var(--font); color: var(--muted); }
+/* The reveal after a pick: a band of the silks across the top */
+.reveal.is-silks { position: relative; overflow: hidden; padding-top: 38px; }
+.reveal.is-silks::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 20px; background: var(--silks); box-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+/* Photo Finish: a jockey's plate carries the signature horse's name; a jockey without silks gets the neutral look */
+.ou-card.is-silks .ou-plate { justify-content: flex-start; border-left: 0; } /* the silks alone, edge to edge (an accent edge read as part of the pattern) */
+.ou-plate .silks-horse { font-size: 10.5px; padding: 3px 7px; }

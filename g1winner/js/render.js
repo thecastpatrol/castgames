@@ -17,6 +17,16 @@
     var c = T.club(slug);
     return '--club:' + c.primary + ';--club-accent:' + c.accent + ';--club-text:' + c.text + ';';
   };
+  /* Every jockey card wears the silks of his or her signature horse (the owner, 16 Oct 2026; js/data.js T.look): the
+     card's colour from the silks, the plate drawn in their pattern (--silks), the horse's name small in a pill on the
+     plate and the silks in words as the hover title. No states anywhere */
+  var lookVars = R.lookVars = function (p) {
+    var L = T.look(p);
+    return '--club:' + L.primary + ';--club-accent:' + L.accent + ';--club-text:' + L.text + ';--silks:' + L.bg + ';';
+  };
+  function silksTitle(p) { var L = T.look(p); return L.words ? ' title="Silks: ' + esc(L.words) + '"' : ''; }
+  // The plate's horse pill ("Winx"): dark, so it reads on any pattern; it wraps, never cut off
+  var horsePill = R.horsePill = function (p) { var L = T.look(p); return L.horse ? '<span class="silks-horse">' + esc(L.horse) + '</span>' : ''; };
 
   var GOAT = ' <span class="goat" role="img" aria-label="GOAT">&#x1F410;</span>';
 
@@ -79,7 +89,6 @@
   var MODE_CARD = {
     exact: { ico: '&#x1F3AF;', line: 'Hit ' + T.fmt(T.TARGET) + ' on the dot. Not ' + T.fmt(T.TARGET - 1) + ', not ' + T.fmt(T.TARGET + 1), chips: ['Roll 3, Pick 1', '15s a Pick', 'Paid Wildcards'] },
     plus:  { ico: '&#x1F3C7;', line: 'Get to ' + T.fmt(T.TARGET) + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] },
-    spin:  { ico: '&#x1F3B0;', line: 'Pick a race, then spin', chips: ['Spin, Pick 1', '3 Wildcards'] },
     nrlw:  { ico: '&#x2B50;', line: '', chips: [] }, // never on here
     wc:    { ico: '&#x1F30F;', line: '', chips: [] }, // never on here
     ou:    { ico: '&#x2195;&#xFE0F;', line: 'More or fewer? Call it before the clock runs out' } // Photo Finish
@@ -87,26 +96,26 @@
 
   /* Home modes (29 Sep 2026, the user's call): 4000+ is the main mode, one big card with a clear Play button; the others
      are three small buttons in a row under it (each keeps its colour and one tag). A tap on any of them starts it. */
-  var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Form', nrlw: '', wc: '', ou: 'New &middot; Beat the Clock' };
+  var MINI_TAG = { exact: 'Hard Mode', nrlw: '', wc: '', ou: 'New &middot; Beat the Clock' };
   /* Photo Finish's home card (the owner, on Play On: "lower, under the Daily, it shouldn't take away from the other
      modes"): its own full-width card under the Daily Challenge (js/app.js placeOu), not in More Modes */
   R.ouCard = function () {
     // A small live look at the game (the owner, 15 Oct 2026: "more exciting, actual visuals"): two mini player cards in
     // their club colours, one number showing and one hidden, the Over and Under arrows pulsing between them, and NEW
-    var mini = function (club, nm, num) {
-      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; // the player's name in his club's colours (the owner)
+    var mini = function (id, nm, num) {
+      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + lookVars(T.byId[id] || {}) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; // the jockey's name in his silks
     };
     return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Photo Finish">' +
       '<span class="oup-new">New</span>' +
-      '<span class="oup-pair" aria-hidden="true">' + mini('nsw', 'JMac', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('nz', 'Bosson', '') + '</span>' +
+      '<span class="oup-pair" aria-hidden="true">' + mini('james-mcdonald', 'JMac', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('opie-bosson', 'Bosson', '') + '</span>' +
       '<span class="oup-t"><b>Photo Finish</b><small>More Group 1 wins or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
   };
   // The same live look for its banner in the home slider (the owner, 15 Oct 2026: "more enticing, like the card below")
   R.ouBanner = function () {
-    var mini = function (club, nm, num) {
-      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
+    var mini = function (id, nm, num) {
+      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + lookVars(T.byId[id] || {}) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
     };
-    return '<span class="oup-pair" aria-hidden="true">' + mini('nsw', 'JMac', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('nz', 'Bosson', '') + '</span>' +
+    return '<span class="oup-pair" aria-hidden="true">' + mini('james-mcdonald', 'JMac', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('opie-bosson', 'Bosson', '') + '</span>' +
       '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>Photo Finish</b><small>More Group 1 wins or fewer? Beat the clock.</small></span><span class="oup-play" aria-hidden="true">&#x25B6;</span>';
   };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 4000+ until the final on
@@ -143,7 +152,7 @@
       '</button>';
     var wc = opt.wc === 'top' || opt.wc === 'under' ? R.wcCard(selected, opt.guest, opt.free) : '';
     // Photo Finish: first in More Modes when opt.ou asks (its own card sits under the Daily)
-    var more = (opt.ou ? ['ou'] : []).concat(['exact', 'spin', 'nrlw']).concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
+    var more = (opt.ou ? ['ou'] : []).concat(['exact', 'nrlw']).concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
       var mm = T.MODES[id] || { name: 'Photo Finish' };
       return '<button type="button" class="mode-mini is-' + id + (id === selected ? ' is-on' : '') + '" data-mode="' + id + '" aria-label="Play ' + esc(mm.name) + '">' +
         '<span class="mm-ico" aria-hidden="true">' + MODE_CARD[id].ico + '</span><span class="mm-name">' + esc(mm.name) + '</span><span class="mm-tag">' + MINI_TAG[id] + '</span></button>';
@@ -216,16 +225,13 @@
         if (subTo) return '<button type="button" class="slot is-empty is-subto" data-slot="' + i + '" aria-label="Move here: ' + T.raceName(i) + '"><span class="slot-code">' + T.raceLabel(i) + '</span><span class="slot-pos">' + T.raceName(i) + '</span></button>';
         if (subCan || subFrom) tweakable = true;
         if (!p) {
-          var choosing = S.mode.source === 'spin' && !S.offer && !S.spinPos && !S.awaitingLock && !S.tweakMode && !S.finished;
-          var chosen = S.spinPos === s.code && (S.spinSlot == null || S.spinSlot === i);
-          return '<div class="slot is-empty' + (choosing ? ' is-choose' : '') + (chosen ? ' is-chosen' : '') + '" data-slot="' + i + '"><span class="slot-code">' + T.raceLabel(i) + '</span><span class="slot-pos">' + T.raceName(i) + '</span></div>';
+          return '<div class="slot is-empty" data-slot="' + i + '"><span class="slot-code">' + T.raceLabel(i) + '</span><span class="slot-pos">' + T.raceName(i) + '</span></div>';
         }
-        var club = T.slotClub(s);
-        var c = T.club(club), lk = look(club, 84, 70, 2, p);
-        return '<' + (tweakable ? 'button type="button"' : 'div') + ' class="slot is-filled' + (lk ? ' has-look' : '') + goatCls(p) + (sub ? (subFrom ? ' is-subfrom' : subCan ? ' is-subcan' : subNo ? ' is-subno' : '') : tweakable ? ' is-tweakable' : '') + (flashIdx === i ? ' is-flash' : '') + '" data-slot="' + i + '" style="' + clubVars(club) + (lk ? '--wc-field:' + window.CastNations.field(club) + ';' : '') + '"' +
-          (tweakable ? ' aria-label="' + (sub ? 'Move ' : 'Swap out ') + esc(p.name) + '"' : '') + '>' + lk +
+        // The race tile wears the jockey's silks; the race, name and wins sit on dark pills so every pattern reads
+        return '<' + (tweakable ? 'button type="button"' : 'div') + ' class="slot is-filled is-silks' + goatCls(p) + (sub ? (subFrom ? ' is-subfrom' : subCan ? ' is-subcan' : subNo ? ' is-subno' : '') : tweakable ? ' is-tweakable' : '') + (flashIdx === i ? ' is-flash' : '') + '" data-slot="' + i + '" style="' + lookVars(p) + '"' + silksTitle(p) +
+          (tweakable ? ' aria-label="' + (sub ? 'Move ' : 'Swap out ') + esc(p.name) + '"' : '') + '>' +
           '<span class="slot-code">' + T.raceLabel(i) + '</span>' +
-          '<span class="slot-abbr">' + (T.isGoat(p) ? '<span role="img" aria-label="GOAT">&#x1F410;</span>' : esc(c.abbr)) + '</span>' +
+          (T.isGoat(p) ? '<span class="slot-abbr"><span role="img" aria-label="GOAT">&#x1F410;</span></span>' : '') +
           '<span class="slot-name">' + esc(T.surname(p.name)) + medalMark(p) + '</span>' +
           '<span class="slot-tries">' + T.fmt(p.tries_1998_plus) + '</span>' +
           (tweakable ? '</button>' : '</div>');
@@ -261,7 +267,7 @@
         // A guest once CAST Pass launches: wildcards come with a free CAST Profile (sign in and they unlock in this game)
         if (S.wcLocked && !left && !S.finished) {
           return '<button type="button" class="wc wc-' + k + ' wc-lock" data-action="wc-signin" title="Sign in free to use wildcards">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(k === 'reroll' && S.mode.source === 'spin' ? 'Respin' : T.WILDCARDS[k].label) + '</span>' +
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(T.WILDCARDS[k].label) + '</span>' +
             '<span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign in free</span></button>';
         }
         // Rerolls used up: a saved one ("2 saved") or one to buy, in a pop-up over the game (CastAccount.buyReroll)
@@ -269,7 +275,7 @@
           // Just bought: "N ready", glowing, so they tap it and watch the roll
           var sv = CastAccount.rerollsSaved(), live = !!(S.offer && S.offer.players.length), fresh = !!(sv && CastAccount.rerollsFresh && CastAccount.rerollsFresh());
           return '<button type="button" class="wc wc-reroll wc-buy' + (fresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reroll"' + (live ? '' : ' disabled') + ' title="' + (sv ? 'Use one of your saved rerolls' : 'Buy an extra reroll') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + (S.mode.source === 'spin' ? 'Respin' : 'Reroll') + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + 'Reroll' + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
         }
         // Remove Player used up: a saved one ("2 saved") or one to buy, the same way (CastAccount.buyRemove)
         if (k === 'tweak' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.canBuyRemove && (CastAccount.canBuyRemove() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.removesSaved() > 0))) {
@@ -288,10 +294,10 @@
         if (k === 'reroll' && !left && !S.finished && !paid && window.CastAccount && CastAccount.bonusState && CastAccount.bonusState() !== 'none') {
           var guest = CastAccount.bonusState() === 'signin';
           return '<button type="button" class="wc wc-reroll wc-bonus" data-action="bonus-reroll" title="' + (guest ? 'Sign in for an extra reroll every game' : 'Subscribe on YouTube for a free extra reroll') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + (S.mode.source === 'spin' ? 'Respin' : 'Reroll') + '</span><span class="wc-left">' + (guest ? '+1: sign in' : '&#x25B6; +1 free') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + 'Reroll' + '</span><span class="wc-left">' + (guest ? '+1: sign in' : '&#x25B6; +1 free') + '</span></button>';
         }
         var armed = k === 'tweak' && S.tweakMode;
-        var label = k === 'reroll' && S.mode.source === 'spin' ? 'Respin' : five ? SHORT[k] : T.WILDCARDS[k].label;
+        var label = five ? SHORT[k] : T.WILDCARDS[k].label;
         var ico = { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k];
         return '<button type="button" class="wc wc-' + k + (left ? '' : ' is-spent') + (armed ? ' is-armed' : '') + '" data-wildcard="' + k + '"' +
           ((usable || armed) ? '' : ' disabled') + ' title="' + esc(T.WILDCARDS[k].desc) + '">' +
@@ -426,7 +432,7 @@
       '</div>';
   };
 
-  // A themed Daily's jurisdiction rule (none of the racing Dailies use one yet): what the offer panel says until the card
+  // A themed Daily's club rule (no racing Daily uses one: no states): what the offer panel says until the card
   // has one, and the tag on their cards
   function dailyRule(S) {
     var d = S.daily;
@@ -451,10 +457,8 @@
       R.wildcardBar(S) +
       R.tweakBanner(S) +
       '<div class="offer-cards">' + players.map(function (p, n) {
-        var club = T.showClub(p);
-        var c = T.club(club), lk = look(club, 340, 42, 3, p);
-        return '<button type="button" class="pcard' + goatCls(p) + '" data-pick="' + esc(p.id) + '" style="' + clubVars(club) + 'animation-delay:' + (n * 70) + 'ms"' + (S.tweakMode ? ' disabled' : '') + '>' +
-          '<span class="pcard-plate' + (lk ? ' has-look' : '') + '">' + lk + '<span class="pcard-abbr">' + esc(c.abbr) + '</span><span class="pcard-club">' + esc(c.name) + '</span>' + tierTag(p) + '</span>' +
+        return '<button type="button" class="pcard' + goatCls(p) + '" data-pick="' + esc(p.id) + '" style="' + lookVars(p) + 'animation-delay:' + (n * 70) + 'ms"' + silksTitle(p) + (S.tweakMode ? ' disabled' : '') + '>' +
+          '<span class="pcard-plate is-silks' + (T.look(p).neutral ? ' is-neutral' : '') + '">' + horsePill(p) + tierTag(p) + '</span>' +
           '<span class="pcard-body">' +
             '<span class="pcard-name">' + nameHtml(p) + medalMark(p) + '</span>' +
             '<span class="pcard-meta">' + posChips(p) + '<span class="pcard-span">' + span(p) + '</span>' + nationBadges(p) + '</span>' + dailyTag(S, p) +
@@ -462,112 +466,6 @@
           '<span class="pcard-foot">' + triesBadge(S, p) + '<span class="pcard-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' +
           '</button>';
       }).join('') + '</div>' + R.immBack(S) + R.keySwap(S);
-  };
-
-  R.reel = function (year, club, landed) {
-    var c = club ? T.club(club) : null;
-    return '<div class="reel' + (landed ? ' is-landed' : ' is-spinning') + '">' +
-      '<div class="reel-box reel-year"><span class="reel-lbl">Year</span><span class="reel-val">' + (year || '?') + '</span></div>' +
-      '<span class="reel-x" aria-hidden="true">&times;</span>' +
-      '<div class="reel-box reel-club"' + (c ? ' style="' + clubVars(club) + '"' : '') + '><span class="reel-lbl">State</span><span class="reel-val">' + (c ? esc(c.name) : '?') + '</span></div>' +
-      '</div>';
-  };
-
-  // Squad sort for Team Spin
-  T.spinSort = T.spinSort || { key: 'pos', dir: 1 };
-  var POS_ORDER = ['R'];
-
-  // Group under the jockey's open code (one, 'R', here)
-  function groupPos(p) {
-    var open = T.openCodesFor(p);
-    return open.length ? open[0] : T.positionsOf(p)[0];
-  }
-
-  function sortSquad(players, fixedPos) {
-    var srt = fixedPos ? { key: 'name', dir: 1 } : T.spinSort;
-    var bySurname = function (a, b) {
-      return T.surname(a.name).localeCompare(T.surname(b.name)) || a.name.localeCompare(b.name);
-    };
-    return players.slice().sort(function (a, b) {
-      if (srt.key === 'pos') {
-        var d = POS_ORDER.indexOf(groupPos(a)) - POS_ORDER.indexOf(groupPos(b));
-        return (d * srt.dir) || bySurname(a, b);
-      }
-      return bySurname(a, b) * srt.dir;
-    });
-  }
-
-  function sortToggle() {
-    var srt = T.spinSort;
-    var btn = function (key, label, arrowUp, arrowDown) {
-      var on = srt.key === key;
-      return '<button type="button" class="sort-btn' + (on ? ' is-on' : '') + '" data-action="spin-sort" data-sort="' + key + '" aria-pressed="' + on + '">' +
-        '<span>' + label + '</span><span class="sort-dir">' + (on ? (srt.dir === 1 ? arrowUp : arrowDown) : 'A to Z') + '</span></button>';
-    };
-    return '<div class="sort-toggle" role="group" aria-label="Sort squad">' +
-      btn('pos', 'Name', 'A to Z &uarr;', 'Z to A &darr;') +
-      btn('name', 'Surname', 'A to Z &uarr;', 'Z to A &darr;') +
-      '</div>';
-  }
-
-  // Team Spin squad search (cleared on every new spin)
-  T.squadSearch = T.squadSearch || { open: false, q: '', offer: null };
-
-  R.offerSpin = function (S) {
-    if (S.tweakMode) return R.removeMode(S);
-    var o = S.offer;
-    if (T.squadSearch.offer !== o) T.squadSearch = { open: false, q: '', offer: o };
-    // Race chosen first: one list for that race (jockeys who ride several included, never split)
-    var fixedPos = !!o.pos;
-    var sorted = sortSquad(o.players, fixedPos);
-    var lastGroup = null;
-    // Rows carry each jockey's own state colours (js/data.js T.lastClub)
-    var rows = sorted.map(function (p) {
-      var head = '';
-      if (!fixedPos && T.spinSort.key === 'pos') {
-        var g = groupPos(p);
-        if (g !== lastGroup) { head = '<div class="squad-group">' + esc(T.POS_NAMES[g] || g) + '</div>'; lastGroup = g; }
-      }
-      return head + '<button type="button" class="srow' + goatCls(p) + '" data-pick="' + esc(p.id) + '" data-name="' + esc(p.name.toLowerCase()) + '" style="' + clubVars(T.lastClub(p)) + '"' + (S.tweakMode ? ' disabled' : '') + '>' +
-        '<span class="srow-main"><span class="srow-name">' + nameHtml(p) + '</span>' +
-        '<span class="srow-meta">' + posChips(p) + '<span class="pcard-span">' + span(p) + '</span></span></span>' +
-        triesBadge(S, p) +
-        '</button>';
-    }).join('');
-    return '<div class="panel-head">' +
-        '<span class="panel-title">Pick 1 From This Squad</span>' +
-        '<span class="panel-meta">' + o.players.length + ' eligible</span>' +
-      '</div>' +
-      R.wildcardBar(S) +
-      R.tweakBanner(S) +
-      '<div id="reelWrap">' + R.reel(o.year, o.club, true) + '</div>' +
-      (o.skipped ? '<p class="note">No one left who fits from ' + o.skipped + (o.skipped === 1 ? ' spin' : ' spins') + ', so we spun again for you.</p>' : '') +
-      '<div class="squad-tools">' + (fixedPos ? '<div class="squad-group squad-group-fixed">' + esc(o.year + ' ' + T.club(o.club).abbr) + ' Group 1 winners</div>' : sortToggle()) +
-        '<button type="button" class="squad-search-btn" data-action="squad-search" aria-label="Search this squad" aria-expanded="' + !!T.squadSearch.open + '">&#x1F50D;</button></div>' +
-      (T.squadSearch.open ? '<input type="search" id="squadSearch" class="squad-search" placeholder="Search jockey name" autocomplete="off" aria-label="Search jockey name" value="' + esc(T.squadSearch.q) + '">' : '') +
-      '<div class="squad-wrap" id="squadWrap"><div class="squad" id="squadList">' + rows + '</div>' +
-      '<span class="squad-more" aria-hidden="true">Scroll for more &darr;</span></div>';
-  };
-
-  // Team Spin step 1: choose the race before the jurisdiction and year are revealed
-  R.pickPosition = function (S) {
-    var counts = {}, order = [];
-    S.slots.forEach(function (sl) { if (!sl.player) { if (!counts[sl.code]) order.push(sl.code); counts[sl.code] = (counts[sl.code] || 0) + 1; } });
-    return '<div class="panel-head"><span class="panel-title">Choose a Race</span><span class="panel-meta">Then we spin</span></div>' +
-      R.wildcardBar(S) +
-      '<p class="pp-intro">Every jockey can ride any race. We spin a state and year, and you pick from the jockeys who won a Group 1 there that year.</p>' +
-      '<div class="pp-grid">' + order.map(function (code) {
-        return '<button type="button" class="pp-btn" data-action="spin-pos" data-pos="' + code + '">' +
-          '<span class="pp-code">' + T.posLabel(code) + '</span><span class="pp-name">' + esc(T.POS_NAMES[code]) + '</span>' +
-          (counts[code] > 1 ? '<span class="pp-count">' + counts[code] + ' open</span>' : '') + '</button>';
-      }).join('') + '</div>' +
-      '<p class="pp-hint">Or tap an empty race on the track.</p>';
-  };
-
-  R.spinning = function (S) {
-    return '<div class="panel-head"><span class="panel-title">Spinning</span><span class="panel-meta">Year and state</span></div>' +
-      R.wildcardBar(S) +
-      '<div id="reelWrap">' + R.reel(null, null, false) + '</div>';
   };
 
   R.tweakBanner = function (S) {
@@ -610,12 +508,10 @@
       '</div>';
   };
 
-  // Phone chooser for jockeys who can ride more than one open race: state-coloured header + glowing race spots
+  // Phone chooser for jockeys who can ride more than one open race: the silks header + glowing race spots
   R.slotChooser = function (p, codes) {
-    var club = T.showClub(p);
-    var c = T.club(club), lk = look(club, 340, 42, 3, p);
-    return '<div class="chooser-card' + goatCls(p) + '" style="' + clubVars(club) + '">' +
-        '<span class="pcard-plate' + (lk ? ' has-look' : '') + '">' + lk + '<span class="pcard-abbr">' + esc(c.abbr) + '</span><span class="pcard-club">' + esc(c.name) + '</span></span>' +
+    return '<div class="chooser-card' + goatCls(p) + '" style="' + lookVars(p) + '"' + silksTitle(p) + '>' +
+        '<span class="pcard-plate is-silks' + (T.look(p).neutral ? ' is-neutral' : '') + '">' + horsePill(p) + '</span>' +
         '<span class="chooser-name">' + nameHtml(p) + '</span>' +
       '</div>' +
       '<p class="chooser-q">Where do you want them?</p>' +
@@ -687,8 +583,8 @@
       R.subscribeBtn('change_mode'); // as on 27-0's Change mode pop-up
   };
 
-  R.reveal = function (p, club) {
-    return '<div class="reveal' + goatCls(p) + '" style="' + clubVars(club || T.lastClub(p)) + '">' +
+  R.reveal = function (p) {
+    return '<div class="reveal is-silks' + goatCls(p) + '" style="' + lookVars(p) + '"' + silksTitle(p) + '>' +
       '<span class="reveal-name">' + nameHtml(p) + medalMark(p) + '</span>' +
       '<span class="reveal-num">' + T.fmt(p.tries_1998_plus) + '</span>' +
       '<span class="reveal-lbl">' + (T.isLegend(p) ? 'Group 1 wins since 1983. A Legend.' : T.TRY_LABEL) + '</span></div>';
@@ -750,12 +646,11 @@
     var rows = S.slots.map(function (s, si) {
       var p = s.player;
       if (!p) return '<li class="rrow is-empty"><span class="rrow-code">' + T.raceLabel(si) + '</span><span class="rrow-name">Not picked</span><span class="rrow-tries">&nbsp;</span></li>';
-      var club = T.slotClub(s);
-      var c = T.club(club);
-      return '<li class="rrow' + goatCls(p) + (p === best ? ' is-best' : '') + '" style="' + clubVars(club) + '">' +
+      // The silks as a swatch, with the horse's name small under the jockey's
+      return '<li class="rrow' + goatCls(p) + (p === best ? ' is-best' : '') + '" style="' + lookVars(p) + '"' + silksTitle(p) + '>' +
         '<span class="rrow-code">' + T.raceLabel(si) + '</span>' +
-        '<span class="rrow-club">' + esc(c.abbr) + '</span>' +
-        '<span class="rrow-name">' + nameHtml(p) + (p === best ? ' <span class="best-tag">Top Pick</span>' : '') + '</span>' +
+        '<span class="rrow-club is-silks" aria-hidden="true"></span>' +
+        '<span class="rrow-name"><span class="rrow-nm">' + nameHtml(p) + (T.look(p).horse ? '<small class="rrow-horse">' + esc(T.look(p).horse) + '</small>' : '') + '</span>' + (p === best ? ' <span class="best-tag">Top Pick</span>' : '') + '</span>' +
         '<span class="rrow-tries">' + T.fmt(p.tries_1998_plus) + '</span>' +
         '</li>';
     }).join('');
