@@ -124,5 +124,25 @@
     leb: '#ED1C24', cok: '#185818', gbr: '#ffffff', sco: '#005EB8', ita: '#009246' };
   function field(key) { return has(key) ? FIELD[key] : ''; }
 
-  window.CastNations = { svg: svg, has: has, field: field };
+  /* Chips that change shape with the screen (the World Cup cards' ten nations: narrow on a phone, wide on a computer) carry
+     data-nat-fit="key level" on their look. fit() draws each again at its real size, so a look is never blown up and cut
+     to its middle band (the owner, 15 Oct 2026: Lebanon and Fiji showed as plain bands on desktop). Again on a resize */
+  function draw(el) {
+    var r = el.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height), k = (el.getAttribute('data-nat-fit') || '').split(' ');
+    if (!(w > 0 && h > 0) || el.getAttribute('data-nat-size') === w + 'x' + h || !has(k[0])) return;
+    el.setAttribute('data-nat-size', w + 'x' + h);
+    el.innerHTML = svg(k[0], w, h, { level: Number(k[1]) || 2 });
+  }
+  // Each chip is watched for its size (drawn while hidden, then shown; a resize; a phone turned), else drawn on a resize
+  var ro = window.ResizeObserver ? new ResizeObserver(function (list) { list.forEach(function (e) { draw(e.target); }); }) : null;
+  function fit(root) {
+    Array.prototype.forEach.call((root || document).querySelectorAll('[data-nat-fit]'), function (el) {
+      if (ro && !el.getAttribute('data-nat-obs')) { el.setAttribute('data-nat-obs', '1'); ro.observe(el); }
+      draw(el);
+    });
+  }
+  var fitT = null;
+  if (!ro) window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(function () { fit(document); }, 150); });
+
+  window.CastNations = { svg: svg, has: has, field: field, fit: fit };
 })();

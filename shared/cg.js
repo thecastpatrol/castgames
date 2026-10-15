@@ -18,11 +18,11 @@
   })();
 
   var SPORTS = [
-    { id: 'nrl', name: 'NRL', long: 'Rugby League', c: '34,197,94', status: 'live', path: 'nrl/' }, // path: its See All page
-    { id: 'afl', name: 'AFL', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
-    { id: 'cricket', name: 'Cricket', long: 'International & T20s', c: '255,122,46', status: 'live', path: 'cricket/' },
-    { id: 'nfl', name: 'NFL', long: 'American Football', c: '54,226,126', status: 'live', path: 'nfl/' },
-    { id: 'racing', name: 'Horse Racing', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
+    { id: 'nrl', name: 'NRL', ico: '&#x1F3C9;', long: 'Rugby League', c: '34,197,94', status: 'live', path: 'nrl/' }, // path: its See All page
+    { id: 'afl', name: 'AFL', ico: '&#x1F3C9;', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
+    { id: 'cricket', name: 'Cricket', ico: '&#x1F3CF;', long: 'International & T20s', c: '255,122,46', status: 'live', path: 'cricket/' },
+    { id: 'nfl', name: 'NFL', ico: '&#x1F3C8;', long: 'American Football', c: '139,92,246', status: 'live', path: 'nfl/' },
+    { id: 'racing', name: 'Horse Racing', ico: '&#x1F3C7;', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
   ];
   var GAMES = [
     { id: '27-0', sport: 'nrl', name: '27-0', path: '27-0/', logo: 'assets/logos/27-0.png', c1: '#1f2a55', c2: '#11152a', status: 'live',
@@ -33,12 +33,12 @@
       line: 'Over or under? Call it before the clock runs out.', short: 'Over or under, vs the clock' },
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', logo: 'assets/logos/4000goals.png', c1: '#5a1620', c2: '#1c0b10', status: 'live',
       line: 'Draft an AFL 18 and reach 4000 career goals.', short: 'Draft an 18 to 4000 goals', daily: true, stats: '4000goals' },
-    // 25000 RUNS (15 Oct 2026): the Big Bash game, a BBL XI to 25,000 career runs
+    // 25000 RUNS (15 Oct 2026): the Big Bash game, a BBL XI to 25000 career runs
     { id: '25000runs', sport: 'cricket', name: '25000 RUNS', path: '25000runs/', logo: 'assets/logos/25000runs.png', c1: '#1a2148', c2: '#0b1022', status: 'live', badge: 'New',
-      line: 'Draft a Big Bash XI and reach 25,000 career BBL runs.', short: 'Draft a BBL XI to 25,000 runs' },
-    // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60,000 career Test runs
+      line: 'Draft a Big Bash XI and reach 25000 career BBL runs.', short: 'Draft a BBL XI to 25000 runs' },
+    // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60000 career Test runs
     { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
-      line: 'Draft a Test XI from every Test since 1877 and reach 60,000 career Test runs.', short: 'Draft a Test XI to 60,000 runs' },
+      line: 'Draft a Test XI from every Test since 1877 and reach 60000 career Test runs.', short: 'Draft a Test XI to 60000 runs' },
     // 700 TDS (16 Oct 2026): the NFL game, an offence of 9 to 700 career touchdowns
     { id: '700tds', sport: 'nfl', name: '700 TDS', path: '700tds/', logo: 'assets/logos/700tds.png', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
       line: 'Draft an NFL offence and reach 700 career touchdowns.', short: 'Draft 9 to 700 touchdowns' },

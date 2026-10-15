@@ -56,7 +56,7 @@
   }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function fmt(n) { return Number(n || 0).toLocaleString('en-AU'); }
+  function fmt(n) { return Number(n || 0).toLocaleString('en-AU', { useGrouping: false }); } // no commas in numbers
   function track(e, p) { if (T.track) T.track(e, p || {}); }
 
   /* ---------- Sydney calendar ---------- */
@@ -122,7 +122,7 @@
     T.dailyRender();
   };
 
-  /* ---------- The go chips: ✅ 1,043 · 812 · (not played) ---------- */
+  /* ---------- The go chips: ✅ 1043 · 812 · (not played) ---------- */
   function goesRow(rec) {
     var out = '';
     for (var i = 0; i < MAX_GOES; i++) {

@@ -136,6 +136,7 @@
 
   var VIDEO_FEED = 'https://mediakit.thecastpatrol.com.au/data/episodes.json';
   function loadVideos() {
+    if (!$('watch')) return; // NRL videos are on NRL games only (the owner, 16 Oct 2026)
     fetch(VIDEO_FEED, { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
@@ -1103,10 +1104,10 @@
     var usedWild = (st.reroll + (S.bonusRerolls || 0) - (wc.reroll || 0)) + (st.scout + (S.boughtScouts || 0) - (wc.scout || 0)) + (st.tweak + (S.boughtTweaks || 0) - (wc.tweak || 0)) > 0;
     if (nrl) {
       if (total >= T.TARGET) ids.push('hit1000');
-      if (total >= T.TARGET * 1.1) ids.push('hit1100'); // 27,500 Club (+10%, as 1000TRIES' 1100)
+      if (total >= T.TARGET * 1.1) ids.push('hit1100'); // 27500 Club (+10%, as 1000TRIES' 1100)
       if (total >= T.TARGET * 1.2) ids.push('hit1200'); // Run Machine (+20%)
       if (out.reason === 'exact') ids.push('exact');
-      if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 225) ids.push('photo'); // a photo finish: within 225 of 25,000 (1000TRIES' 9 tries, scaled)
+      if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 225) ids.push('photo'); // a photo finish: within 225 of 25000 (1000TRIES' 9 tries, scaled)
       if (total >= T.TARGET * 0.99 && total < T.TARGET) ids.push('soclose'); // the last 1% under, as 1000TRIES' 990 to 999
       if (S.mode.wildcards && total >= T.TARGET && !usedWild) ids.push('nowild');
       if (mode === 'spin' && total >= T.TARGET) ids.push('spin');
@@ -1253,6 +1254,7 @@
         // A renamed player's old name ('was') still finds them, for games saved before the rename
         pools.forEach(function (pl) { pl.players.forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; (p.was || []).forEach(function (o) { sheetNames[String(o).toLowerCase()] = p; }); }); });
         (T.LEGENDS || []).forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; });
+        if (T.GOAT_CARD) sheetNames[T.GOAT_CARD.record_name.toLowerCase()] = T.GOAT_CARD; // the GOAT item's card
       }
       var p = sheetNames[String(name).toLowerCase()];
       return p ? { tries: p.tries_1998_plus, club: T.lastClub(p), tier: p.tier || '' } : null; // 'tries': the shared field name (the number shown)
@@ -1596,7 +1598,7 @@
         openSheet(R.goatSheet()); $('sheet').classList.add('is-confirm');
         break;
       }
-      case 'confirm-goat': { // use one from the Vault, then the offer becomes Lance Franklin
+      case 'confirm-goat': { // use one from the Vault (or buy one), then the offer becomes the GOAT
         var gs = T.state();
         closeSheet();
         if (!gs || !T.goatFits() || !window.CastAccount || !CastAccount.buyItem) break;

@@ -54,3 +54,10 @@ html.cg-sheet-open, html.cg-sheet-open body { overflow: hidden; }
    owner's screenshot: 300 / 700 showed through the tabs). --cg-bar-h comes from cg.js */
 html.cg-in-game .scoreboard { top: var(--cg-bar-h, 112px); }
 @media (min-width: 900px) { html.cg-in-game .offer-panel { top: calc(var(--cg-bar-h, 64px) + 92px); } }
+
+/* Sign In on the CAST Games bar is white: gold is kept for CAST Pass (the owner's rule; quality gate 16 Oct 2026) */
+.cg-acct .ca-btn-head:not(.ca-btn-shop):not(.ca-btn-friends):not(.ca-btn-admin) { background: #fff; border-color: #fff; color: #0a0a0f; box-shadow: none; }
+@media (hover: hover) { .cg-acct .ca-btn-head:not(.ca-btn-shop):not(.ca-btn-friends):not(.ca-btn-admin):hover { background: #e9e9f2; border-color: #e9e9f2; } }
+/* 27-0's screens are fixed full-page boxes: inside CAST Games they start under the bar, so the strength bar and the draft
+   header are never hidden behind it (quality gate, 16 Oct 2026) */
+html.cg-in-game .screen.active { top: calc(var(--cg-bar-h, 112px) + env(safe-area-inset-top, 0px)); }

@@ -15,6 +15,17 @@
   'use strict';
 
   var CFG = window.CAST_ACCOUNT || {};
+  // Every home card and pop-up belongs to its games (16 Oct 2026): see cardGames, near the home spot
+  var NRL_SITES = ['1000tries', '27-0'];
+  var CARD_GAMES = [
+    ['promo', '[data-cast-promo]', NRL_SITES], // the Premiers and Team of the Year promos (js/cast-promo.js)
+    ['upgrades', '[data-cast-upgrades]', NRL_SITES], // Ratings Upgrades (27-0's ratings)
+    ['dual', '[data-cast-dual]', NRL_SITES], // Team List Updates
+    ['totw', '[data-cast-totw]', NRL_SITES], ['wch', '[data-cast-wch]', NRL_SITES], ['wcx', '[data-cast-wcx]', NRL_SITES], ['lead', '[data-cast-lead]', NRL_SITES], // the World Cup's
+    ['ou', '[data-cast-launch="ou"]', ['1000tries']], ['po', '[data-cast-launch="po"]', ['4000goals']], // Six Again, Play On
+    ['go4000', '[data-cast-launch="4000goals"]', []], // 4000 GOALS inside 1000TRIES: another sport
+    ['go270', 'a.spot-promo[href*="27-0.thecastpatrol"]', NRL_SITES], ['go1000', 'a.spot-promo[href*="1000tries.com.au"]', NRL_SITES] // the NRL games
+  ];
   // With enabled:false the UI stays hidden and games are only kept on the device, until the launch switch
   // (CAST_ACCOUNT.launch, further down) turns it on. Add ?castaccount=1 to a URL to test it before launch.
   var qs = /[?&]castaccount=1(&|$)/.test(location.search);
@@ -119,14 +130,14 @@
       labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 4000s' },
       unit: 'goals'
     },
-    // 25000 RUNS (15 Oct 2026): the Big Bash game, an XI to 25,000 BBL runs. gated like 4000 GOALS: out of the other games'
+    // 25000 RUNS (15 Oct 2026): the Big Bash game, an XI to 25000 BBL runs. gated like 4000 GOALS: out of the other games'
     // stats, trophies and boards until the owner launches it (config/launch 'bigbash'); its own page shows it as usual
     bigbash: {
       name: '25000 RUNS', url: 'https://castgames.com.au/25000runs/', gated: true,
-      modes: { plus: '25,000+', exact: 'Exactly 25,000', spin: 'Team Spin', daily: 'Daily' },
-      results: { hit: '25,000+', exact: 'Exactly 25,000', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
+      modes: { plus: '25000+', exact: 'Exactly 25000', spin: 'Team Spin', daily: 'Daily' },
+      results: { hit: '25000+', exact: 'Exactly 25000', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
       wins: ['hit', 'exact', 'won'],
-      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 25,000s' },
+      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 25000s' },
       unit: 'runs'
     },
     // Free Hit (15 Oct 2026): 25000 RUNS' over/under, its own stats (shown with 25000 RUNS)
@@ -138,14 +149,14 @@
       labels: { plays: 'Runs', best: 'Best Streak', wins: null, top: null },
       unit: 'in a row'
     },
-    // 60000 RUNS (16 Oct 2026): the Test cricket game, an XI to 60,000 Test runs. gated like 25000 RUNS: out of the other
+    // 60000 RUNS (16 Oct 2026): the Test cricket game, an XI to 60000 Test runs. gated like 25000 RUNS: out of the other
     // games' stats, trophies and boards until the owner launches it (config/launch 'tests'); its own page shows it as usual
     tests: {
       name: '60000 RUNS', url: 'https://castgames.com.au/60000runs/', gated: true,
-      modes: { plus: '60,000+', exact: 'Exactly 60,000', spin: 'Team Spin', daily: 'Daily' },
-      results: { hit: '60,000+', exact: 'Exactly 60,000', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
+      modes: { plus: '60000+', exact: 'Exactly 60000', spin: 'Team Spin', daily: 'Daily' },
+      results: { hit: '60000+', exact: 'Exactly 60000', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
       wins: ['hit', 'exact', 'won'],
-      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 60,000s' },
+      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 60000s' },
       unit: 'runs'
     },
     // Follow On (16 Oct 2026): 60000 RUNS' over/under, its own stats (shown with 60000 RUNS)
@@ -1518,7 +1529,7 @@
     return s.plays ? s : null;
   }
 
-  function fmt(n) { return Math.round(n).toLocaleString('en-AU'); }
+  function fmt(n) { return Math.round(n).toLocaleString('en-AU', { useGrouping: false }); } // no commas in numbers (the owner, 16 Oct 2026)
   function when(ms) {
     if (!ms) return '';
     var d = new Date(ms), now = new Date();
@@ -1743,8 +1754,8 @@
     '27-0': [['270wc', 'all', 'World Cup'], ['270best', 'all', 'Classic Mode'], ['270hard', 'all', 'Hard Mode'], ['270pack', 'all', 'Pack Mode'], ['270daily', 'today', 'Daily']],
     '1000tries': [['1000wc', 'all', 'World Cup 200+'], ['1000plus', 'all', '1000+'], ['1000exact', 'all', 'Exactly 1000'], ['nrlw', 'all', 'NRLW 250+'], ['1000daily', 'today', 'Daily']],
     '4000goals': [['4000plus', 'all', '4000+'], ['4000exact', 'all', 'Exactly 4000'], ['aflw', 'all', 'AFLW 750+'], ['4000daily', 'today', 'Daily']],
-    bigbash: [['bbplus', 'all', '25,000+'], ['bbexact', 'all', 'Exactly 25,000'], ['bbou', 'all', 'Free Hit'], ['bbdaily', 'today', 'Daily']],
-    tests: [['tsplus', 'all', '60,000+'], ['tsexact', 'all', 'Exactly 60,000'], ['tsou', 'all', 'Follow On'], ['tsdaily', 'today', 'Daily']],
+    bigbash: [['bbplus', 'all', '25000+'], ['bbexact', 'all', 'Exactly 25000'], ['bbou', 'all', 'Free Hit'], ['bbdaily', 'today', 'Daily']],
+    tests: [['tsplus', 'all', '60000+'], ['tsexact', 'all', 'Exactly 60000'], ['tsou', 'all', 'Follow On'], ['tsdaily', 'today', 'Daily']],
     nfl: [['nflplus', 'all', '700+'], ['nflexact', 'all', 'Exactly 700'], ['nflou', 'all', 'Two Point'], ['nfldaily', 'today', 'Daily']],
     racing: [['rcplus', 'all', '550+'], ['rcexact', 'all', 'Exactly 550'], ['rcou', 'all', 'Photo Finish'], ['rcdaily', 'today', 'Daily']]
   };
@@ -2077,28 +2088,28 @@
       ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in Play On, every call under 3 seconds', 'po'],
       ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in Play On with no Run It Back or Reroll', 'po']
     ],
-    // 25000 RUNS (15 Oct 2026): 1000TRIES' set in BBL terms at the same distance from the target (25,000+, +10%, +20%, the
+    // 25000 RUNS (15 Oct 2026): 1000TRIES' set in BBL terms at the same distance from the target (25000+, +10%, +20%, the
     // last 1% under, a photo finish within 225), its own cricket ones and Free Hit's
     bigbash: [
-      ['hit1000', '&#x1F4AF;', '25,000+', 'Reach 25,000 BBL runs'],
-      ['hit1100', '&#x1F525;', '27,500 Club', 'Reach 27,500 BBL runs'],
-      ['hit1200', '&#x1F680;', 'Run Machine', 'Reach 30,000 BBL runs'],
-      ['exact', '&#x1F3AF;', 'Exactly 25,000', 'Land on 25,000 exactly'],
-      ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 25,000 to 25,225 in 25,000+'],
-      ['soclose', '&#x1F629;', 'So Close', 'Finish on 24,750 to 24,999'],
-      ['nowild', '&#x1F9CA;', 'No Wildcards', '25,000+ with no wildcards'],
-      ['spin', '&#x1F3B0;', 'Spin Doctor', '25,000+ in Team Spin'],
+      ['hit1000', '&#x1F4AF;', '25000+', 'Reach 25000 BBL runs'],
+      ['hit1100', '&#x1F525;', '27500 Club', 'Reach 27500 BBL runs'],
+      ['hit1200', '&#x1F680;', 'Run Machine', 'Reach 30000 BBL runs'],
+      ['exact', '&#x1F3AF;', 'Exactly 25000', 'Land on 25000 exactly'],
+      ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 25000 to 25225 in 25000+'],
+      ['soclose', '&#x1F629;', 'So Close', 'Finish on 24750 to 24999'],
+      ['nowild', '&#x1F9CA;', 'No Wildcards', '25000+ with no wildcards'],
+      ['spin', '&#x1F3B0;', 'Spin Doctor', '25000+ in Team Spin'],
       ['goats', '&#x1F51D;', 'Top Ten', '3 of the top 10 BBL run scorers'],
-      ['bench', '&#x1F327;&#xFE0F;', 'Rained Out', 'Finish under 12,500 runs'],
+      ['bench', '&#x1F327;&#xFE0F;', 'Rained Out', 'Finish under 12500 runs'],
       ['plays10', '&#x1F3CF;', 'Regular', 'Play 10 games'],
       ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
       ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
       ['legend', '&#x1F396;&#xFE0F;', 'Legend', 'Pick a Legend'],
-      ['legs11', '&#x1F340;', 'All Twos', 'Finish on exactly 22,222 runs'],
+      ['legs11', '&#x1F340;', 'All Twos', 'Finish on exactly 22222 runs'],
       ['read', '&#x1F52E;', 'Perfect Read', 'Top run scorer in every offer'],
-      ['odds', '&#x1F3B2;', 'Against the Odds', '25,000+ with Luck at -15% or worse'],
+      ['odds', '&#x1F3B2;', 'Against the Odds', '25000+ with Luck at -15% or worse'],
       ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
-      ['zero', '&#x1F9B8;', 'Zero Hero', '25,000+ with a player on 0 runs'],
+      ['zero', '&#x1F9B8;', 'Zero Hero', '25000+ with a player on 0 runs'],
       ['clubleg', '&#x1F6E1;&#xFE0F;', 'Club Legends', 'All 11 played for one club'],
       ['namesakes', '&#x1FA9E;', 'Namesakes', 'Two players with the same surname'],
       ['timetravel', '&#x23F3;', 'Time Traveller', 'A BBL01 or BBL02 debut and a player from this summer'],
@@ -2108,17 +2119,17 @@
       ['marathon', '&#x1F3C3;', 'Marathon', 'Play 10 games in one day'],
       ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
       ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
-      ['bb_machine', '&#x1F3CF;', 'Two Thousand Club', '5 players with 2,000+ runs in your XI'],
-      ['bb_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 1,500+ runs'],
-      ['bb_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 2,000+ runs'],
-      ['bb_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 2,000+ runs between them'],
+      ['bb_machine', '&#x1F3CF;', 'Two Thousand Club', '5 players with 2000+ runs in your XI'],
+      ['bb_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 1500+ runs'],
+      ['bb_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 2000+ runs'],
+      ['bb_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 2000+ runs between them'],
       ['bb_league', '&#x1F5FA;&#xFE0F;', 'The Whole League', 'Players from all 8 clubs'],
       ['bb_core', '&#x1F91D;', 'Club Core', '6 or more from one club'],
       ['bb_sydney', '&#x1F309;', 'Harbour City', 'All 11 only played for the Sixers or Thunder'],
       ['bb_melbourne', '&#x1F3D9;&#xFE0F;', 'Melbourne Derby', 'All 11 only played for the Stars or Renegades'],
       ['bb_dayone', '&#x1F4C5;', 'Day One', 'All 11 debuted in BBL01'],
-      ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 25,000 with a Legend in your XI'],
-      ['pure', '&#x1F48E;', 'Pure 25,000', 'Reach 25,000 in 25,000+ without a Legend'],
+      ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 25000 with a Legend in your XI'],
+      ['pure', '&#x1F48E;', 'Pure 25000', 'Reach 25000 in 25000+ without a Legend'],
       ['dailywin', '&#x1F4C5;', 'Daily Winner', 'Win a 25000 RUNS Daily Challenge'],
       ['ou10', '&#x1F3AF;', 'Ten in a Row', 'Call 10 in a row in Free Hit'],
       ['ou20', '&#x1F525;', 'On a Roll', 'Call 20 in a row in Free Hit'],
@@ -2128,29 +2139,29 @@
       ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in Free Hit, every call under 3 seconds'],
       ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in Free Hit with no Run It Back or Reroll']
     ],
-    // 60000 RUNS (16 Oct 2026): 25000 RUNS' set in Test terms at the same distance from the target (60,000+, +10%, +20%, the
+    // 60000 RUNS (16 Oct 2026): 25000 RUNS' set in Test terms at the same distance from the target (60000+, +10%, +20%, the
     // last 1% under, a photo finish within 540), its own cricket ones (ts_, the game's js/app.js cricketTrophies) and
     // Follow On's (from ~/cast-dev/tests/tools/trophies_tests.js)
     tests: [
-  ['hit1000', '&#x1F4AF;', '60,000+', 'Reach 60,000 Test runs'],
-  ['hit1100', '&#x1F525;', '66,000 Club', 'Reach 66,000 Test runs'],
-  ['hit1200', '&#x1F680;', 'Run Machine', 'Reach 72,000 Test runs'],
-  ['exact', '&#x1F3AF;', 'Exactly 60,000', 'Land on 60,000 exactly'],
-  ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 60,000 to 60,540 in 60,000+'],
-  ['soclose', '&#x1F629;', 'So Close', 'Finish on 59,400 to 59,999'],
-  ['nowild', '&#x1F9CA;', 'No Wildcards', '60,000+ with no wildcards'],
-  ['spin', '&#x1F3B0;', 'Spin Doctor', '60,000+ in Team Spin'],
+  ['hit1000', '&#x1F4AF;', '60000+', 'Reach 60000 Test runs'],
+  ['hit1100', '&#x1F525;', '66000 Club', 'Reach 66000 Test runs'],
+  ['hit1200', '&#x1F680;', 'Run Machine', 'Reach 72000 Test runs'],
+  ['exact', '&#x1F3AF;', 'Exactly 60000', 'Land on 60000 exactly'],
+  ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 60000 to 60540 in 60000+'],
+  ['soclose', '&#x1F629;', 'So Close', 'Finish on 59400 to 59999'],
+  ['nowild', '&#x1F9CA;', 'No Wildcards', '60000+ with no wildcards'],
+  ['spin', '&#x1F3B0;', 'Spin Doctor', '60000+ in Team Spin'],
   ['goats', '&#x1F51D;', 'Top Ten', '3 of the 10 biggest Test run scorers outside the Legends'],
-  ['bench', '&#x1F327;&#xFE0F;', 'Rained Out', 'Finish under 30,000 runs'],
+  ['bench', '&#x1F327;&#xFE0F;', 'Rained Out', 'Finish under 30000 runs'],
   ['plays10', '&#x1F3CF;', 'Regular', 'Play 10 games'],
   ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
   ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
   ['legend', '&#x1F396;&#xFE0F;', 'Legend', 'Pick a Legend'],
-  ['legs11', '&#x1F3B2;', 'All Sixes', 'Finish on exactly 66,666 runs'],
+  ['legs11', '&#x1F3B2;', 'All Sixes', 'Finish on exactly 66666 runs'],
   ['read', '&#x1F52E;', 'Perfect Read', 'Top run scorer in every offer'],
-  ['odds', '&#x1F3B2;', 'Against the Odds', '60,000+ with Luck at -15% or worse'],
+  ['odds', '&#x1F3B2;', 'Against the Odds', '60000+ with Luck at -15% or worse'],
   ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
-  ['zero', '&#x1F9B8;', 'Zero Hero', '60,000+ with a player on 0 runs'],
+  ['zero', '&#x1F9B8;', 'Zero Hero', '60000+ with a player on 0 runs'],
   ['clubleg', '&#x1F6E1;&#xFE0F;', 'One Nation XI', 'All 11 played Tests for one nation'],
   ['namesakes', '&#x1FA9E;', 'Namesakes', 'Two players with the same surname'],
   ['timetravel', '&#x23F3;', 'Time Traveller', 'A debut before 1946 and a 2026 player'],
@@ -2161,19 +2172,19 @@
   ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
   ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
   ['ts_don', '&#x1F451;', 'The Don', 'Don Bradman in your XI'],
-  ['ts_10k', '&#x1F51F;', 'Ten Thousand Club', 'A player with 10,000+ Test runs in your XI'],
-  ['ts_five', '&#x1F3CF;', 'Five Grand', '5 players with 5,000+ runs in your XI'],
-  ['ts_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 3,000+ runs'],
-  ['ts_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 5,000+ runs'],
-  ['ts_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 5,000+ runs between them'],
-  ['ts_attack', '&#x1F3AF;', 'Strike Force', 'Your 4 bowlers have 1,000+ Test wickets between them'],
+  ['ts_10k', '&#x1F51F;', 'Ten Thousand Club', 'A player with 10000+ Test runs in your XI'],
+  ['ts_five', '&#x1F3CF;', 'Five Grand', '5 players with 5000+ runs in your XI'],
+  ['ts_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 3000+ runs'],
+  ['ts_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 5000+ runs'],
+  ['ts_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 5000+ runs between them'],
+  ['ts_attack', '&#x1F3AF;', 'Strike Force', 'Your 4 bowlers have 1000+ Test wickets between them'],
   ['ts_world', '&#x1F30F;', 'World XI', 'Players from 7 or more nations'],
   ['ts_core', '&#x1F3E0;', 'Home Core', '6 or more from one nation'],
   ['ts_ashes', '&#x1F3FA;', 'The Ashes XI', 'All 11 only played for Australia or England, with both in it'],
   ['ts_sub', '&#x1F305;', 'Subcontinent XI', 'All 11 only played for India, Pakistan, Sri Lanka or Bangladesh'],
   ['ts_golden', '&#x1F4DC;', 'Golden Age', 'All 11 finished before 1946'],
-  ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 60,000 with a Legend in your XI'],
-  ['pure', '&#x1F48E;', 'Pure 60,000', 'Reach 60,000 in 60,000+ without a Legend'],
+  ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 60000 with a Legend in your XI'],
+  ['pure', '&#x1F48E;', 'Pure 60000', 'Reach 60000 in 60000+ without a Legend'],
   ['dailywin', '&#x1F4C5;', 'Daily Winner', 'Win a 60000 RUNS Daily Challenge'],
   ['ou10', '&#x1F3AF;', 'Ten in a Row', 'Call 10 in a row in Follow On'],
   ['ou20', '&#x1F525;', 'On a Roll', 'Call 20 in a row in Follow On'],
@@ -2538,25 +2549,25 @@
   };
   var TROPHY_DONE = {
     'bigbash:potw': 'You were named CAST Player of the Week.',
-    'bigbash:hit1000': 'Your XI reached 25,000 BBL runs.',
-    'bigbash:hit1100': 'Your XI reached 27,500 BBL runs.',
-    'bigbash:hit1200': 'Your XI reached 30,000 BBL runs. A real run machine.',
-    'bigbash:exact': 'You landed on exactly 25,000 BBL runs. Not one run over.',
-    'bigbash:photo': 'You finished between 25,000 and 25,225 in 25,000+. Only just over the line.',
-    'bigbash:soclose': 'You finished between 24,750 and 24,999. That close to 25,000.',
-    'bigbash:nowild': 'You reached 25,000 without using a single wildcard.',
-    'bigbash:spin': 'You reached 25,000 in Team Spin.',
+    'bigbash:hit1000': 'Your XI reached 25000 BBL runs.',
+    'bigbash:hit1100': 'Your XI reached 27500 BBL runs.',
+    'bigbash:hit1200': 'Your XI reached 30000 BBL runs. A real run machine.',
+    'bigbash:exact': 'You landed on exactly 25000 BBL runs. Not one run over.',
+    'bigbash:photo': 'You finished between 25000 and 25225 in 25000+. Only just over the line.',
+    'bigbash:soclose': 'You finished between 24750 and 24999. That close to 25000.',
+    'bigbash:nowild': 'You reached 25000 without using a single wildcard.',
+    'bigbash:spin': 'You reached 25000 in Team Spin.',
     'bigbash:goats': 'Your XI had 3 of the top 10 run scorers in BBL history.',
-    'bigbash:bench': 'Your XI finished under 12,500 runs. Some days it just rains.',
+    'bigbash:bench': 'Your XI finished under 12500 runs. Some days it just rains.',
     'bigbash:plays10': 'You have played 10 games.',
     'bigbash:plays50': 'You have played 50 games.',
     'bigbash:plays100': 'You have played 100 games.',
     'bigbash:legend': 'You picked a BBL Legend.',
-    'bigbash:legs11': 'You finished on exactly 22,222 BBL runs. All twos!',
+    'bigbash:legs11': 'You finished on exactly 22222 BBL runs. All twos!',
     'bigbash:read': 'You picked the top run scorer from every offer.',
-    'bigbash:odds': 'You reached 25,000 with the luck of the draw against you: Luck at -15% or worse.',
+    'bigbash:odds': 'You reached 25000 with the luck of the draw against you: Luck at -15% or worse.',
     'bigbash:lucky': 'Your Luck was +30% or better. The cards loved you.',
-    'bigbash:zero': 'You reached 25,000 with a player on 0 runs in your XI.',
+    'bigbash:zero': 'You reached 25000 with a player on 0 runs in your XI.',
     'bigbash:clubleg': 'All 11 of your players played for one club.',
     'bigbash:namesakes': 'Two players in your XI shared a surname.',
     'bigbash:timetravel': 'Your XI had a player who debuted in BBL01 or BBL02 and one who played this summer.',
@@ -2565,17 +2576,17 @@
     'bigbash:owl': 'You finished a game between midnight and 4am.',
     'bigbash:marathon': 'You played 10 games in one day.',
     'bigbash:settled': 'You beat a mate\u2019s score on their challenge.',
-    'bigbash:bb_machine': 'Your XI had 5 players with 2,000 or more BBL runs.',
-    'bigbash:bb_toporder': 'All 6 of your batters had 1,500 or more runs.',
-    'bigbash:bb_gloves': 'Your keeper had 2,000 or more BBL runs.',
-    'bigbash:bb_tail': 'Your 4 bowlers made 2,000 or more runs between them.',
+    'bigbash:bb_machine': 'Your XI had 5 players with 2000 or more BBL runs.',
+    'bigbash:bb_toporder': 'All 6 of your batters had 1500 or more runs.',
+    'bigbash:bb_gloves': 'Your keeper had 2000 or more BBL runs.',
+    'bigbash:bb_tail': 'Your 4 bowlers made 2000 or more runs between them.',
     'bigbash:bb_league': 'Your XI had players from all 8 BBL clubs.',
     'bigbash:bb_core': '6 or more of your XI came from one club.',
     'bigbash:bb_sydney': 'All 11 of your players only ever played for the Sixers or the Thunder.',
     'bigbash:bb_melbourne': 'All 11 of your players only ever played for the Stars or the Renegades.',
     'bigbash:bb_dayone': 'All 11 of your players debuted in BBL01.',
-    'bigbash:legendary': 'You reached 25,000 with a Legend in your XI.',
-    'bigbash:pure': 'You reached 25,000 in 25,000+ without a Legend.',
+    'bigbash:legendary': 'You reached 25000 with a Legend in your XI.',
+    'bigbash:pure': 'You reached 25000 in 25000+ without a Legend.',
     'bigbash:dailywin': 'You won a 25000 RUNS Daily Challenge.',
     'bigbash:ou10': 'You called 10 in a row in Free Hit.',
     'bigbash:ou20': 'You called 20 in a row in Free Hit.',
@@ -2585,25 +2596,25 @@
     'bigbash:ouice': 'You called 8 in a row in Free Hit, every call under 3 seconds.',
     'bigbash:ouclean': 'You called 15 in a row in Free Hit with no Run It Back or Reroll.',
     'tests:potw': 'You were named CAST Player of the Week.',
-    'tests:hit1000': 'Your XI reached 60,000 Test runs.',
-    'tests:hit1100': 'Your XI reached 66,000 Test runs.',
-    'tests:hit1200': 'Your XI reached 72,000 Test runs. A real run machine.',
-    'tests:exact': 'You landed on exactly 60,000 Test runs. Not one run over.',
-    'tests:photo': 'You finished between 60,000 and 60,540 in 60,000+. Only just over the line.',
-    'tests:soclose': 'You finished between 59,400 and 59,999. That close to 60,000.',
-    'tests:nowild': 'You reached 60,000 without using a single wildcard.',
-    'tests:spin': 'You reached 60,000 in Team Spin.',
+    'tests:hit1000': 'Your XI reached 60000 Test runs.',
+    'tests:hit1100': 'Your XI reached 66000 Test runs.',
+    'tests:hit1200': 'Your XI reached 72000 Test runs. A real run machine.',
+    'tests:exact': 'You landed on exactly 60000 Test runs. Not one run over.',
+    'tests:photo': 'You finished between 60000 and 60540 in 60000+. Only just over the line.',
+    'tests:soclose': 'You finished between 59400 and 59999. That close to 60000.',
+    'tests:nowild': 'You reached 60000 without using a single wildcard.',
+    'tests:spin': 'You reached 60000 in Team Spin.',
     'tests:goats': 'Your XI had 3 of the 10 biggest Test run scorers outside the Legends.',
-    'tests:bench': 'Your XI finished under 30,000 runs. Some days it just rains.',
+    'tests:bench': 'Your XI finished under 30000 runs. Some days it just rains.',
     'tests:plays10': 'You have played 10 games.',
     'tests:plays50': 'You have played 50 games.',
     'tests:plays100': 'You have played 100 games.',
     'tests:legend': 'You picked a Test Legend.',
-    'tests:legs11': 'You finished on exactly 66,666 Test runs. All sixes!',
+    'tests:legs11': 'You finished on exactly 66666 Test runs. All sixes!',
     'tests:read': 'You picked the top run scorer from every offer.',
-    'tests:odds': 'You reached 60,000 with the luck of the draw against you: Luck at -15% or worse.',
+    'tests:odds': 'You reached 60000 with the luck of the draw against you: Luck at -15% or worse.',
     'tests:lucky': 'Your Luck was +30% or better. The cards loved you.',
-    'tests:zero': 'You reached 60,000 with a player on 0 runs in your XI.',
+    'tests:zero': 'You reached 60000 with a player on 0 runs in your XI.',
     'tests:clubleg': 'All 11 of your players played Tests for one nation.',
     'tests:namesakes': 'Two players in your XI shared a surname.',
     'tests:timetravel': 'Your XI had a player who debuted before 1946 and one who played in 2026.',
@@ -2613,19 +2624,19 @@
     'tests:marathon': 'You played 10 games in one day.',
     'tests:settled': 'You beat a mate\u2019s score on their challenge.',
     'tests:ts_don': 'Don Bradman was in your XI. The Don.',
-    'tests:ts_10k': 'Your XI had a player with 10,000 or more Test runs.',
-    'tests:ts_five': 'Your XI had 5 players with 5,000 or more Test runs.',
-    'tests:ts_toporder': 'All 6 of your batters had 3,000 or more runs.',
-    'tests:ts_gloves': 'Your keeper had 5,000 or more Test runs.',
-    'tests:ts_tail': 'Your 4 bowlers made 5,000 or more runs between them.',
-    'tests:ts_attack': 'Your 4 bowlers had 1,000 or more Test wickets between them.',
+    'tests:ts_10k': 'Your XI had a player with 10000 or more Test runs.',
+    'tests:ts_five': 'Your XI had 5 players with 5000 or more Test runs.',
+    'tests:ts_toporder': 'All 6 of your batters had 3000 or more runs.',
+    'tests:ts_gloves': 'Your keeper had 5000 or more Test runs.',
+    'tests:ts_tail': 'Your 4 bowlers made 5000 or more runs between them.',
+    'tests:ts_attack': 'Your 4 bowlers had 1000 or more Test wickets between them.',
     'tests:ts_world': 'Your XI had players from 7 or more Test nations.',
     'tests:ts_core': '6 or more of your XI came from one nation.',
     'tests:ts_ashes': 'All 11 of your players only ever played for Australia or England, with both in your XI.',
     'tests:ts_sub': 'All 11 of your players only ever played for India, Pakistan, Sri Lanka or Bangladesh.',
     'tests:ts_golden': 'All 11 of your players finished before 1946.',
-    'tests:legendary': 'You reached 60,000 with a Legend in your XI.',
-    'tests:pure': 'You reached 60,000 in 60,000+ without a Legend.',
+    'tests:legendary': 'You reached 60000 with a Legend in your XI.',
+    'tests:pure': 'You reached 60000 in 60000+ without a Legend.',
     'tests:dailywin': 'You won a 60000 RUNS Daily Challenge.',
     'tests:ou10': 'You called 10 in a row in Follow On.',
     'tests:ou20': 'You called 20 in a row in Follow On.',
@@ -2729,7 +2740,7 @@
     '4000goals:club500': 'Your 18 had 5 players with 500 or more goals.',
     '4000goals:spear6': 'All 6 of your forwards had 300 or more goals.',
     '4000goals:backs': 'Your 6 backs kicked 300 or more goals between them.',
-    '4000goals:mids': 'Your 6 midfielders kicked 1,000 or more goals between them.',
+    '4000goals:mids': 'Your 6 midfielders kicked 1000 or more goals between them.',
     '4000goals:bigv': 'All 18 of your players only ever played for Victorian clubs.',
     '4000goals:interstate': 'Nobody in your 18 ever played for a Victorian club.',
     '4000goals:newkids': 'Your 18 had a Suns player and a Giants player.',
@@ -2738,31 +2749,31 @@
     '4000goals:core': '6 or more of your 18 came from one club.',
     '4000goals:nineties': 'All 18 of your players debuted in the 1990s.',
     '4000goals:fatherson': 'A father and son made your 18.',
-    '4000goals:legendary': 'You reached 4,000 with a Legend in your 18.',
-    '4000goals:pure': 'You reached 4,000 in 4000+ without a Legend.',
+    '4000goals:legendary': 'You reached 4000 with a Legend in your 18.',
+    '4000goals:pure': 'You reached 4000 in 4000+ without a Legend.',
     '4000goals:dailywin': 'You won a 4000 GOALS Daily Challenge.',
-    '4000goals:hit1000': 'Your 18 reached 4,000 AFL goals.',
-    '4000goals:hit1100': 'Your 18 reached 4,400 AFL goals.',
-    '4000goals:hit1200': 'Your 18 reached 4,800 AFL goals. A real goal machine.',
-    '4000goals:exact': 'You landed on exactly 4,000 AFL goals. Not one goal over.',
-    '4000goals:photo': 'You finished between 4,000 and 4,036 in 4000+. Only just over the line.',
-    '4000goals:soclose': 'You finished between 3,960 and 3,999. That close to 4,000.',
-    '4000goals:nowild': 'You reached 4,000 without using a single wildcard.',
-    '4000goals:spin': 'You reached 4,000 in Team Spin.',
+    '4000goals:hit1000': 'Your 18 reached 4000 AFL goals.',
+    '4000goals:hit1100': 'Your 18 reached 4400 AFL goals.',
+    '4000goals:hit1200': 'Your 18 reached 4800 AFL goals. A real goal machine.',
+    '4000goals:exact': 'You landed on exactly 4000 AFL goals. Not one goal over.',
+    '4000goals:photo': 'You finished between 4000 and 4036 in 4000+. Only just over the line.',
+    '4000goals:soclose': 'You finished between 3960 and 3999. That close to 4000.',
+    '4000goals:nowild': 'You reached 4000 without using a single wildcard.',
+    '4000goals:spin': 'You reached 4000 in Team Spin.',
     '4000goals:aj': 'You picked Tony Lockett, the GOAT: the most goals in VFL and AFL history.',
     '4000goals:goats': 'Your 18 had 3 of the top 10 goalkickers of the AFL era.',
-    '4000goals:bench': 'Your 18 finished under 2,000 goals. Some days the cards just don\u2019t come.',
+    '4000goals:bench': 'Your 18 finished under 2000 goals. Some days the cards just don\u2019t come.',
     '4000goals:nrlw250': 'Your AFLW 18 reached ' + AFLW_T + ' goals.',
     '4000goals:nrlw300': 'Your AFLW 18 reached ' + Math.round(AFLW_T * 1.2) + ' goals.',
     '4000goals:plays10': 'You have played 10 games.',
     '4000goals:plays50': 'You have played 50 games.',
     '4000goals:plays100': 'You have played 100 games.',
     '4000goals:legend': 'You picked a Legend of the game.',
-    '4000goals:legs11': 'You finished on exactly 4,444 AFL goals. Four fours!',
+    '4000goals:legs11': 'You finished on exactly 4444 AFL goals. Four fours!',
     '4000goals:read': 'You picked the top goalkicker from every offer.',
-    '4000goals:odds': 'You reached 4,000 with the luck of the draw against you: Luck at -15% or worse.',
+    '4000goals:odds': 'You reached 4000 with the luck of the draw against you: Luck at -15% or worse.',
     '4000goals:lucky': 'Your Luck was +30% or better. The cards loved you.',
-    '4000goals:zero': 'You reached 4,000 with a player on 0 goals in your 18.',
+    '4000goals:zero': 'You reached 4000 with a player on 0 goals in your 18.',
     '4000goals:clubleg': 'All 18 of your players played for one club.',
     '4000goals:namesakes': 'Two players in your 18 shared a surname.',
     '4000goals:timetravel': 'Your 18 had a player who started before 2000 and one who played in 2026.',
@@ -2773,7 +2784,7 @@
     '4000goals:settled': 'You beat a mate\u2019s score on their challenge.',
     '1000tries:potw': 'You were named CAST Player of the Week.',
     '27-0:potw': 'You were named CAST Player of the Week.',
-    '1000tries:hit1000': 'Your 13 reached 1,000 NRL tries.',
+    '1000tries:hit1000': 'Your 13 reached 1000 NRL tries.',
     '1000tries:ou10': 'You called 10 in a row in Six Again.',
     '1000tries:ou20': 'You called 20 in a row in Six Again.',
     '1000tries:ou30': 'You called 30 in a row in Six Again.',
@@ -2781,13 +2792,13 @@
     '1000tries:ou100': 'One hundred in a row in Six Again. A Centurion.',
     '1000tries:ouice': 'Eight right calls in a row, every one in under 3 seconds.',
     '1000tries:ouclean': 'Fifteen in a row with no Run It Back and no Reroll.',
-    '1000tries:hit1100': 'Your 13 reached 1,100 NRL tries.',
-    '1000tries:hit1200': 'Your 13 reached 1,200 NRL tries. A real try machine.',
-    '1000tries:exact': 'You landed on exactly 1,000 NRL tries. Not one try over.',
-    '1000tries:photo': 'You finished between 1,000 and 1,009 in 1000+. Only just over the line.',
-    '1000tries:soclose': 'You finished between 990 and 999. That close to 1,000.',
-    '1000tries:nowild': 'You reached 1,000 without using a single wildcard.',
-    '1000tries:spin': 'You reached 1,000 in Team Spin.',
+    '1000tries:hit1100': 'Your 13 reached 1100 NRL tries.',
+    '1000tries:hit1200': 'Your 13 reached 1200 NRL tries. A real try machine.',
+    '1000tries:exact': 'You landed on exactly 1000 NRL tries. Not one try over.',
+    '1000tries:photo': 'You finished between 1000 and 1009 in 1000+. Only just over the line.',
+    '1000tries:soclose': 'You finished between 990 and 999. That close to 1000.',
+    '1000tries:nowild': 'You reached 1000 without using a single wildcard.',
+    '1000tries:spin': 'You reached 1000 in Team Spin.',
     '1000tries:aj': 'You picked Alex Johnston, the record breaker.',
     '1000tries:goats': 'Your 13 had 3 of the top 10 NRL tryscorers of all time.',
     '1000tries:bench': 'Your 13 finished under 500 tries. Some days the cards just don\u2019t come.',
@@ -2798,11 +2809,11 @@
     '1000tries:plays100': 'You have played 100 games.',
     '1000tries:legend': 'You picked a Legend of the game.',
     '1000tries:immortal': 'You picked one of Rugby League\u2019s Immortals.',
-    '1000tries:legs11': 'You finished on exactly 1,111 NRL tries. Legs eleven!',
+    '1000tries:legs11': 'You finished on exactly 1111 NRL tries. Legs eleven!',
     '1000tries:read': 'You picked the top tryscorer from every offer.',
-    '1000tries:odds': 'You reached 1,000 with the luck of the draw against you: Luck at -15% or worse.',
+    '1000tries:odds': 'You reached 1000 with the luck of the draw against you: Luck at -15% or worse.',
     '1000tries:lucky': 'Your Luck was +30% or better. The cards loved you.',
-    '1000tries:zero': 'You reached 1,000 with a player on 0 tries in your 13.',
+    '1000tries:zero': 'You reached 1000 with a player on 0 tries in your 13.',
     '1000tries:clubleg': 'All 13 of your players played for one club.',
     '1000tries:family': 'Two brothers made your 13.',
     '1000tries:namesakes': 'Two players in your 13 shared a surname without being brothers.',
@@ -3231,6 +3242,20 @@
     var day = sydneyDate(Date.now()), o = {};
     try { o = JSON.parse(lsGet(LS_GUEST_OU) || '{}') || {}; } catch (e) { o = {}; }
     if (o.day !== day) o = { day: day };
+    // On CAST Games (castgames.com.au, one site for every game) a guest gets 2 free games a day in all, the draft games and
+    // the over/unders together, not 2 in each (the owner, 16 Oct 2026: "or else they will never sign up")
+    if (window.CG) {
+      var gg = guestGames();
+      if (gg.n >= GUEST_DAY_MAX) {
+        pendingPlay = then || null; pendingMode = null; wallWhy = 'limit';
+        ctaFrom = 'ou_wall'; lsSet('cast_ou_wall', String(Date.now()));
+        track('guest_wall', { game: CFG.game, why: 'limit', where: 'ou' });
+        open('wall');
+        return false;
+      }
+      gg.n++; lsSet(LS_GUEST, JSON.stringify(gg));
+      return true;
+    }
     if ((o[CFG.game] || 0) >= GUEST_OU_MAX) {
       pendingPlay = then || null; pendingMode = null; wallWhy = 'ouused';
       ctaFrom = 'ou_wall'; lsSet('cast_ou_wall', String(Date.now())); // a sign-in from here is counted in Admin (setStatus)
@@ -3335,7 +3360,7 @@
   // A monthly Pass on pause (passPause): their own line and Resume Now, never the buy buttons or Pass pitches
   function pausedRec() { var p = passDoc; return !!p && !!p.sub && p.paused === true && p.status === 'active'; }
   function priceOf(p) { return '$' + ((p && typeof p.amt === 'number' && p.amt > 0 ? p.amt : 399) / 100).toFixed(2); }
-  function money(v) { return '$' + (Math.round(v * 100) / 100).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function money(v) { return '$' + (Math.round(v * 100) / 100).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false }); }
   function passBuyHtml(where) {
     return '<div class="ca-pass-buy">' +
       '<button type="button" class="ca-pass-plan is-best" data-ca="pass-buy" data-v="annual"' + (passBusy ? ' disabled' : '') + '><span class="ca-pass-flag">Best Value</span><span class="ca-pass-plan-t">Yearly <em>Save ' + PR().save + '</em></span><b>' + PR().y + '</b><span class="ca-pass-week">Just ' + PR().yW + ' a week</span><small>' + (passBusy === 'annual' ? 'Opening checkout&hellip;' : PR().yM + ' a month, plus a custom video') + '</small></button>' +
@@ -3700,16 +3725,16 @@
     { id: '4000daily', label: '4000 GOALS Daily', short: 'Daily', game: '4000goals', periods: ['today', 'yesterday'], unit: 'goals' },
     // 25000 RUNS (15 Oct 2026): 4000 GOALS' boards for the Big Bash, shown once it's launched (or on its own page). Free
     // Hit like Play On: one chip with a category picker
-    { id: 'bbplus', label: '25,000+', short: '25,000+', game: 'bigbash', periods: ['today', 'week', 'all'], unit: 'runs' },
-    { id: 'bbexact', label: 'Exactly 25,000', short: 'Exactly 25,000', tiny: 'Exact 25k', game: 'bigbash', periods: ['today', 'week', 'all'], home: 'week' },
+    { id: 'bbplus', label: '25000+', short: '25000+', game: 'bigbash', periods: ['today', 'week', 'all'], unit: 'runs' },
+    { id: 'bbexact', label: 'Exactly 25000', short: 'Exactly 25000', tiny: 'Exact 25k', game: 'bigbash', periods: ['today', 'week', 'all'], home: 'week' },
     { id: 'bbspin', label: 'Team Spin', short: 'Team Spin', game: 'bigbash', periods: ['today', 'week', 'all'], unit: 'runs' },
     { id: 'bbou', label: 'Free Hit', short: 'Free Hit', tiny: 'Free Hit', game: 'bigbash', periods: ['today', 'week', 'all'] },
     { id: 'bbouw', label: 'Free Hit: BBL Wickets', short: 'BBL Wickets', game: 'bigbash', periods: ['today', 'week', 'all'], sub: 'bbou' },
     { id: 'bbdaily', label: '25000 RUNS Daily', short: 'Daily', game: 'bigbash', periods: ['today', 'yesterday'], unit: 'runs' },
     // 60000 RUNS (16 Oct 2026): 25000 RUNS' boards for Test cricket, shown once it's launched (or on its own page). Follow
     // On like Free Hit: one chip with a category picker
-    { id: 'tsplus', label: '60,000+', short: '60,000+', game: 'tests', periods: ['today', 'week', 'all'], unit: 'runs' },
-    { id: 'tsexact', label: 'Exactly 60,000', short: 'Exactly 60,000', tiny: 'Exact 60k', game: 'tests', periods: ['today', 'week', 'all'], home: 'week' },
+    { id: 'tsplus', label: '60000+', short: '60000+', game: 'tests', periods: ['today', 'week', 'all'], unit: 'runs' },
+    { id: 'tsexact', label: 'Exactly 60000', short: 'Exactly 60000', tiny: 'Exact 60k', game: 'tests', periods: ['today', 'week', 'all'], home: 'week' },
     { id: 'tsspin', label: 'Team Spin', short: 'Team Spin', game: 'tests', periods: ['today', 'week', 'all'], unit: 'runs' },
     { id: 'tsou', label: 'Follow On', short: 'Follow On', tiny: 'Follow On', game: 'tests', periods: ['today', 'week', 'all'] },
     { id: 'tsouw', label: 'Follow On: Test Wickets', short: 'Test Wickets', game: 'tests', periods: ['today', 'week', 'all'], sub: 'tsou' },
@@ -3755,8 +3780,8 @@
   var PLAY_TO_RANK = { nflou: 'Play Two Point', rcou: 'Play Photo Finish', rcoub: 'Play Photo Finish', rcouh: 'Play Photo Finish', tsou: 'Play Follow On', tsouw: 'Play Follow On', bbou: 'Play Free Hit', bbouw: 'Play Free Hit', '4000ou': 'Play Play On', '4000ougames': 'Play Play On', '4000ouaflw': 'Play Play On', '1000ou': 'Play Six Again', '1000oucaps': 'Play Six Again', '1000outt': 'Play Six Again', '1000ounrlw': 'Play Six Again', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
     '270best': 'Play Classic Mode', '270pack': 'Play Pack Mode', '270hard': 'Play Hard Mode', '270perfect': 'Go 27-0 to get on', '270daily': 'Play today&rsquo;s Daily',
     '4000plus': 'Play 4000+', '4000exact': 'Play Exactly 4000', '4000spin': 'Play Team Spin', aflw: 'Play AFLW 750+', '4000daily': 'Play today&rsquo;s Daily',
-    bbplus: 'Play 25,000+', bbexact: 'Play Exactly 25,000', bbspin: 'Play Team Spin', bbdaily: 'Play today&rsquo;s Daily',
-    tsplus: 'Play 60,000+', tsexact: 'Play Exactly 60,000', tsspin: 'Play Team Spin', tsdaily: 'Play today&rsquo;s Daily',
+    bbplus: 'Play 25000+', bbexact: 'Play Exactly 25000', bbspin: 'Play Team Spin', bbdaily: 'Play today&rsquo;s Daily',
+    tsplus: 'Play 60000+', tsexact: 'Play Exactly 60000', tsspin: 'Play Team Spin', tsdaily: 'Play today&rsquo;s Daily',
     nflplus: 'Play 700+', nflexact: 'Play Exactly 700', nflspin: 'Play Team Spin', nfldaily: 'Play today&rsquo;s Daily',
     rcplus: 'Play 550+', rcexact: 'Play Exactly 550', rcspin: 'Play Team Spin', rcdaily: 'Play today&rsquo;s Daily' };
   var PLAY_MODE = { '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
@@ -4102,7 +4127,7 @@
       : n.src === 'potw' ? 'You\u2019re this week\u2019s CAST Player of the Week. ' + items + ' are in your Vault, ready for your next games.'
       : n.src === 'gift' ? 'A gift for you. ' + (Object.keys(n.items || {}).reduce(function (t, k) { return t + (+n.items[k] || 0); }, 0) > 1 ? 'They\u2019re' : 'It\u2019s') + ' in your Vault, ready for your next game.'
       : n.src === 'optin' ? 'Thanks for joining the CAST Games emails. Your free Reveal is in your Vault, ready for your next draft.'
-      : n.src === 'welcome' ? (CFG.game === '4000goals' ? 'A Legend Key for 4000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'bigbash' ? 'A Legend Key for 25,000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'tests' ? 'A Legend Key for 60,000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'nfl' ? 'A Legend Key for 700+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'racing' ? 'A Legend Key for 550+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : 'A Superstar Key for 27-0 and a Legend Key for ' + (G4ON ? '1000TRIES or 4000 GOALS' : '1000TRIES') + ' are in your Vault, ready for your next draft.')
+      : n.src === 'welcome' ? (CFG.game === '4000goals' ? 'A Legend Key for 4000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'bigbash' ? 'A Legend Key for 25000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'tests' ? 'A Legend Key for 60000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'nfl' ? 'A Legend Key for 700+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'racing' ? 'A Legend Key for 550+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : 'A Superstar Key for 27-0 and a Legend Key for ' + (G4ON ? '1000TRIES or 4000 GOALS' : '1000TRIES') + ' are in your Vault, ready for your next draft.')
       : n.src === 'toty' ? (n.n === 1 ? (n.free ? 'Your free' : 'Your') + ' Team of the Year Pick' : 'Your ' + n.n + ' Team of the Year Picks') + ' became ' + items + '. They’re in your Vault, ready in 27-0 Classic and Pack.'
       : n.src === 'prem' ? (n.n === 1 ? (n.free ? 'Your free' : 'Your') + ' Premiers Pick' : 'Your ' + n.n + ' Premiers Picks') + ' became ' + items + '. They’re in your Vault, ready in 27-0 Classic and Pack.'
       : 'You completed ' + (n.name || 'the Daily Challenge') + ' in ' + gname + '. ' + (lasts(n.items) > 1 ? 'They’re in your Vault for the next 24 hours.' : lasts(n.items) ? 'It’s in your Vault for the next 24 hours.' : 'It’s in your Vault, ready for your next game.');
@@ -4396,20 +4421,35 @@
   }
   function andList(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
   var TEAM_N = AFL ? '18' : BB || TS ? 'XI' : NF ? 'team' : RC ? 'card' : '13';
+  /* The GOAT (16 Oct 2026, the owner: "THE GOAT IS UNIVERSAL"): one item, one Vault count, used in whichever draft game
+     you play and giving that game's GOAT as the next pick in its main mode or Exactly (once a game, never the Daily or a
+     friend's challenge). [name, his number, its unit, a short fact (or ''), where] for each game; a page with no GOAT of
+     its own (27-0, CAST Games) speaks of all of them */
+  var GOATS = {
+    '1000tries': ['Alex Johnston', '240', 'NRL tries', 'the most in NRL history', '1000TRIES 1000+ and Exactly 1000'],
+    '4000goals': ['Tony Lockett', '1360', 'VFL and AFL goals', 'the most in VFL and AFL history', '4000 GOALS 4000+ and Exactly 4000'],
+    bigbash: ['Chris Lynn', '4133', 'BBL runs', 'the most in BBL history', '25000 RUNS 25000+ and Exactly 25000'],
+    tests: ['Don Bradman', '6996', 'Test runs', 'at 99.94, the GOAT by reputation', '60000 RUNS 60000+ and Exactly 60000'],
+    nfl: ['Jerry Rice', '208', 'NFL TDs', 'the most in NFL history', '700 TDS 700+ and Exactly 700'],
+    racing: ['Damien Oliver', '129', 'Group 1 wins', '', 'G1 WINNER SPINNER 550+ and Exactly 550']
+  };
+  var GOAT_HERE = GOATS[CFG.game] || null;
+  // "Don Bradman, 6996 Test runs at 99.94, the GOAT by reputation" / "Alex Johnston, 240 NRL tries, the most in NRL history"
+  function goatLine(g) { return g[0] + ', ' + g[1] + ' ' + g[2] + (g[3] ? (/^at /.test(g[3]) ? ' ' : ', ') + g[3] : ''); }
   var ITM = {
-    // The GOAT is 1000TRIES only (12 Oct 2026, the owner: "remove GOAT from afl store"); 4000 GOALS' GOAT, Tony Lockett, is a Legend
-    goat: { field: 'goats', ico: '&#x1F410;', one: 'GOAT', many: 'GOATs', packs: ['goat1'], used: 'The GOAT is in', kicker: 'The GOAT', title: 'Alex Johnston, 240 Tries',
-      line: 'The most tries in NRL history, as your next pick.', tap: 'Tap The GOAT to use', tags: ['The GOAT'], small: ['240 NRL tries, ready for your next game'], save: '',
-      foot: 'Bought in the Shop and kept on your CAST Profile until you use it in 1000TRIES 1000+ or Exactly 1000.' },
+    // The GOAT: this game's (GOATS above), or all of them on a page without one
+    goat: { field: 'goats', ico: '&#x1F410;', one: 'GOAT', many: 'GOATs', packs: ['goat1'], used: 'The GOAT is in', kicker: 'The GOAT', title: GOAT_HERE ? GOAT_HERE[0] + ', ' + GOAT_HERE[1] + ' ' + GOAT_HERE[2] : 'The GOAT',
+      line: GOAT_HERE ? 'The GOAT of ' + ((GAMES[CFG.game] || {}).name || 'this game') + ', as your next pick.' : 'The all-time great of whichever game you play, as your next pick.', tap: 'Tap The GOAT to use', tags: ['The GOAT'], small: [GOAT_HERE ? GOAT_HERE[1] + ' ' + GOAT_HERE[2] + ', ready for your next game' : 'Ready for your next game'], save: '',
+      foot: 'Kept on your CAST Profile until you use it. Works in every CAST draft game, as that game\u2019s own GOAT, in its main mode or Exactly.' },
     remove: { field: 'removes', ico: '&#x274C;', one: 'Remove Player', many: 'Remove Players', packs: ['remove1', 'remove5', 'remove12'], used: 'Extra Remove Player used',
       kicker: 'Out of Remove Players', title: 'One Swap Could Do It', line: 'Take a player out of your ' + TEAM_N + ' and draft that spot again.', tap: 'Tap Remove to use',
       tags: ['Quick Fix', 'Popular', 'Best Value'], small: ['Swap one out, right now', '<strong>Just 60c each.</strong> Use them any time, in any CAST game', '<strong>Just 58c each.</strong> Our biggest pack, for every near miss'],
       save: 'Save 40%', save2: 'Save 41%',
-      foot: 'Your game waits right here while you pay. Saved Remove Players stay on your CAST Profile and work in ' + andList(withG4(['27-0 Classic', '1000TRIES'], '4000 GOALS')) + '.' },
+      foot: 'Your game waits right here while you pay. Saved Remove Players stay on your CAST Profile and work in every CAST game.' },
     reveal: { field: 'reveals', ico: '&#x1F440;', one: 'Reveal', many: 'Reveals', packs: ['reveal1', 'reveal5'], used: 'Extra Reveal used',
       kicker: 'Out of Reveals', title: 'See What They’re Worth', line: 'Show the hidden numbers on every player in front of you, then pick.', tap: 'Tap Reveal to use',
       tags: ['Quick Look', 'Best Value'], small: ['See the numbers, right now', '<strong>Just 60c each.</strong> Use them any time, in any CAST game'], save: 'Save 40%',
-      foot: 'Your game waits right here while you pay. Saved Reveals stay on your CAST Profile and work in ' + andList(withG4(['1000TRIES', '27-0 Classic'], '4000 GOALS')) + '.' },
+      foot: 'Your game waits right here while you pay. Saved Reveals stay on your CAST Profile and work in every CAST game.' },
     // The Team of the Year Pick (27-0, the Dally M promo): used only when a player is chosen (totyUse), never by buyItem
     toty: { field: 'totys', ico: '&#x1F3C5;', one: 'Team of the Year Pick', many: 'Team of the Year Picks', packs: ['toty1', 'toty3'], used: 'Team of the Year Pick used',
       kicker: 'Team of the Year Pick', title: 'Choose a Team of the Year Player', line: 'Pick from three 2026 Dally M Team of the Year players. He joins your 13 at 95+.', tap: 'Tap Team of the Year Pick to use',
@@ -4423,17 +4463,13 @@
       foot: 'Picks work in 27-0 Classic, Hard and Packs while the Premiers promo runs. Any bought ones left then become 3 Superstar Keys each.' },
     // The Immortal Pick (27-0, all year, bought only): used only when an Immortal is chosen (pickUse), never by buyItem
     // On 4000 GOALS the same item is the Legend Pick: three of its Legends (the elite goalkickers, 500+ career goals)
-    imm: { field: 'imms', ico: '&#x1F3DB;&#xFE0F;', one: LEG ? 'Legend Pick' : 'Immortal Pick', many: LEG ? 'Legend Picks' : 'Immortal Picks', packs: ['imm1', 'imm3'], used: LEG ? 'Legend Pick used' : 'Immortal Pick used',
-      kicker: LEG ? 'Legend Pick' : 'Immortal Pick', title: LEG ? 'Choose a Legend' : 'Choose an Immortal', line: NF ? 'Pick from three of the NFL’s Legends. They join your team with their career TDs.' : RC ? 'Pick from three of racing’s Legends. They join your card with their Group 1 wins.' : TS ? 'Pick from three of Test cricket’s Legends. They join your XI with their career Test runs.' : BB ? 'Pick from three of the BBL’s Legends. They join your XI with their career runs.' : AFL ? 'Pick from three of the game’s Legends. He joins your 18 with his career goals.'
-        : CFG.game === '1000tries' ? 'Pick from three of the game’s Immortals. He joins your 13 with his career tries.'
-        : 'Pick from three of the game’s Immortals. He joins your 13 at 99.', tap: LEG ? 'Tap Legend Pick to use' : 'Tap Immortal Pick to use',
-      tags: ['Use It Now', 'Best Value'], small: [LEG ? 'Choose your Legend' : 'Choose your Immortal', '<strong>Just $4 each</strong>'], save: 'Save 20%',
-      foot: NF ? 'Legend Picks work in 700 TDS (700+, Exactly 700 and Team Spin), 60000 RUNS, 25000 RUNS and 4000 GOALS, and as Immortal Picks in 27-0 and 1000TRIES, any time. Unused ones stay on your CAST Profile.'
-        : RC ? 'Legend Picks work in G1 WINNER SPINNER (550+, Exactly 550 and Team Spin), 60000 RUNS, 25000 RUNS and 4000 GOALS, and as Immortal Picks in 27-0 and 1000TRIES, any time. Unused ones stay on your CAST Profile.'
-        : TS ? 'Legend Picks work in 60000 RUNS (60,000+, Exactly 60,000 and Team Spin), 25000 RUNS and 4000 GOALS, and as Immortal Picks in 27-0 and 1000TRIES, any time. Unused ones stay on your CAST Profile.'
-        : BB ? 'Legend Picks work in 25000 RUNS (25,000+, Exactly 25,000 and Team Spin) and 4000 GOALS, and as Immortal Picks in 27-0 and 1000TRIES, any time. Unused ones stay on your CAST Profile.'
-        : AFL ? 'Legend Picks work in 4000 GOALS (4000+, Exactly 4000 and Team Spin), and as Immortal Picks in 27-0 and 1000TRIES, any time. Unused ones stay on your CAST Profile.'
-        : 'Immortal Picks work in ' + andList(withG4(['27-0 (Classic, Hard and Packs)', '1000TRIES (1000+, Exactly 1000 and Team Spin)'], '4000 GOALS (as Legend Picks)')) + ', any time. Unused ones stay on your CAST Profile.' },
+    // The Immortal Pick (27-0 and 1000TRIES, all year, bought only): used only when an Immortal is chosen (pickUse), never
+    // by buyItem. The other sports have one Legend Key button instead (16 Oct 2026, the owner), so it is never sold there
+    imm: { field: 'imms', ico: '&#x1F3DB;&#xFE0F;', one: 'Immortal Pick', many: 'Immortal Picks', packs: ['imm1', 'imm3'], used: 'Immortal Pick used',
+      kicker: 'Immortal Pick', title: 'Choose an Immortal', line: CFG.game === '1000tries' ? 'Pick from three of the game\u2019s Immortals. He joins your 13 with his career tries.'
+        : 'Pick from three of the game\u2019s Immortals. He joins your 13 at 99.', tap: 'Tap Immortal Pick to use',
+      tags: ['Use It Now', 'Best Value'], small: ['Choose your Immortal', '<strong>Just $4 each</strong>'], save: 'Save 20%',
+      foot: 'Immortal Picks work in 27-0 (Classic, Hard and Packs) and 1000TRIES (1000+, Exactly 1000 and Team Spin), any time. Unused ones stay on your CAST Profile.' },
     // The 88+ Pick (27-0 World Cup 8-0, 7 Oct 2026): used only when a star is chosen (pickUse), never by buyItem. A CAST
     // Pass holder's free one goes first
     // The 88+ Pick (the World Cup Pick until 8 Oct 2026): a player rated 88+ from the 2026 World Cup squads, never a World
@@ -4872,7 +4908,7 @@
         '<div class="ca-rr-packs">' + rrPackBtn('one', 'Quick Fix', 'One more roll, right now', '&#x26A1; Instant', true) +
         rrPackBtn('five', big ? 'Popular' : 'Best Value', '<strong>Just 60c each.</strong> Use them any time, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC ? 'any CAST game' : 'either game'), 'Save 40%', false, big) +
         (big ? rrPackBtn('twelve', 'Best Value', '<strong>Just 50c each.</strong> For the players who reroll the most', 'Save 50%', false, false, true) : '') + '</div>' +
-        '<p class="ca-small ca-center">Your game waits right here while you pay. Saved rerolls stay on your CAST Profile and work in 27-0 Classic and 1000TRIES. Secure payment by Stripe. Prices in AUD.</p>';
+        '<p class="ca-small ca-center">Your game waits right here while you pay. Saved rerolls stay on your CAST Profile and work in every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
     } else if (rr.stage === 'check' || rr.stage === 'starting' || rr.stage === 'confirm') {
       h = '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div><p class="ca-muted">' + (rr.stage === 'confirm' ? (rr.item === 'restore' ? 'Restoring your streak&hellip;' : 'Adding your ' + what + '&hellip;') : rr.stage === 'check' ? 'Checking your saved ' + what + '&hellip;' : 'Opening secure payment&hellip;') + '</p></div>';
     } else if (rr.stage === 'pay') {
@@ -5052,8 +5088,8 @@
     // Exactly 1000: s = exact 1000s, t = the closest full 13 (1000 once they have landed one)
     if (b === '1000exact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 1000</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === '4000exact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 4000</small>' : fmt(r.t) + ' <small>closest</small>';
-    if (b === 'bbexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 25,000</small>' : fmt(r.t) + ' <small>closest</small>';
-    if (b === 'tsexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 60,000</small>' : fmt(r.t) + ' <small>closest</small>';
+    if (b === 'bbexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 25000</small>' : fmt(r.t) + ' <small>closest</small>';
+    if (b === 'tsexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 60000</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === 'nflexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 700</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === 'rcexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 550</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === '270perfect') { // t: the hardest mode of their 27-0s (the server ranks level players by it)
@@ -5144,8 +5180,8 @@
   }
   function logoFor(r) { return r && (r.vf || r.ps) && r.lg ? logoOf(r.lg) : null; }
   // A row's badge: the creator's logo, or their club
-  /* A rank in its column (29 Sep 2026: "1,093" ran into the badge). Three characters get a little smaller, longer ones
-     ("1,093", "12,345") smaller again, so every rank fits the same column and the badges and names stay lined up */
+  /* A rank in its column (29 Sep 2026: "1093" ran into the badge). Three characters get a little smaller, longer ones
+     ("1093", "12345") smaller again, so every rank fits the same column and the badges and names stay lined up */
   function posCell(rank) {
     var t = fmt(rank), n = String(t).length;
     return '<span class="ca-lb-pos' + (n >= 6 ? ' is-5' : n >= 4 ? ' is-4' : n === 3 ? ' is-3' : '') + '">' + t + '</span>';
@@ -5236,8 +5272,10 @@
     if (!signed) {
       // Accounts only: a blurred glimpse of the board, then sign in
       var peek = (c.top || []).slice(0, 5);
+      // the blurred rows count in the sport's own unit, on a sport page before its game is launched too
+      var peekB = CFG.boards && CFG.boards.length && CFG.boards.indexOf(lb.board) < 0 ? CFG.boards[0] : lb.board;
       h += '<div class="ca-gate"><ol class="ca-lb ca-gate-peek" aria-hidden="true">' + (peek.length ? peek : [{ n: 'Latrell_29', s: 26, t: -1 }, { n: 'ChookFan88', s: 25, t: -2 }, { n: 'BroncosBec', s: 24, t: -3 }]).map(function (r, i) {
-        return '<li class="ca-lb-row' + (i < 3 ? ' is-top' + (i + 1) : '') + rowTone(r) + '">' + posCell(i + 1) + crest(r) + '<span class="ca-lb-n">' + nameHtml(r) + '</span><span class="ca-lb-s">' + fmtScore(lb.board, c.kind, r) + '</span></li>';
+        return '<li class="ca-lb-row' + (i < 3 ? ' is-top' + (i + 1) : '') + rowTone(r) + '">' + posCell(i + 1) + crest(r) + '<span class="ca-lb-n">' + nameHtml(r) + '</span><span class="ca-lb-s">' + fmtScore(peekB, c.kind, r) + '</span></li>';
       }).join('') + '</ol><div class="ca-gate-card"><b>Leaderboards Are for CAST Games Accounts</b><small>Sign in free to see every board, where you rank and to get your name up there.</small></div></div>' + signInCard();
       return h;
     }
@@ -5257,8 +5295,8 @@
     var note = lb.board === '270daily' ? 'Best of your 3 goes counts. ' + (c.kind === 'target' ? 'Target day: closest rating first, then most wins.' : c.kind === 'rating' ? 'Rating day: highest squad rating first, then most wins.' : 'Most wins first, then premiers.')
       : RECORD_NOTE[lb.board] ? RECORD_NOTE[lb.board] + ' Most wins first, then fewest losses, then the higher squad rating.'
       : lb.board === '1000exact' ? 'Most exact 1000s first. Until you land one, your closest full 13 under 1000 counts.'
-      : lb.board === 'bbexact' ? 'Most exact 25,000s first. Until you land one, your closest full XI under 25,000 counts.'
-      : lb.board === 'tsexact' ? 'Most exact 60,000s first. Until you land one, your closest full XI under 60,000 counts.'
+      : lb.board === 'bbexact' ? 'Most exact 25000s first. Until you land one, your closest full XI under 25000 counts.'
+      : lb.board === 'tsexact' ? 'Most exact 60000s first. Until you land one, your closest full XI under 60000 counts.'
       : lb.board === 'nflexact' ? 'Most exact 700s first. Until you land one, your closest full team under 700 counts.'
       : lb.board === 'rcexact' ? 'Most exact 550s first. Until you land one, your closest full card under 550 counts.'
       : lb.board === '4000exact' ? 'Most exact 4000s first. Until you land one, your closest full 18 under 4000 counts.'
@@ -5849,8 +5887,8 @@
     '27-0': { classic: 'Classic', hard: 'Hard Mode', pack: 'Pack Mode', daily: 'the Daily', wc: 'the World Cup' },
     '1000tries': { plus: '1000+', exact: 'Exactly 1000', spin: 'Team Spin', nrlw: 'NRLW 250+', wc: 'World Cup 200+', daily: 'the Daily', ou: 'Six Again' },
     '4000goals': { plus: '4000+', exact: 'Exactly 4000', spin: 'Team Spin', aflw: 'AFLW 750+', daily: 'the Daily', ou: 'Play On' },
-    bigbash: { plus: '25,000+', exact: 'Exactly 25,000', spin: 'Team Spin', daily: 'the Daily', ou: 'Free Hit' },
-    tests: { plus: '60,000+', exact: 'Exactly 60,000', spin: 'Team Spin', daily: 'the Daily', ou: 'Follow On' },
+    bigbash: { plus: '25000+', exact: 'Exactly 25000', spin: 'Team Spin', daily: 'the Daily', ou: 'Free Hit' },
+    tests: { plus: '60000+', exact: 'Exactly 60000', spin: 'Team Spin', daily: 'the Daily', ou: 'Follow On' },
     nfl: { plus: '700+', exact: 'Exactly 700', spin: 'Team Spin', daily: 'the Daily', ou: 'Two Point' },
     racing: { plus: '550+', exact: 'Exactly 550', spin: 'Team Spin', daily: 'the Daily', ou: 'Photo Finish' }
   };
@@ -5864,7 +5902,7 @@
     var d = Math.round(h / 24);
     return d === 1 ? 'Yesterday' : d + ' days ago';
   }
-  // "25-2", "1,084 tries", "205 Test tries", "4,120 goals"
+  // "25-2", "1084 tries", "205 Test tries", "4120 goals"
   function frScore(g, m, s, l) {
     if (g === '27-0') return l != null ? s + '-' + l : s + (s === 1 ? ' win' : ' wins');
     if ((g === '1000tries' || g === '4000goals' || g === 'bigbash' || g === 'tests' || g === 'nfl' || g === 'racing') && m === 'ou') return s + ' in a row';
@@ -5894,11 +5932,11 @@
     if (e.k === 'big') {
       ico = e.x === 'perfect' || e.x === 'wc80' ? '&#x1F451;' : e.x === 'exact' || e.x === 'exact4000' || e.x === 'exactbb' || e.x === 'exactts' || e.x === 'exactnfl' || e.x === 'exactrc' ? '&#x1F3AF;' : '&#x1F4AF;';
       if (e.x === 'ou' || e.x === 'po' || e.x === 'fh' || e.x === 'fo' || e.x === 'tp' || e.x === 'pf') ico = '&#x2195;&#xFE0F;';
-      txt = e.x === 'ou' ? 'called ' + e.s + ' in a row in Six Again' : e.x === 'po' ? 'called ' + e.s + ' in a row in Play On' : e.x === 'fh' ? 'called ' + e.s + ' in a row in Free Hit' : e.x === 'fo' ? 'called ' + e.s + ' in a row in Follow On' : e.x === 'tp' ? 'called ' + e.s + ' in a row in Two Point' : e.x === 'pf' ? 'called ' + e.s + ' in a row in Photo Finish' : e.x === 'exactbb' ? 'landed Exactly 25,000' : e.x === 'exactts' ? 'landed Exactly 60,000' : e.x === 'exactnfl' ? 'landed Exactly 700' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
+      txt = e.x === 'ou' ? 'called ' + e.s + ' in a row in Six Again' : e.x === 'po' ? 'called ' + e.s + ' in a row in Play On' : e.x === 'fh' ? 'called ' + e.s + ' in a row in Free Hit' : e.x === 'fo' ? 'called ' + e.s + ' in a row in Follow On' : e.x === 'tp' ? 'called ' + e.s + ' in a row in Two Point' : e.x === 'pf' ? 'called ' + e.s + ' in a row in Photo Finish' : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 700' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
         : e.x === 'exact' ? 'landed Exactly 1000' : e.x === 'exact4000' ? 'landed Exactly 4000'
         : e.x === 'wc200' ? 'reached World Cup 200+ with ' + frScore(e.g, 'wc', e.s) : e.x === 'nrlw250' ? 'reached NRLW 250+ with ' + frScore(e.g, 'nrlw', e.s)
         : e.x === 'aflw750' ? 'reached AFLW 750+ with ' + frScore(e.g, 'aflw', e.s)
-        : 'hit ' + (e.g === '4000goals' ? '4000+' : e.g === 'bigbash' ? '25,000+' : e.g === 'tests' ? '60,000+' : e.g === 'nfl' ? '700+' : e.g === 'racing' ? '550+' : '1000+') + ' with ' + frScore(e.g, e.m, e.s);
+        : 'hit ' + (e.g === '4000goals' ? '4000+' : e.g === 'bigbash' ? '25000+' : e.g === 'tests' ? '60000+' : e.g === 'nfl' ? '700+' : e.g === 'racing' ? '550+' : '1000+') + ' with ' + frScore(e.g, e.m, e.s);
     } else if (e.k === 'pb') {
       ico = '&#x1F4C8;'; txt = 'set a new best' + frModeIn(e.g, e.m) + ': ' + frScore(e.g, e.m, e.s, e.l);
     } else if (e.k === 'daily') {
@@ -6779,6 +6817,9 @@
     if (rrSavedFor !== (user && user.uid)) { rrSaved = null; rrFetch(); }
     return (kyOwned && kyOwned[kind]) || 0;
   }
+  // How many keys of a kind can be used now: today's CAST Pass key (if not used) and the ones bought or won (the games'
+  // Legend Key button shows "Ready" for one, "N Left" for more, 16 Oct 2026)
+  function keyCount(kind) { return (status === 'signed-in' && hasPass() && !dailyUsed(kind) ? 1 : 0) + keysOwned(kind); }
   function useKey(kind, mode) {
     return callFn('useKey', { kind: kind, mode: mode }).then(function (r) {
       // The server took today's CAST Pass key (daily) or, once that was gone, a bought one
@@ -6848,7 +6889,7 @@
     reveal5: { ico: '&#x1F440;', name: '5 Reveals', price: '$2.99', what: 'Just 60c each', kind: 'rv', n: 5, best: true, chip: 'Save 40%' },
     // Keys: $1.99, or 3 for $4.99 (the owner, 8 Oct 2026; were $0.99 and $1.99)
     legend1: { ico: '&#x2B50;', name: '1 Legend Key', price: '$1.99', kind: 'key', key: 'legend', n: 1, hidden: true }, // from the game's key button
-    legend3: { ico: '&#x2B50;', name: '3 Legend Keys', price: '$4.99', what: '1000TRIES 1000+: swap an offer for a Legends Pick', kind: 'key', key: 'legend', n: 3 },
+    legend3: { ico: '&#x2B50;', name: '3 Legend Keys', price: '$4.99', what: 'Swap an offer for a Legends Pick in every CAST draft game', kind: 'key', key: 'legend', n: 3 },
     superstar1: { ico: '&#x1F31F;', name: '1 Superstar Key', price: '$1.99', kind: 'key', key: 'superstar', n: 1, hidden: true },
     superstar3: { ico: '&#x1F31F;', name: '3 Superstar Keys', price: '$4.99', what: '27-0 Classic and Pack: your next spin has a 95+ player', kind: 'key', key: 'superstar', n: 3 },
     // The Team of the Year Pick (27-0, the Dally M promo, 1 Oct 2026, the owner's call): sold only while it runs
@@ -6870,8 +6911,9 @@
     ileg3: { ico: '&#x1F451;', name: '3 World Legend Picks', short: '3 Picks', price: '$11.99', what: 'Just $4 each', kind: 'ileg', n: 3, best: true, chip: 'Save 20%' },
     rib1: { ico: '&#x23EA;', name: '1 Run It Back', price: '$0.99', what: '27-0 Classic: one loss in your season becomes a win', kind: 'rib', n: 1, chip: 'Instant' },
     rib3: { ico: '&#x23EA;', name: '3 Run It Backs', price: '$1.99', what: 'Just 66c each', kind: 'rib', n: 3, best: true, chip: 'Save 33%' },
-    // The GOAT (1000TRIES, 29 Sep 2026, the owner's call): Alex Johnston, 240 NRL tries, as your next pick. Shop only
-    goat1: { ico: '&#x1F410;', name: 'The GOAT', price: '$9.99', what: 'Alex Johnston, 240 NRL tries', kind: 'goat', n: 1, tag: 'Alex Johnston', sub: '240 NRL tries, the most in NRL history' },
+    // The GOAT (29 Sep 2026; every draft game from 16 Oct 2026): this game's GOAT as your next pick. Shop only
+    goat1: { ico: '&#x1F410;', name: 'The GOAT', price: '$9.99', what: GOAT_HERE ? GOAT_HERE[0] + ', ' + GOAT_HERE[1] + ' ' + GOAT_HERE[2] : 'Each draft game\u2019s own GOAT', kind: 'goat', n: 1, tag: GOAT_HERE ? GOAT_HERE[0] : 'The GOAT',
+      sub: GOAT_HERE ? GOAT_HERE[1] + ' ' + GOAT_HERE[2] + (GOAT_HERE[3] ? (/^at /.test(GOAT_HERE[3]) ? ' ' : ', ') + GOAT_HERE[3] : '') : 'The all-time great of whichever game you play' },
     freeze1: { ico: '&#x1F9CA;', name: '1 Streak Freeze', price: '$2.99', what: 'Saves your streak if you miss a day', kind: 'fz', n: 1, chip: 'Automatic' },
     // The Streak Restore (one off, from its own pop-up)
     restore: { ico: '&#x1F525;', name: 'Streak Restore', short: 'Restore', price: '$4.99', what: 'Your streak back', kind: 'restore', n: 1, chip: 'One Time Only' }
@@ -6919,25 +6961,31 @@
     ['toty', '&#x1F3C5;', 'Team of the Year Pick', 'Choose a Team of the Year player for your 13. He joins at 95+.', '27-0 until 03 October, 08:00 AM AEST. Any left then become 3 Superstar Keys each.', ['toty3', 'toty1']],
     ['ileg', '&#x1F451;', 'World Legend Pick', 'Choose one of three World Legends for an open spot in your 13: at his World Cup rating in 27-0, with his Test tries in 1000TRIES.', '27-0 World Cup 8-0 and 1000TRIES World Cup 200+, any time', ['ileg3', 'ileg1']],
     ['wcp', '&#x1F30F;', '88+ Pick', 'Choose one of three 88+ rated players from the 2026 World Cup squads for an open spot in your 13.', '27-0 World Cup 8-0, any time', ['wcp3', 'wcp1']],
-    ['rr', '&#x1F504;', 'Rerolls', 'Not keen on the players in front of you? Get a fresh offer.', andList(withG4(['1000TRIES', '27-0 Classic'], '4000 GOALS')), ['twelve', 'five', 'one']],
-    ['rm', '&#x274C;', 'Remove Players', 'Regret a pick? Take one player out of your ' + TEAM_N + ' and draft that spot again.', andList(withG4(['1000TRIES', '27-0 Classic'], '4000 GOALS')), ['remove12', 'remove5', 'remove1']],
-    NF ? ['imm', '&#x1F3DB;&#xFE0F;', 'Legend Pick', 'Choose one of three NFL Legends for an open spot in your team, with their career TDs. In 27-0 and 1000TRIES it is an Immortal Pick.', '700 TDS, 60000 RUNS, 25000 RUNS, 4000 GOALS, 27-0 and 1000TRIES, any time', ['imm3', 'imm1']]
-    : RC ? ['imm', '&#x1F3DB;&#xFE0F;', 'Legend Pick', 'Choose one of three racing Legends for an open race on your card, with their Group 1 wins. In 27-0 and 1000TRIES it is an Immortal Pick.', 'G1 WINNER SPINNER, 60000 RUNS, 25000 RUNS, 4000 GOALS, 27-0 and 1000TRIES, any time', ['imm3', 'imm1']]
-    : TS ? ['imm', '&#x1F3DB;&#xFE0F;', 'Legend Pick', 'Choose one of three Test Legends for an open spot in your XI, with their career Test runs. In 27-0 and 1000TRIES it is an Immortal Pick.', '60000 RUNS, 25000 RUNS, 4000 GOALS, 27-0 and 1000TRIES, any time', ['imm3', 'imm1']]
-    : BB ? ['imm', '&#x1F3DB;&#xFE0F;', 'Legend Pick', 'Choose one of three BBL Legends for an open spot in your XI, with their career runs. In 27-0 and 1000TRIES it is an Immortal Pick.', '25000 RUNS, 4000 GOALS, 27-0 and 1000TRIES, any time', ['imm3', 'imm1']]
-    : AFL ? ['imm', '&#x1F3DB;&#xFE0F;', 'Legend Pick', 'Choose one of three Legends for an open spot in your 18, with his career goals. In 27-0 and 1000TRIES it is an Immortal Pick.', '4000 GOALS, 27-0 and 1000TRIES, any time', ['imm3', 'imm1']]
-      : ['imm', '&#x1F3DB;&#xFE0F;', 'Immortal Pick', 'Choose one of three of the game’s Immortals for an open spot in your 13: at 99 in 27-0, with his career tries in 1000TRIES' + (G4ON ? ', or a Legend with his career goals in 4000 GOALS' : '') + '.', andList(withG4(['27-0', '1000TRIES'], '4000 GOALS')) + ', any time', ['imm3', 'imm1']],
-    ['goat', '&#x1F410;', 'The GOAT', 'Alex Johnston and his 240 NRL tries, the most in NRL history, straight into your 13 as your next pick.', '1000TRIES 1000+ and Exactly 1000', ['goat1']],
-    ['rv', '&#x1F440;', 'Reveals', 'See the hidden numbers before you pick: tries in 1000TRIES, ratings in 27-0' + (G4ON || AFL ? ', goals in 4000 GOALS' : '') + (BBON || BB ? ', runs in 25000 RUNS' : '') + (TSON || TS ? ', Test runs in 60000 RUNS' : '') + (NFON || NF ? ', TDs in 700 TDS' : '') + (RCON || RC ? ', Group 1 wins in G1 WINNER SPINNER' : '') + '.', andList(withG4(['1000TRIES', '27-0 Classic'], '4000 GOALS')), ['reveal5', 'reveal1']],
-    ['legend', '&#x2B50;', 'Legend Keys', 'Swap an offer for a Legends Pick: three greats of the game to choose from.', andList(withG4(['1000TRIES 1000+'], '4000 GOALS 4000+')), ['legend3', 'legend1']],
-    ['superstar', '&#x1F31F;', 'Superstar Keys', 'Your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
-    ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run the season back and your closest loss becomes a win.', '27-0 Classic', ['rib3', 'rib1']],
-    ['fz', '&#x1F9CA;', 'Streak Freeze', 'Miss a day and it is used by itself, so your streak lives on. You can hold one at a time.', 'Every CAST game', ['freeze1']]
+    ['rr', '&#x1F504;', 'Rerolls', 'Not keen on the players in front of you? Get a fresh offer.', '', ['twelve', 'five', 'one']],
+    ['rm', '&#x274C;', 'Remove Players', 'Regret a pick? Take one player out of your team and draft that spot again.', '', ['remove12', 'remove5', 'remove1']],
+    ['rv', '&#x1F440;', 'Reveals', 'See the hidden numbers before you pick: tries, goals, runs, TDs, Group 1 wins or ratings, whichever game you play.', '', ['reveal5', 'reveal1']],
+    ['legend', '&#x2B50;', 'Legend Keys', 'Swap an offer for a Legends Pick: three greats of the game to choose from. Use as many as you have in one team.', 'In each draft game\u2019s main mode', ['legend3', 'legend1']],
+    ['goat', '&#x1F410;', 'The GOAT', GOAT_HERE ? goatLine(GOAT_HERE) + ', straight into your ' + TEAM_N + ' as your next pick. In another draft game, it brings that game\u2019s GOAT.'
+      : 'The all-time great of whichever game you play, straight into your team as your next pick: Alex Johnston, Tony Lockett, Chris Lynn, Don Bradman, Jerry Rice or Damien Oliver.', 'In each draft game\u2019s main mode and Exactly, once a game', ['goat1']],
+    ['imm', '&#x1F3DB;&#xFE0F;', 'Immortal Pick', 'Choose one of three of the game\u2019s Immortals for an open spot in your 13: at 99 in 27-0, with his career tries in 1000TRIES.', '27-0 (Classic, Hard and Packs) and 1000TRIES (1000+, Exactly 1000 and Team Spin), any time', ['imm3', 'imm1']],
+    ['superstar', '&#x1F31F;', 'Superstar Keys', '27-0\u2019s own key: your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
+    ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run a 27-0 season back and your closest loss becomes a win, or keep an over/under streak alive.', '', ['rib3', 'rib1']],
+    ['fz', '&#x1F9CA;', 'Streak Freeze', 'Miss a day and it is used by itself, so your streak lives on. You can hold one at a time.', '', ['freeze1']]
   ];
-  // The one game an item works in: it is sold only in that game's Shop (the Shop cards below)
-  var SHOP_GAME = { wch: '27-0', toty: '27-0', prem: '27-0', wcp: '27-0', superstar: '27-0', rib: '27-0', legend: '1000tries', goat: '1000tries' };
-  // 4000 GOALS sells the 1000TRIES ones too (Legend Keys work in both), all but the GOAT (1000TRIES only since 12 Oct 2026)
-  function soldHere(k) { var g = SHOP_GAME[k]; return !g || g === CFG.game || (g === '1000tries' && (CFG.game === '4000goals' || CFG.game === 'bigbash' || CFG.game === 'tests' || CFG.game === 'nfl' || CFG.game === 'racing') && k !== 'goat') || (k === 'rib' && CFG.game === '1000tries' && ouOn()) || (k === 'rib' && CFG.game === '4000goals' && poOn()) || (k === 'rib' && CFG.game === 'bigbash') || (k === 'rib' && CFG.game === 'tests') || (k === 'rib' && (CFG.game === 'nfl' || CFG.game === 'racing')); } // 700 TDS and G1 WINNER SPINNER: Run It Backs for Two Point and Photo Finish // 60000 RUNS: the same, Run It Backs for Follow On // 25000 RUNS: Legend Keys, and Run It Backs for Free Hit // Run It Back keeps an Six Again streak too (14 Oct 2026)
+  /* One Shop and one Vault for every CAST game (16 Oct 2026, the owner: "you can use the shop as a universal tool to
+     purchase wildcards and other special things that you can then use in other games"). Every item is sold on every
+     game's page, in the same order, and spends from the same count wherever it is used, except the special ones, sold
+     only where they work and tagged "Only in". SHOP_ONLY: the games a special item works in. SHOP_WORKS: where a general
+     item works, when that is less than every CAST game */
+  var SHOP_ONLY = { wch: ['27-0'], toty: ['27-0'], prem: ['27-0'], wcp: ['27-0'], ileg: ['27-0', '1000tries'], imm: ['27-0', '1000tries'], superstar: ['27-0'] };
+  var SHOP_WORKS = { legend: 'every CAST draft game', goat: 'every CAST draft game', rib: '27-0 and every over/under game' };
+  function soldHere(k) { var o = SHOP_ONLY[k]; return !o || o.indexOf(CFG.game) >= 0; }
+  // The tag under an item's name: "Works in every CAST game", or "Only in 27-0 and 1000TRIES"
+  function shopTag(k) {
+    var o = SHOP_ONLY[k];
+    if (o) return '<p class="ca-shop-where is-only">Only in ' + andList(o.map(function (g) { return (GAMES[g] || {}).name || g; })) + '</p>';
+    return '<p class="ca-shop-where">Works in ' + (SHOP_WORKS[k] || 'every CAST game') + '</p>';
+  }
   // The Shop's items right now: Streak Freezes once the server has them, the Team of the Year Pick while the promo runs
   function shopList() { return SHOP_ITEMS.filter(function (it) { return (it[0] !== 'fz' || fzOn) && (it[0] !== 'toty' || totyOn()) && (it[0] !== 'prem' || premOn()) && (it[0] !== 'imm' || immOn()) && (it[0] !== 'wcp' || wcpOn()) && (it[0] !== 'ileg' || ilegOn()) && (it[0] !== 'wch' || wchOn()); }); }
   // Where an item works: the Premiers Pick's says until when, and the World Champions Pick when its Picks expire
@@ -6945,12 +6993,12 @@
     if (it[0] === 'wch') return '27-0 World Cup 8-0. Use it by ' + wchEndText() + '. Unused Picks expire when World Champions ends.';
     if (it[0] !== 'prem') return it[4]; var end = premCopy(); return '27-0' + (end ? ' until ' + end : ' while the Premiers promo runs') + '. Any left then become 3 Superstar Keys each.'; }
   // How each item in your Vault gets used (the Vault's labels)
-  var VAULT_HOW = { wch: 'Tap World Champions Pick with your wildcards in 27-0 World Cup 8-0 by 11:59pm Sun 22 Nov. Unused Picks expire then', wcp: 'Tap 88+ Pick with your wildcards in 27-0 World Cup 8-0', ileg: 'Tap World Legend Pick with your wildcards in 27-0 World Cup 8-0 or 1000TRIES World Cup 200+', toty: 'Tap Team of the Year Pick with your wildcards in 27-0 before 03 October, 08:00 AM AEST', prem: 'Tap Premiers Pick with your wildcards in 27-0 while the Premiers promo runs', imm: AFL ? 'Tap Legend Pick with your wildcards in 4000+, Exactly 4000 or Team Spin' : 'Tap Immortal Pick with your wildcards in 27-0 or 1000TRIES', goat: 'Tap The GOAT with your wildcards in 1000TRIES 1000+ or Exactly 1000', rr: 'Used after your free rerolls in a draft', rm: 'Used after your free Remove Player', rv: 'Used after your free Reveal',
-    legend: 'Tap the Legend Key with your wildcards in ' + (AFL ? '4000+' : BB ? '25,000+' : TS ? '60,000+' : NF ? '700+' : RC ? '550+' : '1000+'), superstar: 'Tap the Superstar Key with your wildcards in 27-0', rib: 'Offered after a 27-0 Classic season', fz: 'Applied and ready, just in case you miss a day' };
+  var VAULT_HOW = { wch: 'Tap World Champions Pick with your wildcards in 27-0 World Cup 8-0 by 11:59pm Sun 22 Nov. Unused Picks expire then', wcp: 'Tap 88+ Pick with your wildcards in 27-0 World Cup 8-0', ileg: 'Tap World Legend Pick with your wildcards in 27-0 World Cup 8-0 or 1000TRIES World Cup 200+', toty: 'Tap Team of the Year Pick with your wildcards in 27-0 before 03 October, 08:00 AM AEST', prem: 'Tap Premiers Pick with your wildcards in 27-0 while the Premiers promo runs', imm: 'Tap Immortal Pick with your wildcards in 27-0 or 1000TRIES', goat: 'Tap The GOAT with your wildcards in any draft game\u2019s main mode or Exactly', rr: 'Used after your free rerolls in a draft', rm: 'Used after your free Remove Player', rv: 'Used after your free Reveal',
+    legend: 'Tap the Legend Key with your wildcards in any draft game\u2019s main mode', superstar: 'Tap the Superstar Key with your wildcards in 27-0', rib: 'Offered after a 27-0 Classic season, or when an over/under streak ends', fz: 'Applied and ready, just in case you miss a day' };
   // A count before an item name: in words when the name starts with a number ("Three 88+ Picks", never "3 88+ Picks")
   var NUM_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
   function countName(n, name) { return (/^\d/.test(name) && NUM_WORDS[n] ? NUM_WORDS[n] : n) + ' ' + name; }
-  var VAULT_NAME = { wch: ['World Champions Pick', 'World Champions Picks'], wcp: ['88+ Pick', '88+ Picks'], ileg: ['World Legend Pick', 'World Legend Picks'], toty: ['Team of the Year Pick', 'Team of the Year Picks'], prem: ['Premiers Pick', 'Premiers Picks'], imm: LEG ? ['Legend Pick', 'Legend Picks'] : ['Immortal Pick', 'Immortal Picks'], goat: ['GOAT: Alex Johnston', 'GOATs: Alex Johnston'], rr: ['Reroll', 'Rerolls'], rm: ['Remove Player', 'Remove Players'], rv: ['Reveal', 'Reveals'], legend: ['Legend Key', 'Legend Keys'],
+  var VAULT_NAME = { wch: ['World Champions Pick', 'World Champions Picks'], wcp: ['88+ Pick', '88+ Picks'], ileg: ['World Legend Pick', 'World Legend Picks'], toty: ['Team of the Year Pick', 'Team of the Year Picks'], prem: ['Premiers Pick', 'Premiers Picks'], imm: ['Immortal Pick', 'Immortal Picks'], goat: ['GOAT', 'GOATs'], rr: ['Reroll', 'Rerolls'], rm: ['Remove Player', 'Remove Players'], rv: ['Reveal', 'Reveals'], legend: ['Legend Key', 'Legend Keys'],
     superstar: ['Superstar Key', 'Superstar Keys'], rib: ['Run It Back', 'Run It Backs'], fz: ['Streak Freeze', 'Streak Freezes'] };
   /* Your Vault, labelled: every item you have, how many, and how it gets used. Empty, one line says what it is for.
      A CAST Pass holder also sees today's keys and the month's free Streak Freeze.
@@ -7044,35 +7092,34 @@
       : '<button type="button" class="ca-shop-passrow" data-ca="pass-info" data-from="shop">' + PASS_SVG + '<span><b>Best Value: CAST Pass</b><small>2 of every wildcard, every game, plus a Legend Key and a Superstar Key every day. From ' + PR().yM + ' a month.</small></span><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button>';
     h += vaultList();
     if (young) h += '<p class="ca-muted ca-center">Packs are for players 15 and over. Anything you win still goes in your Vault.</p>';
-    // An item that works in one game is sold only there (SHOP_GAME): the Team of the Year and Premiers Picks (1 Oct 2026, the
-    // owner's call), then Superstar Keys and Run It Back on 27-0, Legend Keys and the GOAT on 1000TRIES (6 Oct 2026, the
-    // owner: both Shops showing them "looks confusing"). Ones already owned still show in the Vault on both sites
+    // Every item on every game's page, the same order everywhere, but the special ones only where they work (SHOP_ONLY,
+    // 16 Oct 2026). Ones already owned still show in the Vault on every site
     h += '<div class="ca-shop-items">' + shopList().filter(function (it) { return soldHere(it[0]); }).map(function (it) {
       var cls = it[0] === 'legend' || it[0] === 'superstar' ? 'key' : it[0], packs = it[5];
       return '<section class="ca-shop-it is-' + cls + '" id="caShop-' + it[0] + '" aria-label="' + it[2] + '"><div class="ca-shop-ith"><span class="ca-shop-iti" aria-hidden="true">' + it[1] + '</span>' +
         '<span class="ca-shop-itt"><b>' + it[2] + '</b></span><span class="ca-shop-its">' + have(it[0]) + '</span></div>' +
         '<p class="ca-shop-what">' + it[3] + '</p>' + (it[0] === 'ileg' ? natStrip() + '<button type="button" class="ca-ileg-meet" data-ca="ileg-sell">Meet the World Legends &rsaquo;</button>' : '') +
         // The Team of the Year Pick: its two packs, then where and until when as small print underneath (the owner, 1 Oct 2026)
-        (it[0] === 'fz' && fzOwned > 0 ? '<p class="ca-shop-where">Works in ' + it[4] + '</p><p class="ca-shop-ready">&#x1F9CA; Your Streak Freeze is applied and ready, just in case you miss a day.</p>' :
+        shopTag(it[0]) + (it[0] === 'fz' && fzOwned > 0 ? '<p class="ca-shop-ready">&#x1F9CA; Your Streak Freeze is applied and ready, just in case you miss a day.</p>' :
         (it[0] === 'toty' || it[0] === 'prem') && dmLast() ? pair(packs[1], packs[0]) + '<p class="ca-shop-fine ca-shop-last" data-dm-final>&#x23F3; Last 24 hours: ends in <span data-dm-clock>' + dmClock(dmLeft()) + '</span>. Any left then become 3 Superstar Keys each.</p>' :
         // World Champions' last 24 hours: its clock (js/cast-wch.js keeps every data-wch-clock ticking)
         it[0] === 'wch' && wchLast() ? pair(packs[1], packs[0]) + '<p class="ca-shop-fine ca-shop-last" data-wch-final>&#x23F3; Last 24 hours: ends in <span data-wch-clock>' + dmClock((wchNow() || { until: 0 }).until - Date.now()) + '</span>. Unused Picks expire when World Champions ends.</p>' :
-        it[0] === 'toty' || it[0] === 'prem' || it[0] === 'imm' || it[0] === 'wcp' || it[0] === 'ileg' || it[0] === 'wch' ? pair(packs[1], packs[0]) + '<p class="ca-shop-fine">Works in ' + shopWhere(it) + '</p>' : '<p class="ca-shop-where">Works in ' + it[4] + '</p>' + big(packs[0]) +
-        (packs.length > 1 ? '<div class="ca-shop-more">' + (packs.length > 2 ? mid(packs[1]) : '') + one(packs[packs.length - 1]) + '</div>' : '')) + '</section>';
+        it[0] === 'toty' || it[0] === 'prem' || it[0] === 'imm' || it[0] === 'wcp' || it[0] === 'ileg' || it[0] === 'wch' ? pair(packs[1], packs[0]) + '<p class="ca-shop-fine">' + shopWhere(it) + '</p>' : big(packs[0]) +
+        (packs.length > 1 ? '<div class="ca-shop-more">' + (packs.length > 2 ? mid(packs[1]) : '') + one(packs[packs.length - 1]) + '</div>' : '') + (it[4] ? '<p class="ca-shop-fine">' + it[4] + '</p>' : '')) + '</section>';
     }).join('') + '</div>';
-    return h + '<p class="ca-small ca-center">Everything you buy stays on your CAST Profile until you use it, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC ? 'any CAST game' : 'either game') + '. Secure payment by Stripe. Prices in AUD.</p>';
+    return h + '<p class="ca-small ca-center">Everything you buy stays on your CAST Profile until you use it, one Vault for every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
   }
   // The Shop on its own (the top bar's Shop button): a short header, then the Shop
   function shopPage() {
     var h = '<div class="ca-full-head"><h2 class="ca-full-title">&#x1F6D2; Shop and Vault</h2>' +
       (named() ? '<p class="ca-me-line">Buying as <b>' + esc(profile.username) + '</b>' + tick(profile.verified) + passTick(hasPass()) + '</p>' : '') + '</div>';
     if (status === 'loading') return h + '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
-    if (status !== 'signed-in') return h + signInCard(['The Shop Comes With a Free CAST Profile', 'Sign in to buy rerolls, reveals, keys and more. They stay on your profile, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC ? 'any CAST game' : 'either game') + '.', 'Free CAST Profile']);
+    if (status !== 'signed-in') return h + signInCard(['The Shop Comes With a Free CAST Profile', 'Sign in to buy rerolls, reveals, keys and more. They stay on your profile, for every CAST game.', 'Free CAST Profile']);
     return h + shopTab();
   }
   function vaultCard() {
     if (status !== 'signed-in') return '';
-    var pass = hasPass(), keys = [['legend', '&#x2B50;', 'Legend Key', '1000TRIES 1000+: swap an offer for a Legends Pick'], ['superstar', '&#x1F31F;', 'Superstar Key', '27-0 Classic: your next spin has a 95+ player']];
+    var pass = hasPass(), keys = [['legend', '&#x2B50;', 'Legend Key', 'Every draft game: swap an offer for a Legends Pick'], ['superstar', '&#x1F31F;', 'Superstar Key', '27-0 Classic: your next spin has a 95+ player']];
     if (!pass && !tiersOn()) return '';
     return '<div class="ca-vault' + (pass ? '' : ' is-locked') + '" role="button" tabindex="0" data-ca="pass-info" data-from="vault" aria-label="' + (pass ? 'Your Vault keys' : 'The Vault comes with CAST Pass. See CAST Pass') + '">' +
       '<div class="ca-vault-h"><b>&#x1F511; The Vault</b>' + (pass ? '<small>New keys every day at midnight</small>' : '<span class="ca-vault-cta">Unlock with CAST Pass &rsaquo;</span>') + '</div>' +
@@ -7281,8 +7328,8 @@
   // Every board's name, including boards of a game this site hides (the Admin tab lists them all)
   var BOARD_NAMES = { '4000daily': '4000 GOALS Daily', '4000plus': '4000+', '4000exact': 'Exactly 4000', '4000spin': '4000 GOALS Team Spin', aflw: 'AFLW 750+', '1000daily': '1000TRIES Daily', '1000plus': '1000+', '1000exact': 'Exactly 1000', '1000spin': 'Team Spin', nrlw: 'NRLW 250+', '270best': '27-0 Classic Mode', '270pack': '27-0 Pack Mode', '270perfect': '27-0 Perfect Seasons',
     '270daily': '27-0 Daily', '270hard': '27-0 Hard Mode', streak: 'Longest Streak',
-    bbplus: '25,000+', bbexact: 'Exactly 25,000', bbspin: '25000 RUNS Team Spin', bbdaily: '25000 RUNS Daily',
-    tsplus: '60,000+', tsexact: 'Exactly 60,000', tsspin: '60000 RUNS Team Spin', tsdaily: '60000 RUNS Daily',
+    bbplus: '25000+', bbexact: 'Exactly 25000', bbspin: '25000 RUNS Team Spin', bbdaily: '25000 RUNS Daily',
+    tsplus: '60000+', tsexact: 'Exactly 60000', tsspin: '60000 RUNS Team Spin', tsdaily: '60000 RUNS Daily',
     nflplus: '700+', nflexact: 'Exactly 700', nflspin: '700 TDS Team Spin', nfldaily: '700 TDS Daily',
     rcplus: '550+', rcexact: 'Exactly 550', rcspin: 'G1 WINNER SPINNER Team Spin', rcdaily: 'G1 WINNER SPINNER Daily' };
   function boardName(id) {
@@ -7684,7 +7731,7 @@
       return '<li' + (tap ? ' class="is-tap" role="button" tabindex="0" data-ca="adm-find-name" data-n="' + esc(w.n) + '"' : '') + '>' + badge(w && w.c) +
         '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + esc(s.what + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag + '</span>' +
         (s.refunded >= s.paid ? '<b class="ca-adm-sale is-refunded">' + money(s.paid) + '</b>' : '<b class="ca-adm-sale">' + money(s.paid - s.refunded) + '</b>') + '</li>';
-    }).join('') + '</ul>' + (d.more ? '<p class="ca-small">Showing the latest 1,000.</p>' : '');
+    }).join('') + '</ul>' + (d.more ? '<p class="ca-small">Showing the latest 1000.</p>' : '');
   }
   /* Cancelled CAST Passes (10 Oct 2026, the owner: "see how many are dropping off"): how many in 7 and 30 days and all
      time, the reasons they gave in Stripe, then each one, newest first */
@@ -8831,7 +8878,7 @@
     function posOf(p) { return p.positions_played && p.positions_played.length ? p.positions_played : [p.draft_role || p.position]; }
     function clubOf(p) { var cy = p.club_years || []; return (cy.length ? cy[cy.length - 1].club : '') || p.primary_club || ''; }
     /* Ten real players in ten of the thirteen spots, their NRL tries adding up to between 860 and 940, so the 13 is
-       short of 1,000 with three picks to go. Good players, not only the very best (never the GOAT, he has his own Story) */
+       short of 1000 with three picks to go. Good players, not only the very best (never the GOAT, he has his own Story) */
     function draft(players, name) {
       var rnd = seeded(String(name || 'cast').toLowerCase()), slots = [];
       ROWS.forEach(function (row, r) { row.forEach(function (pos, i) { slots.push({ pos: pos, row: r, i: i }); }); });
@@ -8919,9 +8966,9 @@
         rr(c, x, y, w, h, 20); c.fillStyle = 'rgba(4,8,6,.82)'; c.fill(); c.lineWidth = 2; c.strokeStyle = 'rgba(' + GOLD.rgb + ',.45)'; c.stroke();
         c.textAlign = 'left'; c.fillStyle = '#9aa4b2'; c.font = '900 22px ' + F; c.fillText(spaced(d.mine ? 'MY BEST 13' : 'YOUR 13'), x + 26, y + 34);
         c.fillStyle = '#e6e6f0'; c.font = '800 22px ' + F; c.fillText(d.mine ? 'All 13 picked' : '10 of 13 picked', x + 26, y + 60);
-        c.textAlign = 'center'; c.font = '900 50px ' + F; var sw = c.measureText(d.sum.toLocaleString('en-AU')).width;
-        c.fillStyle = goldFill(c, y + 14, y + 58); c.fillText(d.sum.toLocaleString('en-AU'), W / 2 - 50, y + 55);
-        c.textAlign = 'left'; c.fillStyle = '#9aa4b2'; c.font = '800 26px ' + F; c.fillText('/ 1,000', W / 2 - 50 + sw / 2 + 10, y + 54);
+        c.textAlign = 'center'; c.font = '900 50px ' + F; var sw = c.measureText(d.sum.toLocaleString('en-AU', { useGrouping: false })).width;
+        c.fillStyle = goldFill(c, y + 14, y + 58); c.fillText(d.sum.toLocaleString('en-AU', { useGrouping: false }), W / 2 - 50, y + 55);
+        c.textAlign = 'left'; c.fillStyle = '#9aa4b2'; c.font = '800 26px ' + F; c.fillText('/ 1000', W / 2 - 50 + sw / 2 + 10, y + 54);
         var hit = d.sum >= 1000;
         c.textAlign = 'right'; c.fillStyle = '#86efac'; c.font = '900 24px ' + F;
         c.fillText(d.mine ? (hit ? '1000+ hit' : (1000 - d.sum) + ' short') : (1000 - d.sum) + ' to go', x + w - 26, y + 34);
@@ -10200,7 +10247,7 @@
     });
   }
 
-  /* Results: one slim row under the saved strip (4 Oct 2026, the owner's call): "Challenge a Mate to Beat 1,012 Tries",
+  /* Results: one slim row under the saved strip (4 Oct 2026, the owner's call): "Challenge a Mate to Beat 1012 Tries",
      so sending the game you just finished is the obvious next thing. A tap opens its two ways: Challenge a Mate (no mates
      yet: Add Your Mates, the invite link makes friends straight away) and Or Challenge a Creator. A rematch sends at once. */
   function chCard(box, g) {
@@ -10475,7 +10522,10 @@
   }
   // A board tab's name: phones get the short one where there is one (Classic, not Classic Mode)
   function chipName(b) { return b.tiny ? '<span class="ca-chip-full">' + b.short + '</span><span class="ca-chip-tiny">' + b.tiny + '</span>' : b.short || b.label; }
-  function defaultBoard() { var ids = BOARDS.map(function (b) { return b.id; }); return ids.indexOf('270best') >= 0 && CFG.game === '27-0' ? '270best' : CFG.game === '4000goals' && ids.indexOf('4000plus') >= 0 ? '4000plus' : ids.indexOf('1000plus') >= 0 ? '1000plus' : ids[0]; }
+  // This game's own main board (16 Oct 2026: 700 TDS's home showed the top creator on 1000TRIES' board, in tries)
+  var MAIN_BOARD = { '27-0': '270best', '1000tries': '1000plus', '4000goals': '4000plus', bigbash: 'bbplus', tests: 'tsplus', nfl: 'nflplus', racing: 'rcplus' };
+  // CFG.boards: the boards a CAST Games sport page opens on, first live one wins (16 Oct 2026: the cricket page showed tries)
+  function defaultBoard() { var ids = BOARDS.map(function (b) { return b.id; }), own = MAIN_BOARD[CFG.game], pref = (CFG.boards || []).filter(function (x) { return ids.indexOf(x) >= 0; })[0]; return pref || (own && ids.indexOf(own) >= 0 ? own : own ? null : ids[0]); }
   // The home page shows this game's four main boards in one row; the rest (Perfect Seasons, Team Spin, Streak) are a tap
   // away in See All
   var HOME_SKIP = ['270perfect', '1000spin', 'streak', 'trophies', 'trophies270', 'trophies1000', '1000oucaps', '1000outt', '1000ounrlw']; // the Trophies boards live on Leaderboards and the Trophies page
@@ -10877,14 +10927,14 @@
     if (CFG.game === 'bigbash' && hook !== 'photo') {
       if (hook === 'close') return { ico: '&#x1F62C;', kicker: 'So Close', title: fmt(e.score) + ' Runs', text: 'With CAST Pass you get 2 rerolls every game, not 1, and a Legend Key every day to turn any offer into a Legends Pick.' };
       if (hook === 'wild') return { ico: '&#x1F3B4;', kicker: 'CAST Pass', title: 'Double Wildcards', text: '2 Rerolls, 2 Reveal Runs and 2 Remove Players every game, instead of 1 each.' };
-      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 25,000+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
+      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 25000+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
       return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best XI in every mode, your lucky charms, and the clubs and eras you draft from.' };
     }
     // 60000 RUNS (16 Oct 2026): the same pitch in Test words
     if (CFG.game === 'tests' && hook !== 'photo') {
       if (hook === 'close') return { ico: '&#x1F62C;', kicker: 'So Close', title: fmt(e.score) + ' Runs', text: 'With CAST Pass you get 2 rerolls every game, not 1, and a Legend Key every day to turn any offer into a Legends Pick.' };
       if (hook === 'wild') return { ico: '&#x1F3B4;', kicker: 'CAST Pass', title: 'Double Wildcards', text: '2 Rerolls, 2 Reveal Runs and 2 Remove Players every game, instead of 1 each.' };
-      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 60,000+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
+      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 60000+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
       return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best XI in every mode, your lucky charms, and the nations and eras you draft from.' };
     }
     // 700 TDS and G1 WINNER SPINNER (16 Oct 2026): the same pitch in NFL and racing words
@@ -11175,10 +11225,25 @@
   }
   /* At most 6 cards (the owner, 15 Oct 2026: optimised for CAST Pass sign-ups, ~36 s a lap so every card is seen). Over
      6, the least important wait for another visit, in this order; a challenge waiting for you is never left out */
+  /* Every home card and pop-up belongs to its games (16 Oct 2026, the owner: an NRL creator card showed in 700 TDS). One
+     list, [kind, the card in the spot, the games it shows in]: on any other game's page it is never in the spot (spotItems)
+     and its pop-up never opens (cardHere). A card can also say so itself (data-games="1000tries 27-0"). Cards not listed
+     are for every game: CAST Pass, the Shop cards (with the game's own items), Invite a Mate, the Daily, Player of the
+     Week, Trophies, friend requests, and challenges and the creator to beat on this game's own board. A card advertising
+     another sport's game shows only on castgames.com.au's own home page, never inside a game */
+  // NRL_SITES and CARD_GAMES: at the top of this file (dmNow asks cardHere while the page loads)
+  function cardGames(c) {
+    var own = c.getAttribute && c.getAttribute('data-games');
+    if (own != null) return own.split(/\s+/).filter(Boolean);
+    for (var i = 0; i < CARD_GAMES.length; i++) if (c.matches && c.matches(CARD_GAMES[i][1])) return CARD_GAMES[i][2];
+    return null;
+  }
+  function cardOk(c) { var g = cardGames(c); return !!CFG.hub || !g || g.indexOf(CFG.game) >= 0; } // CAST Games' own home page shows every game's cards
+  function cardHere(kind) { if (CFG.hub) return true; for (var i = 0; i < CARD_GAMES.length; i++) if (CARD_GAMES[i][0] === kind) return CARD_GAMES[i][2].indexOf(CFG.game) >= 0; return true; }
   var SPOT_MAX = 6, SPOT_DROP = ['[data-cast-upgrades]', '[data-cast-trophy]', '[data-cast-dual]', '.spot-promo:not([data-cast-launch])', '[data-cast-wcx]', '[data-cast-launch="4000goals"]'];
   function spotItems(box) {
     spotPlace(box);
-    var all = Array.prototype.filter.call(box.children, function (c) { return !c.hidden && !!c.innerHTML.trim(); });
+    var all = Array.prototype.filter.call(box.children, function (c) { return !c.hidden && !!c.innerHTML.trim() && cardOk(c); });
     var ouB = box.querySelector('[data-cast-launch="ou"]'), ouFirst = ouB && ouB.getAttribute('data-spot-pos') === '2';
     for (var di = 0; all.length > SPOT_MAX && di < SPOT_DROP.length; di++) {
       var drop = all.filter(function (c) { return c.matches(SPOT_DROP[di]); })[0];
@@ -11355,16 +11420,16 @@
      Laid out like the item in the Shop, price and all; one tap is that pack's checkout (shopBuy, the Shop's own flow).
      Signed-in players 15 and over only (paid items), CAST Pass holders too.
      GA: spot_wildcard_view (once per wildcard per visit), spot_wildcard_tap. */
-  var WILD = { '4000goals': [['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5']], bigbash: [['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5']], tests: [['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5']], nfl: [['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5']], racing: [['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5']], '1000tries': [['ileg', 'ileg1'], ['imm', 'imm1'], ['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '27-0': [['wch', 'wch1'], ['ileg', 'ileg1'], ['wcp', 'wcp1'], ['prem', 'prem1'], ['toty', 'toty1'], ['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5'], ['rib', 'rib3']] };
+  var WILD = { '4000goals': [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], bigbash: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], tests: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], nfl: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], racing: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '1000tries': [['ileg', 'ileg1'], ['imm', 'imm1'], ['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '27-0': [['wch', 'wch1'], ['ileg', 'ileg1'], ['wcp', 'wcp1'], ['prem', 'prem1'], ['toty', 'toty1'], ['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5'], ['rib', 'rib3']] };
   // [headline, line] (the owner's picks, 30 Sep 2026); a third entry is 27-0's own line
   var WILD_COPY = {
     toty: ['Team of the Year Pick', 'Choose a Team of the Year player for your 13. He joins at 95+.'],
     prem: ['Premiers Pick', 'Choose one of three 2026 premiers for your 13. He joins at 95+.'],
     wch: ['World Champions Pick', 'Choose one of three World Champions for your World Cup 8-0 13. He joins at 95+.'],
-    imm: NF ? ['Legend Pick', 'Choose one of three NFL Legends for your team, career TDs and all.'] : RC ? ['Legend Pick', 'Choose one of three racing Legends for your card, Group 1 wins and all.'] : TS ? ['Legend Pick', 'Choose one of three Test Legends for your XI, career Test runs and all.'] : BB ? ['Legend Pick', 'Choose one of three BBL Legends for your XI, career runs and all.'] : AFL ? ['Legend Pick', 'Choose one of three Legends for your 18, career goals and all.'] : ['Immortal Pick', 'Choose one of three Immortals for your 13, career tries and all.', 'Choose one of three Immortals for your 13. He joins at 99.'],
+    imm: ['Immortal Pick', 'Choose one of three Immortals for your 13, career tries and all.', 'Choose one of three Immortals for your 13. He joins at 99.'],
     ileg: ['World Legend Pick', 'Choose one of three World Legends for World Cup 200+, Test tries and all.', 'Choose one of three World Legends for your World Cup 8-0 13.'],
     wcp: ['88+ Pick', 'Choose one of three 88+ rated players from the 2026 World Cup squads for your World Cup 8-0 13.'],
-    goat: ['The GOAT: Alex Johnston', '240 NRL tries, the most in NRL history, straight into your 13.'],
+    goat: GOAT_HERE ? ['The GOAT: ' + GOAT_HERE[0], GOAT_HERE[1] + ' ' + GOAT_HERE[2] + (GOAT_HERE[3] ? (/^at /.test(GOAT_HERE[3]) ? ' ' : ', ') + GOAT_HERE[3] : '') + ', straight into your ' + TEAM_N + '.'] : null,
     rr: ['Bad Roll? Roll Again.', 'A fresh three players whenever the offer’s a dud.', 'A fresh spin whenever the club or season’s a dud.'],
     rm: ['Undo That Pick', 'Remove a player from your ' + TEAM_N + ' and go again.'],
     rib: ['Run It Back', 'Run your season back and your closest loss becomes a win.']
@@ -11517,7 +11582,7 @@
     });
   }
   // The promo on now in this game, with players to show (1000TRIES: the NRLW's premiers alone count too)
-  function dmNow() { var C = window.CAST_PROMO, P = C && C.now ? C.now() : null; return P && ((P.team && P.team.length) || (P.teamW && P.teamW.length)) ? P : null; }
+  function dmNow() { if (!cardHere('promo')) return null; var C = window.CAST_PROMO, P = C && C.now ? C.now() : null; return P && ((P.team && P.team.length) || (P.teamW && P.teamW.length)) ? P : null; }
   /* A promo's last 24 hours (2 Oct 2026, the owner's call): a live countdown on the home page (both sites, above the
      home cards), the Shop's Pick row, the pop-up ("Last Chance") and the 27-0 Pick buttons (hours left). A CAST Pass
      holder's unused free Pick gets its own reminder on 27-0's banner. One ticker sets every clock once a second; the
@@ -12198,7 +12263,10 @@
     openFriends: function (t) { openFriends(t || null); },
     // The Vault (CAST Pass): vault('legend' | 'superstar') is 'ready', 'used', 'pass' (locked) or null; useKey takes today's key
     vault: vault,
+    keyCount: keyCount,
     keyCountdown: keyCountdown,
+    // Is this home card or pop-up for the game on this page? (CARD_GAMES)
+    cardHere: cardHere,
     useKey: useKey,
     // Challenges: is this game (by its seed) a friend's challenge? (no Vault keys in one)
     inChallenge: inChallenge,

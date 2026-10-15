@@ -4,26 +4,26 @@
 
   T.MODES = {
     exact: {
-      id: 'exact', event: 'hard_1000_plays', name: 'Exactly 25,000', short: 'Exactly 25,000',
-      blurb: 'Roll 3, pick 1, 15 seconds a pick. Land on 25,000 exactly. Under or over and you miss.',
+      id: 'exact', event: 'hard_1000_plays', name: 'Exactly 25000', short: 'Exactly 25000',
+      blurb: 'Roll 3, pick 1, 15 seconds a pick. Land on 25000 exactly. Under or over and you miss.',
       // Hard Mode (29 Sep 2026, the owner's call): wildcards, but no free ones. One of each a game, used from the Vault or
       // bought on the spot, for everyone (CAST Pass too), and no Substitute
       rule: 'exact', source: 'roll', wildcards: true, paidOnly: true
     },
     plus: {
-      id: 'plus', event: 'classic_1000_plays', name: '25,000+', short: '25,000+',
-      blurb: 'Roll 3, pick 1. Get your XI to 25,000 runs or more.',
+      id: 'plus', event: 'classic_1000_plays', name: '25000+', short: '25000+',
+      blurb: 'Roll 3, pick 1. Get your XI to 25000 runs or more.',
       rule: 'atleast', source: 'roll', wildcards: true
     },
     spin: {
       id: 'spin', event: 'team_spin_plays', name: 'Team Spin', short: 'Team Spin',
-      blurb: 'Choose a position, then spin a club and season and pick from that squad. Aim for 25,000+.',
+      blurb: 'Choose a position, then spin a club and season and pick from that squad. Aim for 25000+.',
       rule: 'atleast', source: 'spin', wildcards: true
     },
     // The Daily (js/daily.js): 4000+ rules on a draft everyone shares that day. No wildcards, no Legends Pick.
     daily: {
       id: 'daily', event: 'daily_1000_plays', name: 'Daily', short: 'Daily',
-      blurb: 'The same draft for everyone today. Get your XI to 25,000 runs or more.',
+      blurb: 'The same draft for everyone today. Get your XI to 25000 runs or more.',
       rule: 'atleast', source: 'roll', wildcards: false
     },
     // World Cup 200+ (4 Oct 2026): hidden until World Cup mode is launched (CastAccount.wcLive), signed-in players only
@@ -64,9 +64,10 @@
      times NRL tries, so 1000TRIES' weight of 110 favoured big run scorers far more here. 900 puts 4000+ between 1000TRIES'
      difficulty and a much harder one, on the harder side for launch (the simulator: ~/cast-dev/private-notes) */
   T.HARD = { weight: 900, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
-  /* One Legend per team (12 Oct 2026, the owner's call): AFL Legends carry whole careers (Lockett's 1,360), so stacked
-     they bought 4000 too easily. Once the XI has one, no Legends Pick is dealt and no Key or Legend Pick can be used */
-  T.hasLegend = function () { return !!S && S.slots.some(function (s) { return s.player && s.player.tier; }); };
+  /* One Legend per team from the game's own rolls (12 Oct 2026, the owner's call: stacked Legends bought the target
+     too easily): once the team has one, no free Legends Pick is dealt. Legend Keys are not limited (16 Oct 2026, the
+     owner: "If people pay they have a right to use"), and the GOAT is not one of the Legends */
+  T.hasLegend = function () { return !!S && S.slots.some(function (s) { return s.player && s.player.tier && s.player.tier !== 'goat'; }); };
   T.HARD_ON = true; // tools/simulate_engine.js switches it off to compare with the normal settings
   T.isHard = function (mode) { return T.HARD_ON && !!mode && mode.id === 'plus' && T.DATASET === 'nrl'; };
 
@@ -351,9 +352,8 @@
     // A Legend Key (T.useLegendKey): this offer is its Legends Pick, beside the game's own (which still comes when due)
     if (S.keyPick) {
       S.keyPick = false;
-      if (T.hasLegend()) S.keysUsed = Math.max(0, (S.keysUsed || 1) - 1); // never a second Legend (the Legend Pick waits for a key, so this is a guard)
       var keyed = specialOffer(tag + 'k', 'legends');
-      if (keyed.length && !T.hasLegend()) { S.offer = { kind: 'roll', special: 'legends', key: true, players: keyed }; S.revealed = {}; return S.offer; }
+      if (keyed.length) { S.offer = { kind: 'roll', special: 'legends', key: true, players: keyed }; S.revealed = {}; return S.offer; }
     }
     var boost = S.boost; S.boost = null;
     var rescue = lifeline();
@@ -466,7 +466,7 @@
      the next offer is the key's Legends Pick). S.keysUsed counts them (d.lks: each adds a Legend on the boards).
      T.legendKeyRoom: a Legend fits an open spot; T.legendKeyFits: and the offer on screen is a plain one to swap */
   T.legendKeyRoom = function () {
-    return !!S && S.mode.id === 'plus' && T.DATASET === 'nrl' && !S.finished && !S.challenge && !!T.LEGENDS && !T.hasLegend() &&
+    return !!S && S.mode.id === 'plus' && T.DATASET === 'nrl' && !S.finished && !S.challenge && !!T.LEGENDS &&
       T.LEGENDS.some(function (p) { return T.isLegend(p) && !S.used[p.id] && T.fitsEmpty(p); });
   };
   T.legendKeyFits = function () {
@@ -478,21 +478,23 @@
     return true;
   };
 
-  /* The GOAT item (the Shop, $9.99; 1000TRIES only since 12 Oct 2026, T.GOAT_ITEM): the GOAT as the next pick. 4000+ and Exactly 4000 (the roll modes),
-     once a game, never in a Daily or a friend's challenge, and only while he isn't in the XI and fits an open spot.
-     Using it swaps the offer for him alone, his runs showing */
-  T.goatPlayer = function () { return (T.players || []).concat(T.LEGENDS || []).filter(T.isGoat)[0] || null; };
-  T.GOAT_ITEM = false; // the GOAT item is 1000TRIES only (12 Oct 2026, the owner)
+  /* The GOAT (the Shop, $9.99; one item for every CAST draft game since 16 Oct 2026): this game's GOAT (js/data.js
+     T.goatPlayer: his own card when he is a Legend) as the next pick. The main mode and Exactly (the roll modes), once a
+     game, never in a Daily or a friend's challenge, never over a Legends Pick, and only while he isn't in the XI and
+     fits an open spot. Using it swaps the offer for him alone, his number showing */
+  T.goatPlayer = function () { return T.GOAT_CARD || (T.GOAT_SRC && T.byId[T.GOAT_SRC]) || null; };
+  // He isn't in the team yet and an open spot fits him (the tile says "Spot Taken" otherwise)
+  T.goatRoom = function () { var g = T.goatPlayer(); return !!S && !!g && !S.used[g.id] && !S.used[T.GOAT_SRC] && T.fitsEmpty(g); };
   T.goatFits = function () {
-    if (!T.GOAT_ITEM) return false;
     var g = T.goatPlayer();
     return !!S && !!g && T.DATASET === 'nrl' && (S.mode.id === 'plus' || S.mode.id === 'exact') && !S.finished && !S.goatUsed && !S.challenge && !S.daily &&
-      !(S.offer && (S.offer.key || S.offer.special)) && !S.used[g.id] && !T.hasLegend() && !S.keyPick && T.fitsEmpty(g); // never over a Legends Pick, and he is the XI's one Legend
+      !(S.offer && (S.offer.key || S.offer.special)) && !S.used[g.id] && !S.used[T.GOAT_SRC] && !S.keyPick && T.fitsEmpty(g);
   };
   T.useGoat = function () {
     if (!T.goatFits()) return false;
     var g = T.goatPlayer();
     S.goatUsed = true;
+    if (g.id !== T.GOAT_SRC) S.used[T.GOAT_SRC] = true; // his Legend card never comes as well
     S.offer = { kind: 'roll', goat: true, players: [g] };
     S.revealed = {}; S.revealed[g.id] = true;
     return true;
@@ -511,7 +513,7 @@
       return T.isLegend(p) && !S.used[p.id] && (spot ? T.openCodesFor(p).indexOf(spot) !== -1 : T.fitsEmpty(p));
     });
   }
-  T.immMode = function () { return !!S && T.DATASET === 'nrl' && T.IMM_MODES.indexOf(S.mode.id) !== -1 && !S.challenge && !S.daily; };
+  T.immMode = function () { return false; }; // one Legend Key button here (16 Oct 2026, the owner): no Legend Pick tile
   T.immFits = function () {
     return T.immMode() && !S.finished && !S.tweakMode && !S.subMode && !!S.offer && S.offer.players.length > 0 && !T.hasLegend() && !S.keyPick && // a Key's Legends Pick is coming: that's the one Legend
       !S.offer.goat && !S.offer.special && immPool().length > 0;

@@ -3834,3 +3834,5 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 @media (max-width: 420px) {
   .ca-pitch.is-track { border-radius: 48% / 26%; padding: 30px 12px; }
 }
+/* One Shop for every CAST game (16 Oct 2026): a special item's "Only in" tag, quiet and never gold */
+.ca-shop-where.is-only { display: inline-block; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #e5e7eb; }

@@ -94,7 +94,7 @@
   }
 
   // Where a reward item is used, in 60000 RUNS' words
-  var ITEM_USE = { legend: 'Use it in 60,000+ to swap an offer for a Legends Pick.', reveals: 'Use it in your next draft to see the hidden runs.',
+  var ITEM_USE = { legend: 'Use it in 60000+ to swap an offer for a Legends Pick.', reveals: 'Use it in your next draft to see the hidden runs.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh roll.', removes: 'Use it to take a player out of your XI.' };
   function useText(items) {
     var k = Object.keys(items || {})[0], n = 0;

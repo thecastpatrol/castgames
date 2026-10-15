@@ -11,7 +11,7 @@
   T.canUse = function (key) {
     var S = T.state();
     if (!S || S.finished || !S.mode.wildcards || S.wildcards[key] < 1) return false;
-    if (key === 'scout') return !!(S.offer && S.offer.players.length && !S.offer.goat && !S.offer.paid); // the GOAT's and a bought Immortal Pick's offers stay
+    if (key === 'scout') return !!(S.offer && S.offer.players.length && !S.offer.goat && !S.offer.paid && !S.offer.key); // a Pick, key or the GOAT shows its numbers already // the GOAT's and a bought Immortal Pick's offers stay
     // a Legend Key's Legends Pick stays too: the key is spent once they're dealt (9 Oct 2026)
     if (key === 'reroll') return !!(S.offer && S.offer.players.length && !S.offer.goat && !S.offer.paid && !S.offer.key);
     if (key === 'tweak') return T.filledCount() > 0;

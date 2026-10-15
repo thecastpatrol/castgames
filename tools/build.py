@@ -17,6 +17,7 @@ uses its own.
     python3 tools/build.py --live     the switch-over build: no noindex, robots.txt open
 Run it after pushing a game, then push this repo.
 """
+import json
 import os
 import re
 import shutil
@@ -64,6 +65,7 @@ GAMES = [
 # The old domains, and the folder each one is now
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
+SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus']}
 SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', 'NFL'), ('racing', 'Horse Racing')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
@@ -212,7 +214,10 @@ def main():
         os.makedirs(out, exist_ok=True)
         pg = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../">', home, count=1)
         pg = re.sub(r'<title>[^<]*</title>', '<title>%s Games | CAST Games</title>' % name, pg, count=1)
+        pg = pg.replace('<meta property="og:title" content="CAST Games | Free Sports Draft Games">', '<meta property="og:title" content="%s Games | CAST Games">' % name, 1)  # the share card names the sport
         pg = pg.replace('<script src="js/home.js', '<script>window.CG_SPORT = %r;</script>\n<script src="js/home.js' % sid, 1)
+        # its Leaderboards open on that sport's own boards (16 Oct 2026: the cricket page's preview counted tries)
+        pg = pg.replace('<script src="shared/cg.js', '<script>window.CAST_ACCOUNT.boards = %s;</script>\n<script src="shared/cg.js' % json.dumps(SPORT_BOARDS[sid]), 1)
         open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(pg)
         print('built', sid)
     # Hidden until the switch-over: Google stays on the old domains

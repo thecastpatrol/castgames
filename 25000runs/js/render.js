@@ -88,8 +88,8 @@
   /* HOME */
 
   var MODE_CARD = {
-    exact: { ico: '&#x1F3AF;', line: 'Hit 25,000 on the dot. Not 24,999, not 25,001', chips: ['Roll 3, Pick 1', '15s a Pick', 'Paid Wildcards'] },
-    plus:  { ico: '&#x1F3CF;', line: 'Get to 25,000 or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] },
+    exact: { ico: '&#x1F3AF;', line: 'Hit 25000 on the dot. Not 24,999, not 25001', chips: ['Roll 3, Pick 1', '15s a Pick', 'Paid Wildcards'] },
+    plus:  { ico: '&#x1F3CF;', line: 'Get to 25000 or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] },
     spin:  { ico: '&#x1F3B0;', line: 'Pick a position, then spin', chips: ['Spin, Pick 1', '3 Wildcards'] },
     nrlw:  { ico: '&#x2B50;', line: 'The WBBL stars. Get to ' + T.DATASETS.nrlw.target + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'WBBL Players'] },
     wc:    { ico: '&#x1F30F;', line: 'Get to ' + T.DATASETS.wc.target + ' Test runs or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'Test Players'] },
@@ -109,7 +109,7 @@
     };
     return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Play On">' +
       '<span class="oup-new">New</span>' +
-      '<span class="oup-pair" aria-hidden="true">' + mini('strikers', 'Lynn', '4,133') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('stars', 'Maxwell', '') + '</span>' +
+      '<span class="oup-pair" aria-hidden="true">' + mini('strikers', 'Lynn', '4133') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('stars', 'Maxwell', '') + '</span>' +
       '<span class="oup-t"><b>Free Hit</b><small>More runs or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
   };
   // The same live look for its banner in the home slider (the owner, 15 Oct 2026: "more enticing, like the card below")
@@ -117,7 +117,7 @@
     var mini = function (club, nm, num) {
       return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
     };
-    return '<span class="oup-pair" aria-hidden="true">' + mini('strikers', 'Lynn', '4,133') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('stars', 'Maxwell', '') + '</span>' +
+    return '<span class="oup-pair" aria-hidden="true">' + mini('strikers', 'Lynn', '4133') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('stars', 'Maxwell', '') + '</span>' +
       '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>Free Hit</b><small>More runs or fewer? Beat the clock.</small></span><span class="oup-play" aria-hidden="true">&#x25B6;</span>';
   };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 4000+ until the final on
@@ -311,50 +311,26 @@
       }).join('') + sub + key + goat + imm + il + '</div>' +
       (paid && !S.finished ? '<p class="wc-paid-note">Hard Mode: no free wildcards. One of each a game.</p>' : '');
   };
-  /* The GOAT (bought in the Shop): with the wildcards only while you have one, in 4000+ and Exactly 4000. A tap asks
-     first, then swaps the offer for Lance Franklin and his BBL runs */
-  function goatName() { var g = T.goatPlayer && T.goatPlayer(); return g ? g.name : 'Tony Lockett'; }
+  /* The GOAT (bought in the Shop, one item for every CAST draft game, 16 Oct 2026): in the main mode and Exactly,
+     never the Daily or a friend's challenge. "Ready" (or "N Left") with one to use, "Buy" without, "Spot Taken" while no
+     open spot fits him; never shown where there is no GOAT. A tap asks first, then swaps the offer for him */
+  function goatName() { var g = T.goatPlayer && T.goatPlayer(); return g ? g.name : 'The GOAT'; }
   function goatGoals() { var g = T.goatPlayer && T.goatPlayer(); return g ? T.fmt(g.tries_1998_plus) : ''; }
   R.goatTile = function (S) {
-    if (S.finished || S.challenge || S.daily || S.goatUsed || !(S.mode.id === 'plus' || S.mode.id === 'exact')) return '';
-    if (!window.CastAccount || !CastAccount.itemSaved || !(CastAccount.itemSaved('goat') > 0)) return '';
-    var n = CastAccount.itemSaved('goat'), ok = T.goatFits() && !S.tweakMode && !S.subMode;
-    return '<button type="button" class="wc wc-goat' + (ok ? ' is-ready' : '') + '" data-action="goat"' + (ok ? '' : ' disabled') +
-      ' title="' + (ok ? esc(goatName()) + ', ' + goatGoals() + ' BBL runs, as your next pick' : 'No open spot fits ' + esc(goatName())) + '"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F410;</span> The GOAT</span>' +
-      '<span class="wc-left">' + (ok ? (n > 1 ? n + ' ready' : 'Ready') : 'No fit') + '</span></button>';
-  };
-  /* The Legend Pick (bought, js/draft.js useImm): with the wildcards in 4000+, Exactly 4000 and Team Spin while you have
-     one ("2 Left"), or its price once it's on sale (CastAccount.immOn, launched from Admin). A tap deals three Hall of Famers
-     for this offer; the Pick is only used when you choose one. Hidden while that offer is showing (Keep My Offer is there) */
-  R.immTile = function (S) {
     var A = window.CastAccount;
-    if (S.finished || !T.immMode() || !A || !A.pickState || (S.offer && S.offer.paid)) return '';
-    var st = A.pickState('imm');
-    if (!st) return '';
-    var have = st.have || 0, sell = !have && A.immOn && A.immOn() && (st.canBuy || st.guest);
-    if (!have && !sell) return '';
-    var ok = T.immFits();
-    return '<button type="button" class="wc wc-imm' + (ok ? ' is-ready' : '') + (have ? ' is-have' : ' is-buy') + (st.fresh ? ' ca-rr-fresh' : '') + '" data-action="imm"' + (ok ? '' : ' disabled') +
-      ' title="' + (ok ? 'Swap this offer for three Legends' : T.hasLegend() ? 'One Legend per team: you have yours' : 'No Legend fits your open spots') + '"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F3DB;&#xFE0F;</span> Legend Pick</span>' +
-      '<span class="wc-left">' + (!ok ? (T.hasLegend() ? '1 per Team' : 'No fit') : have ? have + ' Left' : esc(st.price)) + '</span></button>';
+    if (S.finished || S.challenge || S.daily || S.goatUsed || !(S.mode.id === 'plus' || S.mode.id === 'exact') || !T.goatPlayer || !T.goatPlayer()) return '';
+    if (!A || !A.itemSaved || !A.isSignedIn || !A.isSignedIn()) return '';
+    var n = A.itemSaved('goat'), buy = !(n > 0);
+    if (buy && !(A.canBuyReroll && A.canBuyReroll())) return ''; // under 15: only one already in the Vault
+    var ok = T.goatFits() && !S.tweakMode && !S.subMode, room = T.goatRoom();
+    return '<button type="button" class="wc wc-goat' + (ok && !buy ? ' is-ready' : '') + (buy ? ' wc-buy' : '') + '" data-action="goat"' + (ok ? '' : ' disabled') +
+      ' title="' + (ok ? esc(goatName()) + ', ' + goatGoals() + ' BBL runs, as your next pick' : room ? 'Ready for your next offer' : 'No open spot fits ' + esc(goatName())) + '"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F410;</span> The GOAT</span>' +
+      '<span class="wc-left">' + (!room ? 'Spot Taken' : buy ? 'Buy &middot; $9.99' : n > 1 ? n + ' left' : 'Ready') + '</span></button>';
   };
-  /* The World Legend Pick (bought, js/draft.js useIL): with the wildcards in World Cup 200+ while you have one
-     (a CAST Pass holder's free one says so), or its price once World Cup mode is on. A tap deals three International
-     Legends for this offer; the Pick is only used when you choose one. Hidden while a bought offer is showing */
-  R.ilTile = function (S) {
-    return ''; // 25000 RUNS: no World Cup, so no World Legend Pick
-    var A = window.CastAccount;
-    if (S.finished || !T.ilMode() || !A || !A.pickState || (S.offer && S.offer.paid)) return '';
-    var st = A.pickState('ileg');
-    // still loading: hold its place (11 Oct 2026), so the offers don't jump down a row when it arrives
-    if (!st) return A.isSignedIn && A.isSignedIn() ? '<button type="button" class="wc wc-ileg is-buy" disabled aria-hidden="true" tabindex="-1" style="visibility:hidden"><span class="wc-label">&#x1F451; World Legend Pick</span><span class="wc-left">&nbsp;</span></button>' : '';
-    var have = st.have || 0, sell = !have && (st.canBuy || st.guest);
-    if (!have && !sell) return '';
-    var ok = T.ilFits();
-    return '<button type="button" class="wc wc-ileg' + (ok ? ' is-ready' : '') + (have ? ' is-have' : ' is-buy') + (st.fresh ? ' ca-rr-fresh' : '') + '" data-action="ileg"' + (ok ? '' : ' disabled') +
-      ' title="' + (ok ? 'Swap this offer for three World Legends' : 'No World Legend fits your open spots') + '"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F451;</span> World Legend Pick</span>' +
-      '<span class="wc-left">' + (!ok ? 'No fit' : have ? (st.free && have === 1 ? '1 Free' : have + ' Left') : esc(st.price)) + '</span></button>';
-  };
+  // No Legend Pick tile here (16 Oct 2026, the owner: one Legend Key button). 1000TRIES and 27-0 keep the Immortal Pick
+  R.immTile = function () { return ''; };
+  // 25000 RUNS: no World Cup, so no World Legend Pick
+  R.ilTile = function () { return ''; };
   // Under a bought Pick's three (Hall of Famers, World Legends): go back to the offer you had, nothing used
   R.immBack = function (S) {
     if (!S.offer || !S.offer.paid || S.offer.taken) return '';
@@ -367,7 +343,7 @@
       '<div class="sheet-kicker">The GOAT</div>' +
       '<h2 class="sheet-title center">Bring In ' + esc(goatName()) + '?</h2>' +
       '<p class="sheet-sub center">This offer becomes the GOAT and his ' + goatGoals() + ' BBL runs. Pick him and put him in an open spot he plays.</p>' +
-      '<button type="button" class="btn btn-primary btn-block btn-goat" data-action="confirm-goat">&#x1F410; Use The GOAT</button>' +
+      '<button type="button" class="btn btn-primary btn-block btn-goat" data-action="confirm-goat">&#x1F410; ' + (window.CastAccount && CastAccount.itemSaved && CastAccount.itemSaved('goat') > 0 ? 'Use The GOAT' : 'Get The GOAT &middot; $9.99') + '</button>' +
       '<button type="button" class="btn btn-quiet btn-block" data-action="close-sheet">Not Now</button>';
   };
   // Substitute: CAST Pass holders get 1 a game; a free profile sees it with the CAST Pass tag (tap for the Pass page)
@@ -389,6 +365,8 @@
     if (S.mode.id !== 'plus' || S.finished || S.challenge || !window.CastAccount || !CastAccount.vault) return null;
     return CastAccount.vault('legend'); // 'ready', 'used', 'pass' (no CAST Pass: locked) or null (guests, and before the tiers)
   }
+  // Today's CAST Pass key and the bought ones: "Ready" for one, "N left" for more (16 Oct 2026: as many in one team as you have)
+  function keyLeft() { var n = window.CastAccount && CastAccount.keyCount ? CastAccount.keyCount('legend') : 1; return n > 1 ? n + ' left' : 'Ready'; }
   R.keyTile = function (S) {
     var v = keyState(S);
     if (!v) return '';
@@ -396,7 +374,7 @@
     // Never "Used" in a game, and never "had its pick": the key stays on offer (the owner, 8 Oct 2026)
     // No key to use (no CAST Pass, or today's is gone): a player 15+ can buy one for $1.99 (CastAccount.buyKey)
     // A Legends, Hall of Famer or paid pick on screen: the key waits for the next offer
-    var why = T.hasLegend() ? 'One Legend per team: you have yours' : !T.legendKeyRoom() ? 'No Legend fits your open spots' : 'Ready for your next offer';
+    var why = !T.legendKeyRoom() ? 'No Legend fits your open spots' : 'Ready for your next offer';
     if ((v === 'pass' || v === 'used') && CastAccount.buyKey && CastAccount.canBuyKey && CastAccount.canBuyKey()) {
       var bf = T.legendKeyFits() && !S.tweakMode && !S.subMode;
       return '<button type="button" class="wc wc-key wc-buy" data-action="buy-key"' + (bf ? '' : ' disabled') +
@@ -407,17 +385,18 @@
     var fits = T.legendKeyFits() && !S.tweakMode && !S.subMode, room = T.legendKeyRoom();
     return '<button type="button" class="wc wc-key' + (fits ? ' is-ready' : '') + '" data-action="legend-key"' + (fits ? '' : ' disabled') +
       ' title="' + (fits ? 'Swap this offer for a Legends Pick' : why) + '">' + lab +
-      '<span class="wc-left">' + (fits || room ? 'Ready' : T.hasLegend() ? '1 per Team' : 'No fit') + '</span></button>';
+      '<span class="wc-left">' + (fits || room ? keyLeft() : 'No fit') + '</span></button>';
   };
   R.keySwap = function (S) {
     if (keyState(S) !== 'ready' || S.tweakMode || S.subMode || !T.legendKeyFits() || !(S.offer && S.offer.players.length) || S.offer.goat || S.offer.paid) return '';
     return '<button type="button" class="key-swap" data-action="legend-key"><span aria-hidden="true">&#x1F511;</span> Not these? Swap for a Legends Pick</button>';
   };
 
-  /* A World Legend Pick you bought (or got free from the World Cup email) shows its three Test try counts straight away
-     (10 Oct 2026, the owner: you paid, you see). A World Legend dealt naturally stays hidden like any offer */
-  function paidIleg(S, p) { return !!(S.offer && S.offer.paid && S.offer.item === 'ileg' && S.offer.players.indexOf(p) >= 0); }
-  R.triesShown = function (S, p) { return !!S.revealed[p.id] || paidIleg(S, p); };
+  /* A Pick you used (a bought Pick, a Legend Key's Legends Pick, the GOAT) shows its numbers straight away (16 Oct 2026,
+     the owner: "When you use legend picks they have to show the runs straight away"). A free roll, Legends Pick
+     included, stays hidden until a Reveal */
+  function usedOffer(S, p) { return !!(S.offer && (S.offer.paid || S.offer.key || S.offer.goat) && S.offer.players.indexOf(p) >= 0); }
+  R.triesShown = function (S, p) { return !!S.revealed[p.id] || usedOffer(S, p); };
   function triesBadge(S, p) {
     if (R.triesShown(S, p)) return '<span class="tries-badge is-revealed"><strong>' + T.fmt(p.tries_1998_plus) + '</strong> runs</span>';
     return '<span class="tries-badge"><strong>??</strong> runs</span>';
@@ -453,7 +432,7 @@
     var special = S.offer && S.offer.special;
     return '<div class="panel-head' + (special ? ' is-' + special : '') + '">' +
         '<span class="panel-title">' + (S.offer && S.offer.goat ? '&#x1F410; The GOAT' : special === 'ilegend' ? '&#x1F451; Your World Legend Pick' : S.offer && S.offer.paid ? '&#x1F3DB;&#xFE0F; Your Legend Pick' : special === 'immortal' ? '&#x1F410; Legend Pick' : special ? '&#x2B50; Legends Pick' : 'Pick 1') + '</span>' +
-        '<span class="panel-meta">' + (special === 'ilegend' ? 'Pick 1 of 3 World Legends &middot; Test runs shown' : special ? 'Pick 1 of 3 ' + (S.offer.paid ? 'Legends' : 'greats') + ' &middot; career runs, hidden' : dailyRule(S) || 'Runs hidden until you pick') + '</span>' +
+        '<span class="panel-meta">' + (special === 'ilegend' ? 'Pick 1 of 3 World Legends &middot; Test runs shown' : special ? 'Pick 1 of 3 ' + (S.offer.paid || S.offer.key ? 'Legends' : 'greats') + (S.offer.paid || S.offer.key ? ' &middot; career runs shown' : ' &middot; career runs, hidden') : S.offer && S.offer.goat ? 'Career runs shown' : dailyRule(S) || 'Runs hidden until you pick') + '</span>' +
       '</div>' +
       // Exactly 4000's shot clock (js/app.js clockTick fills it in)
       (S.mode.id === 'exact' && !S.tweakMode && players.length ? '<div class="pick-clock" data-pick-clock role="timer" aria-label="Time to pick"><i></i><b>' + T.EXACT_SECS + 's</b></div>' : '') +
@@ -700,7 +679,7 @@
     return '<div class="reveal' + goatCls(p) + '" style="' + clubVars(club || T.lastClub(p)) + '">' +
       '<span class="reveal-name">' + nameHtml(p) + medalMark(p) + '</span>' +
       '<span class="reveal-num">' + T.fmt(p.tries_1998_plus) + '</span>' +
-      '<span class="reveal-lbl">' + (T.isGoat(p) ? 'Career VFL and BBL runs. The GOAT.' : T.isImmortal(p) ? 'Career VFL and BBL runs. A Hall of Famer.' : T.isLegend(p) ? 'Career VFL and BBL runs. A Legend.' : T.TRY_LABEL) + '</span></div>';
+      '<span class="reveal-lbl">' + (T.isGoat(p) ? 'Career BBL runs. The GOAT.' : T.isImmortal(p) ? 'Career BBL runs. A Hall of Famer.' : T.isLegend(p) ? 'Career BBL runs. A Legend.' : T.TRY_LABEL) + '</span></div>';
   };
 
   /* LATEST VIDEOS (shared feed from the media kit) */
@@ -738,7 +717,7 @@
     var left = T.SLOTS.length - T.filledCount();
     if (out.reason === 'noclub') return { title: 'No ' + esc(S.daily.clubName) + ' player', sub: T.fmt(out.total) + ' runs, but today\u2019s Daily needs at least one player who has played for the ' + esc(S.daily.clubName) + '.' };
     if (out.reason === 'over') return { title: 'Over by ' + T.fmt(out.diff), sub: 'Blew past ' + T.fmt(T.TARGET) + ' with ' + left + ' spot' + (left === 1 ? '' : 's') + ' still to fill.' };
-    if (S.mode.rule === 'exact') return { title: 'Short by ' + T.fmt(-out.diff), sub: 'Exactly 25,000 is brutal. Go again.' };
+    if (S.mode.rule === 'exact') return { title: 'Short by ' + T.fmt(-out.diff), sub: 'Exactly 25000 is brutal. Go again.' };
     return { title: 'Short by ' + T.fmt(-out.diff), sub: '' };
   };
 
@@ -790,13 +769,6 @@
         '<ol class="rlist">' + rows + '</ol>' +
         '<div class="rsum"><span>Total</span><strong>' + T.fmt(out.total) + '</strong></div>' +
       '</div>' +
-      R.unibet('results') +
-      '<a class="promo-card" href="https://castgames.com.au/27-0/" target="_blank" rel="noopener" data-track="click_27_0" data-where="results">' +
-        '<img class="promo-logo" src="assets/logos/27-0.png" alt="27-0" width="601" height="358" loading="lazy">' +
-        '<span class="promo-kicker">Next up</span>' +
-        '<span class="promo-title">Now Try to Go 27-0</span>' +
-        '<span class="promo-sub">Build your NRL team and chase an undefeated season.</span>' +
-        '<span class="promo-arrow" aria-hidden="true">&rarr;</span>' +
-      '</a>';
+      R.unibet('results');
   };
 })(window.T = window.T || {});

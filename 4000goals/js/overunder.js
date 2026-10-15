@@ -362,6 +362,26 @@
       '<span class="ou-rw-ico" aria-hidden="true">&#x23EA;</span><b class="ou-rw-t">Run It Back</b>' +
       '<span class="ou-rw-s"><i aria-hidden="true">&#x1F525;</i>' + st.streak + ' <small>in a row saved</small></span></div>';
   }
+  // A long club name ("Los Angeles Chargers", "New South Wales") steps down in size to fit its plate, and only wraps
+  // when even the smallest size is too wide: never cut off with "..." (quality gate, 16 Oct 2026)
+  function fitClubs(el) {
+    Array.prototype.forEach.call(el.querySelectorAll('.ou-club'), function (c) {
+      c.style.fontSize = ''; c.classList.remove('is-wrap');
+      if (c.getAttribute('data-full')) c.textContent = c.getAttribute('data-full');
+      var fs = parseFloat(getComputedStyle(c).fontSize) || 11.5;
+      while (c.scrollWidth > c.clientWidth + 1 && fs > 9.5) { fs -= .5; c.style.fontSize = fs + 'px'; }
+      // still too wide: the city as its initials ("LA Chargers", "SF 49ers"), so it never wraps to one word alone
+      var w = (c.getAttribute('data-full') || c.textContent).split(' ');
+      if (c.scrollWidth > c.clientWidth + 1 && w.length >= 3) {
+        c.setAttribute('data-full', w.join(' ')); c.title = w.join(' ');
+        c.textContent = w.slice(0, -1).map(function (x) { return x.charAt(0); }).join('').toUpperCase() + ' ' + w[w.length - 1];
+      }
+      if (c.scrollWidth > c.clientWidth + 1) c.classList.add('is-wrap');
+    });
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { var r = document.querySelector('.ou-pair'); if (r) fitClubs(document); });
+  window.addEventListener('resize', function () { if (document.querySelector('.ou-club')) fitClubs(document); });
+
   function render() {
     var el = root();
     if (!el) return;
@@ -370,6 +390,7 @@
     else h += st.view === 'play' ? playView() : st.view === 'out' ? outView() : st.view === 'rewind' ? rewindView() : startView();
     if (st.note) h += '<p class="ou-note" role="status">' + esc(st.note) + '</p>';
     el.innerHTML = h;
+    fitClubs(el);
   }
 
   function boardId() { return { goals: '4000ou', games: '4000ougames', aflw: '4000ouaflw' }[st.cat] || '4000ou'; }

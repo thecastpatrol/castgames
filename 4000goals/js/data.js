@@ -168,11 +168,21 @@
     return T._legends;
   };
 
-  // The GOAT (12 Oct 2026, the owner): the most goals in VFL and AFL history, Tony Lockett, gets the goat and the gold look
-  // (Alex Johnston's in 1000TRIES). He is a Legend, so he only comes in a Legends Pick. No GOAT item is sold in 4000 GOALS
+  /* The GOAT (one Shop item for every CAST draft game, 16 Oct 2026, the owner: "THE GOAT IS UNIVERSAL"): here Tony Lockett.
+     T.GOAT_SRC: the player the GOAT item brings. A Legend comes as his own GOAT card (T.goatCard: "Name (GOAT)", tier
+     'goat', the server's lib/goat.js), never beside his Legend card. T.GOAT_ID: who always wears the goat */
+  T.GOAT_SRC = 'legend-tony-lockett';
   T.GOAT_ID = 'legend-tony-lockett';
   T.isGoat = function (p) {
-    return !!p && p.id === T.GOAT_ID;
+    return !!p && (p.tier === 'goat' || (!!T.GOAT_ID && p.id === T.GOAT_ID));
+  };
+  T.goatCard = function (src) {
+    if (!src || !src.tier) return src || null; // a pack player is the GOAT himself (as Alex Johnston in 1000TRIES)
+    var c = {};
+    Object.keys(src).forEach(function (k) { c[k] = src[k]; });
+    c.id = 'goat-' + String(src.id).replace(/^legend-/, ''); c.tier = 'goat';
+    c.record_name = String(src.record_name || src.name).replace(/\s*\([^)]*\)$/, '') + ' (GOAT)';
+    return c;
   };
 
   /* The surname on the pitch tiles (10 Oct 2026, the owner: "Bill Williams" for Sonny Bill Williams): a club tag in
@@ -191,7 +201,7 @@
   };
 
   T.fmt = function (n) {
-    return Number(n).toLocaleString('en-AU');
+    return Number(n).toLocaleString('en-AU', { useGrouping: false }); // no commas in numbers (the owner, 16 Oct 2026)
   };
 
   T.players = [];
@@ -221,7 +231,7 @@
     nrlw: { live: true, file: 'data/aflw-players.json', target: 750, weight: 45, lowCut: 2, lowFactor: 0.3, label: 'AFLW goals', era: 'AFLW goals', only: 'AFLW premiership goals only', who: 'AFLW' },
     // World Cup 200+ (4 Oct 2026, the owner's call): senior Test players of the 2026 World Cup sides, Great Britain,
     // Scotland and Italy (tools/build_wc.py), on their Test goals. Since 5 Oct the draft pool is Test goalkickers from 1980
-    // on, older greats with 5+ Test goals and the 2026 squads (1,865 of 4,674). Its offers' weighting is the owner's call
+    // on, older greats with 5+ Test goals and the 2026 squads (1865 of 4,674). Its offers' weighting is the owner's call
     // (eased a little on 8 Oct 2026, once the World Legends left the normal offers)
     wc: { file: 'data/wc-players.json', target: 200, weight: 4, lowCut: 2, lowFactor: 0.3, label: 'Test goals', era: 'Test goals', only: 'Senior Test goals only', who: 'Test' }
   };
@@ -384,6 +394,9 @@
       if (!pool.legendsApplied) {
         pool.players = pool.players.filter(function (p) { return !gone[p.id]; });
         T.LEGENDS.forEach(function (p) { pool.byId[p.id] = p; });
+        var gsrc = T.GOAT_SRC && pool.byId[T.GOAT_SRC]; // the GOAT item's card, so a pick or a draft brought back finds him
+        T.GOAT_CARD = gsrc && gsrc.tier ? T.goatCard(gsrc) : null;
+        if (T.GOAT_CARD) pool.byId[T.GOAT_CARD.id] = T.GOAT_CARD;
         pool.legendsApplied = true;
       }
       T.useDataset('nrl');

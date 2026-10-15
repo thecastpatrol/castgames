@@ -24,7 +24,7 @@
     if (a && a.wcLive && a.wcLive()) out.push({ k: 'Featured · World Cup', t: 'World Cup 8-0', p: 'Spin a nation, draft from its 2026 squad and win all eight.', b: 'Play Now', href: '27-0/?play=wc' });
     var w = a && a.totw ? a.totw() : null;
     if (w) out.push({ k: 'World Cup · ' + w.label, t: 'Team of the Week', p: '13 players boosted in World Cup 8-0 this week.', b: 'See the 13', href: '27-0/?play=wc', side: true });
-    if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL and AFL fans, with more sports on the way.', b: 'Browse Games', href: '#cgSports' });
+    if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL, AFL, cricket, NFL and horse racing fans.', b: 'Browse Games', href: '#cgSports' });
     return out;
   }
   // Drafts waiting on this device: 1000TRIES and 4000 GOALS keep theirs under their own names here, 27-0 under its own
@@ -50,7 +50,7 @@
   // A game tile (Most Popular and the sport pages): the same size everywhere
   function tile(g) {
     return '<a class="cg-game-t" href="' + esc(CG.url(g.path)) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + (g.badge ? '<span class="cg-new">' + esc(g.badge) + '</span>' : '') + art(g) +
-      '<b>' + esc(g.name) + '</b><small>' + esc(g.line) + '</small><span class="cg-btn is-white">Play</span></a>';
+      '<b' + (g.name.length > 14 ? ' class="is-long"' : '') + '>' + esc(g.name) + '</b><small>' + esc(g.line) + '</small><span class="cg-btn is-white">Play</span></a>';
   }
   // A sport page (nrl/, afl/): its games, most popular first, an odd number made even with a More Coming tile
   function drawSport(id) {
@@ -58,7 +58,7 @@
     if (!sp) return;
     var tiles = gs.map(tile);
     if (tiles.length % 2) tiles.push('<div class="cg-game-t is-soon"><b>More Coming</b><small>A new ' + esc(sp.name) + ' game is on the way</small></div>');
-    el.innerHTML = '<section class="cg-sport is-page" style="--sc:' + sp.c + '"><div class="cg-sport-h"><span class="cg-sport-ico">' + esc(sp.name) + '</span><span><b>' + esc(sp.name) + ' Games</b><small>' + esc(sp.long) + '</small></span>' +
+    el.innerHTML = '<section class="cg-sport is-page" style="--sc:' + sp.c + '"><div class="cg-sport-h"><span class="cg-sport-ico" aria-hidden="true">' + sp.ico + '</span><span class="cg-sh-t"><b>' + esc(sp.name) + '</b><small>' + esc(sp.long) + '</small></span>' +
       '<span class="cg-count">' + gs.length + ' Game' + (gs.length === 1 ? '' : 's') + '</span></div><div class="cg-games n' + tiles.length + '">' + tiles.join('') + '</div></section>' +
       '<section class="cg-sec cg-two"><a class="cg-wide" href="' + esc(CG.url('')) + '"><span>&#x1F3E0;</span><b>All Games</b><small>Every sport on CAST Games</small></a>' +
       '<button type="button" class="cg-wide" data-open="boards"><span>&#x1F3C6;</span><b>Leaderboards</b><small>Every game, every week</small></button></section>';
@@ -66,7 +66,7 @@
   /* Today's Daily Challenge for a game, in its own words (the owner, 15 Oct 2026: "pull through in smaller text what the
      daily challenge is, or the reward"): the headline each game's home card shows (js/daily.js themeFor), and the reward */
   function sydDate() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return new Date().toISOString().slice(0, 10); } }
-  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function fmt(n) { return String(n); } // no commas in numbers (the owner, 16 Oct 2026)
   function dailyOf(id) {
     var C = id === '4000goals' ? window.CG_DAILY_AFL : window.CG_DAILY_NRL;
     if (!C || !C.day) return null;
@@ -110,8 +110,9 @@
     var sports = CG.SPORTS.filter(function (s) { return s.status === 'live' && s.path && live.some(function (g) { return g.sport === s.id; }); });
     h += '<section class="cg-sec" id="cgSports"><h2>All Games</h2><div class="cg-sport-links">' + sports.map(function (s) {
       var gs = CG.popular(0, s.id);
-      return '<a class="cg-sport-link" href="' + esc(CG.url(s.path)) + '" style="--sc:' + s.c + '"><span class="cg-sport-ico">' + esc(s.name) + '</span>' +
-        '<span class="cg-sl-t"><b>' + esc(s.name) + ' Games</b><small>' + esc(gs.map(function (g) { return g.name; }).join(' \u00B7 ')) + '</small></span>' +
+      return '<a class="cg-sport-link" href="' + esc(CG.url(s.path)) + '" style="--sc:' + s.c + '"><span class="cg-sport-ico" aria-hidden="true">' + s.ico + '</span>' +
+        // each game's name stays whole on one line (16 Oct 2026: "25000 RUNS" was split over two)
+        '<span class="cg-sl-t"><b>' + esc(s.name) + '</b><small>' + gs.map(function (g) { return '<span class="cg-nw">' + esc(g.name) + '</span>'; }).join(' \u00B7 ') + '</small></span>' +
         '<span class="cg-sl-go">See All ' + gs.length + ' <i aria-hidden="true">&#x203A;</i></span></a>';
     }).join('') + '</div></section>';
     // Coming soon sports, small

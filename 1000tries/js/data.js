@@ -228,7 +228,7 @@
   };
 
   T.fmt = function (n) {
-    return Number(n).toLocaleString('en-AU');
+    return Number(n).toLocaleString('en-AU', { useGrouping: false }); // no commas in numbers (the owner, 16 Oct 2026)
   };
 
   T.players = [];
@@ -256,7 +256,7 @@
     nrlw: { live: true, file: 'data/nrlw-players.json', target: 250, weight: 45, lowCut: 2, lowFactor: 0.3, label: 'NRLW tries', era: 'NRLW tries', only: 'NRLW premiership tries only', who: 'NRLW' },
     // World Cup 200+ (4 Oct 2026, the owner's call): senior Test players of the 2026 World Cup sides, Great Britain,
     // Scotland and Italy (tools/build_wc.py), on their Test tries. Since 5 Oct the draft pool is Test tryscorers from 1980
-    // on, older greats with 5+ Test tries and the 2026 squads (1,865 of 4,674). Its offers' weighting is the owner's call
+    // on, older greats with 5+ Test tries and the 2026 squads (1865 of 4,674). Its offers' weighting is the owner's call
     // (eased a little on 8 Oct 2026, once the World Legends left the normal offers)
     wc: { file: 'data/wc-players.json', target: 200, weight: 4, lowCut: 2, lowFactor: 0.3, label: 'Test tries', era: 'Test tries', only: 'Senior Test tries only', who: 'Test' }
   };

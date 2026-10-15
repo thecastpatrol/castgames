@@ -1,4 +1,4 @@
-/* 60000 RUNS Daily: a themed draft each day (Sydney time), with 60,000+ rules, no wildcards and no Legends Pick.
+/* 60000 RUNS Daily: a themed draft each day (Sydney time), with 60000+ rules, no wildcards and no Legends Pick.
    3 goes a day, each its own draft (everyone's go 1 is the same, and so on); the best total counts on the Daily
    leaderboard. A go counts once it starts, so leaving part way still uses it. Its themes are js/tests-daily.js.
    The app starts a go with T.play('daily', { seed, daily }) and calls T.dailyDone when it finishes. */
@@ -59,7 +59,7 @@
   }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function fmt(n) { return Number(n || 0).toLocaleString('en-AU'); }
+  function fmt(n) { return Number(n || 0).toLocaleString('en-AU', { useGrouping: false }); } // no commas in numbers
   function track(e, p) { if (T.track) T.track(e, p || {}); }
 
   /* ---------- Sydney calendar ---------- */
@@ -123,7 +123,7 @@
     T.dailyRender();
   };
 
-  /* ---------- The go chips: ✅ 1,043 · 812 · (not played) ---------- */
+  /* ---------- The go chips: ✅ 1043 · 812 · (not played) ---------- */
   function goesRow(rec) {
     var out = '';
     for (var i = 0; i < MAX_GOES; i++) {
@@ -171,7 +171,7 @@
     fitTitle(box.querySelector('.dly-title'));
     if (pop && !pop.hidden && pop.getAttribute('data-kind') !== 'remind') showHow(); // signed in (or out) with it open: its buttons follow
   };
-  // A long title ("1,050+ With Premiership Players") steps down a size or two so it always fits its two lines, never cut off.
+  // A long title ("1050+ With Premiership Players") steps down a size or two so it always fits its two lines, never cut off.
   // A title that would leave one word alone on its second line ("875+ With / Panthers" on a 360 phone) steps down until it
   // fits on one line, as far as 13px (the owner's no-lonely-words rule, 7 Oct 2026)
   function fitTitle(el) {
@@ -182,8 +182,8 @@
     for (var fs = 15; fs >= 12 && el.scrollHeight > el.clientHeight + 1; fs--) el.style.fontSize = fs + 'px';
     var fit = el.style.fontSize;
     for (var f2 = Math.min(15, parseFloat(getComputedStyle(el).fontSize) - 1); f2 >= 13 && lonelyEnd(el); f2--) el.style.fontSize = f2 + 'px';
-    // No size fits it on one line ("1,000+ With Rabbitohs" beside a Sign In button): keep the bigger size and the last two
-    // words together instead ("1,000+" over "WITH RABBITOHS")
+    // No size fits it on one line ("1000+ With Rabbitohs" beside a Sign In button): keep the bigger size and the last two
+    // words together instead ("1000+" over "WITH RABBITOHS")
     if (lonelyEnd(el)) { el.style.fontSize = fit; n.nodeValue = n.nodeValue.replace(/\s+(\S+\s*)$/, '\u00A0$1'); }
   }
   // The title's last word sits on a line of its own ("875+ WITH" over "PANTHERS")
@@ -312,7 +312,7 @@
     dailyButtons(host, left);
   }
   /* A Daily go's results use the page's own buttons (4 Oct 2026, the owner's call: one set of buttons, no second Play
-     Again that started 60,000+): Play Again is Go Again (2 left), or Play 60,000+ once the 3 goes are used; Share shares the
+     Again that started 60000+): Play Again is Go Again (2 left), or Play 60000+ once the 3 goes are used; Share shares the
      Daily's best; Change Mode stays */
   function dailyButtons(host, left) {
     var again = host.querySelector('[data-action="play-again"]'), share = host.querySelector('.btn-res-share');

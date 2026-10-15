@@ -36,14 +36,18 @@ a { color: inherit; }
 .cg-sports { display: grid; gap: 16px; margin-top: 24px; }
 .cg-sport { padding: 14px; border-radius: 22px; background: linear-gradient(180deg, rgba(var(--sc), .2), rgba(20, 20, 32, .6) 75%); border: 1px solid rgba(var(--sc), .45); }
 .cg-sport-h { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.cg-sport-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: rgba(var(--sc), .45); font: 900 12px/1 Inter, sans-serif; letter-spacing: .5px; }
+.cg-sport-ico { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(var(--sc), .45); font-size: 24px; line-height: 1; }
+.cg-sport-link .cg-sport-ico { font-size: 28px; }
+.cg-sh-t { min-width: 0; }
+.cg-nw { white-space: nowrap; }
 .cg-sport-h b { display: block; font: 900 20px/1.1 Inter, sans-serif; }
 .cg-sport-h small { font: 700 12px/1 Inter, sans-serif; color: rgba(255, 255, 255, .65); }
-.cg-count { margin-left: auto; padding: 5px 9px; border-radius: 999px; background: rgba(0, 0, 0, .35); font: 900 11px/1 Inter, sans-serif; }
+.cg-count { flex: none; white-space: nowrap; margin-left: auto; padding: 5px 9px; border-radius: 999px; background: rgba(0, 0, 0, .35); font: 900 11px/1 Inter, sans-serif; }
 .cg-games { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .cg-game-t { position: relative; display: grid; grid-template-rows: 84px auto auto 1fr; height: 240px; padding: 12px; border-radius: 16px; text-decoration: none; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); }
 .cg-game-t b { margin-top: 8px; font: 900 16px/1.2 Inter, sans-serif; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
-.cg-game-t small { margin-top: 3px; font: 600 12px/1.35 Inter, sans-serif; color: rgba(255, 255, 255, .72); display: block; text-wrap: pretty; }
+.cg-game-t small { margin-top: 3px; font: 600 12px/1.35 Inter, sans-serif; color: rgba(255, 255, 255, .72); display: block; text-wrap: balance; }
+.cg-game-t b.is-long { font-size: 13px; letter-spacing: -.1px; white-space: nowrap; }
 .cg-game-t .cg-btn { align-self: end; }
 .cg-new { position: absolute; top: 10px; right: 10px; z-index: 1; padding: 4px 9px; border-radius: 999px; background: var(--sky); color: #04121f; font: 900 10.5px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; }
 .cg-game-t.is-soon { display: grid; place-content: center; text-align: center; border: 1.5px dashed rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .03); }

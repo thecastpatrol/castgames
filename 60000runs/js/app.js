@@ -136,6 +136,7 @@
 
   var VIDEO_FEED = 'https://mediakit.thecastpatrol.com.au/data/episodes.json';
   function loadVideos() {
+    if (!$('watch')) return; // NRL videos are on NRL games only (the owner, 16 Oct 2026)
     fetch(VIDEO_FEED, { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
@@ -909,7 +910,7 @@
     return !out.win && out.reason === 'under' && S.mode.wildcards && S.wildcards.tweak < 1 &&
       !!(window.CastAccount && CastAccount.canBuyRemove && CastAccount.canBuyRemove());
   }
-  /* Go Higher (2 Oct 2026, the owner's call): an XI that fills at the target or over (60,000+ and Team Spin) asks
+  /* Go Higher (2 Oct 2026, the owner's call): an XI that fills at the target or over (60000+ and Team Spin) asks
      before it locks in, every time it fills, like a short one: with a Remove Player still in hand (the game's own, CAST
      Pass's second, or saved ones) they can swap someone out and chase a bigger score; with none left, players 15+ get
      one for $0.99 (they may keep paying to climb). The 10-second countdown locks it in if they don't tap, and the new
@@ -1103,10 +1104,10 @@
     var usedWild = (st.reroll + (S.bonusRerolls || 0) - (wc.reroll || 0)) + (st.scout + (S.boughtScouts || 0) - (wc.scout || 0)) + (st.tweak + (S.boughtTweaks || 0) - (wc.tweak || 0)) > 0;
     if (nrl) {
       if (total >= T.TARGET) ids.push('hit1000');
-      if (total >= T.TARGET * 1.1) ids.push('hit1100'); // 66,000 Club (+10%, as 1000TRIES' 1100)
+      if (total >= T.TARGET * 1.1) ids.push('hit1100'); // 66000 Club (+10%, as 1000TRIES' 1100)
       if (total >= T.TARGET * 1.2) ids.push('hit1200'); // Run Machine (+20%)
       if (out.reason === 'exact') ids.push('exact');
-      if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 540) ids.push('photo'); // a photo finish: within 540 of 60,000 (1000TRIES' 9 tries, scaled)
+      if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 540) ids.push('photo'); // a photo finish: within 540 of 60000 (1000TRIES' 9 tries, scaled)
       if (total >= T.TARGET * 0.99 && total < T.TARGET) ids.push('soclose'); // the last 1% under, as 1000TRIES' 990 to 999
       if (S.mode.wildcards && total >= T.TARGET && !usedWild) ids.push('nowild');
       if (mode === 'spin' && total >= T.TARGET) ids.push('spin');
@@ -1140,9 +1141,9 @@
   }
   /* 60000 RUNS' own trophies (16 Oct 2026, from 25000 RUNS' set): the XI's batting, gloves and bowling, its nations and
      eras, and the Legends. Run thresholds are shares of the game's target (T.DATASETS.nrl.target, 60,000), so they move
-     with it; the 10,000 and the wickets are Test cricket's own marks. Their names, icons and lines go in the shared trophy
+     with it; the 10000 and the wickets are Test cricket's own marks. Their names, icons and lines go in the shared trophy
      list (js/cast-account.js TROPHIES.tests) with the accounts hookup (~/cast-dev/tests/tools/trophies_tests.js) */
-  function tsMark(share) { return Math.round(T.DATASETS.nrl.target * share / 100) * 100; } // 60,000 x 1/12 = 5,000
+  function tsMark(share) { return Math.round(T.DATASETS.nrl.target * share / 100) * 100; } // 60000 x 1/12 = 5000
   T.TS_MARKS = { five: tsMark(1 / 12), top: tsMark(1 / 20), gloves: tsMark(1 / 12), tail: tsMark(1 / 12), ten: 10000, wkts: 1000 };
   function cricketTrophies(S, out, players, ids, hit) {
     var M = T.TS_MARKS;
@@ -1260,6 +1261,7 @@
         // A renamed player's old name ('was') still finds them, for games saved before the rename
         pools.forEach(function (pl) { pl.players.forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; (p.was || []).forEach(function (o) { sheetNames[String(o).toLowerCase()] = p; }); }); });
         (T.LEGENDS || []).forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; });
+        if (T.GOAT_CARD) sheetNames[T.GOAT_CARD.record_name.toLowerCase()] = T.GOAT_CARD; // the GOAT item's card
       }
       var p = sheetNames[String(name).toLowerCase()];
       return p ? { tries: p.tries_1998_plus, club: T.lastClub(p), tier: p.tier || '' } : null; // 'tries': the shared field name (the number shown)
@@ -1312,7 +1314,7 @@
     });
   }
 
-  /* Exactly 60,000 (8 Oct 2026, the owner: "yes build this", 60000 RUNS's own big moment to match 27-0's 27-0): the big moment
+  /* Exactly 60000 (8 Oct 2026, the owner: "yes build this", 60000 RUNS's own big moment to match 27-0's 27-0): the big moment
      both games share (js/cast-celebrate.js) before the results: the XI in the order they went in, their runs adding up to
      1,000, then the cup, the XI and their numbers. Not in Quick Draft. then() shows the results. */
   function celebrate(S, out, then) {
@@ -1603,7 +1605,7 @@
         openSheet(R.goatSheet()); $('sheet').classList.add('is-confirm');
         break;
       }
-      case 'confirm-goat': { // use one from the Vault, then the offer becomes Lance Franklin
+      case 'confirm-goat': { // use one from the Vault (or buy one), then the offer becomes the GOAT
         var gs = T.state();
         closeSheet();
         if (!gs || !T.goatFits() || !window.CastAccount || !CastAccount.buyItem) break;

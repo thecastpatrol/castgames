@@ -772,8 +772,8 @@
     for (var fs = 15; fs >= 12 && t.scrollHeight > t.clientHeight + 1; fs--) t.style.fontSize = fs + 'px';
     var fit = t.style.fontSize;
     for (var f2 = Math.min(15, parseFloat(getComputedStyle(t).fontSize) - 1); f2 >= 13 && lonelyEnd(t); f2--) t.style.fontSize = f2 + 'px';
-    // No size fits it on one line ("1,000+ With Rabbitohs" beside a Sign In button): keep the bigger size and the last two
-    // words together instead ("1,000+" over "WITH RABBITOHS")
+    // No size fits it on one line ("1000+ With Rabbitohs" beside a Sign In button): keep the bigger size and the last two
+    // words together instead ("1000+" over "WITH RABBITOHS")
     if (lonelyEnd(t)) { t.style.fontSize = fit; n.nodeValue = n.nodeValue.replace(/\s+(\S+\s*)$/, '\u00A0$1'); }
   }
   // The title's last word sits on a line of its own ("875+ WITH" over "PANTHERS")

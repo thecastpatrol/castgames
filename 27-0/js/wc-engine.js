@@ -441,7 +441,7 @@
   }
 
   // Before the player's game in round k of Pools B and C: what it can and can't decide. Every way the games from round k
-  // on can go is checked (2 to the power of how many are left: 32,768 at most). Points difference is unknown, so a team
+  // on can go is checked (2 to the power of how many are left: 32768 at most). Points difference is unknown, so a team
   // level on wins counts against the player when proving they are through, and for them when proving they are out.
   // Only what holds in every case is claimed: through, out (whatever happens), win.through, win.top (finish 1st), lose.out.
   function stakes(bcGames, k) {

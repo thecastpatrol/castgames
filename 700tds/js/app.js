@@ -136,6 +136,7 @@
 
   var VIDEO_FEED = 'https://mediakit.thecastpatrol.com.au/data/episodes.json';
   function loadVideos() {
+    if (!$('watch')) return; // NRL videos are on NRL games only (the owner, 16 Oct 2026)
     fetch(VIDEO_FEED, { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
@@ -1255,6 +1256,7 @@
         // A renamed player's old name ('was') still finds them, for games saved before the rename
         pools.forEach(function (pl) { pl.players.forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; (p.was || []).forEach(function (o) { sheetNames[String(o).toLowerCase()] = p; }); }); });
         (T.LEGENDS || []).forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; });
+        if (T.GOAT_CARD) sheetNames[T.GOAT_CARD.record_name.toLowerCase()] = T.GOAT_CARD; // the GOAT item's card
       }
       var p = sheetNames[String(name).toLowerCase()];
       return p ? { tries: p.tries_1998_plus, club: T.lastClub(p), tier: p.tier || '' } : null; // 'tries': the shared field name (the number shown)
@@ -1598,7 +1600,7 @@
         openSheet(R.goatSheet()); $('sheet').classList.add('is-confirm');
         break;
       }
-      case 'confirm-goat': { // use one from the Vault, then the offer becomes Lance Franklin
+      case 'confirm-goat': { // use one from the Vault (or buy one), then the offer becomes the GOAT
         var gs = T.state();
         closeSheet();
         if (!gs || !T.goatFits() || !window.CastAccount || !CastAccount.buyItem) break;

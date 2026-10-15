@@ -462,6 +462,8 @@
      once a game, never in a Daily or a friend's challenge, and only while he isn't in the 13 and fits an open spot.
      Using it swaps the offer for him alone, his tries showing */
   T.goatPlayer = function () { return (T.players || []).filter(T.isGoat)[0] || null; };
+  // He isn't in the 13 yet and an open spot fits him (the tile says "Spot Taken" otherwise)
+  T.goatRoom = function () { var g = T.goatPlayer(); return !!S && !!g && !S.used[g.id] && T.fitsEmpty(g); };
   T.goatFits = function () {
     var g = T.goatPlayer();
     return !!S && !!g && T.DATASET === 'nrl' && (S.mode.id === 'plus' || S.mode.id === 'exact') && !S.finished && !S.goatUsed && !S.challenge && !S.daily &&
