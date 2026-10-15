@@ -20,7 +20,7 @@
   var SPORTS = [
     { id: 'nrl', name: 'NRL', long: 'Rugby League', c: '34,197,94', status: 'live', path: 'nrl/' }, // path: its See All page
     { id: 'afl', name: 'AFL', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
-    { id: 'cricket', name: 'Cricket', long: 'The Big Bash and Tests', c: '255,122,46', status: 'live', path: 'cricket/' },
+    { id: 'cricket', name: 'Cricket', long: 'International & T20s', c: '255,122,46', status: 'live', path: 'cricket/' },
     { id: 'nfl', name: 'NFL', long: 'American Football', c: '54,226,126', status: 'live', path: 'nfl/' },
     { id: 'racing', name: 'Horse Racing', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
   ];
