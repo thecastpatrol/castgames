@@ -45,3 +45,7 @@ html.cg-sheet-open, html.cg-sheet-open body { overflow: hidden; }
 .cg-acct [data-cast-friends] { display: none !important; }
 /* Shop is a tab too (the owner, 15 Oct 2026: no double Shop): the account's own Shop button stays out of the bar */
 .cg-acct [data-cast-shop] { display: none !important; }
+
+/* A note under the bar (16 Oct 2026): a game's tabs before its accounts open */
+.cg-note { position: fixed; top: 64px; left: 50%; transform: translateX(-50%); z-index: 9500; width: max-content; max-width: calc(100% - 32px); box-sizing: border-box; padding: 10px 14px; border-radius: 12px; background: #1b1b2c; border: 1px solid rgba(255, 255, 255, .16); color: #fff; font: 700 13px/1.35 Inter, sans-serif; text-align: center; text-wrap: balance; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); }
+.cg-note[hidden], .cg-acct[hidden] { display: none; }

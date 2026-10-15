@@ -100,12 +100,29 @@
     track('cg_tab', { tab: a, game: HERE || 'home' });
     if (a === 'switch') { openSwitcher(); return; }
     if (a === 'play') { play(); return; }
-    if (!A) return;
+    // A game whose accounts open at its launch (25000 RUNS before the owner's Launch, 16 Oct 2026: the tabs did nothing)
+    if (!A || !acctOn()) { note((currentGame() ? currentGame().name : 'CAST Games') + ' stats, boards, friends and the Shop open when it launches. Play as a guest for now.'); return; }
     if (a === 'stats') A.openProfile ? A.openProfile('stats') : A.open('stats');
     else if (a === 'boards') A.openBoards(null);
     else if (a === 'friends') A.openFriends ? A.openFriends() : A.open('friends');
     else if (a === 'shop') A.openShop ? A.openShop() : A.open('shop');
   }
+  // Accounts are on for this page: the page's own setting, or its game launched since (CastAccount.launched)
+  function acctOn() {
+    var c = window.CAST_ACCOUNT, A = acct();
+    if (!c) return !!A;
+    try { return c.enabled !== false || !!(A && A.launched && A.launched()); } catch (e) { return false; }
+  }
+  // A short note under the bar (gone after 4 s, or on the next tap)
+  var noteEl = null, noteT = 0;
+  function note(msg) {
+    if (!noteEl) { noteEl = document.createElement('div'); noteEl.className = 'cg-note'; noteEl.setAttribute('role', 'status'); document.body.appendChild(noteEl); }
+    noteEl.textContent = msg; noteEl.hidden = false; clearTimeout(noteT);
+    noteT = setTimeout(function () { noteEl.hidden = true; }, 4000);
+  }
+  // The account button on the right waits for the game's launch too (it showed an empty dash)
+  function acctShow() { var s = document.querySelector('.cg-acct'); if (s) s.hidden = !acctOn(); }
+  setTimeout(acctShow, 1500); setTimeout(acctShow, 6000); window.addEventListener('cast-account', acctShow);
   // Play: on the home page, the top; in a game, its New Game when a game is under way, else that game's home
   function play() {
     if (!HERE) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
