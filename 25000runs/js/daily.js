@@ -280,7 +280,7 @@
   function fillRank() {
     var el = document.getElementById('dlyRank');
     if (!el) return;
-    CastAccount.dailyRank('1000daily').then(function (r) {
+    CastAccount.dailyRank('bbdaily').then(function (r) {
       if (!el.isConnected) return;
       if (r.who === 'off') el.remove(); else el.innerHTML = rankLine(r);
     }, function () { if (el.isConnected) el.innerHTML = rankLine({ who: 'failed' }); });
@@ -342,7 +342,7 @@
     else if (what === 'close') closeHow();
     else if (what === 'play') { closeHow(); T.dailyStart(); }
     else if (what === 'share') share();
-    else if (what === 'board' && window.CastAccount) { closeHow(); CastAccount.openBoards(['1000daily', 'today']); }
+    else if (what === 'board' && window.CastAccount) { closeHow(); CastAccount.openBoards(['bbdaily', 'today']); }
     else if (what === 'plus') window.dispatchEvent(new CustomEvent('cast:play', { detail: { game: 'bigbash', mode: 'plus' } }));
     else if (what === 'claim' && window.CastAccount && CastAccount.requireSignIn) CastAccount.requireSignIn(null, 'daily-reward');
   });

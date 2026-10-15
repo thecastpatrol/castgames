@@ -50,7 +50,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css?v=67a5a1a8">
-<link rel="stylesheet" href="css/cast-account.css?v=47622416">
+<link rel="stylesheet" href="css/cast-account.css?v=2ea506e8">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
@@ -115,7 +115,6 @@
           <span class="spot-promo-txt"><b>Can You Draft 1000 NRL Tries?</b><small>Our NRL game: roll 3, pick 1 and build a 13.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
-        <div data-cast-upgrades hidden></div>
       </div>
 
       <!-- Today's Daily (js/daily.js): shown from Daily #1, Monday 28 September 2026 -->
@@ -248,10 +247,10 @@
 <script src="js/render.js?v=a1887588"></script>
 <script src="js/share-card.js?v=07bd7cc5"></script>
 <script src="js/cast-celebrate.js?v=eacfb009"></script>
-<script src="js/app.js?v=5a78b3a5"></script>
+<script src="js/app.js?v=9b2ef5fa"></script>
 <script src="js/cast-daily.js?v=a0d50a5c"></script>
 <script src="js/bbl-daily.js?v=c608ed47"></script>
-<script src="js/daily.js?v=2b3616a2"></script>
+<script src="js/daily.js?v=ad3844be"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   // 25000 RUNS: not connected to CAST accounts yet (its own game id, boards and server checks come next); 'launch' names a
@@ -264,11 +263,9 @@
     promoPlay: function (mode) { var m = mode === 'nrlw' ? 'nrlw' : mode === 'wc' ? 'wc' : 'plus', c = document.querySelector('.mode-card[data-mode="' + m + '"],.mode-mini[data-mode="' + m + '"]'); if (c) c.click(); },
     promoStat: function (name) { var p = ((window.T && T.players) || []).filter(function (x) { return x.name === name; })[0]; return p ? { v: p.tries_1998_plus, unit: 'Runs' } : null; } };
 </script>
-<script src="js/upgrades-data.js?v=13379f9a"></script>
-<script src="js/cast-upgrades.js?v=c4498892"></script>
 <script src="js/cast-picks.js?v=08f42325"></script>
 <script src="js/ou-engine.js?v=7189bb67"></script>
 <script src="js/overunder.js?v=3ed9f04c"></script>
-<script src="js/cast-account.js?v=736fcf3a"></script>
+<script src="js/cast-account.js?v=d9f8ae56"></script>
 </body>
 </html>

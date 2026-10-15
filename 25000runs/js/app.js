@@ -1101,22 +1101,21 @@
     var usedWild = (st.reroll + (S.bonusRerolls || 0) - (wc.reroll || 0)) + (st.scout + (S.boughtScouts || 0) - (wc.scout || 0)) + (st.tweak + (S.boughtTweaks || 0) - (wc.tweak || 0)) > 0;
     if (nrl) {
       if (total >= T.TARGET) ids.push('hit1000');
-      if (total >= 4400) ids.push('hit1100'); // 4400 Club (+10%, as 1000TRIES' 1100)
-      if (total >= 4800) ids.push('hit1200'); // Goal Machine (+20%)
+      if (total >= T.TARGET * 1.1) ids.push('hit1100'); // 27,500 Club (+10%, as 1000TRIES' 1100)
+      if (total >= T.TARGET * 1.2) ids.push('hit1200'); // Run Machine (+20%)
       if (out.reason === 'exact') ids.push('exact');
-      if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 36) ids.push('photo'); // a photo finish: within 36 of 4000
-      if (total >= 3960 && total <= 3999) ids.push('soclose'); // the last 1% under, as 1000TRIES' 990 to 999
+      if (mode === 'plus' && total >= T.TARGET && total <= T.TARGET + 225) ids.push('photo'); // a photo finish: within 225 of 25,000 (1000TRIES' 9 tries, scaled)
+      if (total >= T.TARGET * 0.99 && total < T.TARGET) ids.push('soclose'); // the last 1% under, as 1000TRIES' 990 to 999
       if (S.mode.wildcards && total >= T.TARGET && !usedWild) ids.push('nowild');
       if (mode === 'spin' && total >= T.TARGET) ids.push('spin');
-      if (players.some(T.isGoat)) ids.push('aj');
-      // GOAT Herder: 3 of the 10 biggest BBL runscorers in one team (Tony Lockett, the GOAT, has his own trophy)
+      // Top Ten: 3 of the 10 biggest BBL run scorers in one team
       var top10 = T.players.slice().sort(function (a, b) { return b.tries_1998_plus - a.tries_1998_plus; }).slice(0, 10);
       if (players.filter(function (p) { return top10.indexOf(p) >= 0; }).length >= 3) ids.push('goats');
-      if (full && total < 2000) ids.push('bench'); // half the target, as 1000TRIES' 500
+      if (full && total < T.TARGET / 2) ids.push('bench'); // half the target, as 1000TRIES' 500
       if (players.some(function (p) { return T.isLegend(p); })) ids.push('legend');
       // 5 Oct 2026: a 4000+ here is one that counts (not an Exactly 4000 bust)
       var hit = total >= T.TARGET && out.reason !== 'over', luck = T.luckPct();
-      if (total === 4444 && mode !== 'exact') ids.push('legs11'); // Four Fours
+      if (total === 22222 && mode !== 'exact') ids.push('legs11'); // All Twos
       if (hit && luck != null && luck <= -15) ids.push('odds');
       if (hit && players.some(function (p) { return p.tries_1998_plus === 0; })) ids.push('zero');
       if (full) eraTrophies(players, ids);
