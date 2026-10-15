@@ -7,7 +7,7 @@
 
   var LAUNCH = '2026-09-28'; // Daily #1
   var MAX_GOES = 3;
-  var KEY = '1000_daily_';
+  var KEY = '4000goals_daily_';
 
   /* From 29 Sep 2026 (the owner's call) every Daily is themed, with a goal to tick off, and each player gets their own
      random draft within the theme: the calendar both games share is js/cast-daily.js (edit Dailies there). Earlier days

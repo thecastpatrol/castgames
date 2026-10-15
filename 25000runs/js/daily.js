@@ -1,18 +1,18 @@
 /* 25000 RUNS Daily: the same draft for everyone each day (Sydney time), with 4000+ rules, no wildcards and no Legends Pick.
    3 goes a day, each its own draft (everyone's go 1 is the same, and so on); the best total counts on the Daily
-   leaderboard. A go counts once it starts, so leaving part way still uses it. The first Daily is Monday 28 September 2026.
+   leaderboard. A go counts once it starts, so leaving part way still uses it. Its themes are js/bbl-daily.js.
    The app starts a go with T.play('daily', { seed, daily }) and calls T.dailyDone when it finishes. */
 (function (T) {
   'use strict';
 
-  var LAUNCH = '2026-09-28'; // Daily #1
+  var LAUNCH = '2026-10-15'; // Daily #1 (25000 RUNS' own first day; moves to its launch day)
   var MAX_GOES = 3;
-  var KEY = '1000_daily_';
+  var KEY = '25000runs_daily_'; // its own goes (castgames.com.au keeps every game on one address)
 
   /* From 29 Sep 2026 (the owner's call) every Daily is themed, with a run to tick off, and each player gets their own
      random draft within the theme: the calendar both games share is js/cast-daily.js (edit Dailies there). Earlier days
      keep the old format (the same draft for everyone) for anything that looks back at them. */
-  var NEW_FORMAT = '2026-09-29';
+  var NEW_FORMAT = '2026-09-29'; // every 25000 RUNS Daily is themed (js/bbl-daily.js)
   var LEGACY = {
     '2026-09-28': { target: 700, club: 'knights', clubName: 'Knights', icon: '🏰', name: 'Knights Day',
       title: '700+ Runs With a Knight in Your XI', head: '700+ With a Knight',

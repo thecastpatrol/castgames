@@ -103,6 +103,7 @@ def fit_code(dst, folder):
             t = rewrite_links(s, True) if f.endswith('.js') else s
             if folder in ('4000goals', '25000runs') and f.endswith('.js'):
                 t = t.replace("'1000tries_", "'" + folder + "_")  # its own saved data here (sound, draft, played...)
+                t = t.replace("'1000_daily_'", "'" + folder + "_daily_'")  # and its own Daily goes (1000TRIES keeps '1000_daily_')
             if t != s:
                 open(p, 'w', encoding='utf-8').write(t)
 

@@ -230,11 +230,24 @@
   T.openCodesFor = function (p) {
     var empty = T.emptyCodes();
     var seen = {};
-    return T.positionsOf(p).filter(function (c) {
+    var codes = T.positionsOf(p).filter(function (c) {
       if (!empty[c] || seen[c]) return false;
       seen[c] = true;
       return true;
     });
+    // A spot running out of players (25000 RUNS, 15 Oct 2026: a club day has only 3 or 4 keepers, and a keeper who bats
+    // could go into the top six and leave the gloves with nobody): when the players left who can fill it are no more
+    // than its open spots, someone who can fill it must go there
+    if (codes.length > 1) {
+      var open = function (c) { return S.slots.filter(function (x) { return !x.player && x.code === c; }).length; };
+      var scarce = codes.filter(function (c) { return T.supplyFor(c, p) <= open(c); });
+      if (scarce.length) return scarce.slice(0, 1);
+    }
+    return codes;
+  };
+  // How many unpicked players in today's pool (this one included) could still fill an open spot of this code
+  T.supplyFor = function (code, me) {
+    return T.players.filter(function (q) { return (q === me || !S.used[q.id]) && T.inDailyPool(q) && T.positionsOf(q).indexOf(code) !== -1; }).length;
   };
 
   T.eligible = function () {

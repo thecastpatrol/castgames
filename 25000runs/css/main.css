@@ -1831,5 +1831,3 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch-row:nth-child(3) { margin: 6px 0; }
 .pitch-row:first-child, .pitch-row:last-child { padding: 0 8%; }
 .pitch-row:nth-child(3) .slot, .pitch-row:nth-child(4) .slot, .pitch-row:last-child .slot { max-width: 33%; }
-/* The Daily Challenge waits for its own cricket themes (15 Oct 2026) */
-#dailyCard { display: none !important; }
