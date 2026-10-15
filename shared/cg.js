@@ -180,12 +180,14 @@
       }).join('') + '</div>' +
       (sp ? '<div class="cg-sp-h" style="--sc:' + sp.c + '"><b>' + esc(sp.name) + '</b><small>' + esc(sp.long) + '</small></div>' : '') +
       '<div class="cg-sw-list"><div class="cg-sp-list">' + gs.map(function (g) {
-        return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
+        // 27-0 and 1000TRIES go straight into their main mode now the World Cup modes have their own rows (16 Oct 2026, the owner)
+        return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path + (SW_PLAY[g.id] ? '?play=' + SW_PLAY[g.id] : '')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
           (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
       }).join('') + swModes() + '</div></div></div>';
   }
   /* The World Cup modes under NRL while the World Cup is on (16 Oct 2026, the owner: "very good modes and can be their own
      game in a sense"): a tap goes straight into the mode; 27-0 and 1000TRIES still have them on their own homes too */
+  var SW_PLAY = { '27-0': 'classic', '1000tries': 'plus' };
   var WC_MODES = [{ name: 'World Cup 8-0', short: 'Spin a nation and win all eight', path: '27-0/?play=wc', game: '27-0' },
                   { name: 'World Cup 200+', short: 'Draft World Cup squads to 200 tries', path: '1000tries/?play=wc', game: '1000tries' }];
   function swModes() {
