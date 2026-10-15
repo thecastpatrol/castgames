@@ -239,7 +239,8 @@
     pick: function () { tone(523, 0.1, 'triangle', 0, 0.35); tone(784, 0.16, 'triangle', 0.08, 0.35); },
     win: function () { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, 0.28, 'triangle', i * 0.12, 0.35); }); },
     fail: function () { tone(262, 0.3, 'triangle', 0, 0.35); tone(196, 0.45, 'triangle', 0.2, 0.35); },
-    wild: function () { tone(660, 0.12, 'sine', 0, 0.35); tone(990, 0.16, 'sine', 0.07, 0.35); }
+    wild: function () { tone(660, 0.12, 'sine', 0, 0.35); tone(990, 0.16, 'sine', 0.07, 0.35); },
+    land: function () { tone(392, 0.07, 'triangle', 0, 0.3); tone(784, 0.1, 'triangle', 0.04, 0.22); } // a formation card lands
   };
 
   // Hidden sound check for phones: open the site with ?audiodebug
@@ -538,7 +539,11 @@
     renderChrome(flashIdx);
     var panel = $('offerPanel');
     if (S.awaitingLock && !S.tweakMode && !S.lockHold) startLockTimer(S); else stopLockTimer();
-    if (!S.fm) panel.innerHTML = R.formationOffer(S);
+    if (!S.fm) {
+      if (fmSpinFor === S && fmSpinning) { /* mid-spin: the reels keep turning in place */ }
+      else if (fmSpinFor !== S) { fmSpinFor = S; panel.innerHTML = R.formationOffer(S, reduceMotion ? 'fade' : 'spin'); if (!reduceMotion) fmSpin(S); }
+      else panel.innerHTML = R.formationOffer(S);
+    }
     else if (S.awaitingLock) panel.innerHTML = R.decision(S);
     else if (S.mode.source === 'spin' && !S.offer && !S.spinPos && !S.tweakMode) panel.innerHTML = R.pickPosition(S);
     else if (S.offer && S.offer.kind === 'spin') panel.innerHTML = R.offerSpin(S);
@@ -731,10 +736,60 @@
      Every mode, the Daily too: the offer is seeded, so a Daily or a friend's challenge offers everyone the same three */
   function chooseFormation(id) {
     var S = T.state();
-    if (!S || S.finished || S.fm || busy || (S.fmOffer || []).indexOf(id) < 0 || !T.setFormation(id)) return;
+    if (!S || S.finished || S.fm || busy || (fmSpinning && fmSpinFor === S) || (S.fmOffer || []).indexOf(id) < 0 || !T.setFormation(id)) return;
     if (!S.qd) T.track('formation_pick', { mode: S.mode.name, formation: id });
     sfx.pick();
     nextOffer();
+  }
+
+  /* The formation spin (17 Oct 2026, the owner: "Make sure the formation spin is in so it's like another element of
+     chance"). The three are already decided (T.formationOffer, seeded, so a Daily or a friend's challenge lands everyone
+     on the same three); this is theatre only, like Team Spin's reel. Each card flicks through the ten names and their
+     little pitches, slowing down, then they land one after another (top to bottom) with a small bounce. Nothing is
+     saved or sent; the cards stay disabled until the last one lands. Reduced motion: a plain fade (R.formationOffer) */
+  var fmSpinFor = null, fmSpinning = false;
+  var FM_STOP = [950, 1350, 1750]; // ms: when each card lands
+  function fmSpin(S) {
+    var cards = Array.prototype.slice.call($('offerPanel').querySelectorAll('.fm-card'));
+    if (!cards.length) return;
+    fmSpinning = true;
+    var ids = T.FORMATION_IDS, t0 = Date.now(), left = cards.length, lastTick = 0;
+    var swap = function (card, id) {
+      card.querySelector('.fm-name').textContent = id;
+      var old = card.querySelector('.fm-pitch'), tmp = document.createElement('span');
+      tmp.innerHTML = R.miniPitch(id);
+      old.parentNode.replaceChild(tmp.firstChild, old);
+    };
+    var done = function () {
+      fmSpinning = false;
+      if (T.state() !== S || S.fm) return;
+      var box = $('offerPanel').querySelector('.fm-cards');
+      if (box) { box.classList.remove('is-spinning'); box.removeAttribute('aria-busy'); Array.prototype.forEach.call(box.querySelectorAll('.fm-card'), function (c) { c.disabled = false; }); }
+    };
+    cards.forEach(function (card, n) {
+      var real = card.getAttribute('data-fm'), stopAt = FM_STOP[n] || FM_STOP[FM_STOP.length - 1] + 400 * (n - 2), shown = real;
+      var turn = function () {
+        if (T.state() !== S || S.fm || !card.isConnected) { if (!--left) done(); return; }
+        var t = Date.now() - t0;
+        if (t >= stopAt) {
+          swap(card, real);
+          card.classList.remove('is-spinning'); card.classList.add('is-landed');
+          if (card.animate) card.animate([{ transform: 'translateY(-7px) scale(1.015)' }, { transform: 'translateY(3px)', offset: .55 }, { transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.2,.8,.3,1.2)' });
+          sfx.land();
+          if (!--left) done();
+          return;
+        }
+        // The next name: never the one showing (or the real one too early, so it never seems to land twice)
+        var next; do { next = ids[Math.floor(Math.random() * ids.length)]; } while (next === shown || (stopAt - t > 260 && next === real));
+        shown = next; swap(card, next);
+        var side = card.querySelector('.fm-side'), pitch = card.querySelector('.fm-pitch');
+        if (side.animate) [side, pitch].forEach(function (el) { el.animate([{ transform: 'translateY(-38%)', opacity: .35 }, { transform: 'none', opacity: 1 }], { duration: 60, easing: 'ease-out' }); });
+        if (Date.now() - lastTick > 55) { lastTick = Date.now(); sfx.tick(); }
+        var k = Math.min(1, t / stopAt);
+        setTimeout(turn, 45 + Math.round(210 * k * k * k)); // slows down towards its stop
+      };
+      turn();
+    });
   }
 
   /* Legends Pick / Legend Pick: a short pack-opening moment before the three greats appear.

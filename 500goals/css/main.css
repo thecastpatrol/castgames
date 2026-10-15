@@ -1878,6 +1878,16 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .fm-dot i { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .7); }
 .fm-dot b { font-size: 9px; font-weight: 900; letter-spacing: .3px; color: rgba(255, 255, 255, .9); line-height: 1; }
 @media (max-width: 380px) { .fm-card { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } .fm-name { font-size: 21px; } }
+/* The formation spin (17 Oct 2026): the cards turn like reels (js/app.js fmSpin), then land one by one */
+.fm-card.is-spinning { overflow: hidden; cursor: default; animation: none; border-color: rgba(var(--acc-rgb), .25); }
+.fm-card.is-spinning .fm-note { opacity: 0; }
+.fm-card.is-spinning .fm-cta { opacity: .35; }
+.fm-card.is-spinning .fm-name { filter: blur(.4px); }
+.fm-card .fm-note, .fm-card .fm-cta { transition: opacity .25s ease; }
+.fm-card.is-landed { animation: fmLand .6s ease-out both; }
+@keyframes fmLand { from { box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .95), 0 0 22px rgba(var(--acc-rgb), .55); } to { box-shadow: 0 0 0 0 rgba(var(--acc-rgb), 0); } }
+.fm-cards.is-fade .fm-card { animation: fmFade .3s ease both; }
+@keyframes fmFade { from { opacity: 0; } to { opacity: 1; } }
 /* Before a formation is chosen the pitch waits for it */
 .pitch-wait { display: grid; place-items: center; gap: 4px; min-height: 260px; text-align: center; }
 .pitch-wait b { font-size: 16px; font-weight: 900; color: #fff; }

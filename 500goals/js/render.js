@@ -220,12 +220,14 @@
       return '<span class="fm-row">' + row.map(function (c) { return '<span class="fm-dot"><i></i><b>' + esc(c) + '</b></span>'; }).join('') + '</span>';
     }).join('') + '</span>';
   };
-  R.formationOffer = function (S) {
-    return '<div class="panel-head"><span class="panel-title">Pick Your Formation</span><span class="panel-meta">Then draft its spots</span></div>' +
-      '<p class="fm-intro">Choose 1 of these 3. Your draft fills its real spots, from left back to striker.</p>' +
-      '<div class="fm-cards">' + (S.fmOffer || []).map(function (id, n) {
+  /* The formation spin (17 Oct 2026, the owner: "like another element of chance"): with spin set the three cards come
+     disabled and turning (js/app.js fmSpin cycles them and lands each on its seeded formation); fade for reduced motion */
+  R.formationOffer = function (S, spin) {
+    return '<div class="panel-head"><span class="panel-title">Spin Your Formation</span><span class="panel-meta">Then draft its spots</span></div>' +
+      '<p class="fm-intro">Three formations spin up. Pick 1 and your draft fills its real spots, from left back to striker.</p>' +
+      '<div class="fm-cards' + (spin === 'spin' ? ' is-spinning' : spin === 'fade' ? ' is-fade' : '') + '"' + (spin === 'spin' ? ' aria-busy="true"' : '') + '>' + (S.fmOffer || []).map(function (id, n) {
         var spots = T.formationSlots(id);
-        return '<button type="button" class="fm-card" data-fm="' + esc(id) + '" style="animation-delay:' + (n * 70) + 'ms" aria-label="' + esc(id) + ': ' + esc(spots.join(' ')) + '">' +
+        return '<button type="button" class="fm-card' + (spin === 'spin' ? ' is-spinning' : '') + '" data-fm="' + esc(id) + '"' + (spin === 'spin' ? ' disabled' : ' style="animation-delay:' + (n * 70) + 'ms"') + ' aria-label="' + esc(id) + ': ' + esc(spots.join(' ')) + '">' +
           '<span class="fm-side"><span class="fm-name">' + esc(id) + '</span><span class="fm-note">' + esc((T.FORMATION_NOTES || {})[id] || '') + '</span>' +
           '<span class="fm-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' + R.miniPitch(id) +
           '</button>';
