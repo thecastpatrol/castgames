@@ -121,7 +121,8 @@
     var sk = T.silksOf(p), use = sk || T.NEUTRAL_SILKS;
     var a = hexOk(use.colours[0]), b = hexOk(use.colours[1]) || a;
     return { primary: a, accent: b.toLowerCase() === a.toLowerCase() ? textOn(a) : b, text: textOn(a), bg: T.silksBg(use),
-      horse: sk ? sk.horse || '' : '', words: sk ? (sk.horse ? sk.horse + ': ' : '') + (sk.words || '') : '', neutral: !sk };
+      // Just the colours on jockey cards (16 Oct 2026, the owner: no horse name next to the jockey)
+      horse: '', words: sk ? sk.words || '' : '', neutral: !sk };
   };
 
   T.positionsOf = function (p) {
