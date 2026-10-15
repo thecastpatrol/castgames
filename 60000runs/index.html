@@ -3,7 +3,7 @@
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=daac6a732faf">
+<link rel="stylesheet" href="../shared/cg.css?v=9f3e40052faf">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -51,12 +51,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css?v=07ba53a7">
-<link rel="stylesheet" href="css/cast-account.css?v=2ea506e8">
+<link rel="stylesheet" href="css/cast-account.css?v=ca364bb0">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = '60000runs'; window.CG_PLAY = function () { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=daac6a732faf"></script>
+<script src="../shared/cg.js?v=9f3e40052faf"></script>
 
 
 <header class="site-header">
@@ -251,11 +251,12 @@
 <script src="js/app.js?v=0fef0877"></script>
 <script src="js/cast-daily.js?v=a0d50a5c"></script>
 <script src="js/tests-daily.js?v=c44d90d6"></script>
-<script src="js/daily.js?v=df5d58db"></script>
+<script src="js/daily.js?v=57cf7a46"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
-  // 60000 RUNS: not connected to CAST accounts yet (its own game id, boards and server checks come next); 'launch' names a
-  // game that is never launched, so accounts stay off and nothing reaches the other games' boards
+  // 60000 RUNS (16 Oct 2026): hooked up to CAST accounts as game 'tests' (its own boards tsplus, tsexact, tsspin, tsdaily,
+  // Follow On's tsou and tsouw, and the server's checks). Accounts stay off here until the owner presses Launch 60000 RUNS
+  // in Admin (config/launch 'tests'); until then it stays out of the other games' stats, boards and Shop
   window.CAST_ACCOUNT = { enabled: false, launch: 'tests', game: 'tests', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
     inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; }, // a game in progress: sign-in keeps the pop-up (no reload)
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
@@ -267,6 +268,6 @@
 <script src="js/cast-picks.js?v=08f42325"></script>
 <script src="js/ou-engine.js?v=d4b64cff"></script>
 <script src="js/overunder.js?v=06e979e4"></script>
-<script src="js/cast-account.js?v=726aa514"></script>
+<script src="js/cast-account.js?v=e0efd7ad"></script>
 </body>
 </html>

@@ -52,8 +52,8 @@ GAMES = [
     # 60000 RUNS (16 Oct 2026, the Test cricket game): developed in ~/cast-dev/tests/game, copied to CAST Games/60000 RUNS Game
     ('60000runs', '60000 RUNS Game', '60000runs', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
-    # 525 WINS (16 Oct 2026, the racing game): developed in ~/cast-dev/racing/game, copied to CAST Games/525 WINS Game
-    ('525wins', '525 WINS Game', '525wins', '.site-header',
+    # G1 WINNERS SPINNER (16 Oct 2026, the racing game): developed in ~/cast-dev/racing/game, copied to CAST Games/G1 WINNERS Game
+    ('g1winners', 'G1 WINNERS Game', 'g1winners', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
@@ -90,7 +90,7 @@ EXPLAIN = {
     '4000goals': 'Draft an AFL 18 with their goals hidden. Can you reach <strong>4000 career goals</strong>?',
     '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25,000 BBL runs</strong>?',
     '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60,000 Test runs</strong>?',
-    '525wins': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>525 Group 1 wins</strong>?',
+    'g1winners': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
 }
 
 
@@ -132,7 +132,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/525wins.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winners.png']
 
 
 def clear_byline(path):
