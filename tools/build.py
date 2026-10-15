@@ -381,5 +381,28 @@ def main():
     print('done', 'LIVE' if LIVE else 'hidden')
 
 
+
+def keep_same_pictures():
+    """A logo the build re-saved with the same pixels goes back to its committed bytes (17 Oct 2026: PNG re-encoding
+    changed the bytes every build, so the pre-push check saw a changed build each time)."""
+    import io
+    from PIL import Image, ImageChops
+    try:
+        changed = subprocess.run(['git', '-C', HERE, 'diff', '--name-only', '--', '*.png'], capture_output=True, text=True).stdout.split()
+    except Exception:
+        return
+    for rel in changed:
+        old = subprocess.run(['git', '-C', HERE, 'show', 'HEAD:' + rel], capture_output=True).stdout
+        if not old:
+            continue
+        try:
+            a = Image.open(io.BytesIO(old)).convert('RGBA'); b = Image.open(os.path.join(HERE, rel)).convert('RGBA')
+        except Exception:
+            continue
+        if a.size == b.size and ImageChops.difference(a, b).getbbox() is None:
+            subprocess.run(['git', '-C', HERE, 'checkout', '--', rel])
+
+
 if __name__ == '__main__':
     main()
+    keep_same_pictures()
