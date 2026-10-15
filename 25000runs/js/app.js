@@ -325,7 +325,7 @@
     if (wcOn() && sydneyToday() <= '2026-11-15') { if (last.nextSibling !== d) last.parentNode.insertBefore(d, last.nextSibling); }
     else if (dailyMark.nextSibling !== d) dailyMark.parentNode.insertBefore(d, dailyMark.nextSibling);
   }
-  // Play On's card (15 Oct 2026, the owner): straight under the Daily Challenge, wherever the Daily sits, once it's on
+  // Free Hit's card (15 Oct 2026, the owner): straight under the Daily Challenge, wherever the Daily sits, once it's on
   function placeOu() {
     var d = $('dailyCard'), c = $('ouHome');
     if (!d) return;
@@ -666,7 +666,7 @@
     startGame(modeId);
   }
 
-  T.showScreen = show; // Play On's own screen (js/overunder.js)
+  T.showScreen = show; // Free Hit's own screen (js/overunder.js)
   T.ouHome = function () { goHome(); };
   function goHome() {
     closeSheet();
@@ -1465,7 +1465,7 @@
       // One tap plays that mode (a scroll that starts on a card is never a tap). Players still loading: it starts once
       // they are in
       selectedMode = t.getAttribute('data-mode');
-      if (selectedMode === 'ou') { if (T.ou) T.ou.open(); return; } // Play On has its own screen (js/overunder.js)
+      if (selectedMode === 'ou') { if (T.ou) T.ou.open(); return; } // Free Hit has its own screen (js/overunder.js)
       renderHome();
       if (T.players.length) newGame(selectedMode); else { startWhenReady = selectedMode; $('startBtn').hidden = false; }
       return;
@@ -1674,7 +1674,7 @@
   function playMode(modeId) {
     modeId = gameMode(modeId);
     if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
-    // Play On (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
+    // Free Hit (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
     if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
     if (!T.MODES[modeId]) return;
     if (!T.players.length) { startWhenReady = modeId; return; } // back from signing in on a phone before the players loaded
@@ -1974,7 +1974,7 @@
     btn.hidden = true;
     homeAgain(); // the account has loaded by now: World Cup's card (when it's on) and Sign In to Play
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
-    var play = /[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]po=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?po=: the owner's private Play On link
+    var play = /[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]po=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?po=: the owner's private Free Hit link
     if (!play) offerResume();
     if (play) {
       try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address as it is */ }

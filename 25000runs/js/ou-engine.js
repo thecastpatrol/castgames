@@ -21,7 +21,10 @@
     // board it is (the others are 1000TRIES's)
     goals: { name: 'AFL-Era Goals', unit: 'AFL-era goals', one: 'AFL-era goal', base: 150, step: 45, game: '4000goals' },
     games: { name: 'AFL-Era Games', unit: 'AFL-era games', one: 'AFL-era game', base: 150, step: 45, game: '4000goals' },
-    aflw: { name: 'AFLW Goals', unit: 'goals', one: 'goal', base: 45, step: 14, game: '4000goals' }
+    aflw: { name: 'AFLW Goals', unit: 'goals', one: 'goal', base: 45, step: 14, game: '4000goals' },
+    // Free Hit (15 Oct 2026): 25000 RUNS' version, career BBL runs and wickets since 2011/12
+    bblruns: { name: 'BBL Runs', unit: 'BBL runs', one: 'BBL run', base: 45, step: 14, game: 'bigbash' },
+    bblwkts: { name: 'BBL Wickets', unit: 'BBL wickets', one: 'BBL wicket', base: 40, step: 10, game: 'bigbash' }
   };
   function gameOf(cat) { return (CATS[cat] && CATS[cat].game) || '1000tries'; }
   // The relative gap a pair aims for, by streak: |a - b| / max(a, b). Far apart early, close later

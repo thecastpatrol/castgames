@@ -1,5 +1,5 @@
-/* Play On (15 Oct 2026, the owner: "an AFL equivalent for Six Again"): 1000TRIES's Six Again for 4000 GOALS. Named for
-   the umpire's call to keep going: every right call plays on. You see the left player's number and call whether the right
+/* Free Hit (15 Oct 2026, the owner picked the name): 1000TRIES's Six Again for 25000 RUNS, from 4000 GOALS' Play On.
+   cricket's free hit, the ball you can't be out on. You see the left player's number and call whether the right
    one's is over or under it, against a clock: 9 seconds for the first call, then 6, 4 and 3. Right: the right card becomes
    the left and a new player comes in. Wrong, or out of time: you're out, unless you Run It Back (a Vault item, or $0.99 /
    3 for $1.99, the Shop's price) to play on with your streak. Stuck on a pair: Reroll it (your Vault Rerolls, or buy more).
@@ -7,21 +7,21 @@
 
    The draw is the shared engine (js/ou-engine.js, 1000TRIES's shared/ou-engine.js): never two players on the same
    number, pairs close in as the streak grows, and the server replays every run from its seed and calls before it reaches
-   a board. Categories, each with its own board: AFL-Era Goals (since 1990, the main one), AFL-Era Games, AFLW Goals.
-   Hidden until the owner presses Launch in Admin, or on a device that opened the private link (CastAccount.poOn).
+   a board. Categories, each with its own board: BBL Runs (the main one) and BBL Wickets.
+   Part of 25000 RUNS from the start (T.ou.on): the game itself waits for the owner's Launch.
    Kept in step with 1000TRIES's js/overunder.js: a change to one is made to the other */
 (function () {
   'use strict';
   var T = window.T, E = window.OU_ENGINE;
   if (!T || !E) return;
-  var CAT_ORDER = ['goals', 'games', 'aflw'];
+  var CAT_ORDER = ['bblruns', 'bblwkts'];
   // The plate's name: the club's nickname, so it never cuts off (the earlier clubs by their place)
   var NICK = { ad: 'Crows', bl: 'Lions', ca: 'Blues', cw: 'Magpies', es: 'Bombers', fr: 'Dockers', ge: 'Cats', gc: 'Suns', gw: 'Giants', hw: 'Hawks',
     me: 'Demons', nm: 'Kangaroos', pa: 'Power', ri: 'Tigers', sk: 'Saints', sy: 'Swans', wc: 'Eagles', wb: 'Bulldogs', bb: 'Bears', fi: 'Fitzroy',
     sm: 'South Melbourne', un: 'University' };
-  var LS_CAT = 'po_cat_v1', LS_BEST = 'po_best_v1'; // not Six Again's: on castgames.com.au both games share one address
+  var LS_CAT = 'fh_cat_v1', LS_BEST = 'fh_best_v1'; // not Six Again's: on castgames.com.au both games share one address
   var D = null, loading = null;
-  var st = { view: 'start', cat: 'goals' };
+  var st = { view: 'start', cat: 'bblruns' };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -156,8 +156,8 @@
     clearInterval(st.offerT); st.hold = true; render(); // the countdown waits while they choose
     T.track('ou_rib_tap', { category: st.cat, streak: st.streak });
     var hook = { kicker: 'Run It Back', title: 'Keep Your Streak', line: 'Keep your ' + st.streak + ' in a row and play on with a new player.',
-      foot: 'Run It Backs work in Play On, Six Again and 27-0. Saved ones stay on your CAST Profile.' };
-    CA.buyItem('rib', '4000goals', function () {
+      foot: 'Run It Backs work in Free Hit, Six Again and 27-0. Saved ones stay on your CAST Profile.' };
+    CA.buyItem('rib', 'bigbash', function () {
       if (st.view !== 'out' || st.done) return;
       st.calls += 'B'; st.rib++; st.offer = 0; st.hold = false;
       st.log.push({ rib: 1 });
@@ -180,7 +180,7 @@
     T.track('ou_reroll_tap', { category: st.cat, streak: st.streak });
     st.busy = true;
     var watch = null, back = function () { if (watch) clearInterval(watch); st.busy = false; if (st.view === 'play' && !st.reveal && !st.clock) nextCall(); };
-    CA.buyReroll('4000goals', function () {
+    CA.buyReroll('bigbash', function () {
       if (watch) clearInterval(watch);
       st.busy = false;
       if (st.view !== 'play' || st.reveal) return;
@@ -208,7 +208,7 @@
     if (st.rib) d.rib = st.rib;
     if (st.rrPaid) d.rr = st.rrPaid; // every Reroll in the run (all Vault or paid), each one noted on the server
     try {
-      CA.record({ game: '4000goals', mode: 'ou', score: st.streak, result: 'out', win: false, top: false, picks: [], d: d });
+      CA.record({ game: 'bigbash', mode: 'ou', score: st.streak, result: 'out', win: false, top: false, picks: [], d: d });
       var tr = [], n = st.streak;
       if (n >= 10) tr.push('ou10');
       if (n >= 20) tr.push('ou20');
@@ -226,8 +226,8 @@
   function share() {
     var c = E.CATS[st.cat], marks = (st.log || []).filter(function (x) { return x.c; }).map(function (x) { return !x.ok ? '\u274C' : x.c === 'O' ? '\u2B06\uFE0F' : '\u2B07\uFE0F'; });
     if (marks.length > 30) marks = marks.slice(0, 29).concat(['\u2026', marks[marks.length - 1]]);
-    var txt = 'Play On \u00B7 ' + c.name + '\n\uD83D\uDD25 ' + st.streak + ' in a row\n' + marks.join('') + '\nCan you beat it?';
-    var url = 'https://castgames.com.au/4000goals/?play=ou';
+    var txt = 'Free Hit \u00B7 ' + c.name + '\n\uD83D\uDD25 ' + st.streak + ' in a row\n' + marks.join('') + '\nCan you beat it?';
+    var url = 'https://castgames.com.au/25000runs/?play=ou';
     T.track('ou_share', { category: st.cat, streak: st.streak });
     if (navigator.share) { navigator.share({ text: txt, url: url }).catch(function () {}); return; }
     try { navigator.clipboard.writeText(txt + ' ' + url); flash('Copied. Paste it anywhere.'); } catch (e) { /* no clipboard */ }
@@ -235,7 +235,7 @@
   function flash(msg) { st.note = msg; render(); setTimeout(function () { st.note = ''; render(); }, 2200); }
 
   // ---------- Screens (14 Oct 2026, the owner: the teams' real colours and a better layout) ----------
-  var CAT_ICO = { goals: '&#x1F3C9;', games: '&#x1F3DF;&#xFE0F;', aflw: '&#x2B50;' };
+  var CAT_ICO = { bblruns: '&#x1F3CF;', bblwkts: '&#x1F3AF;' };
   function catTiles() {
     var b = bests();
     return '<div class="ou-tiles" role="tablist" aria-label="Category">' + CAT_ORDER.filter(function (k) { return D && D[k] && D[k].length; }).map(function (k) {
@@ -253,11 +253,11 @@
     return '<div class="ou-pair is-demo" aria-hidden="true">' + card(L[0], true, 'is-left') + '<span class="ou-vs">VS</span>' + card(L[2], false, 'is-right') + '</div>';
   }
   function startView() {
-    return '<div class="ou-start"><h1 class="ou-logo"><span class="ou-up" aria-hidden="true">&#x25B2;</span> Play On <span class="ou-dn" aria-hidden="true">&#x25BC;</span></h1>' +
+    return '<div class="ou-start"><h1 class="ou-logo"><span class="ou-up" aria-hidden="true">&#x25B2;</span> Free Hit <span class="ou-dn" aria-hidden="true">&#x25BC;</span></h1>' +
       '<p class="ou-lede">You know the first player&rsquo;s number. Is the second one&rsquo;s <b>Over</b> or <b>Under</b>? One wrong call and you&rsquo;re out.</p>' +
       demoPair() + catTiles() +
       '<button type="button" class="btn btn-primary ou-play" data-ou="play">Play ' + esc(E.CATS[st.cat].name) + ' <i aria-hidden="true">&#x25B6;</i></button>' +
-      '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Play On Leaderboard</button></div>';
+      '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Free Hit Leaderboard</button></div>';
   }
   // One player, in his club's (or nation's) colours, like the draft cards: the plate, his name and years, then the number
   function card(p, known, cls, mark) {
@@ -365,14 +365,14 @@
   function render() {
     var el = root();
     if (!el) return;
-    var h = '<div class="ou-head"><button type="button" class="ou-back" data-ou="home" aria-label="Back to home">&larr;</button>' + (st.view === 'start' ? '' : '<span>Play On</span>') + '</div>';
+    var h = '<div class="ou-head"><button type="button" class="ou-back" data-ou="home" aria-label="Back to home">&larr;</button>' + (st.view === 'start' ? '' : '<span>Free Hit</span>') + '</div>';
     if (!D) h += '<div class="ou-load">Loading the players&hellip;</div>';
     else h += st.view === 'play' ? playView() : st.view === 'out' ? outView() : st.view === 'rewind' ? rewindView() : startView();
     if (st.note) h += '<p class="ou-note" role="status">' + esc(st.note) + '</p>';
     el.innerHTML = h;
   }
 
-  function boardId() { return { goals: '4000ou', games: '4000ougames', aflw: '4000ouaflw' }[st.cat] || '4000ou'; }
+  function boardId() { return { bblruns: 'bbou', bblwkts: 'bbouw' }[st.cat] || 'bbou'; }
   document.addEventListener('click', function (e) {
     // The home banner (data-ou-open): open it here, no page load
     var bn = e.target.closest && e.target.closest('[data-ou-open]');
@@ -403,13 +403,13 @@
     // Open the start screen (the mode card, ?play=ou, the board's Play button). cat: a category to start on
     open: function (cat) {
       if (st.view === 'play' && !st.done) return;
-      st = { view: 'start', cat: E.CATS[cat] && E.gameOf(cat) === '4000goals' ? cat : E.CATS[lsGet(LS_CAT)] && E.gameOf(lsGet(LS_CAT)) === '4000goals' ? lsGet(LS_CAT) : 'goals' };
+      st = { view: 'start', cat: E.CATS[cat] && E.gameOf(cat) === 'bigbash' ? cat : E.CATS[lsGet(LS_CAT)] && E.gameOf(lsGet(LS_CAT)) === 'bigbash' ? lsGet(LS_CAT) : 'bblruns' };
       if (T.showScreen) T.showScreen('ou');
       primeVault();
       render();
       load().then(render, function () { var el = root(); if (el) el.innerHTML = '<div class="ou-load">Could not load the players. Check your connection and try again.</div>'; });
     },
-    on: function () { var CA = A(); return !!(CA && CA.poOn && CA.poOn()); }
+    on: function () { return true; } // part of 25000 RUNS from the start (the game itself waits for the owner's Launch)
   };
   // Tests on the preview only (localhost): the current right answer
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.ou._answer = function () { return st.run && st.view === 'play' ? st.run.answer() : null; };
