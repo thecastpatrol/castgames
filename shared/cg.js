@@ -22,7 +22,9 @@
     { id: 'afl', name: 'AFL', ico: '&#x1F3C9;', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
     { id: 'cricket', name: 'Cricket', ico: '&#x1F3CF;', long: 'International & T20s', c: '255,122,46', status: 'live', path: 'cricket/' },
     { id: 'nfl', name: 'NFL', ico: '&#x1F3C8;', long: 'American Football', c: '139,92,246', status: 'live', path: 'nfl/' },
-    { id: 'racing', name: 'Horse Racing', chip: 'Racing', ico: '&#x1F3C7;', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
+    { id: 'racing', name: 'Horse Racing', chip: 'Racing', ico: '&#x1F3C7;', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' },
+    // Premier League (17 Oct 2026): its own magenta, apart from NRL green, AFL red, cricket orange, NFL purple, racing blue
+    { id: 'epl', name: 'Premier League', chip: 'EPL', ico: '&#x26BD;', long: 'English Football', c: '233,0,82', status: 'live', path: 'epl/' }
   ];
   // daily: the game has a Daily Challenge (the home page's Daily strip lists every live one, audit L9 16 Oct 2026)
   var GAMES = [
@@ -40,12 +42,16 @@
     // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60000 career Test runs
     { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
       line: 'Draft a Test XI from every Test since 1877 and reach 60000 career Test runs.', short: 'Draft a Test XI to 60000 runs', daily: true },
-    // 700 TDS (16 Oct 2026): the NFL game, an offence of 9 to 700 career touchdowns
-    { id: '700tds', sport: 'nfl', name: '700 TDS', path: '700tds/', logo: 'assets/logos/700tds.png', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
-      line: 'Draft an NFL offence and reach 700 career touchdowns.', short: 'Draft 9 to 700 touchdowns', daily: true },
+    // 777 TDS (16 Oct 2026; 777 with a 4th receiver since 17 Oct 2026): the NFL game, an offence of 10 to 777 career
+    // touchdowns. Its id stays '700tds' (js/home.js and the game pages' CG_GAME use it); /700tds/ redirects to /777tds/
+    { id: '700tds', sport: 'nfl', name: '777 TDS', path: '777tds/', logo: 'assets/logos/777tds.png', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
+      line: 'Draft an NFL offence and reach 777 career touchdowns.', short: 'Draft 10 to 777 touchdowns', daily: true },
     // G1 WINNER SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
     { id: 'g1winner', sport: 'racing', name: 'G1 WINNER SPINNER', path: 'g1winner/', logo: 'assets/logos/g1winner.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
       line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s', daily: true },
+    // 500 GOALS (17 Oct 2026): the Premier League game, a 4-3-3 XI to 500 career Premier League goals
+    { id: '500goals', sport: 'epl', name: '500 GOALS', path: '500goals/', logo: 'assets/logos/500goals.png', c1: '#3a0f2c', c2: '#12061a', status: 'live', badge: 'New',
+      line: 'Draft a Premier League XI and reach 500 career goals.', short: 'Draft an XI to 500 goals', daily: true },
     // The newer games' over/unders (16 Oct 2026, the owner: separate games, not modes inside the draft games)
     { id: 'free-hit', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
       line: 'Over or under? Call BBL runs and wickets before the clock runs out.', short: 'BBL over or under, vs the clock' },
@@ -55,6 +61,8 @@
       line: 'Over or under? Call NFL career touchdowns before the clock runs out.', short: 'NFL over or under, vs the clock' },
     { id: 'photo-finish', sport: 'racing', name: 'Photo Finish', path: 'photo-finish/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
       line: 'Over or under? Call jockeys, big races and horses before the clock runs out.', short: 'Racing over or under, vs the clock' },
+    { id: 'extra-time', sport: 'epl', name: 'Extra Time', path: 'extra-time/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a0f2c', c2: '#12061a', status: 'live', badge: 'New',
+      line: 'Over or under on Premier League goals, assists and games. Beat the clock.', short: 'Premier League over or under, vs the clock' },
     // Play On (15 Oct 2026): 4000 GOALS's Six Again, its own page like Six Again's
     { id: 'play-on', sport: 'afl', name: 'Play On', path: 'play-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#5a1a1a', c2: '#1c0b10', status: 'live', launch: 'po', badge: 'New',
       line: 'Over or under? Call AFL players before the clock runs out.', short: 'Over or under, vs the clock' }

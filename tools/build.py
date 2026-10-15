@@ -56,8 +56,12 @@ GAMES = [
     # G1 WINNER SPINNER (16 Oct 2026, the racing game): developed in ~/cast-dev/racing/game, copied to CAST Games/G1 WINNER Game
     ('g1winner', 'G1 WINNER Game', 'g1winner', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
-    # 700 TDS (16 Oct 2026, the NFL game): developed in ~/cast-dev/nfl/game, copied to CAST Games/700 TDS Game
-    ('700tds', '700 TDS Game', '700tds', '.site-header',
+    # 777 TDS (16 Oct 2026, the NFL game; 700 TDS until 17 Oct 2026): developed in ~/cast-dev/nfl/game, copied to CAST Games/777 TDS Game.
+    # Its cg.js id stays '700tds' (js/home.js reads it); the old /700tds/ address is a redirect (OLD_PATHS)
+    ('777tds', '777 TDS Game', '700tds', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
+    # 500 GOALS (17 Oct 2026, the Premier League game): developed in ~/cast-dev/epl/game, copied to CAST Games/500 GOALS Game
+    ('500goals', '500 GOALS Game', '500goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
@@ -65,8 +69,8 @@ GAMES = [
 # The old domains, and the folder each one is now
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
-SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus']}
-SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', 'NFL'), ('racing', 'Horse Racing')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
+SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus']}
+SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', 'NFL'), ('racing', 'Horse Racing'), ('epl', 'Premier League')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
@@ -95,7 +99,8 @@ EXPLAIN = {
     '4000goals': 'Draft an AFL 18 with their goals hidden. Can you reach <strong>4000 career goals</strong>?',
     '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25000 BBL runs</strong>?',
     '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60000 Test runs</strong>?',
-    '700tds': 'Draft an NFL offence with their touchdowns hidden. Can you reach <strong>700 career touchdowns</strong>?',
+    '777tds': 'Draft an NFL offence with their touchdowns hidden. Can you reach <strong>777 career touchdowns</strong>?',
+    '500goals': 'Draft a Premier League XI with their goals hidden. Can you reach <strong>500 Premier League goals</strong>?',
     'g1winner': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
 }
 
@@ -103,7 +108,7 @@ EXPLAIN = {
 # Every title in one pattern on CAST Games, "<GAME> | <short line> | CAST Games" (audit B8, 16 Oct 2026); the games' own
 # sites keep theirs. A game whose home title runs long gets a shorter line here
 NAMES = {'27-0': '27-0', '1000tries': '1000TRIES', '4000goals': '4000 GOALS', '25000runs': '25000 RUNS', '60000runs': '60000 RUNS',
-         '700tds': '700 TDS', 'g1winner': 'G1 WINNER SPINNER'}
+         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '500goals': '500 GOALS'}
 HOME_LINE = {'27-0': 'Build an NRL 13 and Go Undefeated'}
 # The games' old homes, written out in their copy (the privacy pages' "available at", 27-0's install steps): their folder
 # here instead (audit T4, 16 Oct 2026)
@@ -170,7 +175,7 @@ def fit_code(dst, folder):
             p = os.path.join(root, f)
             s = open(p, encoding='utf-8').read()
             t = rewrite_links(s, True) if f.endswith('.js') else s
-            if folder in ('4000goals', '25000runs', '60000runs') and f.endswith('.js'):
+            if folder in ('4000goals', '25000runs', '60000runs', '500goals') and f.endswith('.js'):
                 t = t.replace("'1000tries_", "'" + folder + "_")  # its own saved data here (sound, draft, played...)
                 t = t.replace("'1000_daily_'", "'" + folder + "_daily_'")  # and its own Daily goes (1000TRIES keeps '1000_daily_')
             if t != s:
@@ -180,7 +185,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/700tds.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/500goals.png']
 
 
 def clear_byline(path):
@@ -188,7 +193,7 @@ def clear_byline(path):
     im = Image.open(path).convert('RGBA')
     w, h = im.size
     a = im.split()[3]
-    # The byline sits at the top; look for the gap under it across the whole width, then (700 TDS' goalposts rise past
+    # The byline sits at the top; look for the gap under it across the whole width, then (777 TDS' goalposts rise past
     # it on the right, 16 Oct 2026) across the left three quarters only, clearing just that part
     for right in (w, int(w * 0.72)):
         rows = [y for y in range(h) if a.crop((0, y, right, y + 1)).getbbox()]
@@ -214,6 +219,7 @@ OU_META = {
     'free-hit': ('BBL', 'Over or under? Call Big Bash runs and wickets before the clock runs out. A free cricket game from The Cast Patrol.'),
     'follow-on': ('Test', 'Over or under? Call Test runs and wickets before the clock runs out. A free cricket game from The Cast Patrol.'),
     'two-point': ('NFL', 'Over or under? Call NFL career touchdowns before the clock runs out. A free NFL game from The Cast Patrol.'),
+    'extra-time': ('Premier League', 'Over or under? Call Premier League goals, assists and appearances before the clock runs out. A free football game from The Cast Patrol.'),
     'photo-finish': ('Racing', 'Over or under? Call jockeys, big races and horses before the clock runs out. A free horse racing game from The Cast Patrol.'),
 }
 
@@ -269,8 +275,33 @@ def soon(src, page, title):
     return src[:i] + box + src[i:] if g and i > 0 else src
 
 
+# Old game addresses (17 Oct 2026: 700 TDS became 777 TDS): a tiny page that sends any old link on to the new folder,
+# keeping its query (?play=, a challenge) and its hash
+OLD_PATHS = {'700tds': '777tds'}
+REDIRECT = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+            '<meta name="robots" content="noindex"><title>777 TDS | CAST Games</title><link rel="canonical" href="%s%s/%s">'
+            '<script>location.replace("../%s/%s" + location.search + location.hash);</script></head>'
+            '<body style="margin:0;background:#0a0a0f;color:#fff;font-family:Inter,system-ui,sans-serif;text-align:center;padding:40px 16px">'
+            '<p><a style="display:inline-block;padding:12px 20px;border-radius:999px;background:#36e27e;color:#04120a;font-weight:800;text-decoration:none" href="../%s/%s">Play 777 TDS</a></p>'
+            '</body></html>\n')
+
+
+def old_paths():
+    for old, new in OLD_PATHS.items():
+        out = os.path.join(HERE, old)
+        if os.path.isdir(out):
+            shutil.rmtree(out)
+        os.makedirs(out)
+        # the home page and each other page (How It Works, Terms, Privacy) at its old address
+        for f in sorted(os.listdir(os.path.join(HERE, new))):
+            if f.endswith('.html') and f != '404.html':
+                page = '' if f == 'index.html' else f[:-5]
+                open(os.path.join(out, f), 'w', encoding='utf-8').write(REDIRECT % (SITE, new, page, new, page, new, page))
+        print('built', old, '->', new)
+
+
 def main():
-    # The home page's own copies of the logos lose the byline too (16 Oct 2026: 700 TDS' home card still said created by cast)
+    # The home page's own copies of the logos lose the byline too (16 Oct 2026: 777 TDS' home card still said created by cast)
     for rel in LOGOS:
         if os.path.exists(os.path.join(HERE, rel)):
             clear_byline(os.path.join(HERE, rel))
@@ -284,15 +315,17 @@ def main():
             if f.endswith('.html'):
                 fit_page(os.path.join(dst, f), folder, gid, hide, play)
         print('built', folder)
+    old_paths()  # 17 Oct 2026: /700tds/ sends old links on to /777tds/
     # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
     for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On'),
                                          # the newer games' over/unders, their own games too (16 Oct 2026, the owner)
                                          ('free-hit', '25000runs', 'free-hit', 'ou', 'Free Hit'), ('follow-on', '60000runs', 'follow-on', 'ou', 'Follow On'),
-                                         ('two-point', '700tds', 'two-point', 'ou', 'Two Point'), ('photo-finish', 'g1winner', 'photo-finish', 'ou', 'Photo Finish')):
+                                         ('two-point', '777tds', 'two-point', 'ou', 'Two Point'), ('photo-finish', 'g1winner', 'photo-finish', 'ou', 'Photo Finish'),
+                                         ('extra-time', '500goals', 'extra-time', 'ou', 'Extra Time')):
         out = os.path.join(HERE, page)
         os.makedirs(out, exist_ok=True)
         src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
-        src = src.replace("window.CG_GAME = '%s'" % game, "window.CG_GAME = '%s'" % gid)
+        src = src.replace("window.CG_GAME = '%s'" % dict((x[0], x[2]) for x in GAMES).get(game, game), "window.CG_GAME = '%s'" % gid)  # its game's cg.js id (777tds keeps '700tds')
         src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
                           '<script>if (!/[?&](play=ou|%s=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>\n'
                           '<script src="../shared/cg.js?v=%s"></script>\n'
@@ -312,7 +345,7 @@ def main():
     # contents, so a change reaches everyone at once instead of an old copy kept by the browser (15 Oct 2026)
     idx = os.path.join(HERE, 'index.html')
     hs = open(idx, encoding='utf-8').read()
-    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|700tds|g1winner)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|500goals)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
     if hs2 != hs:
         open(idx, 'w', encoding='utf-8').write(hs2)
     # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only

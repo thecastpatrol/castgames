@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<base href="../">
+<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Premier League Games | CAST Games</title>
+<meta name="description" content="Free sports draft games from The Cast Patrol for NRL, AFL, cricket, NFL and horse racing. Pick a sport, pick a game, climb the leaderboards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CAST Games">
+<meta property="og:title" content="Premier League Games | CAST Games">
+<meta property="og:description" content="Free sports draft games from The Cast Patrol for NRL, AFL, cricket, NFL and horse racing. Pick a sport, pick a game, climb the leaderboards.">
+<meta property="og:image" content="https://castgames.com.au/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex"><!-- CG_HIDDEN: until the switch-over -->
+<meta name="theme-color" content="#0a0a0f">
+<link rel="icon" type="image/png" href="assets/logos/castgames-icon.png">
+<link rel="apple-touch-icon" href="assets/logos/castgames-touch.png">
+<!-- Google tag (gtag.js): the CAST Games property (each game page keeps its own) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E52G6MVZFP"></script>
+<script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-E52G6MVZFP');</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="1000tries/css/cast-account.css?v=16be63e7">
+<link rel="stylesheet" href="shared/cg.css?v=3">
+<link rel="stylesheet" href="css/home.css?v=4">
+</head>
+<body>
+<main class="wrap" id="cgHome" aria-live="polite"></main>
+<footer class="cg-foot">
+  <a href="1000tries/privacy.html">Privacy</a><a href="1000tries/terms.html">Terms</a><a href="mailto:cast@thecastpatrol.com.au">Contact</a>
+  <small>&copy; 2026 The Cast Patrol</small>
+</footer>
+<script>
+  // The account (js/cast-account.js from 1000TRIES's folder): the home page signs in, opens Stats, Boards, Friends, Shop and
+  // Profile, and reads the launch switches, like any game. It plays no game of its own
+  window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', hub: true, privacyUrl: '1000tries/privacy.html', termsUrl: '1000tries/terms.html',
+    track: function (e, p) { try { if (typeof gtag === 'function') gtag('event', e, p || {}); } catch (x) { /* no analytics */ } },
+    inGame: function () { return false; }, onHome: function () { return true; }, firstVisit: function () { return false; },
+    promoPlay: function (mode) { location.href = mode === 'wc' ? '27-0/?play=wc' : '1000tries/?play=' + (mode || 'plus'); } };
+</script>
+<script>window.CAST_ACCOUNT.boards = ["eplplus"];</script>
+<script src="shared/cg.js?v=5"></script>
+<!-- The Daily calendars (the Daily Challenge cards say what today's is and its reward): the shared one (27-0, 1000TRIES),
+     then 4000 GOALS's, which takes the same name, so both are kept and the shared one put back -->
+<script src="1000tries/js/cast-daily.js?v=a0d50a5c"></script>
+<script>window.CG_DAILY_NRL = window.CAST_DAILY;</script>
+<script src="4000goals/js/afl-daily.js?v=96203492"></script>
+<script>window.CG_DAILY_AFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<!-- The newer games' calendars the same way (audit L9, 16 Oct 2026: the Daily strip lists every live Daily) -->
+<script src="25000runs/js/bbl-daily.js?v=7a6412b9"></script>
+<script>window.CG_DAILY_BBL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<script src="60000runs/js/tests-daily.js?v=67db61ef"></script>
+<script>window.CG_DAILY_TESTS = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<script src="777tds/js/nfl-daily.js?v=9fcc2017"></script>
+<script>window.CG_DAILY_NFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<script src="g1winner/js/racing-daily.js?v=fa9e5cf0"></script>
+<script>window.CG_DAILY_RACING = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<script src="500goals/js/epl-daily.js?v=ae6c6b11"></script>
+<script>window.CG_DAILY_EPL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
+<!-- The nation flags (World Cup cards in the home slider) -->
+<script src="1000tries/js/cast-nations.js?v=46208301"></script>
+<script src="1000tries/js/cast-account.js?v=c49f9ed4"></script>
+<script>window.CG_SPORT = 'epl';</script>
+<script src="js/home.js?v=3"></script>
+</body>
+</html>

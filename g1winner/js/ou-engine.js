@@ -28,12 +28,16 @@
     // Follow On (16 Oct 2026): 60000 RUNS' version, career Test runs and wickets
     testruns: { name: 'Test Runs', unit: 'Test runs', one: 'Test run', base: 150, step: 45, game: 'tests' },
     testwkts: { name: 'Test Wickets', unit: 'Test wickets', one: 'Test wicket', base: 120, step: 40, game: 'tests' },
-    // Two Point (16 Oct 2026): 700 TDS' version, career scored touchdowns (never passing TDs)
+    // Two Point (16 Oct 2026): 777 TDS' version, career scored touchdowns (never passing TDs)
     nfltds: { name: 'Career TDs', unit: 'career TDs', one: 'career TD', base: 150, step: 45, game: 'nfl' },
     // Photo Finish (16 Oct 2026): G1 WINNER SPINNER's version, Group 1 wins in Australia and New Zealand since 1983
     jockeyg1: { name: 'Jockey Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 40, step: 12, game: 'racing' },
     bigrace: { name: 'Big Race Wins', unit: 'big race wins', one: 'big race win', base: 30, step: 8, game: 'racing' },
-    horseg1: { name: 'Horses\u2019 Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 45, step: 14, game: 'racing' }
+    horseg1: { name: 'Horses\u2019 Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 45, step: 14, game: 'racing' },
+    // Extra Time (17 Oct 2026): 500 GOALS' version, career Premier League goals, assists and appearances since 1992-93
+    plgoals: { name: 'Premier League Goals', unit: 'PL goals', one: 'PL goal', base: 150, step: 45, game: 'epl' },
+    plassists: { name: 'Premier League Assists', unit: 'PL assists', one: 'PL assist', base: 150, step: 45, game: 'epl' },
+    plapps: { name: 'Premier League Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' }
   };
   function gameOf(cat) { return (CATS[cat] && CATS[cat].game) || '1000tries'; }
   // The relative gap a pair aims for, by streak: |a - b| / max(a, b). Far apart early, close later

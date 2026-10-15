@@ -106,7 +106,7 @@
   function fmt(n) { return String(n); } // no commas in numbers (the owner, 16 Oct 2026)
   // Each game's calendar (index.html loads them) and the name its rewards go under
   var CAL = { '27-0': ['CG_DAILY_NRL', '27-0'], '1000tries': ['CG_DAILY_NRL', '1000tries'], '4000goals': ['CG_DAILY_AFL', '4000goals'],
-    '25000runs': ['CG_DAILY_BBL', 'bigbash'], '60000runs': ['CG_DAILY_TESTS', 'tests'], '700tds': ['CG_DAILY_NFL', 'nfl'], 'g1winner': ['CG_DAILY_RACING', 'racing'] };
+    '25000runs': ['CG_DAILY_BBL', 'bigbash'], '60000runs': ['CG_DAILY_TESTS', 'tests'], '700tds': ['CG_DAILY_NFL', 'nfl'], 'g1winner': ['CG_DAILY_RACING', 'racing'], '500goals': ['CG_DAILY_EPL', 'epl'] };
   function dailyOf(id) {
     var cal = CAL[id], C = cal && window[cal[0]];
     if (!C || !C.day) return null;

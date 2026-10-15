@@ -1,0 +1,697 @@
+{
+"source": "The Premier League's own stats (premierleague.com), read 2026-10-15; checked against Wikipedia.",
+"season": 2026,
+"min_goals": 120,
+"odds": {
+"legends": 0.33,
+"immortal": 0
+},
+"replaces": [],
+"players": [
+{
+"id": "legend-alan-shearer",
+"name": "Alan Shearer",
+"tries_1998_plus": 260,
+"primary_club": "newcastle",
+"club_years": [
+{
+"club": "blackburn",
+"from": 1992,
+"to": 1995
+},
+{
+"club": "newcastle",
+"from": 1996,
+"to": 2005
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1992-2006",
+"matches": 441,
+"assists": 64,
+"pl": "1",
+"tier": "legend",
+"record_name": "Alan Shearer (Legend)"
+},
+{
+"id": "legend-wayne-rooney",
+"name": "Wayne Rooney",
+"tries_1998_plus": 208,
+"primary_club": "manutd",
+"club_years": [
+{
+"club": "everton",
+"from": 2002,
+"to": 2003
+},
+{
+"club": "manutd",
+"from": 2004,
+"to": 2016
+},
+{
+"club": "everton",
+"from": 2017,
+"to": 2017
+}
+],
+"positions_played": [
+"M",
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "2002-2018",
+"matches": 491,
+"assists": 103,
+"pl": "13017",
+"tier": "legend",
+"record_name": "Wayne Rooney (Legend)"
+},
+{
+"id": "legend-andy-cole",
+"name": "Andy Cole",
+"tries_1998_plus": 187,
+"primary_club": "manutd",
+"club_years": [
+{
+"club": "newcastle",
+"from": 1993,
+"to": 1994
+},
+{
+"club": "manutd",
+"from": 1994,
+"to": 2001
+},
+{
+"club": "blackburn",
+"from": 2001,
+"to": 2003
+},
+{
+"club": "fulham",
+"from": 2004,
+"to": 2004
+},
+{
+"club": "mancity",
+"from": 2005,
+"to": 2005
+},
+{
+"club": "portsmouth",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "sunderland",
+"from": 2007,
+"to": 2007
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1993-2008",
+"matches": 414,
+"assists": 73,
+"pl": "1820",
+"tier": "legend",
+"record_name": "Andy Cole (Legend)"
+},
+{
+"id": "legend-sergio-aguero",
+"name": "Sergio Agüero",
+"tries_1998_plus": 184,
+"primary_club": "mancity",
+"club_years": [
+{
+"club": "mancity",
+"from": 2011,
+"to": 2020
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "2011-2021",
+"matches": 275,
+"assists": 47,
+"pl": "37572",
+"tier": "legend",
+"record_name": "Sergio Agüero (Legend)"
+},
+{
+"id": "legend-frank-lampard",
+"name": "Frank Lampard",
+"tries_1998_plus": 177,
+"primary_club": "chelsea",
+"club_years": [
+{
+"club": "westham",
+"from": 1995,
+"to": 2000
+},
+{
+"club": "chelsea",
+"from": 2001,
+"to": 2013
+},
+{
+"club": "mancity",
+"from": 2014,
+"to": 2014
+}
+],
+"positions_played": [
+"M",
+"F"
+],
+"draft_role": "M",
+"position": "M",
+"active": false,
+"career_span": "1995-2015",
+"matches": 609,
+"assists": 102,
+"pl": "2051",
+"tier": "legend",
+"record_name": "Frank Lampard (Legend)"
+},
+{
+"id": "legend-thierry-henry",
+"name": "Thierry Henry",
+"tries_1998_plus": 175,
+"primary_club": "arsenal",
+"club_years": [
+{
+"club": "arsenal",
+"from": 1999,
+"to": 2006
+},
+{
+"club": "arsenal",
+"from": 2011,
+"to": 2011
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1999-2012",
+"matches": 258,
+"assists": 74,
+"pl": "1619",
+"tier": "legend",
+"record_name": "Thierry Henry (Legend)"
+},
+{
+"id": "legend-robbie-fowler",
+"name": "Robbie Fowler",
+"tries_1998_plus": 163,
+"primary_club": "liverpool",
+"club_years": [
+{
+"club": "liverpool",
+"from": 1993,
+"to": 2001
+},
+{
+"club": "leeds",
+"from": 2001,
+"to": 2002
+},
+{
+"club": "mancity",
+"from": 2002,
+"to": 2005
+},
+{
+"club": "liverpool",
+"from": 2005,
+"to": 2006
+},
+{
+"club": "blackburn",
+"from": 2008,
+"to": 2008
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1993-2009",
+"matches": 379,
+"assists": 39,
+"pl": "1794",
+"tier": "legend",
+"record_name": "Robbie Fowler (Legend)"
+},
+{
+"id": "legend-jermain-defoe",
+"name": "Jermain Defoe",
+"tries_1998_plus": 162,
+"primary_club": "spurs",
+"club_years": [
+{
+"club": "westham",
+"from": 2000,
+"to": 2002
+},
+{
+"club": "spurs",
+"from": 2003,
+"to": 2013
+},
+{
+"club": "portsmouth",
+"from": 2007,
+"to": 2008
+},
+{
+"club": "sunderland",
+"from": 2014,
+"to": 2016
+},
+{
+"club": "bournemouth",
+"from": 2017,
+"to": 2018
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "2000-2019",
+"matches": 496,
+"assists": 33,
+"pl": "7958",
+"tier": "legend",
+"record_name": "Jermain Defoe (Legend)"
+},
+{
+"id": "legend-michael-owen",
+"name": "Michael Owen",
+"tries_1998_plus": 150,
+"primary_club": "liverpool",
+"club_years": [
+{
+"club": "liverpool",
+"from": 1996,
+"to": 2003
+},
+{
+"club": "newcastle",
+"from": 2005,
+"to": 2008
+},
+{
+"club": "manutd",
+"from": 2009,
+"to": 2011
+},
+{
+"club": "stoke",
+"from": 2012,
+"to": 2012
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1996-2013",
+"matches": 326,
+"assists": 31,
+"pl": "1795",
+"tier": "legend",
+"record_name": "Michael Owen (Legend)"
+},
+{
+"id": "legend-les-ferdinand",
+"name": "Les Ferdinand",
+"tries_1998_plus": 149,
+"primary_club": "spurs",
+"club_years": [
+{
+"club": "qpr",
+"from": 1992,
+"to": 1994
+},
+{
+"club": "newcastle",
+"from": 1995,
+"to": 1996
+},
+{
+"club": "spurs",
+"from": 1997,
+"to": 2002
+},
+{
+"club": "westham",
+"from": 2002,
+"to": 2002
+},
+{
+"club": "leicester",
+"from": 2003,
+"to": 2003
+},
+{
+"club": "bolton",
+"from": 2004,
+"to": 2004
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1992-2005",
+"matches": 351,
+"assists": 49,
+"pl": "1904",
+"tier": "legend",
+"record_name": "Les Ferdinand (Legend)"
+},
+{
+"id": "legend-teddy-sheringham",
+"name": "Teddy Sheringham",
+"tries_1998_plus": 146,
+"primary_club": "spurs",
+"club_years": [
+{
+"club": "forest",
+"from": 1992,
+"to": 1992
+},
+{
+"club": "spurs",
+"from": 1992,
+"to": 1996
+},
+{
+"club": "manutd",
+"from": 1997,
+"to": 2000
+},
+{
+"club": "spurs",
+"from": 2001,
+"to": 2002
+},
+{
+"club": "portsmouth",
+"from": 2003,
+"to": 2003
+},
+{
+"club": "westham",
+"from": 2005,
+"to": 2006
+}
+],
+"positions_played": [
+"M",
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1992-2007",
+"matches": 418,
+"assists": 75,
+"pl": "520",
+"tier": "legend",
+"record_name": "Teddy Sheringham (Legend)"
+},
+{
+"id": "legend-robin-van-persie",
+"name": "Robin van Persie",
+"tries_1998_plus": 144,
+"primary_club": "arsenal",
+"club_years": [
+{
+"club": "arsenal",
+"from": 2004,
+"to": 2011
+},
+{
+"club": "manutd",
+"from": 2012,
+"to": 2014
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "2004-2015",
+"matches": 280,
+"assists": 53,
+"pl": "12297",
+"tier": "legend",
+"record_name": "Robin van Persie (Legend)"
+},
+{
+"id": "legend-jimmy-floyd-hasselbaink",
+"name": "Jimmy Floyd Hasselbaink",
+"tries_1998_plus": 127,
+"primary_club": "chelsea",
+"club_years": [
+{
+"club": "leeds",
+"from": 1997,
+"to": 1998
+},
+{
+"club": "chelsea",
+"from": 2000,
+"to": 2003
+},
+{
+"club": "boro",
+"from": 2004,
+"to": 2005
+},
+{
+"club": "charlton",
+"from": 2006,
+"to": 2006
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1997-2007",
+"matches": 288,
+"assists": 58,
+"pl": "4074",
+"tier": "legend",
+"record_name": "Jimmy Floyd Hasselbaink (Legend)"
+},
+{
+"id": "legend-robbie-keane",
+"name": "Robbie Keane",
+"tries_1998_plus": 126,
+"primary_club": "spurs",
+"club_years": [
+{
+"club": "coventry",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "leeds",
+"from": 2000,
+"to": 2002
+},
+{
+"club": "spurs",
+"from": 2002,
+"to": 2010
+},
+{
+"club": "liverpool",
+"from": 2008,
+"to": 2008
+},
+{
+"club": "westham",
+"from": 2010,
+"to": 2010
+},
+{
+"club": "villa",
+"from": 2011,
+"to": 2011
+}
+],
+"positions_played": [
+"M",
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1999-2012",
+"matches": 349,
+"assists": 39,
+"pl": "1710",
+"tier": "legend",
+"record_name": "Robbie Keane (Legend)"
+},
+{
+"id": "legend-nicolas-anelka",
+"name": "Nicolas Anelka",
+"tries_1998_plus": 125,
+"primary_club": "chelsea",
+"club_years": [
+{
+"club": "arsenal",
+"from": 1996,
+"to": 1998
+},
+{
+"club": "liverpool",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "mancity",
+"from": 2002,
+"to": 2004
+},
+{
+"club": "bolton",
+"from": 2006,
+"to": 2007
+},
+{
+"club": "chelsea",
+"from": 2007,
+"to": 2011
+},
+{
+"club": "westbrom",
+"from": 2013,
+"to": 2013
+}
+],
+"positions_played": [
+"F"
+],
+"draft_role": "F",
+"position": "F",
+"active": false,
+"career_span": "1996-2014",
+"matches": 364,
+"assists": 48,
+"pl": "3897",
+"tier": "legend",
+"record_name": "Nicolas Anelka (Legend)"
+},
+{
+"id": "legend-dwight-yorke",
+"name": "Dwight Yorke",
+"tries_1998_plus": 123,
+"primary_club": "villa",
+"club_years": [
+{
+"club": "villa",
+"from": 1992,
+"to": 1998
+},
+{
+"club": "manutd",
+"from": 1998,
+"to": 2001
+},
+{
+"club": "blackburn",
+"from": 2002,
+"to": 2004
+},
+{
+"club": "birmingham",
+"from": 2004,
+"to": 2004
+},
+{
+"club": "sunderland",
+"from": 2007,
+"to": 2008
+}
+],
+"positions_played": [
+"M",
+"F"
+],
+"draft_role": "M",
+"position": "M",
+"active": false,
+"career_span": "1992-2009",
+"matches": 375,
+"assists": 49,
+"pl": "1829",
+"tier": "legend",
+"record_name": "Dwight Yorke (Legend)"
+},
+{
+"id": "legend-steven-gerrard",
+"name": "Steven Gerrard",
+"tries_1998_plus": 120,
+"primary_club": "liverpool",
+"club_years": [
+{
+"club": "liverpool",
+"from": 1998,
+"to": 2014
+}
+],
+"positions_played": [
+"M"
+],
+"draft_role": "M",
+"position": "M",
+"active": false,
+"career_span": "1998-2015",
+"matches": 504,
+"assists": 92,
+"pl": "1814",
+"tier": "legend",
+"record_name": "Steven Gerrard (Legend)"
+}
+]
+}

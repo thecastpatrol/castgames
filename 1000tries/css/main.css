@@ -1307,7 +1307,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .dly-mid { display: grid; min-width: 0; }
 .dly-kicker { color: var(--gold); font: 900 11px/1.2 var(--font); letter-spacing: 1.2px; text-transform: uppercase; }
 .dly-card .dly-kicker { margin-bottom: 2px; }
-.dly-title { color: #fff; font: italic 900 16px/1.1 var(--font); text-transform: uppercase; letter-spacing: -.3px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.dly-title { color: #fff; font: italic 900 16px/1.1 var(--font); text-transform: uppercase; letter-spacing: -.3px; padding-right: .12em; text-wrap: balance; } /* no clamp: the italic last letter was clipped (17 Oct 2026) */
 .dly-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 5px; font: 700 12px/1.2 var(--font); color: #b8b8cc; }
 .dly-meta b { color: var(--gold); }
 .dly-card.is-won .dly-meta b { color: var(--good); }

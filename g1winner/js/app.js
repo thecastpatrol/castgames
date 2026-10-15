@@ -2,6 +2,18 @@
 (function (T) {
   'use strict';
 
+  /* The silks drawings for the Legends reveal (17 Oct 2026): js/kits-data.js then js/cast-kits.js, loaded here in order
+     unless the page already has them (script tags in index.html, with their ?v= versions, do the same job) */
+  (function () {
+    if (window.CastKits || document.querySelector('script[src*="cast-kits.js"]')) return;
+    var me = document.querySelector('script[src*="js/app.js"]'), v = me && /\?v=([\w-]+)/.exec(me.getAttribute('src'));
+    ['js/kits-data.js', 'js/cast-kits.js'].forEach(function (src) {
+      var sc = document.createElement('script');
+      sc.src = src + (v ? '?v=' + v[1] : ''); sc.async = false;
+      document.head.appendChild(sc);
+    });
+  })();
+
   var R = T.render;
   var $ = function (id) { return document.getElementById(id); };
   var selectedMode = 'plus'; // the main mode is the default on home
@@ -700,14 +712,19 @@
        their signature horses (their wins stay hidden). No states (16 Oct 2026). Without it, the old pack card below */
     var CI = window.CastIntl, S0 = T.state(), three = S0 && S0.offer ? S0.offer.players.slice(0, 3) : [];
     if (CI && CI.reveal && three.length) {
-      // Each face: the jockey's silks as a jersey (hoops, stripes, a sash or a V in the silks' colours, else plain)
-      var JERSEY = { hoops: 'hoops', stripes: 'stripes', sash: 'sash', chevrons: 'v', chevron: 'v' };
+      /* Each face: the jockey's real silks filling the tile (17 Oct 2026, the owner: "zoom ... horse racing so all modes like
+         the nrl"): js/cast-kits.js draws the silks of his or her signature horse as described (a band, crossed sashes, stars,
+         the sleeves in the top corners), from js/kits-data.js. Without them, the game's own silks picture (T.silksSvg) */
+      var K = window.CastKits, horseKey = function (h) { return String(h || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); };
       var sides = {}, side = function (p) {
         var k = p && p.id;
         if (!k || sides[k]) return;
-        var L = T.look(p), sk = T.silksOf(p) || T.NEUTRAL_SILKS, pat = JERSEY[sk.pattern] || 'plain', nm = L.horse || 'Racing Silks';
-        sides[k] = { name: nm, short: nm, code: '', c1: L.primary, c2: L.accent, glow: L.primary,
-          pattern: pat, base: L.primary, colors: pat === 'hoops' || pat === 'stripes' ? [L.primary, L.accent] : [L.accent], count: pat === 'hoops' ? 8 : pat === 'stripes' ? 7 : undefined };
+        var L = T.look(p), own = T.silksOf(p), sk = own || T.NEUTRAL_SILKS, nm = L.horse || 'Racing Silks', hk = own ? horseKey(own.horse) : '';
+        sides[k] = { name: nm, short: nm, code: '', c1: L.primary, c2: L.accent, glow: L.primary, fill: true,
+          draw: function (w, h) {
+            if (K && K.drawFill && hk && K.has('racing', hk)) return K.drawFill('racing', hk, { w: w, h: h });
+            return T.silksSvg(sk, w, h);
+          } };
       };
       var greats = (T.LEGENDS || []).concat(three);
       greats.forEach(side);

@@ -739,12 +739,13 @@
         if (!k || sides[k]) return;
         var c = T.club(k), nm = String(c.name || k), last = nm.split(' ').pop();
         /* The club's real kit (js/cast-kits.js; 16 Oct 2026, the owner: "make sure that they are accurate ... Don't just
-           assume always that they are a V-shaped jersey design"). CastIntl.JERSEYS is the NRL clubs' only; without the
-           kits it is plain in the club's colours, never a V */
+           assume always that they are a V-shaped jersey design"), filling the whole tile like the NRL reveal (17 Oct 2026, the
+           owner: "I prefer the full box filled as opposed to jersey outline"). CastIntl.JERSEYS is the NRL clubs' only; without
+           the kits it is plain in the club's colours, never a V */
         var K = window.CastKits, fb = { base: c.primary, accent: c.accent || c.secondary };
         sides[k] = { name: nm, short: nm.length <= 15 ? nm : last,
           code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: c.primary, pattern: 'plain', colors: [c.accent || c.secondary],
-          draw: K && K.drawKit ? function (w, h) { return K.drawKit('afl', k, { w: w, h: h, fallback: fb }); } : null };
+          draw: K && K.drawFill ? function (w, h) { return K.drawFill('afl', k, { w: w, h: h, fallback: fb }); } : null, fill: true };
       };
       var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
       pool.forEach(side);

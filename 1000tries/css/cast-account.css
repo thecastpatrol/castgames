@@ -2720,6 +2720,37 @@ ol.ca-adm-fans > li::before { content: counter(fan); flex: none; width: 1.6em; t
 .ca-setup-step > .ca-sticky-actions { margin-top: auto; }
 .ca-panel.is-steps > .ca-body > .ca-center:only-child { margin-block: auto; } /* Saving: the spinner in the middle */
 @media (min-width: 720px) { .ca-panel.is-steps { height: min(640px, calc(100vh - 48px)); height: min(640px, calc(100dvh - 48px - env(safe-area-inset-top, 0px))); } }
+/* Which Sports Do You Follow? (16 Oct 2026): a big card per sport, ticked ones in white with their sport's colour (as the
+   CAST Games website's sport chips, cg.css .cg-sw-chip.is-on; gold stays CAST Pass's). --sc: the sport's colour (r,g,b) */
+.ca-sports { display: grid; gap: 9px; margin: 2px 0 6px; }
+.ca-sport { display: grid; grid-template-columns: 44px 1fr 30px; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 10px 14px; border-radius: 16px; cursor: pointer; text-align: left;
+  border: 1.5px solid rgba(255, 255, 255, .12); background: rgba(255, 255, 255, .04); color: #d6d6e4; font: inherit; transition: border-color .12s, background .12s; }
+.ca-sport-ico { font-size: 30px; line-height: 1; text-align: center; }
+.ca-sport-txt { display: grid; gap: 2px; min-width: 0; }
+.ca-sport-txt b { font: 900 17px/1.15 Inter, sans-serif; color: #fff; }
+.ca-sport-txt small { font-size: 12.5px; line-height: 1.3; color: #a2a2b8; }
+.ca-sport-box { width: 26px; height: 26px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, .3); display: grid; place-items: center; font-weight: 900; color: #fff; }
+.ca-sport.is-on { border-color: #fff; background: rgba(var(--sc), .3); color: #fff; }
+.ca-sport.is-on .ca-sport-txt small { color: #e5e5f0; }
+.ca-sport.is-on .ca-sport-box { border-color: #fff; background: rgb(var(--sc)); }
+@media (hover: hover) { .ca-sport:not(.is-on):hover { border-color: rgba(255, 255, 255, .4); } }
+/* one column everywhere: two to a row squeezed the subtitles onto two lines (American / Football) */
+.ca-sport-txt small { text-wrap: balance; }
+/* The sport a Who Do You Go For? screen is for, above its question */
+.ca-sport-tag { display: inline-flex; align-items: center; gap: 6px; margin: 6px 0 4px; padding: 4px 11px; border-radius: 999px; border: 1px solid rgba(var(--sc), .7);
+  background: rgba(var(--sc), .18); color: #fff; font: 800 12.5px/1.2 Inter, sans-serif; white-space: nowrap; }
+.ca-step-head .ca-sport-tag + .ca-title { margin-top: 4px; }
+/* A picked team on the sign-up steps and Your Sports: white, not gold (gold is CAST Pass's) */
+.ca-setup-step .ca-team.is-on, .ca-setup-step .ca-team.is-light.is-on, .ca-setup-step .ca-team.ca-team-none.is-on { border-color: #fff; box-shadow: inset 0 -4px 0 var(--t2), 0 0 0 3px rgba(255, 255, 255, .3), 0 0 16px rgba(255, 255, 255, .25); }
+.ca-setup-step .ca-team.ca-team-none.is-on { border-style: solid; }
+/* Long team names (Commanders, Buccaneers, Afghanistan) shrink a little to stay on one line, never cut off */
+.ca-teams-sp .ca-team span { max-width: 100%; overflow-wrap: anywhere; text-align: center; }
+.ca-teams-sp.is-nfl .ca-team span, .ca-teams-sp.is-cricket .ca-team span { font-size: 10.5px; letter-spacing: -.1px; }
+/* Your Sports in My Details, and its editor */
+.ca-sports-dl dt span { margin-right: 2px; }
+.ca-sports-edit .ca-sp-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+.ca-sports-edit .ca-sp-h .ca-sport-tag { margin: 0; }
+.ca-sports-edit .ca-team-tabs { margin-top: 2px; }
 /* Invite a Mate (2 Oct 2026): the free Rerolls' teal (gold is CAST Pass's), on the home banner, the welcome screen and
    Friends */
 [data-cast-invite][hidden] { display: none; }
@@ -3813,7 +3844,7 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-adm-launches-row i { font-style: normal; font-size: 20px; color: var(--ca-muted); }
 @media (hover: hover) { .ca-adm-launches-row:hover { background: rgba(255, 255, 255, .08); } }
 
-/* 700 TDS team sheets (16 Oct 2026): a gridiron like the game's field, the offence lined up from behind and heading up the
+/* 777 TDS team sheets (16 Oct 2026): a gridiron like the game's field, the offence lined up from behind and heading up the
    page. White sidelines, a yard line every few metres, the end zone across the top and the line of scrimmage just in front
    of the receivers and tight end */
 .ca-pitch.is-gridiron { position: relative; isolation: isolate; border-radius: 6px; padding: 46px 12px 18px; gap: 12px; border: 2px solid rgba(255, 255, 255, .75);
@@ -3825,6 +3856,14 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-pitch.is-gridiron::before { content: 'END ZONE'; position: absolute; top: 9px; left: 0; right: 0; text-align: center; font: 900 10px/1 Inter, sans-serif;
   letter-spacing: 3px; color: rgba(255, 255, 255, .55); pointer-events: none; }
 .ca-pitch.is-gridiron .ca-spot { flex-basis: 30%; }
+/* 777 TDS (17 Oct 2026): five on the line (four receivers and the tight end), a little smaller so whole names fit */
+.ca-pitch.is-gridiron.is-ten { padding-left: 8px; padding-right: 8px; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child { gap: 4px; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot { flex-basis: 20%; padding-left: 3px; padding-right: 3px; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot-name { font-size: 11px; letter-spacing: -.2px; overflow-wrap: normal; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot-name.is-long { font-size: 9.5px; letter-spacing: -.3px; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot-name.is-xlong { font-size: 9px; letter-spacing: -.3px; overflow-wrap: anywhere; hyphens: auto; } /* Houshmandzadeh: two lines, never cut */
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:nth-child(2) { justify-content: space-around; }
 .ca-pitch.is-gridiron .ca-pitch-row:first-child { position: relative; padding-top: 10px; }
 .ca-pitch.is-gridiron .ca-pitch-row:first-child::before { content: ''; position: absolute; top: 0; left: -4px; right: -4px; height: 3px; border-radius: 2px;
   background: #4da3ff; box-shadow: 0 0 8px rgba(77, 163, 255, .55); pointer-events: none; }
@@ -3838,5 +3877,20 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 @media (max-width: 420px) {
   .ca-pitch.is-track { border-radius: 48% / 26%; padding: 30px 12px; }
 }
+/* 500 GOALS team sheets (17 Oct 2026): a football pitch, the XI attacking up the page. Mown stripes, white touchlines, the
+   halfway line and centre circle behind the midfield, and a penalty box at each end */
+.ca-pitch.is-pitch { position: relative; isolation: isolate; border-radius: 6px; padding: 40px 10px; gap: 18px; border: 2px solid rgba(255, 255, 255, .75);
+  background:
+    linear-gradient(180deg, transparent calc(50% - 1px), rgba(255, 255, 255, .55) calc(50% - 1px), rgba(255, 255, 255, .55) calc(50% + 1px), transparent calc(50% + 1px)),
+    radial-gradient(circle at 50% 50%, transparent 0 44px, rgba(255, 255, 255, .5) 44px 46px, transparent 46px),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .6) 0 3px, transparent 3px),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .045) 0 30px, transparent 30px 60px),
+    linear-gradient(180deg, #1b6b36, #145a2c); }
+.ca-pitch.is-pitch::before, .ca-pitch.is-pitch::after { content: ''; position: absolute; left: 24%; right: 24%; height: 26px; border: 2px solid rgba(255, 255, 255, .55);
+  pointer-events: none; z-index: -1; }
+.ca-pitch.is-pitch::before { top: 0; border-top: 0; }
+.ca-pitch.is-pitch::after { bottom: 0; border-bottom: 0; }
+.ca-pitch.is-pitch .ca-spot { flex-basis: 30%; }
+.ca-pitch.is-pitch .ca-pitch-row:last-child .ca-spot { flex-basis: 24%; }
 /* One Shop for every CAST game (16 Oct 2026): a special item's "Only in" tag, quiet and never gold */
 .ca-shop-where.is-only { display: inline-block; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #e5e7eb; }
