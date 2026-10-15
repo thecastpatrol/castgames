@@ -7193,18 +7193,20 @@
      one tap turns on accounts and leaderboards at 4000goals.com.au and shows 4000 GOALS in the other games' stats, boards
      and Shop. It can be undone. [game, name, site] */
   var LAUNCH_CARDS = [['1000tries', '1000TRIES', '1000tries.com.au'], ['4000goals', '4000 GOALS', '4000goals.com.au'], ['bigbash', '25000 RUNS', 'castgames.com.au/25000runs']];
+  // One card for each game still to launch (15 Oct 2026: 25000 RUNS waits beside 4000 GOALS). mod.launch.g = the card
+  // being asked about, so a tap on one card never confirms another
   function launchCard(d) {
-    var next = LAUNCH_CARDS.filter(function (x) { return (d.launched || []).indexOf(x[0]) < 0; })[0];
-    if (!next) return '';
-    var on = false, L = mod.launch || {}, nm = next[1];
-    var btn = !mod.owner ? '<small class="ca-muted">Only the owner can launch.</small>' : L.busy ? '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" disabled>Working&hellip;</button>'
-      : L.confirm ? '<div class="ca-row"><button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-launch" data-v="on" data-g="' + next[0] + '">Yes, Launch Now</button>' +
-        '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-launch-cancel">Cancel</button></div>'
-      : '<button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-launch-ask">&#x1F680; Launch ' + nm + '</button>';
-    return '<div class="ca-adm-launch' + (on ? ' is-live' : '') + '"><div class="ca-adm-launch-txt"><span class="ca-mod-tag">Not Launched</span>' +
-      '<b>' + nm + ' Launch</b><small>One tap turns on accounts and leaderboards at ' + next[2] + ', and shows ' + nm + ' in the other games: its stats, boards and Shop. No push needed.</small>' +
-      (L.confirm ? '<small class="ca-adm-launch-q">Launch ' + nm + ' for everyone now?</small>' : '') +
-      (L.err ? '<p class="ca-lb-err" role="alert">' + esc(L.err) + '</p>' : '') + '</div>' + btn + '</div>';
+    return LAUNCH_CARDS.filter(function (x) { return (d.launched || []).indexOf(x[0]) < 0; }).map(function (next) {
+      var on = false, L0 = mod.launch || {}, L = L0.g === next[0] ? L0 : {}, nm = next[1];
+      var btn = !mod.owner ? '<small class="ca-muted">Only the owner can launch.</small>' : L.busy ? '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" disabled>Working&hellip;</button>'
+        : L.confirm ? '<div class="ca-row"><button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-launch" data-v="on" data-g="' + next[0] + '">Yes, Launch Now</button>' +
+          '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-launch-cancel">Cancel</button></div>'
+        : '<button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-launch-ask" data-g="' + next[0] + '"' + (L0.busy ? ' disabled' : '') + '>&#x1F680; Launch ' + nm + '</button>';
+      return '<div class="ca-adm-launch' + (on ? ' is-live' : '') + '"><div class="ca-adm-launch-txt"><span class="ca-mod-tag">Not Launched</span>' +
+        '<b>' + nm + ' Launch</b><small>One tap turns on accounts and leaderboards at ' + next[2] + ', and shows ' + nm + ' in the other games: its stats, boards and Shop. No push needed.</small>' +
+        (L.confirm ? '<small class="ca-adm-launch-q">Launch ' + nm + ' for everyone now?</small>' : '') +
+        (L.err ? '<p class="ca-lb-err" role="alert">' + esc(L.err) + '</p>' : '') + '</div>' + btn + '</div>';
+    }).join('');
   }
 
   /* Six Again's launch (14 Oct 2026): its own card (the games' card shows one game at a time). Until it's on, only a
@@ -7524,7 +7526,7 @@
   // owner's call): what the 'loved it?' prompt pushes stays as last set (config/launch upsell, Auto)
   function admLaunch(on, game) {
     game = game || '1000tries';
-    mod.launch = { busy: true };
+    mod.launch = { busy: true, g: game };
     render();
     callFn('adminLaunch', { game: game, on: on }).then(function (r) {
       mod.launch = {};
@@ -7532,7 +7534,7 @@
       track('admin_launch', { game: game, on: on ? 1 : 0 });
       gotLaunch(r.launched || []);
       render();
-    }, function (err) { mod.launch = { err: fnError(err) }; render(); });
+    }, function (err) { mod.launch = { err: fnError(err), g: game }; render(); });
   }
 
   /* Analytics: Google Analytics for both sites (adminAnalytics on the server, kept 10 minutes there). Both sites
@@ -9035,7 +9037,7 @@
       }
       case 'adm-ga-site': mod.gaSite = t.getAttribute('data-v'); render(); break;
       case 'adm-ga-refresh': { var gr = mod.gaRange || '7d'; admFetch('ga_' + gr, 'adminAnalytics', { range: gr, force: true }, true); render(); break; }
-      case 'adm-launch-ask': mod.launch = { confirm: true }; render(); break;
+      case 'adm-launch-ask': mod.launch = { confirm: true, g: t.getAttribute('data-g') || '' }; render(); break;
       case 'adm-ou-ask': mod[(t.getAttribute('data-v') === 'po' ? 'po' : 'ou') + 'L'] = { confirm: true }; render(); break;
       case 'adm-ou-cancel': mod[(t.getAttribute('data-v') === 'po' ? 'po' : 'ou') + 'L'] = {}; render(); break;
       case 'adm-ou-launch': admOuLaunch(t.getAttribute('data-v')); break;
