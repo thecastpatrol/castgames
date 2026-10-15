@@ -57,7 +57,7 @@
 
   function posChips(p) {
     return T.positionsOf(p).map(function (c) {
-      return '<span class="chip" title="' + esc(T.POS_NAMES[c] || c) + '">' + esc(c) + '</span>';
+      return '<span class="chip" title="' + esc(T.POS_NAMES[c] || c) + '">' + esc(T.posLabel(c)) + '</span>';
     }).join('');
   }
 
@@ -223,18 +223,18 @@
         var tweakable = S.tweakMode && p;
         var sub = S.subMode, subCan = sub && sub.from == null && p && T.subTargets(i).length, subNo = sub && sub.from == null && p && !subCan;
         var subTo = sub && sub.from != null && !p && T.subTargets(sub.from).indexOf(i) !== -1, subFrom = sub && sub.from === i;
-        if (subTo) return '<button type="button" class="slot is-empty is-subto" data-slot="' + i + '" aria-label="Move here: ' + esc(T.POS_NAMES[s.code]) + '"><span class="slot-code">' + s.code + '</span><span class="slot-pos">' + esc(T.POS_NAMES[s.code]) + '</span></button>';
+        if (subTo) return '<button type="button" class="slot is-empty is-subto" data-slot="' + i + '" aria-label="Move here: ' + esc(T.POS_NAMES[s.code]) + '"><span class="slot-code">' + T.posLabel(s.code) + '</span><span class="slot-pos">' + esc(T.POS_NAMES[s.code]) + '</span></button>';
         if (subCan || subFrom) tweakable = true;
         if (!p) {
           var choosing = S.mode.source === 'spin' && !S.offer && !S.spinPos && !S.awaitingLock && !S.tweakMode && !S.finished;
           var chosen = S.spinPos === s.code && (S.spinSlot == null || S.spinSlot === i);
-          return '<div class="slot is-empty' + (choosing ? ' is-choose' : '') + (chosen ? ' is-chosen' : '') + '" data-slot="' + i + '"><span class="slot-code">' + s.code + '</span><span class="slot-pos">' + esc(T.POS_NAMES[s.code]) + '</span></div>';
+          return '<div class="slot is-empty' + (choosing ? ' is-choose' : '') + (chosen ? ' is-chosen' : '') + '" data-slot="' + i + '"><span class="slot-code">' + T.posLabel(s.code) + '</span><span class="slot-pos">' + esc(T.POS_NAMES[s.code]) + '</span></div>';
         }
         var club = T.slotClub(s);
         var c = T.club(club), lk = look(club, 84, 70, 2, p);
         return '<' + (tweakable ? 'button type="button"' : 'div') + ' class="slot is-filled' + (lk ? ' has-look' : '') + goatCls(p) + (sub ? (subFrom ? ' is-subfrom' : subCan ? ' is-subcan' : subNo ? ' is-subno' : '') : tweakable ? ' is-tweakable' : '') + (flashIdx === i ? ' is-flash' : '') + '" data-slot="' + i + '" style="' + clubVars(club) + (lk ? '--wc-field:' + window.CastNations.field(club) + ';' : '') + '"' +
           (tweakable ? ' aria-label="' + (sub ? 'Move ' : 'Swap out ') + esc(p.name) + '"' : '') + '>' + lk +
-          '<span class="slot-code">' + s.code + '</span>' +
+          '<span class="slot-code">' + T.posLabel(s.code) + '</span>' +
           '<span class="slot-abbr">' + (T.isGoat(p) ? '<span role="img" aria-label="GOAT">&#x1F410;</span>' : esc(c.abbr)) + '</span>' +
           '<span class="slot-name">' + esc(T.surname(p.name)) + medalMark(p) + '</span>' +
           '<span class="slot-tries">' + T.fmt(p.tries_1998_plus) + '</span>' +
@@ -468,7 +468,7 @@
             '<span class="pcard-name">' + nameHtml(p) + medalMark(p) + '</span>' +
             '<span class="pcard-meta">' + posChips(p) + '<span class="pcard-span">' + span(p) + '</span>' + nationBadges(p) + '</span>' + dailyTag(S, p) +
           '</span>' +
-          '<span class="pcard-foot">' + triesBadge(S, p) + '<span class="pcard-cta">Pick</span></span>' +
+          '<span class="pcard-foot">' + triesBadge(S, p) + '<span class="pcard-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' +
           '</button>';
       }).join('') + '</div>' + R.immBack(S) + R.keySwap(S);
   };
@@ -567,7 +567,7 @@
       '<p class="pp-intro">Pick the spot you want to fill. We then spin a club and season, and you can only pick from that squad\'s players in that position. No backing out.</p>' +
       '<div class="pp-grid">' + order.map(function (code) {
         return '<button type="button" class="pp-btn" data-action="spin-pos" data-pos="' + code + '">' +
-          '<span class="pp-code">' + code + '</span><span class="pp-name">' + esc(T.POS_NAMES[code]) + '</span>' +
+          '<span class="pp-code">' + T.posLabel(code) + '</span><span class="pp-name">' + esc(T.POS_NAMES[code]) + '</span>' +
           (counts[code] > 1 ? '<span class="pp-count">' + counts[code] + ' open</span>' : '') + '</button>';
       }).join('') + '</div>' +
       '<p class="pp-hint">Or tap an empty spot on your XI.</p>';
@@ -630,7 +630,7 @@
       '<p class="chooser-q">Where do you want them?</p>' +
       '<div class="chooser-spots">' + codes.map(function (code) {
         return '<button type="button" class="chooser-spot" data-place="' + code + '">' +
-          '<span class="cs-code">' + code + '</span>' +
+          '<span class="cs-code">' + T.posLabel(code) + '</span>' +
           '<span class="cs-pos">' + esc(T.POS_NAMES[code]) + '</span>' +
           '<span class="cs-tag">Place here</span>' +
           '</button>';
@@ -758,11 +758,11 @@
     S.slots.forEach(function (s) { if (s.player && (!best || s.player.tries_1998_plus > best.tries_1998_plus)) best = s.player; });
     var rows = S.slots.map(function (s) {
       var p = s.player;
-      if (!p) return '<li class="rrow is-empty"><span class="rrow-code">' + s.code + '</span><span class="rrow-name">Not picked</span><span class="rrow-tries">&nbsp;</span></li>';
+      if (!p) return '<li class="rrow is-empty"><span class="rrow-code">' + T.posLabel(s.code) + '</span><span class="rrow-name">Not picked</span><span class="rrow-tries">&nbsp;</span></li>';
       var club = T.slotClub(s);
       var c = T.club(club);
       return '<li class="rrow' + goatCls(p) + (p === best ? ' is-best' : '') + '" style="' + clubVars(club) + '">' +
-        '<span class="rrow-code">' + s.code + '</span>' +
+        '<span class="rrow-code">' + T.posLabel(s.code) + '</span>' +
         '<span class="rrow-club">' + esc(c.abbr) + '</span>' +
         '<span class="rrow-name">' + nameHtml(p) + (p === best ? ' <span class="best-tag">Top scorer</span>' : '') + '</span>' +
         '<span class="rrow-tries">' + T.fmt(p.tries_1998_plus) + '</span>' +

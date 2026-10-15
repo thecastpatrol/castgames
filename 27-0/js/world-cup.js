@@ -3,7 +3,8 @@
    all five Pool B and C sides, a quarter final, a semi and the final. js/wc-engine.js plays the tournament; this file is the
    screens. Hidden until the owner launches World Cup mode in Admin (or ?castwc=1 for an admin's visit); signed-in players only.
    Classic's wildcards (js/daily-wild.js: Reroll, Remove Player, Substitute) and the 88+ Pick (js/picks.js, 7 Oct 2026:
-   one of three squad players rated 88+, or the best at a spot with none); no Run It Back, other Picks, Superstar Keys or Quick Draft here. */
+   one of three squad players rated 88+, or the best at a spot with none); no Run It Back, other Picks, Superstar Keys or Quick Draft here.
+   World Champions week (from the owner's launch on final night to 11:59pm Sun 22 Nov) adds the World Champions Pick. */
 (function () {
   'use strict';
   if (typeof STATE === 'undefined' || typeof SLOTS === 'undefined' || !window.WC) return;
@@ -118,18 +119,47 @@
     if (w && Array.isArray(w.set)) { m = { id: w.id }; w.set.forEach(function (e) { m[e.n] = e.b; }); }
     return m;
   }
+  /* World Champions (15 Oct 2026, the owner's calls; js/cast-account.js wch, js/cast-wch.js; the server's lib/wch.js has the
+     same rules): while it runs, the World Cup final winner's squad come up boosted in their nation's spins at 95+ (his own
+     rating if it's higher) and the Player of the Final at 99, on premium World Cup blue foil (p.ch: 'champ' or 'potf'; p.cht:
+     the trophy, for a champion). Cap per 13 from spins: one, and none once the CAST Pass member's free World Champions
+     Pick is used (STATE.__wchf). Picks (js/picks.js) are on top. A champion's boost replaces his Team of the Week boost: the
+     higher rating, never both */
+  function wchNow() { var A = acct(); return A && A.wch ? A.wch() : null; }
+  function wchTier(w, name, k) { return !w ? '' : name === w.potf ? 'potf' : k === w.nation ? 'champ' : ''; }
+  function wchRating(own, t) { return t === 'potf' ? 99 : Math.max(95, own); }
+  // Champions in the 13 from spins (a Pick's are marked src 'C')
+  function wchFromSpins() { return (STATE.team || []).filter(function (p) { return p && p.ch && p.src !== 'C'; }).length; }
+  function wchRoom() { return !STATE.__wchf && wchFromSpins() < 1; }
   // A nation's squad as 27-0 players (the same shape getSquadForClubYear gives), best first. Ratings floor at 67 like Classic
   function squadOf(k, raw) {
     var s = squads && squads[k];
     if (!s) return [];
-    var tw = raw ? null : totwBoosts();
+    var tw = raw ? null : totwBoosts(), w = raw || !isWc() ? null : wchNow(), room = !!w && wchRoom();
     return (s.players || []).map(function (r) {
-      var p = { name: r[0], positions: (r[1] || []).slice(0, 2), rating: Math.max(67, Math.round(r[2] || 67)), club: k, yf: 2026, yt: 2026, year: 2026, wcClub: r[3] || '' };
+      var own = Math.max(67, Math.round(r[2] || 67)), p = { name: r[0], positions: (r[1] || []).slice(0, 2), rating: own, club: k, yf: 2026, yt: 2026, year: 2026, wcClub: r[3] || '' };
       var b = tw && Object.prototype.hasOwnProperty.call(tw, r[0]) ? tw[r[0]] : 0;
       if (b > 0) { p.rating = Math.min(99, p.rating + b); p.tw = b; p.twId = tw.id; }
+      var t = room ? wchTier(w, r[0], k) : '';
+      if (t) { p.rating = Math.max(wchRating(own, t), p.rating); p.ch = t; p.cht = k === w.nation ? 1 : 0; delete p.tw; delete p.twId; }
       return p;
     }).sort(function (a, b) { return b.rating - a.rating; });
   }
+  // For js/picks.js (the World Champions Pick): every champion and the Player of the Final, boosted, as players to choose
+  window.cpWchRoster = function () {
+    var w = wchNow();
+    if (!w || !squads) return [];
+    var out = [];
+    KEYS.forEach(function (k) {
+      ((squads[k] || {}).players || []).forEach(function (r) {
+        var t = wchTier(w, r[0], k);
+        if (t) out.push({ name: r[0], positions: (r[1] || []).slice(0, 2), rating: wchRating(Math.max(67, Math.round(r[2] || 67)), t), club: k, year: 2026, ch: t, cht: k === w.nation ? 1 : 0 });
+      });
+    });
+    return out;
+  };
+  // A champion in the 13 from a spin? (js/picks.js then uses a bought World Champions Pick, never the free one)
+  window.cpWchSpinIn = function () { return isWc() && wchFromSpins() > 0; };
 
   /* ---------- The kickers (data/wc-squads.json, 7 Oct 2026, the owner: "Valentine Holmes goal 2 points when you play
      Cook Islands or missed goal after tries", field goals by "the FE or HALFBACK usually") ---------- */
@@ -243,6 +273,12 @@
     return out;
   });
   // Taken: no walkout, his reveal was the moment (9 Oct 2026, the owner: "that extra flash is not necessary")
+  // A World Champion into the 13 (from a spin; a Pick unlocks it in js/picks.js): the World Champions trophy
+  wrap('placePlayer', function (orig, args) {
+    var p = args[0], out = orig.apply(this, args);
+    if (isWc() && p && p.ch && !STATE.__qd) { var A = acct(); if (A && A.unlock) A.unlock(['wch26']); }
+    return out;
+  });
   wrap('placePlayer', function (orig, args) {
     var p = args[0], out = orig.apply(this, args);
     if (isWc() && p && p.il && STATE.__il && STATE.__il.shown === p.name && !STATE.__il.taken) {
@@ -318,6 +354,19 @@
     slot.removeAttribute('data-nation');
     if (val) val.removeAttribute('data-nick');
   }
+  /* A spin on show is drawn again with today's champion boosts (World Champions): one taken, or the free Pick used, and
+     the rest of that nation's champions show at their own ratings; one taken out of the 13, and they're boosted again */
+  wrap('displaySpin', function (orig, args) {
+    var cid = args[0], players = args[2];
+    if (isWc() && NATIONS[cid] && Array.isArray(players) && wchNow()) {
+      var fresh = {};
+      squadOf(cid).forEach(function (p) { fresh[p.name] = p; });
+      players = players.map(function (p) { return p && !p.il && fresh[p.name] ? fresh[p.name] : p; });
+      if (STATE.currentSpin && STATE.currentSpin.cid === cid && STATE.currentSpin.players === args[2]) STATE.currentSpin.players = players;
+      return orig.call(this, cid, args[1], players);
+    }
+    return orig.apply(this, args);
+  });
   wrap('_applyClubColor', function (orig, args) {
     var out = orig.apply(this, args);
     if (isWc() && NATIONS[args[0]]) paintLook(args[0]); else clearLook();
@@ -332,6 +381,13 @@
       Array.prototype.forEach.call(document.querySelectorAll('#nrlField .fpos[data-slot]'), function (el) {
         var p = STATE.team[+el.getAttribute('data-slot')], c = el.querySelector('.fpos-circle.fp-filled');
         if (!c || !p || !(NATIONS[p.club] || (p.il && N.has(p.club))) || c.querySelector('.wc-look')) return;
+        // World Champions: premium World Cup blue foil, the trophy (and the medal) after his name
+        if (p.ch) {
+          c.classList.add('fp-wch'); c.classList.toggle('fp-wch-medal', p.ch === 'potf'); c.classList.remove('fp-light');
+          var nm = c.querySelector('.fpos-pname');
+          if (nm && !nm.querySelector('.fp-wch-mk')) nm.insertAdjacentHTML('beforeend', '<span class="fp-wch-mk">' + (p.ch === 'potf' ? '&#x1F3C5;' : '') + (p.cht ? '&#x1F3C6;' : '') + '</span>');
+          return;
+        }
         if (p.tw) { c.classList.add('fp-tw'); c.classList.remove('fp-light'); return; } // Team of the Week: World Cup blue, not his nation's look (the owner, 15 Oct 2026)
         c.insertAdjacentHTML('afterbegin', look(p.club, c.clientWidth || 84, c.clientHeight || 56, 2)); // stars, no emblems
         c.style.setProperty('--wc-field', N.field(p.club));
@@ -360,6 +416,7 @@
       // always in a player's first World Cup game); Picks used (STATE.__ileg)
       STATE.__il = legends.length && (Math.random() < IL_NATURAL || !ilFirstSeen()) ? { at: 1 + Math.floor(Math.random() * 6), shown: null } : null;
       STATE.__ileg = 0;
+      STATE.__wch = 0; STATE.__wchf = 0; // World Champions Picks used: bought ones, and the free one
       // The wildcard bar from the start, as Classic draws it (js/daily-wild.js redraws it after startSelectedMode, which
       // World Cup goes around): the 88+ Pick shows before the first spin, and nothing from the last game stays on it
       if (window.cpWildRender) setTimeout(function () { window.cpWildRender(true); }, 50);
@@ -1040,7 +1097,7 @@
   function used() {
     if (STATE.__resumed) return STATE.__used || null;
     var w = STATE.__wc || {};
-    return { wc: (STATE.__rrN || 0) + (w.revealN || 0) + (w.removeN || 0), wcp: STATE.__wcp || 0, ileg: STATE.__ileg || 0 };
+    return { wc: (STATE.__rrN || 0) + (w.revealN || 0) + (w.removeN || 0), wcp: STATE.__wcp || 0, ileg: STATE.__ileg || 0, wch: STATE.__wch || 0, wchf: STATE.__wchf ? 1 : 0 };
   }
   function save(result, r) {
     var A = acct();
@@ -1049,7 +1106,7 @@
     var picks = (STATE.team || []).filter(function (p) { return p; });
     var d = { losses: r.losses, stage: r.stage, pd: Math.max(-999, Math.min(999, r.pd)), rating: T.rating, sq: picks.map(function (p) { return sqOf(p, 2026); }) }; // with where a World Legend or 88+ player came from (pickSrc)
     var u = used();
-    if (u) { d.wc = u.wc; if (u.wcp) d.wcp = u.wcp; if (u.ileg) d.ileg = u.ileg; }
+    if (u) { d.wc = u.wc; if (u.wcp) d.wcp = u.wcp; if (u.ileg) d.ileg = u.ileg; if (u.wch) d.wch = u.wch; if (u.wchf) d.wchf = 1; } // World Champions Picks: the server checks each was spent
     // Drafted with a Team of the Week player: the week, so the server counts his boost in the team rating (lib/boards.js)
     var tw = picks.filter(function (p) { return p.tw && p.twId; })[0];
     if (tw) d.tw = tw.twId;
@@ -1241,7 +1298,7 @@
       stopAuto(); stopLive();
       STATE = { team: s.team, takenNames: new Set(s.team.filter(Boolean).map(function (p) { return p.name; })), currentSpin: null, pendingPlayer: null, season: s.season,
         spinPickedThisSpin: false, teamName: s.name || 'My Team', yearFrom: 2026, yearTo: 2026, showRatings: true, rerollUsed: false, gameMode: 'wc', packs: [], packIdx: 0, packAllCards: [], packPlayers: [],
-        __resumed: true, __used: s.used && typeof s.used.wc === 'number' ? { wc: s.used.wc, wcp: s.used.wcp || 0, ileg: s.used.ileg || 0 } : null };
+        __resumed: true, __used: s.used && typeof s.used.wc === 'number' ? { wc: s.used.wc, wcp: s.used.wcp || 0, ileg: s.used.ileg || 0, wch: s.used.wch || 0, wchf: s.used.wchf ? 1 : 0 } : null };
       T = { id: t.id, run: t.run, rating: t.rating, shown: t.shown, phase: t.phase, ev: t.ev || [], potm: t.potm || [], seen: t.seen || { bc: 0, a: 0, ko: 0 }, drawn: !!t.drawn, done: false };
       STATE.wc = T;
       document.body.classList.add('cp-wc');

@@ -137,7 +137,7 @@
     b.classList.toggle('is-5', !picks.length && items.length === 5);
     b.style.setProperty('--n', items.length); // one row, however many there are
     // Each button's name: in full, and short for phones (four or five in a row)
-    var SHORT = { reroll: 'Reroll', reveal: 'Reveal', remove: 'Remove', sub: 'Sub', key: 'Key', toty: 'Team of the Year Pick', prem: 'Premiers Pick', imm: 'Immortal Pick', wcp: '88+ Pick', ileg: 'World Legend Pick' };
+    var SHORT = { reroll: 'Reroll', reveal: 'Reveal', remove: 'Remove', sub: 'Sub', key: 'Key', toty: 'Team of the Year Pick', prem: 'Premiers Pick', imm: 'Immortal Pick', wcp: '88+ Pick', ileg: 'World Legend Pick', wch: 'World Champions Pick' };
     var lab = function (it) { return '<span class="cpw-label"><span aria-hidden="true">' + it[1] + '</span> <span class="cpw-full">' + it[2] + '</span><span class="cpw-short">' + SHORT[it[0]] + '</span></span>'; };
     b.innerHTML = items.map(function (it) {
       var armed = (it[0] === 'remove' && w.arming) || (it[0] === 'sub' && !!w.sub), isBonus = it[0] === 'reroll' && bonus;
@@ -239,7 +239,7 @@
       return;
     }
     if (t.classList.contains('is-pass')) { if (typeof gtag !== 'undefined') gtag('event', 'wildcard_locked_tap', { wildcard: k, mode: STATE.gameMode === 'wc' ? 'wc' : 'classic' }); if (window.CastAccount && CastAccount.openPass) CastAccount.openPass(k === 'key' ? 'vault' : 'substitute'); return; }
-    if (k === 'toty' || k === 'prem' || k === 'imm' || k === 'wcp' || k === 'ileg') { if (window.cpPicks) window.cpPicks.tap(k); return; } // js/picks.js: the price, or the choice
+    if (k === 'toty' || k === 'prem' || k === 'imm' || k === 'wcp' || k === 'ileg' || k === 'wch') { if (window.cpPicks) window.cpPicks.tap(k); return; } // js/picks.js: the price, or the choice
     if (k === 'key') {
       if (t.classList.contains('is-wait')) { hint(t.getAttribute('data-hint')); return; }
       if (t.classList.contains('is-buy')) {

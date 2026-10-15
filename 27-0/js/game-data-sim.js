@@ -353,19 +353,22 @@ function promoKind(P, name) { return P && P.kind === 'prem' ? { pk: 'prem', pr: 
 // A promo player's words, marks and look: the Dally M navy, or a premier in his club's colours with the silver edge (the
 // medal winner gold either way), a medal after a medal winner's name and a trophy after a premier's (css/theme.css)
 // World Legends (World Cup 8-0, 8 Oct 2026): their own tag, look (pr-il, fp-il) and the fields they carry
-function promoTag(p) { return p && p.tw ? 'Team of the Week' : p && p.il ? 'World Legend' : p && p.wcp ? '88+ Pick' : !p || !p.pm || p.pm === 'imm' ? '' : p.pk === 'prem' ? (p.pm === 'medal' ? 'Clive Churchill Medal' : '2026 Premiers') : p.pm === 'medal' ? 'Dally M Medal' : 'Team of the Year'; }
-function promoMark(p) { if (!p || !p.pm || p.pm === 'imm') return ''; const m = (p.pm === 'medal' ? '&#x1F3C5;' : '') + (p.pk === 'prem' && p.pr ? '&#x1F3C6;' : ''); return m ? '&nbsp;' + m : ''; } // kept with the last word of the name
-/* World Cup Team of the Week (15 Oct 2026, js/world-cup.js): p.tw is his boost this week, p.twId the week; World Cup blue */
-function promoCls(p, base) { return p && p.tw ? ' ' + base + '-tw' : p && p.il ? ' ' + base + '-il' : !p || !p.pm || p.pm === 'imm' ? '' : ' ' + base + '-plat' + (p.pk === 'prem' ? ' ' + base + '-prem' : '') + (p.pm === 'medal' ? ' ' + base + '-medal' : ''); }
+function promoTag(p) { return p && p.ch ? (p.ch === 'potf' ? 'Player of the Final' : 'World Champions') : p && p.tw ? 'Team of the Week' : p && p.il ? 'World Legend' : p && p.wcp ? '88+ Pick' : !p || !p.pm || p.pm === 'imm' ? '' : p.pk === 'prem' ? (p.pm === 'medal' ? 'Clive Churchill Medal' : '2026 Premiers') : p.pm === 'medal' ? 'Dally M Medal' : 'Team of the Year'; }
+function promoMark(p) { if (p && p.ch) { const c = (p.ch === 'potf' ? '&#x1F3C5;' : '') + (p.cht ? '&#x1F3C6;' : ''); return c ? '&nbsp;<span style="white-space:nowrap">' + c + '</span>' : ''; } if (!p || !p.pm || p.pm === 'imm') return ''; const m = (p.pm === 'medal' ? '&#x1F3C5;' : '') + (p.pk === 'prem' && p.pr ? '&#x1F3C6;' : ''); return m ? '&nbsp;' + m : ''; } // kept with the last word of the name
+/* World Cup Team of the Week (15 Oct 2026, js/world-cup.js): p.tw is his boost this week, p.twId the week; World Cup blue.
+   World Champions (15 Oct 2026, js/world-cup.js): p.ch 'champ' or 'potf' (the Player of the Final), p.cht his trophy;
+   premium World Cup blue foil, a trophy after the name (the medal too for the Player of the Final) */
+function promoCls(p, base) { return p && p.ch ? ' ' + base + '-wch' + (p.ch === 'potf' ? ' ' + base + '-wch-medal' : '') : p && p.tw ? ' ' + base + '-tw' : p && p.il ? ' ' + base + '-il' : !p || !p.pm || p.pm === 'imm' ? '' : ' ' + base + '-plat' + (p.pk === 'prem' ? ' ' + base + '-prem' : '') + (p.pm === 'medal' ? ' ' + base + '-medal' : ''); }
 function promoVars(p) { return p && p.pk === 'prem' ? '--pc:' + (CLUB_COLORS[p.club] || '#1a1a2e') + ';--pc2:' + (CLUB_SECONDARY[p.club] || '#ffffff') + ';' : ''; }
 function promoTrophy(p) { return p && p.pk === 'prem' ? 'prem26' : 'toty'; } // the limited trophy for finding one
 // What a promo player carries into your 13 (a Pick's Immortal keeps pm 'imm')
-function promoKeep(p) { return Object.assign(p && p.tw ? { tw: p.tw, twId: p.twId || '' } : {}, p && p.il ? Object.assign({ il: 1 }, p.line ? { line: p.line } : {}) : p && p.pm ? Object.assign({ pm: p.pm }, p.pk ? { pk: p.pk, pr: p.pr || 0 } : {}) : {}, p && p.wcp ? { wcp: 1 } : {}, p && p.src ? { src: p.src } : {}); }
+function promoKeep(p) { return Object.assign(p && p.ch ? { ch: p.ch, cht: p.cht || 0 } : {}, p && p.tw ? { tw: p.tw, twId: p.twId || '' } : {}, p && p.il ? Object.assign({ il: 1 }, p.line ? { line: p.line } : {}) : p && p.pm ? Object.assign({ pm: p.pm }, p.pk ? { pk: p.pk, pr: p.pr || 0 } : {}) : {}, p && p.wcp ? { wcp: 1 } : {}, p && p.src ? { src: p.src } : {}); }
 /* Where a pick came from, saved as the 4th part of its team-sheet entry (d.sq "club|year|rating|L") so every team sheet can
    mark it (11 Oct 2026, the owner: "differentiate between all the special cards"; js/cast-account.js PICK_SRC): L a World
    Legend Pick, F a free World Legend, 8 an 88+ Pick, I an Immortal Pick, T a Team of the Year Pick, P a Premiers Pick
-   (js/picks.js sets src), t and p a Team of the Year or Premiers card from a spin */
-function pickSrc(p) { return !p ? '' : p.src || (p.tw ? 'w' : p.il ? 'F' : p.wcp ? '8' : p.pm === 'imm' ? 'I' : p.pm ? (p.pk === 'prem' ? 'p' : 't') : ''); }
+   (js/picks.js sets src), t and p a Team of the Year or Premiers card from a spin; C a World Champions Pick, c a World
+   Champion boosted from a spin (the server counts both against what the 13 was allowed, lib/wch.js) */
+function pickSrc(p) { return !p ? '' : p.src || (p.ch ? 'c' : p.tw ? 'w' : p.il ? 'F' : p.wcp ? '8' : p.pm === 'imm' ? 'I' : p.pm ? (p.pk === 'prem' ? 'p' : 't') : ''); }
 function sqOf(p, year) { var s = pickSrc(p); return [p.club || '', year != null ? year : p.year || '', p.rating || ''].concat(s ? [s] : []).join('|'); }
 
 // ============================================================
@@ -559,14 +562,14 @@ function displaySpin(cid,year,players) {
     row.className='player-row'+(isTribute?' pr-tribute':'')+promoCls(p,'pr')+(greyed?' pr-grey':'')+(taken?' pr-taken':'');
     if(p.pk==='prem') row.style.cssText+=promoVars(p);
     const era=p.yf===p.yt?p.yf:`${p.yf} to ${p.yt}`;
-    const rBadge=STATE.showRatings?`<div class="pr-badge ${p.tw?'rb-tw':p.il?'rb-il':p.pm?'rb-plat':ratingClass(p.rating)}">${p.rating}${p.tw?`<small class="rb-twb">+${p.tw}</small>`:''}</div>`:`<div class="pr-badge" style="background:#2a2a3a;color:var(--muted);font-size:13px;display:flex;align-items:center;justify-content:center">?</div>`;
+    const rBadge=STATE.showRatings?`<div class="pr-badge ${p.ch?'rb-wch':p.tw?'rb-tw':p.il?'rb-il':p.pm?'rb-plat':ratingClass(p.rating)}">${p.rating}${p.tw?`<small class="rb-twb">+${p.tw}</small>`:''}</div>`:`<div class="pr-badge" style="background:#2a2a3a;color:var(--muted);font-size:13px;display:flex;align-items:center;justify-content:center">?</div>`;
     const clubAbbr = CLUB_ABBR[p.club] || p.club.slice(0,3).toUpperCase();
     const clubPrimary = CLUB_COLORS[p.club] || '#1a1a2a';
     const clubSecondary = CLUB_SECONDARY[p.club] || '#ffffff';
     const clubTagHtml = `<span class="club-tag" style="background:${clubPrimary};color:${clubSecondary};border-color:${clubPrimary}">${clubAbbr}</span>`;
     const posHasSlot=pos=>(ELIGIBLE_SLOTS[pos]||[pos]).some(type=>SLOTS.some(s=>s.type===type&&STATE.team[s.i]===null));
     const posTagBtn=pos=>{const avail=!greyed&&!taken&&posHasSlot(pos);return`<span class="ptag ptag-${pos}${avail?' ptag-btn':' ptag-dim'}" data-pos="${pos}">${pos}</span>`;};
-    row.innerHTML=`${rBadge}<div class="pr-info"><div class="pr-name">${p.name}${promoMark(p)}${p.pm||p.il||p.tw?`<span class="pr-pm">${promoTag(p)}</span>`:''}</div><div class="pr-club">${CLUBS[p.club]?.name||p.club}${p.il?'':' · '+era}</div></div><div class="pr-right"><div class="pr-tags">${p.positions.map(posTagBtn).join('')}</div>${clubTagHtml}</div>`;
+    row.innerHTML=`${rBadge}<div class="pr-info"><div class="pr-name">${p.name}${promoMark(p)}${p.pm||p.il||p.tw||p.ch?`<span class="pr-pm">${promoTag(p)}</span>`:''}</div><div class="pr-club">${CLUBS[p.club]?.name||p.club}${p.il?'':' · '+era}</div></div><div class="pr-right"><div class="pr-tags">${p.positions.map(posTagBtn).join('')}</div>${clubTagHtml}</div>`;
     // a World Legend's row wears his nation's look behind a dark wash, like his pitch tile (10 Oct 2026, the owner: more premium)
     if(p.il&&window.CastNations&&CastNations.has(p.club)) row.insertAdjacentHTML('afterbegin',`<span class="wc-look pr-il-look" aria-hidden="true">${CastNations.svg(p.club,360,64,2)}</span>`);
     if(!greyed&&!taken){
@@ -820,7 +823,7 @@ function renderField(){
     const p=STATE.team[i];
     const isTributePlayer=p&&p.name==='Jai Arrow';
     h+=`<div class="fpos" data-slot="${i}" style="left:${pos.x}%;top:${pos.y}%;width:${t.w}px !important">`;
-    h+=`<div class="fpos-circle${p?' fp-filled '+(isTributePlayer?'fp-tribute':p.pm==='imm'?'fp-imm':p.pm||p.tw?promoCls(p,'fp').trim():fieldTierClass(p.rating)):''}" style="width:${t.w}px !important;height:${t.h}px !important;${promoVars(p)}">`;
+    h+=`<div class="fpos-circle${p?' fp-filled '+(isTributePlayer?'fp-tribute':p.pm==='imm'?'fp-imm':p.pm||p.tw||p.ch?promoCls(p,'fp').trim():fieldTierClass(p.rating)):''}" style="width:${t.w}px !important;height:${t.h}px !important;${promoVars(p)}">`;
     h+=fieldTileInner(SLOTS[i].type,pos.a,p,tm);
     h+=`</div><div class="fpos-label">${SLOTS[i].label}</div></div>`;
   });

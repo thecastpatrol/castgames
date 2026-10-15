@@ -467,7 +467,7 @@
             '<span class="pcard-name">' + nameHtml(p) + medalMark(p) + '</span>' +
             '<span class="pcard-meta">' + posChips(p) + '<span class="pcard-span">' + span(p) + '</span>' + nationBadges(p) + '</span>' + dailyTag(S, p) +
           '</span>' +
-          '<span class="pcard-foot">' + triesBadge(S, p) + '<span class="pcard-cta">Pick</span></span>' +
+          '<span class="pcard-foot">' + triesBadge(S, p) + '<span class="pcard-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' +
           '</button>';
       }).join('') + '</div>' + R.immBack(S) + R.keySwap(S);
   };

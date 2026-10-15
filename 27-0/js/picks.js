@@ -18,6 +18,11 @@
      World Legends (js/world-cup.js cpIntlLegends), from three nations when it can, at his own World Cup rating, in
      World Cup 8-0 only. The three come with the World Legend reveal (js/cast-intl.js) the first time they're
      dealt. $4.99, or 3 for $11.99, on sale with the World Cup launch; a CAST Pass holder gets one free, once ever.
+   - 'wch', the World Champions Pick (15 Oct 2026, the owner's calls; js/cast-wch.js): one of three World Champions (the
+     World Cup final winner's squad, and the Player of the Final) who fit an open spot, at 95+ (the Player of the Final 99),
+     in World Cup 8-0 only, while World Champions runs. $5.99, or 3 for $14.99; a CAST Pass member gets one free, but never
+     in a 13 that already has a champion from a spin (the free Pick takes that one boosted spot), where a bought one is
+     used instead. Unused Picks expire when it ends. The season saves d.wch (bought) and d.wchf (the free one).
    Each joins without using a spin, with the walkout (showPlatWalkout, js/game-core.js). The button shows only when it
    can be used: an open spot one of them plays (Packs: one not already in your players). No limit on Picks (the owner:
    they paid for that premium). Never in the Daily, a friend's challenge, Quick Draft or a season run back.
@@ -85,7 +90,26 @@
       return { name: p.name, positions: p.positions, rating: p.rating, club: p.club, year: 2026, wcp: 1 };
     });
   }
+  // The World Champions (js/world-cup.js cpWchRoster): the winner's squad at 95+ and the Player of the Final at 99
+  function wchRoster() {
+    return (typeof window.cpWchRoster === 'function' ? window.cpWchRoster() : []).map(function (p) {
+      return { name: p.name, positions: p.positions, rating: p.rating, club: p.club, year: 2026, ch: p.ch, cht: p.cht };
+    });
+  }
+  function wchSpinIn() { return typeof window.cpWchSpinIn === 'function' && window.cpWchSpinIn(); }
   var KINDS = {
+    // World Cup 8-0 only, first while World Champions runs
+    wch: {
+      ico: '&#x1F3C6;', name: 'World Champions Pick', btn: 'cpWchPack',
+      on: function () { return !!(window.CastAccount && CastAccount.pickState && CastAccount.pickState('wch')); },
+      roster: wchRoster,
+      season: function () { return true; },
+      sell: function () { return !!(window.CastAccount && CastAccount.wch && CastAccount.wch()); },
+      title: 'Choose Your World Champion',
+      sub: function () { return 'He goes straight into your 13 at 95+. Your pick is only used once you choose.'; },
+      tag: function (p) { return p.ch === 'potf' ? 'Player of the Final' : 'World Champions'; },
+      hook: { kicker: 'World Champions Pick', title: 'Choose a World Champion', line: 'Pick from three of the World Champions. He\u00a0joins your World Cup 13 at 95+.' }
+    },
     // World Cup 8-0 only (spinMode): on sale from the World Cup launch, and for good (the mode stays)
     wcp: {
       ico: '&#x1F30F;', name: '88+ Pick', btn: 'cpWcpPack',
@@ -154,11 +178,11 @@
     var K = KINDS[k];
     if (!K || !live() || !K.on() || dailyOn() || !screenOn('draft')) return false;
     // The 88+ Pick only in World Cup 8-0, and the other Picks never there
-    if (k === 'wcp' || k === 'ileg' || STATE.gameMode === 'wc') return (k === 'wcp' || k === 'ileg') && STATE.gameMode === 'wc';
+    if (k === 'wcp' || k === 'ileg' || k === 'wch' || STATE.gameMode === 'wc') return (k === 'wcp' || k === 'ileg' || k === 'wch') && STATE.gameMode === 'wc';
     if ((STATE.gameMode !== 'classic' && STATE.gameMode !== 'hard') || STATE.__ch || STATE.__qd || STATE.__rib) return false;
     return K.season();
   }
-  function packMode(k) { var K = KINDS[k]; return !!K && k !== 'wcp' && k !== 'ileg' && live() && K.on() && STATE.gameMode === 'pack' && screenOn('pack-squad') && Array.isArray(STATE.packPlayers) && STATE.packPlayers.length > 0; }
+  function packMode(k) { var K = KINDS[k]; return !!K && k !== 'wcp' && k !== 'ileg' && k !== 'wch' && live() && K.on() && STATE.gameMode === 'pack' && screenOn('pack-squad') && Array.isArray(STATE.packPlayers) && STATE.packPlayers.length > 0; }
   // Who could be offered right now
   function choices(k) {
     if (spinMode(k)) {
@@ -198,12 +222,24 @@
   }
   function posName(s) { return String(s.label).replace(/^(Left|Right)\s+/i, ''); }
 
+  /* The account's Pick state for this 13. The World Champions Pick: a CAST Pass member's free one never goes into a 13 that
+     already has a champion from a spin, so there only bought ones count (and the server is asked for a bought one) */
+  function pst(k) {
+    var A = acct(), st = A && A.pickState(k);
+    if (st && k === 'wch' && st.free && wchSpinIn()) st = Object.assign({}, st, { have: st.bought, free: 0 });
+    return st;
+  }
+  // World Champions' last 24 hours: the hours left on its Pick (js/cast-wch.js keeps them ticking)
+  function wchHours() {
+    var A = acct(), w = A && A.wch ? A.wch() : null, l = w ? w.until - Date.now() : 0, m = Math.ceil(Math.max(0, l) / 60000);
+    return w && A.wchLast && A.wchLast() ? (m > 60 ? Math.ceil(m / 60) + 'h left' : m + 'm left') : '';
+  }
   /* ---------- A button: null (none), or what it says ---------- */
   function state(k) {
-    var A = acct(), st = A && A.pickState(k);
+    var A = acct(), st = pst(k);
     if (!st || !choices(k).length) return null;
     // The promo's last 24 hours (js/cast-account.js promoLast): its Pick shows the hours left too
-    var ends = (k === 'toty' || k === 'prem') && promo(k) && A.promoLast && A.promoLast() ? A.promoHours() : '';
+    var ends = k === 'wch' ? wchHours() : (k === 'toty' || k === 'prem') && promo(k) && A.promoLast && A.promoLast() ? A.promoHours() : '';
     if (st.have) return { have: st.have, fresh: st.fresh, left: st.free && !st.bought ? '1 Free' : st.have + ' Left', ends: ends };
     if (KINDS[k].sell() && (st.canBuy || st.guest)) return { have: 0, buy: true, left: st.price, ends: ends };
     return null; // under 15 with none, or not on sale in the game yet: nothing to buy here
@@ -290,7 +326,7 @@
       });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && sheet.el && !sheet.el.hidden && sheet.busy === false) shut(); });
     }
-    sheet.el.className = 'tp' + (k === 'imm' ? ' is-imm' : k === 'prem' ? ' is-prem' : k === 'wcp' ? ' is-wcp' : k === 'ileg' ? ' is-ileg' : '');
+    sheet.el.className = 'tp' + (k === 'imm' ? ' is-imm' : k === 'prem' ? ' is-prem' : k === 'wcp' ? ' is-wcp' : k === 'ileg' ? ' is-ileg' : k === 'wch' ? ' is-wch' : '');
     sheet.where = null; sheet.dealt = false; render(); sheet.dealt = true; // later redraws (choosing, an error) don't deal the cards again
     sheet.el.hidden = false;
     track(k + '_pick_open', { mode: STATE.gameMode, offered: sheet.list.length });
@@ -304,11 +340,11 @@
     // A World Legend's card: his nation's look under the gold frame, and just the spot he takes (the owner)
     var N = window.CastNations, look = p.il && N && N.has(p.club) ? '<span class="tp-look" aria-hidden="true">' + N.svg(p.club, 120, 200) + '</span>' : '';
     var many = spotChoices(p), asking = sheet.where === i;
-    return '<button type="button" class="tp-card' + (asking ? ' is-asking' : sheet.where != null ? ' is-dim' : '') + (med ? ' is-medal' : '') + (p.pm === 'imm' ? ' is-imm' : '') + (prem ? ' is-prem' : '') + (p.il ? ' is-ileg' : '') + (p.wcp ? ' is-wcp' : '') + (sheet.busy === i ? ' is-chosen' : '') + '" data-tp="' + i + '" style="--d:' + i + vars + '" aria-label="Choose ' + esc(p.name) + ', ' + p.rating + '">' + look +
+    return '<button type="button" class="tp-card' + (asking ? ' is-asking' : sheet.where != null ? ' is-dim' : '') + (med ? ' is-medal' : '') + (p.pm === 'imm' ? ' is-imm' : '') + (prem ? ' is-prem' : '') + (p.il ? ' is-ileg' : '') + (p.wcp ? ' is-wcp' : '') + (p.ch ? ' is-wch' + (p.ch === 'potf' ? ' is-wch-medal' : '') : '') + (sheet.busy === i ? ' is-chosen' : '') + '" data-tp="' + i + '" style="--d:' + i + vars + '" aria-label="Choose ' + esc(p.name) + ', ' + p.rating + '">' + look +
       // A premier's card has no club chip: every one on offer is his club's (and Newcastle's NEW read like a badge)
       '<span class="tp-top"><b>' + esc(p.positions.join('/')) + '</b>' + (prem ? '' : '<i style="background:' + bg + ';color:' + fg + '">' + esc(abbr) + '</i>') + '</span>' +
       '<span class="tp-r">' + p.rating + '</span>' +
-      '<span class="tp-n">' + esc(p.name).replace('-', '-<wbr>') + (prem ? '&nbsp;' + (med ? '&#x1F3C5;' : '') + '&#x1F3C6;' : med ? '&nbsp;&#x1F3C5;' : '') + '</span>' +
+      '<span class="tp-n">' + esc(p.name).replace('-', '-<wbr>') + (prem ? '&nbsp;' + (med ? '&#x1F3C5;' : '') + '&#x1F3C6;' : med ? '&nbsp;&#x1F3C5;' : p.ch ? '&nbsp;' + (p.ch === 'potf' ? '&#x1F3C5;' : '') + (p.cht ? '&#x1F3C6;' : '') : '') + '</span>' +
       '<span class="tp-t">' + esc(K.tag(p)) + '</span>' +
       // its last two words kept together ("Fills Second Row" never leaves "Row" alone, the owner's rule)
       // a dual-position player says both ("Halfback or Five-Eighth"); where he goes is asked after Choose
@@ -324,7 +360,7 @@
       '<button type="button" class="tp-where-back" data-tp="back">Back</button></div>';
   }
   function render() {
-    var A = acct(), K = KINDS[sheet.k], st = A && A.pickState(sheet.k), pack = STATE.gameMode === 'pack', n = st ? st.have : 0;
+    var K = KINDS[sheet.k], st = pst(sheet.k), pack = STATE.gameMode === 'pack', n = st ? st.have : 0;
     var foot = st && st.free && !st.bought ? 'Using your free CAST Pass pick' : n ? n + ' pick' + (n === 1 ? '' : 's') + ' left' : '';
     sheet.el.innerHTML = '<div class="tp-box' + (sheet.busy !== false ? ' is-busy' : '') + (sheet.dealt ? ' is-dealt' : '') + '" role="dialog" aria-modal="true" aria-labelledby="tpT">' +
       '<button type="button" class="tp-x" data-tp="close" aria-label="Close">&#x2715;</button>' +
@@ -348,13 +384,16 @@
     if (!choices(k).some(function (c) { return c.name === p.name; }) || (!pack && !spinSpot(p))) { sheet.list = offer(k); render(); return; }
     sheet.busy = i; sheet.err = ''; render();
     var st0 = STATE;
-    A.pickUse(k, '27-0').then(function (r) {
+    // The World Champions Pick in a 13 with a champion from a spin: a bought one (the free one waits for another 13)
+    A.pickUse(k, '27-0', k === 'wch' && wchSpinIn() ? { paid: true } : null).then(function (r) {
       sheet.busy = false; shut();
       if (STATE !== st0) return;
-      STATE['__' + k] = (STATE['__' + k] || 0) + 1; STATE['__' + k + 'Offer'] = null;
+      if (k === 'wch' && r && r.free) STATE.__wchf = 1; // the free one: the 13 gets no champion from spins now
+      else STATE['__' + k] = (STATE['__' + k] || 0) + 1;
+      STATE['__' + k + 'Offer'] = null;
       // where he came from, for the team sheet (js/game-data-sim.js pickSrc)
       var placed = pack ? placePack(Object.assign({}, p, { src: SRC[k] })) : placeSpin(Object.assign({}, p, { src: SRC[k] }), at);
-      if ((k === 'toty' || k === 'prem') && !STATE.__qd && window.CastAccount && CastAccount.unlock) CastAccount.unlock([k === 'prem' ? 'prem26' : 'toty']); // the promo's trophy
+      if ((k === 'toty' || k === 'prem' || k === 'wch') && !STATE.__qd && window.CastAccount && CastAccount.unlock) CastAccount.unlock([k === 'prem' ? 'prem26' : k === 'wch' ? 'wch26' : 'toty']); // the promo's trophy
       track(k + '_pick_chosen', { mode: STATE.gameMode, player: p.name, free: r && r.free ? 1 : 0 });
       redraw();
       var done = function () { if (pack && !placed) note(p); };
@@ -365,7 +404,7 @@
       if (sheet.el && !sheet.el.hidden) render();
     });
   }
-  var SRC = { ileg: 'L', wcp: '8', imm: 'I', toty: 'T', prem: 'P' };
+  var SRC = { ileg: 'L', wcp: '8', imm: 'I', toty: 'T', prem: 'P', wch: 'C' };
   // What goes into your players (an Immortal keeps his era and club name for the walkout and the Pack list)
   function cardOf(p) {
     var c = { name: p.name, club: p.club, year: p.year, positions: p.positions, rating: p.rating, pm: p.pm };
@@ -374,6 +413,7 @@
     if (p.pk) { c.pk = p.pk; c.pr = p.pr || 0; }
     if (p.wcp) c.wcp = 1; // the walkout says 88+ Pick (promoTag)
     if (p.il) { c.il = 1; c.line = p.line; } // a World Legend: his tag, look and line
+    if (p.ch) { c.ch = p.ch; c.cht = p.cht || 0; } // a World Champion: his tag, foil and marks
     return c;
   }
   // Classic and Hard: into the spot, without using a spin (a squad on show stays up to pick from)
@@ -381,7 +421,7 @@
     var s = (at != null && getAvailableSlotsForPlayer(p).filter(function (x) { return x.i === at; })[0]) || spinSpot(p);
     if (!s) return false;
     STATE.team[s.i] = Object.assign({ name: p.name, positions: p.positions, rating: p.rating, club: p.club, year: p.year, pm: p.pm }, p.pk ? { pk: p.pk, pr: p.pr || 0 } : {}, p.il ? { il: 1, line: p.line } : {},
-      p.wcp ? { wcp: 1 } : {}, p.src ? { src: p.src } : {});
+      p.wcp ? { wcp: 1 } : {}, p.ch ? { ch: p.ch, cht: p.cht || 0 } : {}, p.src ? { src: p.src } : {});
     STATE.takenNames.add(p.name);
     if (STATE.__wc) STATE.__wc.slot = null;
     renderField();
@@ -451,7 +491,7 @@
   var basePack = window.startPackOpening;
   if (typeof basePack === 'function') window.startPackOpening = function () { if (live()) { STATE.__toty = 0; STATE.__totyOffer = null; STATE.__prem = 0; STATE.__premOffer = null; STATE.__imm = 0; STATE.__immOffer = null; } return basePack.apply(this, arguments); };
   after('renderPackSquad', packBtns);
-  ['cast:rerolls', 'cast:tier', 'cast-account', 'cast:launch', 'cast:promo'].forEach(function (ev) { window.addEventListener(ev, function () { setTimeout(redraw, 0); }); });
+  ['cast:rerolls', 'cast:tier', 'cast-account', 'cast:launch', 'cast:promo', 'cast:wch'].forEach(function (ev) { window.addEventListener(ev, function () { setTimeout(redraw, 0); }); });
 
   // For js/daily-wild.js: the Pick wildcards (null: none) and their taps
   window.cpPicks = { bars: bars, tap: tap };

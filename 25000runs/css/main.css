@@ -1817,17 +1817,33 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .oup-play { flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding-left: 2px; box-sizing: border-box; border-radius: 50%; background: #38bdf8; color: #04121f; font-size: 13px; box-shadow: 0 0 14px rgba(56, 189, 248, .45); } /* a round play button (the owner: the text was squashed) */
 .spot-promo.is-ou .spot-promo-txt small { text-wrap: balance; }
 
-/* Big Bash: a cricket ground (15 Oct 2026). The oval with its 30-yard circle, the pitch down the middle and the keeper on it */
+/* Big Bash: a cricket ground (15 Oct 2026; redrawn 16 Oct, the owner: "the pitch looks wrong for cricket", "the pitch in
+   the middle needs to be less obvious"). A true oval with mowing stripes, the boundary rope, a dashed 30-yard circle and
+   a faint pitch with its creases under the keeper. The rows draw in where the oval curves so every spot stays inside */
 .pitch {
-  padding: 34px 22px; border-radius: 50% / 16%;
+  position: relative; isolation: isolate; padding: 64px 30px; border-radius: 50%;
   background:
-    linear-gradient(90deg, transparent calc(50% - 26px), rgba(214, 190, 140, .30) calc(50% - 26px), rgba(214, 190, 140, .30) calc(50% + 26px), transparent calc(50% + 26px)) 50% 50% / 100% 34% no-repeat,
-    radial-gradient(ellipse 40% 30% at 50% 50%, transparent 0 97%, rgba(255, 255, 255, .16) 97% 100%, transparent 100%),
-    repeating-radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, .025) 0 28px, transparent 28px 56px),
-    linear-gradient(180deg, #14482a, #0c3220);
+    linear-gradient(180deg, transparent calc(50% - 46px), rgba(255, 255, 255, .22) calc(50% - 46px), rgba(255, 255, 255, .22) calc(50% - 45px), transparent calc(50% - 45px), transparent calc(50% + 45px), rgba(255, 255, 255, .22) calc(50% + 45px), rgba(255, 255, 255, .22) calc(50% + 46px), transparent calc(50% + 46px)) 50% 50% / 30px 100% no-repeat,
+    linear-gradient(90deg, transparent, rgba(222, 200, 150, .13) 25%, rgba(222, 200, 150, .13) 75%, transparent) 50% 50% / 18px 104px no-repeat,
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, .28) 100%),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .035) 0 26px, transparent 26px 52px),
+    linear-gradient(180deg, #17512f, #0f3b22);
   border: 2px solid #2f7a4a;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25);
 }
+/* The boundary rope just inside the edge, and the 30-yard circle */
+.pitch::before, .pitch::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; z-index: -1; }
+.pitch::before { inset: 9px; border: 2px solid rgba(255, 255, 255, .28); }
+.pitch::after { inset: 21% 15%; border: 1.5px dashed rgba(255, 255, 255, .2); }
+.pitch-row { position: relative; }
 .pitch-row:nth-child(2), .pitch-row:nth-child(4) { margin-bottom: 0; }
 .pitch-row:nth-child(3) { margin: 6px 0; }
-.pitch-row:first-child, .pitch-row:last-child { padding: 0 8%; }
+.pitch-row:first-child, .pitch-row:last-child { padding: 0 14%; }
+.pitch-row:nth-child(2), .pitch-row:nth-child(4) { padding: 0 3%; }
 .pitch-row:nth-child(3) .slot, .pitch-row:nth-child(4) .slot, .pitch-row:last-child .slot { max-width: 33%; }
+
+/* Desktop keys (16 Oct 2026): a small number on each card's Pick, only where there's a keyboard and a mouse */
+.pcard-key { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .pcard-key { display: inline-grid; place-items: center; min-width: 17px; height: 17px; margin-right: 6px; padding: 0 3px; box-sizing: border-box; border-radius: 5px; border: 1px solid currentColor; font: inherit; font-size: 10px; line-height: 1; opacity: .75; vertical-align: 1px; }
+}

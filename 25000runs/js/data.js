@@ -9,6 +9,10 @@
   T.SLOTS = ['B', 'B', 'B', 'B', 'B', 'B', 'K', 'W', 'W', 'W', 'W'];
 
   T.POS_NAMES = { B: 'Batter', K: 'Keeper', W: 'Bowler' };
+  // What the spots and chips show (16 Oct 2026, the owner: W read as wicketkeeper): the fantasy cricket labels. The
+  // codes underneath (B, K, W) are what the games save and the server checks, so they never change
+  T.POS_SHORT = { B: 'BAT', K: 'WK', W: 'BOWL' };
+  T.posLabel = function (code) { return T.POS_SHORT[code] || code; };
 
   // The eight BBL clubs (every season since BBL01, 2011/12). Seasons are named by the year they start
   T.CLUBS = {
@@ -26,14 +30,16 @@
   // The broadcast abbreviations
   T.CLUB_ABBR = { strikers: 'STR', heat: 'HEA', hurricanes: 'HUR', renegades: 'REN', stars: 'STA', scorchers: 'SCO', sixers: 'SIX', thunder: 'THU' };
 
+  // The clubs' brand colours (16 Oct 2026, checked one by one after the owner: "Hobart and Brisbane Heat look wrong";
+  // teamcolorcodes.com's BBL pages). Renegades list only their red, so black is their second, as on their kit
   T.CLUB_COLORS = {
-    strikers: '#0A6FC2', heat: '#00A6B6', hurricanes: '#5B2C83', renegades: '#D7192A', stars: '#00A651', scorchers: '#F26722',
-    sixers: '#E4007C', thunder: '#97C93D'
+    strikers: '#0084D6', heat: '#27A6B0', hurricanes: '#674398', renegades: '#EE343F', stars: '#8DC64C', scorchers: '#CC5A1E',
+    sixers: '#EC2A90', thunder: '#97D700'
   };
 
   T.CLUB_SECONDARY = {
-    strikers: '#FFD100', heat: '#E03A3E', hurricanes: '#96D701', renegades: '#111111', stars: '#0B2E1A', scorchers: '#111111',
-    sixers: '#111111', thunder: '#1F2A30'
+    strikers: '#C8C8C8', heat: '#FFFFFF', hurricanes: '#C8CACB', renegades: '#111111', stars: '#287246', scorchers: '#403529',
+    sixers: '#000000', thunder: '#000000'
   };
   T.CLUB_THIRD = {};
 

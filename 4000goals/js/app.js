@@ -1650,6 +1650,15 @@
   });
 
   document.addEventListener('keydown', function (e) {
+    // Desktop keys (16 Oct 2026, the owner): 1, 2 and 3 pick that card (the Team Spin list too); while choosing a spot,
+    // the same keys choose among the spots he can go into. Never while typing, in a pop-up or a sheet
+    var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
+    if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
+        $('sheet').hidden && !document.documentElement.classList.contains('ca-open')) {
+      var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.offer-cards [data-pick]:not([disabled]), .srow[data-pick]:not([disabled])');
+      var keyHit = Array.prototype.filter.call(keyList, function (x) { return x.offsetParent !== null; })[+e.key - 1];
+      if (keyHit) { e.preventDefault(); keyHit.click(); return; }
+    }
     if (e.key === 'Escape') {
       if (placingId) setPlacing(null);
       else if (!$('sheet').hidden) closeSheet();

@@ -483,7 +483,7 @@ function showPlatWalkout(card, onDone) {
   const clubName = card.clubName || (typeof CLUBS !== 'undefined' && CLUBS[card.club] && CLUBS[card.club].name) || abbr;
   const fg = (typeof _clubTextColor !== 'undefined') ? _clubTextColor(bg) : '#fff';
   const ov = document.createElement('div');
-  ov.className = 'pw' + (med ? ' is-medal' : '') + (imm ? ' is-imm' : '') + (prem ? ' is-prem' : '') + (il ? ' is-ileg' : '') + (card.wcp ? ' is-wcp' : ''); // a World Legend: gold accents on his nation's colours; an 88+ Pick: World Cup sky blue
+  ov.className = 'pw' + (med ? ' is-medal' : '') + (imm ? ' is-imm' : '') + (prem ? ' is-prem' : '') + (il ? ' is-ileg' : '') + (card.wcp ? ' is-wcp' : '') + (card.ch ? ' is-wch' + (card.ch === 'potf' ? ' is-wch-medal' : '') : ''); // World Champions: premium World Cup blue foil // a World Legend: gold accents on his nation's colours; an 88+ Pick: World Cup sky blue
   if (prem) ov.style.cssText = promoVars(card);
   ov.innerHTML = `
     <div class="pw-beams"></div><div class="pw-flash"></div><div class="pw-sparks"></div>

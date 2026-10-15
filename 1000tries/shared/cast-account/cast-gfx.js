@@ -375,5 +375,127 @@
     x.fillStyle = '#04121f'; x.font = '900 15px ' + FONT; x.textAlign = 'center'; x.fillText(bt, px + bw / 2, vy - 3);
   }
 
-  window.CastGfx = { premiers: premiers, totw: totw };
+  /* World Champions (15 Oct 2026, the owner's calls; Admin's World Champions card): the World Cup final's winners, their
+     starting 13 on a field (never the interchange; the whole squad is boosted) in premium World Cup blue foil, each at his
+     boosted rating with the trophy, the Player of the Final at 99 with the medal and a pearl-white edge, a scoreboard
+     (the final, 95+ rated, when it ends) and the call to play 27-0. Never gold (gold is the CAST Pass's).
+     o: { format: 'portrait' or 'story', nation, nationName, opp, oppName, potf, pnat, until (ms),
+          team: [{ s: 1-13, n, k, own, r (boosted), medal }] } */
+  var WCF = ['#0c4a6e', '#38bdf8', '#f0f9ff', '#7dd3fc', '#0369a1', '#bae6fd', '#0c4a6e'], PEARL = ['#7dd3fc', '#ffffff', '#bae6fd', '#ffffff', '#7dd3fc'];
+  function wch(o) {
+    var story = o.format === 'story', W = 1080, H = story ? 1920 : 1350, logos = o.logos || {};
+    return Promise.all([fonts(), img(logos.cast || SITE + 'cast-patrol.png'), img(logos.game || SITE + '27-0.png')]).then(function (got) {
+      var cv = document.createElement('canvas');
+      cv.width = W * SCALE; cv.height = H * SCALE;
+      var x = cv.getContext('2d');
+      x.scale(SCALE, SCALE);
+      x.textBaseline = 'alphabetic';
+      var Y = story ? { logo: 140, logoH: 104, kick: 300, title: 420, nm: 494, sb: 530, sbH: 104, f0: 680, head: 1680, btn: 1720 }
+        : { logo: 44, logoH: 80, kick: 166, title: 268, nm: 330, sb: 356, sbH: 86, f0: 466, head: 1240, btn: 1262 };
+      Y.f1 = Y.head - (story ? 96 : 70);
+      // ---- Deep World Cup blue, a spotlight from the top and foil confetti
+      var bg = x.createRadialGradient(W / 2, H * 0.12, 40, W / 2, H * 0.35, H * 0.95);
+      bg.addColorStop(0, '#1a5a94'); bg.addColorStop(0.4, '#0a2a4f'); bg.addColorStop(1, '#030914');
+      x.fillStyle = bg; x.fillRect(0, 0, W, H);
+      var r = rng(story ? 151 : 115);
+      for (var i = 0; i < (story ? 90 : 64); i++) {
+        x.save(); x.translate(r() * W, r() * H * 0.55); x.rotate(r() * Math.PI);
+        x.globalAlpha = 0.25 + r() * 0.5; x.fillStyle = ['#e0f2fe', '#7dd3fc', '#ffffff', '#38bdf8'][Math.floor(r() * 4)];
+        x.fillRect(-5, -2, 10 + r() * 8, 4); x.restore();
+      }
+      // ---- The logos: cast | 27-0
+      var cast = got[1], gm = got[2], lh = Y.logoH;
+      if (cast) { var cw = lh * 0.86 * cast.width / cast.height; x.drawImage(cast, W / 2 - 26 - cw, Y.logo + lh * 0.07, cw, lh * 0.86); }
+      x.fillStyle = 'rgba(255,255,255,.35)'; x.fillRect(W / 2 - 1, Y.logo + 4, 2, lh - 8);
+      if (gm) { var gw = lh * 1.12 * gm.width / gm.height; x.drawImage(gm, W / 2 + 22, Y.logo - lh * 0.06, gw, lh * 1.12); }
+      // ---- The kicker in a foil-edged pill
+      var kick = 'RUGBY LEAGUE WORLD CUP 2026';
+      x.font = '800 24px ' + FONT;
+      var kw = x.measureText(kick).width + kick.length * 2.2 + 56;
+      rr(x, W / 2 - kw / 2, Y.kick - 34, kw, 50, 25);
+      x.fillStyle = 'rgba(255,255,255,.07)'; x.fill();
+      x.lineWidth = 2; x.strokeStyle = foil(x, W / 2 - kw / 2, 0, W / 2 + kw / 2, 0, WCF); x.stroke();
+      x.fillStyle = '#e0f2fe'; spaced(x, kick, W / 2, Y.kick, 2.2);
+      // ---- The title, in foil, and the champions' name
+      x.save(); x.shadowColor = 'rgba(56,189,248,.6)'; x.shadowBlur = 34;
+      x.font = '900 ' + (story ? 108 : 92) + 'px ' + FONT; x.textAlign = 'center';
+      var tw0 = x.measureText('World Champions').width;
+      x.fillStyle = foil(x, W / 2 - tw0 / 2, 0, W / 2 + tw0 / 2, 0, ['#bae6fd', '#ffffff', '#7dd3fc', '#ffffff', '#bae6fd']);
+      x.fillText('World Champions', W / 2, Y.title); x.restore();
+      x.fillStyle = '#ffffff'; x.textAlign = 'center'; fit(x, (o.nationName || '') + ' 🏆', '900', story ? 46 : 40, W - 200, 20); x.fillText((o.nationName || '') + ' 🏆', W / 2, Y.nm);
+      // ---- The scoreboard: the final, 95+ RATED, when it ends
+      rr(x, 70, Y.sb, W - 140, Y.sbH, 18);
+      x.fillStyle = 'rgba(6,9,20,.6)'; x.fill();
+      x.lineWidth = 2.5; x.strokeStyle = foil(x, 70, 0, W - 70, 0, WCF); x.stroke();
+      var top = Y.sb + Y.sbH * 0.42, bot = Y.sb + Y.sbH * 0.78;
+      x.textAlign = 'left'; x.fillStyle = SKY; x.font = '800 21px ' + FONT; spaced(x, 'THE FINAL', 100, top, 1.5, 'left');
+      var fl = (o.nationName || '') + ' beat ' + (o.oppName || '');
+      x.fillStyle = '#ffffff'; fit(x, fl, '800', 24, 300, 14); x.textAlign = 'left'; x.fillText(fl, 100, bot);
+      var big = '95+', unit = 'RATED';
+      x.font = '900 60px ' + FONT; var bw = x.measureText(big).width; x.font = '800 20px ' + FONT; var uw = x.measureText(unit).width + unit.length * 1.2;
+      var bx = W / 2 - (bw + 14 + uw) / 2;
+      x.fillStyle = '#ffffff'; x.font = '900 60px ' + FONT; x.textAlign = 'left'; x.fillText(big, bx, Y.sb + Y.sbH * 0.72);
+      x.fillStyle = SKY; x.font = '800 20px ' + FONT; spaced(x, unit, bx + bw + 14, Y.sb + Y.sbH * 0.66, 1.2, 'left');
+      var endTxt = o.until ? sydTime(o.until) : '';
+      x.fillStyle = SKY; x.font = '800 21px ' + FONT; x.textAlign = 'right'; spaced(x, 'BOOSTED UNTIL', W - 100, top, 1.5, 'right');
+      x.fillStyle = '#ffffff'; fit(x, endTxt, '800', 24, 300, 14); x.textAlign = 'right'; x.fillText(endTxt, W - 100, bot);
+      // ---- The field
+      var fx = 120, fw = W - 240, fy = Y.f0, fh = Y.f1 - Y.f0;
+      x.save(); rr(x, fx, fy, fw, fh, 24); x.clip();
+      for (i = 0; i < 10; i++) { x.fillStyle = i % 2 ? '#1f6a33' : '#1a5c2c'; x.fillRect(fx, fy + i * fh / 10, fw, fh / 10 + 1); }
+      var vg = x.createRadialGradient(W / 2, fy + fh / 2, 50, W / 2, fy + fh / 2, fh * 0.75);
+      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.35)'); x.fillStyle = vg; x.fillRect(fx, fy, fw, fh);
+      x.setLineDash([14, 12]); x.strokeStyle = 'rgba(255,255,255,.35)'; x.lineWidth = 3;
+      x.beginPath(); x.moveTo(fx, fy + fh * 0.5); x.lineTo(fx + fw, fy + fh * 0.5); x.stroke(); x.setLineDash([]);
+      x.restore();
+      rr(x, fx, fy, fw, fh, 24); x.lineWidth = 2; x.strokeStyle = 'rgba(255,255,255,.28)'; x.stroke();
+      var at = {}; (o.team || []).forEach(function (e) { at[e.s] = e; });
+      var shape = [[1], [2, 3, 4, 5], [6, 7], [8, 9, 10], [11, 12], [13]];
+      var cwid = 184, chgt = story ? 116 : 98, gap = 14, step = (fh - 40) / 6;
+      shape.forEach(function (row, ri) {
+        var n = row.length, tw = n * cwid + (n - 1) * gap, cy = fy + 20 + step * ri + (step - chgt) / 2;
+        row.forEach(function (s, k) { if (at[s]) wcard(x, at[s], o, fx + fw / 2 - tw / 2 + k * (cwid + gap), cy, cwid, chgt); });
+      });
+      // ---- The Player of the Final and the call to play
+      x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.font = '900 ' + (story ? 42 : 34) + 'px ' + FONT;
+      var pf = o.potf ? 'Player of the Final: ' + o.potf + ' 🏅' + (!o.pnat || o.pnat === o.nation ? '🏆' : '') : 'Draft the World Champions';
+      fit(x, pf, '900', story ? 42 : 34, W - 160, 18); x.fillText(pf, W / 2, Y.head);
+      var cta = 'PLAY WORLD CUP 8-0 AT 27-0.APP', ch = story ? 70 : 60;
+      x.font = '900 ' + (story ? 28 : 25) + 'px ' + FONT; var ctw = x.measureText(cta).width + 80;
+      rr(x, W / 2 - ctw / 2, Y.btn, ctw, ch, ch / 2);
+      var bgr = x.createLinearGradient(W / 2 - ctw / 2, 0, W / 2 + ctw / 2, 0); bgr.addColorStop(0, '#7dd3fc'); bgr.addColorStop(0.5, '#f0f9ff'); bgr.addColorStop(1, '#7dd3fc'); x.fillStyle = bgr; x.fill();
+      x.fillStyle = '#04121f'; x.fillText(cta, W / 2, Y.btn + ch * 0.65);
+      return new Promise(function (ok, no) {
+        cv.toBlob(function (b) { cv.width = 1; cv.height = 1; if (b) ok(b); else no(new Error('The picture could not be saved.')); }, 'image/png');
+      });
+    });
+  }
+  // One champion: premium blue foil with a shine, his spot and nation's tag, his name with the trophy (and the medal), and
+  // his rating in a filled foil box. The Player of the Final has a pearl-white edge
+  function wcard(x, e, o, cx, cy, w, h) {
+    var nat = NATC[e.k] || ['#334155', String(e.k || '').toUpperCase()], small = h < 105, med = !!e.medal || e.n === o.potf;
+    x.save(); x.shadowColor = 'rgba(56,189,248,.45)'; x.shadowBlur = 16; x.shadowOffsetY = 4;
+    rr(x, cx, cy, w, h, 14);
+    var g = x.createLinearGradient(cx, cy, cx + w * 0.7, cy + h); g.addColorStop(0, '#1f6aa8'); g.addColorStop(0.35, '#0f3d6e'); g.addColorStop(1, '#071d38');
+    x.fillStyle = g; x.fill(); x.restore();
+    x.save(); rr(x, cx, cy, w, h, 14); x.clip();
+    var sh = x.createLinearGradient(cx, cy, cx + w, cy + h);
+    sh.addColorStop(0, 'rgba(255,255,255,0)'); sh.addColorStop(0.42, 'rgba(255,255,255,0)'); sh.addColorStop(0.5, 'rgba(255,255,255,.28)'); sh.addColorStop(0.58, 'rgba(255,255,255,0)'); sh.addColorStop(1, 'rgba(255,255,255,.06)');
+    x.fillStyle = sh; x.fillRect(cx, cy, w, h); x.restore();
+    rr(x, cx + 1.5, cy + 1.5, w - 3, h - 3, 13); x.lineWidth = 3.5; x.strokeStyle = foil(x, cx, cy, cx + w, cy + h, med ? PEARL : WCF); x.stroke();
+    var pad = 12;
+    x.fillStyle = SKY; x.font = '800 ' + (small ? 19 : 21) + 'px ' + FONT; x.textAlign = 'left'; x.fillText(TPOS[e.s - 1] || '', cx + pad, cy + (small ? 26 : 30));
+    x.font = '900 14px ' + FONT; var tw = x.measureText(nat[1]).width + 14;
+    rr(x, cx + w - pad - tw, cy + (small ? 9 : 12), tw, 22, 5); x.fillStyle = nat[0]; x.fill();
+    if (lightC(nat[0])) { x.lineWidth = 1; x.strokeStyle = 'rgba(0,0,0,.3)'; x.stroke(); }
+    x.fillStyle = lightC(nat[0]) ? '#111111' : '#ffffff'; x.textAlign = 'center'; x.fillText(nat[1], cx + w - pad - tw / 2, cy + (small ? 25 : 28));
+    var nm = surname(e.n) + ' ' + (med ? '🏅' : '') + '🏆';
+    x.fillStyle = '#ffffff'; x.textAlign = 'center'; fit(x, nm, '900', small ? 25 : 28, w - 16, 13); x.fillText(nm, cx + w / 2, cy + h * (small ? 0.535 : 0.545));
+    // The rating in its filled foil box
+    var vt = String(e.r), bh = small ? 30 : 34, bw = small ? 62 : 68, by = cy + h - bh - (small ? 7 : 9), bx = cx + w / 2 - bw / 2;
+    rr(x, bx, by, bw, bh, 8); x.fillStyle = foil(x, bx, by, bx + bw, by + bh, med ? PEARL : ['#7dd3fc', '#f0f9ff', '#38bdf8', '#e0f2fe', '#7dd3fc']); x.fill();
+    x.fillStyle = '#04121f'; x.font = '900 ' + (small ? 25 : 28) + 'px ' + FONT; x.textAlign = 'center'; x.fillText(vt, cx + w / 2, by + bh * 0.8);
+  }
+
+  window.CastGfx = { premiers: premiers, totw: totw, wch: wch };
 })();

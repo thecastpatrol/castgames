@@ -212,7 +212,7 @@
       if (p === best) { ctx.strokeStyle = ACC; ctx.lineWidth = 3; ctx.stroke(); }
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round(22 * k) + 'px ' + F;
-      ctx.fillText(sl.code, x0 + 18, ry + rowH / 2 + 8 * k);
+      ctx.fillText(T.posLabel ? T.posLabel(sl.code) : sl.code, x0 + 18, ry + rowH / 2 + 8 * k);
       if (!p) { ctx.fillStyle = '#5c5c72'; ctx.font = '700 ' + Math.round(24 * k) + 'px ' + F; ctx.fillText('Not picked', x0 + 170 * k, ry + rowH / 2 + 8 * k); return; }
       var club = T.club(T.slotClub(sl));
       var cx = x0 + 70 * k, cwid = 80 * k;

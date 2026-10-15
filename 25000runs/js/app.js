@@ -782,7 +782,7 @@
     busy = true;
     try {
       CI.reveal({
-        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.positionsOf(p).join('/') : T.positionsOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), // three: short, so they line up
+        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.positionsOf(p).map(T.posLabel).join('/') : T.positionsOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), // three: short, so they line up
         kicker: paid ? 'World Legend Pick' : 'World Legend', title: paid ? 'Your World Legends' : '',
         done: function () { busy = false; done(); }
       });
@@ -1341,7 +1341,7 @@
       cards: S.slots.map(function (s) {
         if (!s.player) return null;
         var c = club(T.slotClub(s));
-        return { pos: s.code, name: T.surname(s.player.name), val: T.fmt(s.player.tries_1998_plus || 0), vc: '#fff', abbr: c.abbr, bg: c.bg, fg: c.fg };
+        return { pos: T.posLabel(s.code), name: T.surname(s.player.name), val: T.fmt(s.player.tries_1998_plus || 0), vc: '#fff', abbr: c.abbr, bg: c.bg, fg: c.fg };
       }),
       rows: [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9, 10]], teamLabel: 'Your XI', // the ground: batters up top, the keeper, the bowlers
       stats: [{ label: 'Biggest Pick', value: Math.max.apply(null, runs) }, { label: 'Smallest Pick', value: Math.min.apply(null, runs) }, { label: 'Clubs', value: clubs }]
@@ -1647,6 +1647,15 @@
   });
 
   document.addEventListener('keydown', function (e) {
+    // Desktop keys (16 Oct 2026, the owner): 1, 2 and 3 pick that card (the Team Spin list too); while choosing a spot,
+    // the same keys choose among the spots he can go into. Never while typing, in a pop-up or a sheet
+    var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
+    if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
+        $('sheet').hidden && !document.documentElement.classList.contains('ca-open')) {
+      var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.offer-cards [data-pick]:not([disabled]), .srow[data-pick]:not([disabled])');
+      var keyHit = Array.prototype.filter.call(keyList, function (x) { return x.offsetParent !== null; })[+e.key - 1];
+      if (keyHit) { e.preventDefault(); keyHit.click(); return; }
+    }
     if (e.key === 'Escape') {
       if (placingId) setPlacing(null);
       else if (!$('sheet').hidden) closeSheet();

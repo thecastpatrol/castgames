@@ -264,7 +264,7 @@
     var code = p[2] || '', c = T.club ? T.club(code) : { abbr: code.toUpperCase(), name: where(p) }, y = years(p);
     // A nation: its look as a small flag on a plate in its colour (the look behind the words left light ones unreadable)
     var N = window.CastNations, lk = N && N.has && N.has(code) ? '<span class="ou-flag" aria-hidden="true">' + N.svg(code, 36, 24, { level: 2 }) + '</span>' : '';
-    var num = known ? '<b>' + T.fmt(p[1]) + '</b><small>' + esc(unit(p[1])) + '</small>' : '<b class="is-q">?</b><small>' + esc(E.CATS[st.cat].unit) + '</small>';
+    var num = known ? '<b>' + num(p[1]) + '</b><small>' + esc(unit(p[1])) + '</small>' : '<b class="is-q">?</b><small>' + esc(E.CATS[st.cat].unit) + '</small>';
     return '<div class="ou-card ' + cls + (mark ? ' ' + mark : '') + '" style="' + (T.render && T.render.clubVars ? T.render.clubVars(code) : '') + '">' +
       '<span class="ou-plate">' + (lk || '<span class="ou-abbr">' + esc(c.abbr) + '</span>') + '<span class="ou-club">' + esc(where(p) || c.name) + '</span></span>' +
       '<span class="ou-body"><span class="ou-name">' + esc(p[0]) + '</span>' + (y ? '<span class="ou-years">' + esc(y) + '</span>' : '') + '</span>' +
@@ -279,7 +279,7 @@
     var h = topBar() + (st.free ? '<div class="ou-clock is-free"><span>&#x23EA; No Clock This Call</span></div>' : '<div class="ou-clock' + (rv ? ' is-stop' : '') + '"><i style="animation-duration:' + st.secs + 's"></i></div>');
     h += '<div class="ou-pair">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' +
       card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? (st.rerolled ? ' is-new is-rerolled' : ' is-new') : '')) + '</div>';
-    h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
+    h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + num(a[1]) + '</b>?</p>';
     h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&uarr;</kbd></button>' +
       '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&darr;</kbd></button></div>';
     // The Reroll: the drafts' own wildcard button (the owner, 15 Oct 2026: "native, like the other games")
@@ -292,7 +292,7 @@
     var L = D[st.cat], a = L[st.run.left], b = L[st.view === 'rewind' && st.missed != null ? st.missed : st.run.right], why = st.reveal && st.reveal.timeout;
     return '<div class="ou-out"><div class="ou-out-h">' + (why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Wrong Call') + '</div>' +
       '<div class="ou-pair is-small">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' + card(b, true, 'is-right', 'is-bad') + '</div>' +
-      '<p class="ou-out-why">' + esc(b[0]) + ' was ' + (b[1] > a[1] ? 'over' : 'under') + ', with ' + T.fmt(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +
+      '<p class="ou-out-why">' + esc(b[0]) + ' was ' + (b[1] > a[1] ? 'over' : 'under') + ', with ' + num(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +
       '<div class="panel ou-decide"><div class="panel-head"><span class="panel-title">Run It Back?</span><span class="panel-meta">' + esc(E.CATS[st.cat].name) + '</span></div>' +
         '<div class="decision is-over"><p class="decision-big">' + st.streak + ' <small>in a row</small></p>' +
         '<p>Keep your streak and play on with a new player.</p>' +
@@ -340,7 +340,7 @@
     // Your Run: the first player, then each one they called, in order (a Reroll's swapped player isn't shown)
     var rows = '', n = 0, prev = L[st.first];
     rows += '<li class="ou-step is-start"><span class="ou-step-i">&#x25B6;</span>' + chip(prev) + '<span class="ou-step-p"><b>' + esc(prev[0]) + '</b><small>' + esc(years(prev)) + '</small></span>' +
-      '<span class="ou-step-v">' + T.fmt(prev[1]) + '</span><span class="ou-tag is-start">Start</span></li>';
+      '<span class="ou-step-v">' + num(prev[1]) + '</span><span class="ou-tag is-start">Start</span></li>';
     log.forEach(function (x) {
       if (x.rib) { rows += '<li class="ou-step-note">&#x23EA; Ran It Back</li>'; return; }
       if (!x.c) return;
@@ -348,7 +348,7 @@
       var tag = x.ok ? '<span class="ou-tag is-' + (dir === 'O' ? 'o' : 'u') + '">' + (dir === 'O' ? '&#x25B2; Over' : '&#x25BC; Under') + '</span>'
         : '<span class="ou-tag is-x">' + (x.c === 'T' ? '&#x23F0; No Call' : '&#x2715; ' + (x.c === 'O' ? 'Over' : 'Under')) + '</span>';
       rows += '<li class="ou-step ' + (x.ok ? 'is-good' : 'is-bad') + '"><span class="ou-step-i">' + (x.ok ? ++n : '&#x2715;') + '</span>' + chip(p) +
-        '<span class="ou-step-p"><b>' + esc(p[0]) + '</b><small>' + (x.ok ? esc(years(p)) : 'It was ' + (dir === 'O' ? 'over' : 'under')) + '</small></span><span class="ou-step-v">' + T.fmt(p[1]) + '</span>' + tag + '</li>';
+        '<span class="ou-step-p"><b>' + esc(p[0]) + '</b><small>' + (x.ok ? esc(years(p)) : 'It was ' + (dir === 'O' ? 'over' : 'under')) + '</small></span><span class="ou-step-v">' + num(p[1]) + '</span>' + tag + '</li>';
       if (x.ok) prev = p;
     });
     h += '<div class="panel ou-run"><div class="panel-head"><span class="panel-title">Your Run</span><span class="panel-meta">' + esc(E.CATS[st.cat].unit) + '</span></div><ol class="ou-ladder">' + rows + '</ol></div>';
@@ -372,6 +372,8 @@
     el.innerHTML = h;
   }
 
+  // Free Hit numbers have no commas (16 Oct 2026, the owner: the comma pushed 3,311 past the card's edge)
+  function num(n) { return String(Math.round(+n || 0)); }
   function boardId() { return { bblruns: 'bbou', bblwkts: 'bbouw' }[st.cat] || 'bbou'; }
   document.addEventListener('click', function (e) {
     // The home banner (data-ou-open): open it here, no page load
