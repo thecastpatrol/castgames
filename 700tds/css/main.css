@@ -762,6 +762,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .result-total { display: grid; justify-items: center; margin: 4px 0 2px; }
 .rt-num {
   font-size: clamp(56px, 17vw, 128px); font-weight: 900; line-height: .95; letter-spacing: -3px; font-variant-numeric: tabular-nums; /* five figures and a comma fit a 390px phone */
+  padding: 0 .08em; /* the gradient only paints inside the box: room so the last digit (a 6, a 0) is never clipped (16 Oct 2026) */
   background: linear-gradient(180deg, #c8ffe0 0%, var(--gold) 45%, #1fae5c 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 40px rgba(var(--acc-rgb), .25);
 }

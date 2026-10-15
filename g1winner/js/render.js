@@ -98,7 +98,7 @@
     };
     return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Photo Finish">' +
       '<span class="oup-new">New</span>' +
-      '<span class="oup-pair" aria-hidden="true">' + mini('nsw', 'McDonald', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('nz', 'Bosson', '') + '</span>' +
+      '<span class="oup-pair" aria-hidden="true">' + mini('nsw', 'JMac', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('nz', 'Bosson', '') + '</span>' +
       '<span class="oup-t"><b>Photo Finish</b><small>More Group 1 wins or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
   };
   // The same live look for its banner in the home slider (the owner, 15 Oct 2026: "more enticing, like the card below")
@@ -106,7 +106,7 @@
     var mini = function (club, nm, num) {
       return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
     };
-    return '<span class="oup-pair" aria-hidden="true">' + mini('nsw', 'McDonald', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('nz', 'Bosson', '') + '</span>' +
+    return '<span class="oup-pair" aria-hidden="true">' + mini('nsw', 'JMac', '122') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('nz', 'Bosson', '') + '</span>' +
       '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>Photo Finish</b><small>More Group 1 wins or fewer? Beat the clock.</small></span><span class="oup-play" aria-hidden="true">&#x25B6;</span>';
   };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 4000+ until the final on
