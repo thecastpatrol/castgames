@@ -30,10 +30,10 @@ html.cg-sheet-open, html.cg-sheet-open body { overflow: hidden; }
 @media (min-width: 900px) { .cg-sheet { align-items: flex-start; padding-top: 80px; } .cg-sheet-box { border-radius: 20px; border: 1px solid rgba(255, 255, 255, .12); } }
 .cg-x { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .06); color: #fff; font-size: 14px; cursor: pointer; }
 .cg-home-link { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #fff; font: 900 13px/1 Inter, sans-serif; text-decoration: none; }
-.cg-sw-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 6px; margin: 16px 0 4px; } /* wraps, never scrolls sideways */
-.cg-sw-chip { display: grid; justify-items: center; gap: 4px; min-width: 0; padding: 8px 4px 7px; border-radius: 12px; border: 1.5px solid rgba(255, 255, 255, .12); background: rgba(255, 255, 255, .04); color: #d6d6e4; cursor: pointer; font-family: inherit; }
+.cg-sw-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); gap: 5px; margin: 16px 0 4px; } /* wraps, never scrolls sideways */
+.cg-sw-chip { display: grid; justify-items: center; gap: 4px; min-width: 0; padding: 8px 2px 7px; border-radius: 12px; border: 1.5px solid rgba(255, 255, 255, .12); background: rgba(255, 255, 255, .04); color: #d6d6e4; cursor: pointer; font-family: inherit; }
 .cg-sw-chip span { font-size: 20px; line-height: 1; }
-.cg-sw-chip b { font: 800 12px/1.1 Inter, sans-serif; white-space: nowrap; }
+.cg-sw-chip b { font: 800 11.5px/1.1 Inter, sans-serif; white-space: nowrap; letter-spacing: -.1px; }
 .cg-sw-chip.is-on { border-color: #fff; background: rgba(var(--sc), .35); color: #fff; }
 @media (hover: hover) { .cg-sw-chip:not(.is-on):hover { border-color: rgba(255, 255, 255, .4); } }
 .cg-sp-h { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 8px; padding-left: 10px; border-left: 4px solid rgb(var(--sc)); }
@@ -69,3 +69,7 @@ html.cg-in-game .scoreboard { top: var(--cg-bar-h, 112px); }
 /* 27-0's screens are fixed full-page boxes: inside CAST Games they start under the bar, so the strength bar and the draft
    header are never hidden behind it (quality gate, 16 Oct 2026) */
 html.cg-in-game .screen.active { top: calc(var(--cg-bar-h, 112px) + env(safe-area-inset-top, 0px)); }
+/* The switcher keeps one height whatever the sport (16 Oct 2026, the owner: it jumped as sports with more or fewer games
+   were picked): the chips stay put and the games scroll underneath */
+.cg-sheet-box.is-sw { height: min(80vh, 640px); height: min(80dvh, 640px); max-height: none; display: flex; flex-direction: column; overflow: hidden; }
+.cg-sheet-box.is-sw .cg-sw-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 8px; }

@@ -313,6 +313,23 @@
       Object.keys((m && m[key]) || {}).forEach(function (n) { var k = n.toLowerCase(), o = apps[k] = apps[k] || {}, c = m[key][n] || ''; o[c] = (o[c] || 0) + by; });
     };
     (list || []).forEach(function (m) { app(m, 'a', 1); app(m, 'ax', -1); });
+    // World Cup debutants (17 Oct 2026): a scorer in a 2026 squad joins with his squad positions and nation (nw: name ->
+    // [nation, positions]), from 0 Test tries, so his World Cup tries below are his total and set his offer weight
+    var have = {};
+    d.pool.players.forEach(function (p) { have[(p.record_name || p.name).toLowerCase()] = 1; });
+    (list || []).forEach(function (m) {
+      Object.keys((m && m.nw) || {}).forEach(function (n) {
+        var k = n.toLowerCase(), v = m.nw[n] || [], pos = (v[1] || []).filter(function (x) { return typeof x === 'string'; });
+        if (have[k] || !pos.length || !(add[k] > 0)) return; // a try NRL.com took back: not in the pack, like every 0
+        have[k] = 1;
+        var p = { id: 'wc26-' + k.replace(/[^a-z0-9]+/g, '-'), name: n, tries_1998_plus: 0, primary_club: v[0] || '', club_years: [], tests: 0,
+          positions_played: pos, draft_role: pos[0], position: pos[0], active: true, career_span: '' };
+        var tag = / \([^)]+\)$/.exec(n);
+        if (tag) { p.record_name = n; p.name = n.slice(0, tag.index); }
+        d.pool.players.push(p);
+        d.pool.byId[p.id] = p;
+      });
+    });
     d.pool.players.forEach(function (p) {
       var k = (p.record_name || p.name).toLowerCase(), a = add[k], o = apps[k];
       if (a) p.tries_1998_plus += a;

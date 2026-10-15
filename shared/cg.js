@@ -172,17 +172,17 @@
     var live = liveGames(), sps = swSports(live);
     if (!sps.some(function (s) { return s.id === swSport; })) swSport = sps.length ? sps[0].id : '';
     var sp = sportOf(swSport), gs = live.filter(function (g) { return g.sport === swSport; });
-    sheet.innerHTML = '<div class="cg-sheet-box"><button type="button" class="cg-x" data-cg-x aria-label="Close">&#x2715;</button>' +
+    sheet.innerHTML = '<div class="cg-sheet-box is-sw"><button type="button" class="cg-x" data-cg-x aria-label="Close">&#x2715;</button>' +
       '<a class="cg-home-link" href="' + url('') + '">&#x1F3E0; All Games</a>' +
       '<div class="cg-sw-chips" role="tablist" aria-label="Sports">' + sps.map(function (s) {
         return '<button type="button" role="tab" class="cg-sw-chip' + (s.id === swSport ? ' is-on' : '') + '" aria-selected="' + (s.id === swSport) + '" data-cg-sport="' + s.id + '" style="--sc:' + s.c + '">' +
           '<span aria-hidden="true">' + (s.ico || '') + '</span><b>' + esc(s.chip || s.name) + '</b></button>';
       }).join('') + '</div>' +
       (sp ? '<div class="cg-sp-h" style="--sc:' + sp.c + '"><b>' + esc(sp.name) + '</b><small>' + esc(sp.long) + '</small></div>' : '') +
-      '<div class="cg-sp-list">' + gs.map(function (g) {
+      '<div class="cg-sw-list"><div class="cg-sp-list">' + gs.map(function (g) {
         return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
           (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
-      }).join('') + swModes() + '</div></div>';
+      }).join('') + swModes() + '</div></div></div>';
   }
   /* The World Cup modes under NRL while the World Cup is on (16 Oct 2026, the owner: "very good modes and can be their own
      game in a sense"): a tap goes straight into the mode; 27-0 and 1000TRIES still have them on their own homes too */

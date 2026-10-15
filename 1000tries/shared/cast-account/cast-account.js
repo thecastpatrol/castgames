@@ -8334,7 +8334,8 @@
      added to World Cup 200+ so far, checked every 20 minutes while the World Cup is on, and a button to check now. A
      problem reading NRL.com shows here. Scorers it could not match are listed: most are first Tests (not in the pack), and
      one NRL.com spells differently can be matched to the pack's player (the server suggests same-surname players), with
-     Undo. The owner only */
+     Undo. The owner only. World Cup debutants (17 Oct 2026): a scorer in a 2026 squad joins World Cup 200+ by himself and is
+     listed under Added as World Cup Debutants; Not Matched keeps only those in no squad */
   function wcPeek() {
     var W = mod.wct || {};
     if (W.data || W.busy || W.err) return;
@@ -8708,7 +8709,7 @@
     if (!mod.owner) return '';
     wcPeek();
     var W = mod.wct || {};
-    var x = W.data || {}, un = x.unmatched || [], mine = x.matched || [], none = !x.games;
+    var x = W.data || {}, un = x.unmatched || [], mine = x.matched || [], debs = x.debuts || [], none = !x.games;
     var txt = W.busy && !W.data ? 'Checking&hellip;' : none ? 'Nothing counted yet. NRL.com is checked every 20 minutes from the opener on 15 Oct, and each finished game&rsquo;s tries and Test appearances go on World Cup 200+ by themselves.'
       : fmt(x.games) + ' World Cup game' + (x.games === 1 ? '' : 's') + ', ' + fmt(x.tries) + ' tr' + (x.tries === 1 ? 'y' : 'ies') + ' and ' + fmt(x.apps || 0) + ' Test appearance' + (x.apps === 1 ? '' : 's') + ' added to World Cup 200+.' + (x.checkedAt ? ' Last checked ' + esc(when(x.checkedAt)) + '.' : '');
     var last = (x.last || []).map(function (m) { return '<li>' + (m.k ? esc(m.k) + ' &middot; ' : '') + m.n + ' tr' + (m.n === 1 ? 'y' : 'ies') + '</li>'; }).join('');
@@ -8719,7 +8720,10 @@
         ? '<span class="ca-adm-wct-m"><select id="caWct' + i + '" aria-label="Who ' + esc(u.n) + ' is"><option value="">A first Test (not in World Cup 200+)</option>' +
           u.opts.map(function (o) { return '<option value="' + esc(o) + '">' + esc(o) + '</option>'; }).join('') + '</select>' +
           '<button type="button" class="ca-btn ca-btn-sm ca-btn-ghost" data-ca="adm-wct-match" data-i="' + i + '"' + (W.syncing ? ' disabled' : '') + '>Match</button></span>'
-        : ' &middot; a first Test') + '</li>';
+        : ' &middot; in no World Cup squad') + '</li>';
+    }).join('') + '</ul>' : '';
+    var deb = debs.length ? '<b class="ca-adm-wct-h">Added as World Cup Debutants</b><ul class="ca-adm-wct">' + debs.map(function (d) {
+      return '<li>' + who(d) + (d.pos && d.pos.length ? ' ' + esc(d.pos.join('/')) : '') + ', ' + d.t + ' tr' + (d.t === 1 ? 'y' : 'ies') + '</li>';
     }).join('') + '</ul>' : '';
     var done = mine.length ? '<b class="ca-adm-wct-h">Your Matches</b><ul class="ca-adm-wct">' + mine.map(function (m, i) {
       return '<li>' + who(m) + ' is ' + esc(m.to) + ' <button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-wct-undo" data-i="' + i + '"' + (W.syncing ? ' disabled' : '') + '>Undo</button></li>';
@@ -8733,7 +8737,7 @@
     var head = '<button type="button" class="ca-adm-fold-h" data-ca="adm-wct-fold" aria-expanded="' + open + '">' + tag + '<b>World Cup Tries</b><span class="ca-fav-chev" aria-hidden="true"></span></button>';
     if (!open) return '<div class="ca-adm-launch is-folded">' + head + '</div>';
     return '<div class="ca-adm-launch' + (none ? '' : ' is-live') + '"><div class="ca-adm-launch-txt">' + head +
-      '<small>' + txt + '</small>' + prob + (last ? '<ul class="ca-adm-wct">' + last + '</ul>' : '') + miss + done +
+      '<small>' + txt + '</small>' + prob + (last ? '<ul class="ca-adm-wct">' + last + '</ul>' : '') + deb + miss + done +
       (W.err ? '<p class="ca-lb-err" role="alert">' + esc(W.err) + '</p>' : '') + '</div>' + btn + '</div>';
   }
   // Match a scorer to the pack's player (to), or undo a match (to ''): the server reads their games again straight away
