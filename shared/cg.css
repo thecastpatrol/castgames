@@ -1,6 +1,6 @@
 /* CAST Games bar and game switcher (shared/cg.js): the same on the home page and in every game. Even sizes everywhere
    (the owner: "all even and consistent"): a 56px top line and 52px tabs on phones, one 64px line on desktop */
-.cg-bar { position: sticky; top: 0; z-index: 9000; background: rgba(10, 10, 15, .97); border-bottom: 1px solid rgba(255, 255, 255, .08); font-family: Inter, -apple-system, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+.cg-bar { position: sticky; top: 0; z-index: 9000; background: #0a0a0f; /* solid: page text never shows through (16 Oct 2026) */ border-bottom: 1px solid rgba(255, 255, 255, .08); font-family: Inter, -apple-system, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
 .cg-in { display: grid; grid-template-columns: auto auto 1fr auto; grid-template-areas: "logo game sp acct" "tabs tabs tabs tabs"; align-items: center; column-gap: 10px; max-width: var(--cg-max, 1080px); margin: 0 auto; padding: 0 12px; } /* one width with the home page (css/home.css .wrap), audit L10 16 Oct 2026 */
 .cg-logo { grid-area: logo; display: flex; align-items: center; height: 56px; }
 .cg-logo img { height: 34px; width: auto; display: block; }

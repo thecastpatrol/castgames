@@ -131,6 +131,18 @@
       '<span class="cg-card-t"><b>' + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
       (x && x.reward ? '<small class="cg-dreward">' + esc(x.reward) + '</small>' : '') + '</span><span class="cg-cta">Play</span></a>';
   }
+  var dAll = false; // the Daily grid is open (View All)
+  function dailyMini(g) {
+    var x = dailyOf(g.id);
+    return '<a class="cg-dmini" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
+      '<b>' + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
+      '<span class="cg-dfoot">' + (x && x.reward ? '<small class="cg-dreward">' + esc(x.reward) + '</small>' : '<i></i>') + '<span class="cg-cta">Play</span></span></a>';
+  }
+  function dailyTile(g) {
+    var x = dailyOf(g.id);
+    return '<a class="cg-dtile" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
+      '<b>' + esc(g.name) + '</b><small>' + esc(x ? x.head : 'New today') + '</small></a>';
+  }
   function card(g, sub, cta, href, done) {
     return '<a class="cg-card" href="' + esc(href) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g) +
       '<span class="cg-card-t"><b>' + esc(sub[0]) + '</b><small>' + esc(sub[1]) + '</small></span>' +
@@ -142,13 +154,15 @@
     var ps = promos();
     h += '<section class="cg-hero" aria-roledescription="carousel" aria-label="Featured"><div class="cg-hero-track">' + ps.map(slide).join('') + '</div>' +
       (ps.length > 1 ? '<div class="cg-dots">' + ps.map(function (p, i) { return '<button type="button" class="cg-dot" data-dot="' + i + '" aria-label="' + esc(p.t) + '"></button>'; }).join('') + '</div>' : '') + '</section>';
-    // Continue and Daily side by side on desktop
+    // Continue Playing, then the Dailies: one swipeable row of small cards, and View All opens a compact grid of every one
+    // (16 Oct 2026, the owner: the stacked Dailies took too much of the home page)
     var dr = drafts(), daily = live.filter(function (g) { return g.daily; });
-    h += '<div class="cg-two">';
     if (dr.length) h += '<section class="cg-sec"><h2>Continue Playing</h2><div class="cg-cards">' + dr.slice(0, 3).map(function (d) { return card(d.g, [d.t, d.s], 'Continue', d.g.path); }).join('') + '</div></section>';
-    // every live game with a Daily (audit L9, 16 Oct 2026: it showed the first three only); four or more take the full width
-    if (daily.length) h += '<section class="cg-sec' + (daily.length > 3 ? ' cg-daily-all' : '') + '"><h2>Daily Challenges <small>' + esc(nextDaily()) + '</small></h2><div class="cg-cards n' + daily.length + '">' + daily.map(dailyCard).join('') + '</div></section>';
-    h += '</div>';
+    if (daily.length) {
+      h += '<section class="cg-sec cg-daily"><h2><span>Daily Challenges <small>' + esc(nextDaily()) + '</small></span>' +
+        (daily.length > 2 ? '<button type="button" class="cg-view" data-dview aria-expanded="' + dAll + '">' + (dAll ? 'Show Less' : 'View All ' + daily.length) + '</button>' : '') + '</h2>' +
+        (dAll ? '<div class="cg-dgrid">' + daily.map(dailyTile).join('') + '</div>' : '<div class="cg-drow">' + daily.map(dailyMini).join('') + '</div>') + '</section>';
+    }
     // Most Popular: the top four live games (CG.popular), two by two on phones, four across on desktop
     var top = CG.popular(4);
     h += '<section class="cg-sec"><h2>Most Popular</h2><div class="cg-games cg-top n' + top.length + '">' + top.map(tile).join('') + '</div></section>';
@@ -171,6 +185,7 @@
     heroWire();
   }
   el.addEventListener('click', function (e) {
+    if (e.target.closest('[data-dview]')) { dAll = !dAll; paint(); return; }
     var dot = e.target.closest('[data-dot]');
     if (dot) { var tr = el.querySelector('.cg-hero-track'); if (tr) heroGo(tr, +dot.getAttribute('data-dot'), true); return; }
     var o = e.target.closest('[data-open]'), a = A();
