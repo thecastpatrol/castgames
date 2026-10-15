@@ -43,7 +43,7 @@ GAMES = [
     # (folder here, source repo, id for cg.js, CSS that hides the game's own header, Play's hook)
     ('27-0', '27-0 Game/27-0-nrl', '27-0',
      '.cp-site-header, .screen > .header .header-logo, .screen > .header .cp-new-tab, .screen > .header [data-cast-account],'
-     ' .screen > .header [data-cast-friends], .screen > .header .cp-right',
+     ' .screen > .header [data-cast-friends], .screen > .header .cp-right, .nf-head, .site-header',  # .site-header: its How It Works, Terms and Privacy pages (16 Oct 2026)
      "var b = document.querySelector('.screen.active .cp-new-tab'); if (b && b.offsetParent !== null) { b.click(); return true; } return false;"),
     ('1000tries', '1000TRIES Game', '1000tries', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
@@ -265,7 +265,8 @@ def soon(src, page, title):
            '  function check() { var off = !on(); el.hidden = !off; document.documentElement.classList.toggle("cg-soon-on", off); }\n'
            '  check(); document.addEventListener("DOMContentLoaded", check); window.addEventListener("load", check); window.addEventListener("cast:launch", check);\n'
            '})();</script>\n') % ('Over or Under', title, pitch, game, gname, check, check)
-    return src.replace('</body>', box + '</body>', 1) if g else src
+    i = src.rfind('</body>')  # the page's own end (an earlier '</body>' can sit inside a script's string)
+    return src[:i] + box + src[i:] if g and i > 0 else src
 
 
 def main():

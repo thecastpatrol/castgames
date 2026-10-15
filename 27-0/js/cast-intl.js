@@ -16,8 +16,9 @@
    straight on to done(). Timing runs on setTimeout and performance.now, never on requestAnimationFrame (it stops in a
    hidden tab), so done() always comes, and only once.
    CastIntl.reveal(o) returns { skip() }; skip() finishes at once (the overlay goes, done() fires if it hasn't yet)
-     sides    optional { key: { name, short, code, c1, c2, glow } }: faces that aren't nations (a club's colours, a jersey V)
-              for the keys in reels and pool (the 1000TRIES Legends and Immortal Picks)
+     sides    optional { key: { name, short, code, c1, c2, glow } }: faces that aren't nations (a club's jersey in its
+              colours) for the keys in reels and pool (the 1000TRIES Legends and Immortal Picks). draw(w, h), when
+              given, returns the face's <svg> itself: the other CAST Games pass the club's real kit (js/cast-kits.js)
      reels    [{ nation, name, sub }], 1 to 3: 1 for a free World Legend in a spin or an offer, 3 for an
               World Legend Pick's three. nation: a cast-nations key ('aus', 'gbr', 'leb', ...); sub: the line under
               the name ('Halfback/Five-Eighth · 96'; with three reels its ' · ' parts stack, each on one line, so pass
@@ -58,7 +59,9 @@
   };
   var active = null; // the reveal on screen (its handle)
   /* Sides that aren't nations (8 Oct 2026, the owner: the 1000TRIES Legends Pick "to match this"): o.sides gives each key
-     its colours and words, { name, short, code, c1, c2, glow }, and its face is drawn from them (a jersey V in its colours) */
+     its colours and words, { name, short, code, c1, c2, glow }, and its face is drawn from them (its jersey's design, or
+     its draw(w, h)). A side with no design is plain in its colours, never a guessed V (16 Oct 2026, the owner: "Don't just
+     assume always that they are a V-shaped jersey design"); a nation cast-nations.js draws shows its own look */
   var SIDES = null;
 
   function esc(s) {
@@ -86,10 +89,14 @@
   function nationOf(key, name) {
     var k = str(key).toLowerCase(), sd = SIDES && Object.prototype.hasOwnProperty.call(SIDES, k) ? SIDES[k] : null;
     if (sd) {
-      var c1 = hex(sd.c1, '#1a1a2e');
-      return { key: k, look: false, side: true, c1: c1, c2: hex(sd.c2, '#ffffff'), name: name || str(sd.name) || k, short: name || str(sd.short) || str(sd.name) || k,
+      var c1 = hex(sd.c1, '#1a1a2e'), c2 = hex(sd.c2, '#ffffff'), pat = str(sd.pattern), own = typeof sd.draw === 'function' ? sd.draw : null;
+      var cols = (Array.isArray(sd.colors) ? sd.colors : []).map(function (c) { return hex(c, ''); }).filter(Boolean);
+      // No design given: the nation's own look when cast-nations.js draws it, else plain with a collar in its second colour
+      var natLook = !own && !pat && drawn(k);
+      if (!own && !pat && !natLook) { pat = 'plain'; if (!cols.length) cols = [c2]; }
+      return { key: k, look: natLook, side: !natLook, draw: own, c1: c1, c2: c2, name: name || str(sd.name) || k, short: name || str(sd.short) || str(sd.name) || k,
         code: str(sd.code) || k.slice(0, 3).toUpperCase(), glow: hex(sd.glow, c1),
-        pattern: str(sd.pattern) || 'v', base: hex(sd.base, c1), colors: (Array.isArray(sd.colors) ? sd.colors : []).map(function (c) { return hex(c, ''); }).filter(Boolean),
+        pattern: pat, base: hex(sd.base, c1), colors: cols,
         count: Math.max(2, Math.min(12, +sd.count || 5)), dir: str(sd.dir), sizes: Array.isArray(sd.sizes) ? sd.sizes.map(Number) : null, collar: str(sd.collar) };
     }
     var n = Object.prototype.hasOwnProperty.call(NATION, k) ? NATION[k] : null;
@@ -101,9 +108,10 @@
   function face(nt, w, h) {
     var svg = '';
     if (nt.look) { try { svg = String(window.CastNations.svg(nt.key, w, h) || ''); } catch (e) { svg = ''; } }
-    if (nt.side) svg = jersey(nt, w, h);
+    if (nt.draw) { try { svg = String(nt.draw(w, h) || ''); } catch (e) { svg = ''; } } // the club's real kit (the game's own drawing)
+    if (nt.side && !svg) svg = jersey(nt, w, h);
     var el = document.createElement('div');
-    el.className = 'ci-face' + (svg ? ' has-look' : '');
+    el.className = 'ci-face' + (svg ? ' has-look' : '') + (nt.draw && svg ? ' is-kit' : '');
     el.innerHTML = svg + '<span class="ci-code">' + esc(nt.code) + '</span>';
     return el;
   }
@@ -118,7 +126,8 @@
        sash     a diagonal band (dir 'right' starts at the right shoulder)
        yoke     a band across the shoulders in colors[0], colors[1] a thin edge under it
        sides    side panels in colors[0], colors[1] their edge
-       split    halves; plain: one colour, with a collar in colors[0] when given (collar 'big': a deep V-neck) */
+       split    halves; plain: one colour, with a collar in colors[0] when given (collar 'big': a deep V-neck)
+     Any other design is drawn plain (never a V it wasn't given) */
   function jersey(nt, w, h) {
     var c = nt.colors.length ? nt.colors : [nt.c2], n = nt.count, i, y, out = '';
     var r = function (n0) { return Math.round(n0 * 10) / 10; };
@@ -158,7 +167,8 @@
       // the collar; collar 'big' is a deep V-neck (the Raiders and the Jets: the owner, 8 Oct 2026)
       if (nt.colors.length) out += nt.collar === 'big' ? P([[m - w * 0.3, 0], [m + w * 0.3, 0], [m, h * 0.46]], c[0]) : P([[m - w * 0.16, 0], [m + w * 0.16, 0], [m, h * 0.2]], c[0]);
     } else {
-      out += P([[0, 0], [h * 0.17, 0], [m, point - side * 0.2], [w - h * 0.17, 0], [w, 0], [w, h * 0.1], [m, point - side * 0.2 + h * 0.17], [0, h * 0.1]], c[0]);
+      // A design this doesn't know: plain with a small collar, never a guessed V (16 Oct 2026)
+      out += P([[m - w * 0.16, 0], [m + w * 0.16, 0], [m, h * 0.2]], c[0]);
     }
     return '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true">' + out + '</svg>';
   }
@@ -241,11 +251,12 @@
     });
     return out;
   }
-  // The looks to turn through: those given (else the World Cup's) that cast-nations.js draws; without it, their codes
+  // The looks to turn through: those given (else the World Cup's) that cast-nations.js draws or o.sides gives (every club,
+  // not only the nations among them: 16 Oct 2026); without them, their codes
   function poolOf(p) {
     var keys = (Array.isArray(p) && p.length ? p : POOL).map(function (k) { return str(k).toLowerCase(); })
       .filter(function (k, i, a) { return k && a.indexOf(k) === i; });
-    var looks = keys.filter(drawn);
+    var looks = keys.filter(function (k) { return drawn(k) || !!(SIDES && Object.prototype.hasOwnProperty.call(SIDES, k)); });
     if (looks.length >= 2) return looks;
     if (keys.length >= 2) return keys;
     looks = POOL.filter(drawn);

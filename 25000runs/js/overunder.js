@@ -16,9 +16,8 @@
   if (!T || !E) return;
   var CAT_ORDER = ['bblruns', 'bblwkts'];
   // The plate's name: the club's nickname, so it never cuts off (the earlier clubs by their place)
-  var NICK = { ad: 'Crows', bl: 'Lions', ca: 'Blues', cw: 'Magpies', es: 'Bombers', fr: 'Dockers', ge: 'Cats', gc: 'Suns', gw: 'Giants', hw: 'Hawks',
-    me: 'Demons', nm: 'Kangaroos', pa: 'Power', ri: 'Tigers', sk: 'Saints', sy: 'Swans', wc: 'Eagles', wb: 'Bulldogs', bb: 'Bears', fi: 'Fitzroy',
-    sm: 'South Melbourne', un: 'University' };
+  var NICK = { strikers: 'Strikers', heat: 'Heat', hurricanes: 'Hurricanes', renegades: 'Renegades', stars: 'Stars', scorchers: 'Scorchers',
+    sixers: 'Sixers', thunder: 'Thunder' }; // the BBL's own (16 Oct 2026: the AFL list from 4000 GOALS was still here)
   var LS_CAT = 'fh_cat_v1', LS_BEST = 'fh_best_v1'; // not Six Again's: on castgames.com.au both games share one address
   var D = null, loading = null;
   var st = { view: 'start', cat: 'bblruns' };
@@ -156,7 +155,7 @@
     clearInterval(st.offerT); st.hold = true; render(); // the countdown waits while they choose
     T.track('ou_rib_tap', { category: st.cat, streak: st.streak });
     var hook = { kicker: 'Run It Back', title: 'Keep Your Streak', line: 'Keep your ' + st.streak + ' in a row and play on with a new player.',
-      foot: 'Run It Backs work in Free Hit, Six Again and 27-0. Saved ones stay on your CAST Profile.' };
+      foot: 'Run It Backs work in Free Hit and other CAST games. Saved ones stay on your CAST Profile.' };
     CA.buyItem('rib', 'bigbash', function () {
       if (st.view !== 'out' || st.done) return;
       st.calls += 'B'; st.rib++; st.offer = 0; st.hold = false;
@@ -259,6 +258,16 @@
       '<button type="button" class="btn btn-primary ou-play" data-ou="play">Play ' + esc(E.CATS[st.cat].name) + ' <i aria-hidden="true">&#x25B6;</i></button>' +
       '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Free Hit Leaderboard</button></div>';
   }
+  // The badge's letters in black or white, whichever reads better on the club's accent (audit X5, 16 Oct 2026: on some
+  // clubs, Souths' green on red, the letters could not be read)
+  function abbrInk(code) {
+    var v = T.render && T.render.clubVars ? T.render.clubVars(code) : '', m = /--club-accent:\s*#([0-9a-f]{6}|[0-9a-f]{3})\b/i.exec(v);
+    if (!m) return '';
+    var h = m[1].length === 3 ? m[1].replace(/./g, '$&$&') : m[1];
+    var L = [0, 2, 4].map(function (i) { var c = parseInt(h.substr(i, 2), 16) / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
+    var lum = 0.2126 * L[0] + 0.7152 * L[1] + 0.0722 * L[2];
+    return ' style="color:' + ((lum + 0.05) / 0.05 >= 1.05 / (lum + 0.05) ? '#0a0a0f' : '#fff') + '"';
+  }
   // One player, in his club's (or nation's) colours, like the draft cards: the plate, his name and years, then the number
   function card(p, known, cls, mark) {
     var code = p[2] || '', c = T.club ? T.club(code) : { abbr: code.toUpperCase(), name: where(p) }, y = years(p);
@@ -266,7 +275,7 @@
     var N = window.CastNations, lk = N && N.has && N.has(code) ? '<span class="ou-flag" aria-hidden="true">' + N.svg(code, 36, 24, { level: 2 }) + '</span>' : '';
     var num = known ? '<b>' + plainNum(p[1]) + '</b><small>' + esc(unit(p[1])) + '</small>' : '<b class="is-q">?</b><small>' + esc(E.CATS[st.cat].unit) + '</small>';
     return '<div class="ou-card ' + cls + (mark ? ' ' + mark : '') + '" style="' + (T.render && T.render.clubVars ? T.render.clubVars(code) : '') + '">' +
-      '<span class="ou-plate">' + (lk || '<span class="ou-abbr">' + esc(c.abbr) + '</span>') + '<span class="ou-club">' + esc(where(p) || c.name) + '</span></span>' +
+      '<span class="ou-plate">' + (lk || '<span class="ou-abbr"' + abbrInk(code) + '>' + esc(c.abbr) + '</span>') + '<span class="ou-club">' + esc(where(p) || c.name) + '</span></span>' +
       '<span class="ou-body"><span class="ou-name">' + esc(p[0]) + '</span>' + (y ? '<span class="ou-years">' + esc(y) + '</span>' : '') + '</span>' +
       '<span class="ou-num">' + num + '</span></div>';
   }

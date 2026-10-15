@@ -113,8 +113,9 @@
     return (slot && slot.club) || (T.showClub ? T.showClub(slot.player) : T.lastClub(slot.player));
   };
 
-  /* Each club's jersey for the Legends and Immortal Pick reveal (8 Oct 2026, the owner: "make the jerseys more accurate"):
-     shared with 27-0's Immortal Pick, so the table lives in js/cast-intl.js (CastIntl.JERSEYS) */
+  /* Each club's kit for the Legends and Immortal Pick reveal: its real current home kit, drawn by js/cast-kits.js from
+     js/kits-data.js (16 Oct 2026, the owner: "Don't just assume always that they are a V-shaped jersey design"; the data
+     is researched in ~/cast-dev/kits). CastIntl.JERSEYS in js/cast-intl.js is the NRL clubs' only */
 
   /* Legends and Immortals (4000+ only): the Legends Pick and the rarer Immortal Pick.
      data/legends.json lists them with career premiership goals (NSWRL, ARL, Super League, AFL). None of them
@@ -186,8 +187,10 @@
   T.surname = function (name) {
     var n = String(name).replace(/\s*\([^)]*\)\s*$/, '').replace(/[\u201C"][^\u201D"]*[\u201D"]\s*/g, '').trim();
     if (SURNAME_OF[n]) return SURNAME_OF[n];
-    var parts = n.split(/\s+/);
-    return parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
+    var parts = n.split(/\s+/), rest = parts.slice(1);
+    // middle initials go too (16 Oct 2026): "M. J. K. Smith" read "J. K. Smith" on the tile
+    while (rest.length > 1 && /^(?:[A-Z]\.)+$|^[A-Z]$/.test(rest[0])) rest.shift();
+    return rest.length ? rest.join(' ') : parts[0];
   };
 
   T.fmt = function (n) {

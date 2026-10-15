@@ -147,3 +147,24 @@ resetGame=function(){
     _origResetGame();
   }
 };
+
+// The club slot (audit X4, 16 Oct 2026: "Canterbury-Bankstown Bulldogs" was cut off): a long club name steps down in size
+// until it fits two lines (css/theme.css lets the slot grow), so it is never cut. World Cup mode draws its own slot
+(function(){
+  function fit(el){
+    el.style.fontSize='';
+    if(document.body.classList.contains('cp-wc'))return;
+    // the last two words stay together, so "Cowboys" is never alone on the second line (the owner's rule)
+    var t=el.textContent,i=t.lastIndexOf(' ');
+    if(i>0&&t.indexOf('\u00A0')<0&&el.children.length===0){el.textContent=t.slice(0,i)+'\u00A0'+t.slice(i+1);return;} // the observer fits it next
+    var cs=getComputedStyle(el),fs=parseFloat(cs.fontSize)||15;
+    function lines(){var lh=parseFloat(getComputedStyle(el).lineHeight)||fs*1.15;return el.scrollHeight/lh;}
+    while(lines()>2.2&&fs>11){fs-=0.5;el.style.fontSize=fs+'px';}
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var el=document.getElementById('spinClubVal');
+    if(!el||!window.MutationObserver)return;
+    new MutationObserver(function(){fit(el);}).observe(el,{childList:true,characterData:true,subtree:true});
+    window.addEventListener('resize',function(){fit(el);});
+  });
+})();

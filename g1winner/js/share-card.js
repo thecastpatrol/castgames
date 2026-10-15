@@ -152,7 +152,7 @@
       ctx.drawImage(logoImg, x + cw + gapX, y, gw, LH);
       y += LH + 30;
     } else {
-      ctx.fillStyle = GOLD; ctx.font = '900 italic 92px ' + F; ctx.textAlign = 'center';
+      ctx.fillStyle = MODE_SKIN.plus.a; ctx.font = '900 italic 92px ' + F; ctx.textAlign = 'center'; // the game's own colour, not gold (16 Oct 2026)
       ctx.fillText(T.GAME_NAME, W / 2, y + 90); y += 120;
     }
 

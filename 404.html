@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en-AU">
 <head>
+<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- The site's own 404 (audit X3, 16 Oct 2026): GitHub Pages shows it for any missing address, however deep, so every
@@ -29,7 +30,7 @@
   h1 { margin: 0; font: 900 28px/1.15 Inter, sans-serif; text-wrap: balance; }
   p { margin: 0; color: var(--muted); font: 600 15px/1.5 Inter, sans-serif; text-wrap: balance; }
   .nf-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 50px; margin-top: 8px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 15px/1 Inter, sans-serif; text-decoration: none; }
-  .nf-sports { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 6px; }
+  .nf-sports { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 330px; margin-top: 6px; } /* 3 then 2, never one alone */
   .nf-sports a { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); background: var(--card); color: #fff; font: 800 13px/1 Inter, sans-serif; text-decoration: none; }
   @media (hover: hover) { .nf-btn:hover { background: #e9e9f2; } .nf-sports a:hover { border-color: rgba(255, 255, 255, .45); } }
   /* The same footer as the home page (css/home.css .cg-foot) */

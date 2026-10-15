@@ -761,7 +761,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 /* The total is the hero */
 .result-total { display: grid; justify-items: center; margin: 4px 0 2px; }
 .rt-num {
-  font-size: clamp(56px, 17vw, 128px); font-weight: 900; line-height: .95; letter-spacing: -3px; font-variant-numeric: tabular-nums; /* five figures and a comma fit a 390px phone */
+  font-size: clamp(88px, 30vw, 150px); font-weight: 900; line-height: .95; letter-spacing: -3px; font-variant-numeric: tabular-nums; /* the same size as every game (16 Oct 2026) */
   padding: 0 .08em; /* the gradient only paints inside the box: room so the last digit (a 6, a 0) is never clipped (16 Oct 2026) */
   background: linear-gradient(180deg, #c8ffe0 0%, var(--gold) 45%, #1fae5c 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 40px rgba(var(--acc-rgb), .25);
@@ -1649,7 +1649,10 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-lede { margin: 0; color: var(--muted); font: 600 15px/1.45 var(--font); text-wrap: balance; } .ou-lede b { color: #fff; }
 .ou-pair.is-demo { pointer-events: none; transform: scale(.92); margin: -6px 0; }
 .ou-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.ou-tiles > :last-child:nth-child(odd) { grid-column: 1 / -1; } /* three categories: the last runs full width, so the grid stays even */
+/* An odd number of categories (1 or 3): one per row, all the same, so no tile sits alone half empty (audit L7, 16 Oct 2026) */
+.ou-tiles:has(> :last-child:nth-child(odd)) { grid-template-columns: 1fr; }
+.ou-tiles:has(> :last-child:nth-child(odd)) .ou-tile { min-height: 60px; }
+.ou-tiles:has(> :last-child:nth-child(odd)) .ou-tile-l { grid-auto-flow: column; align-items: center; justify-content: start; gap: 10px; }
 /* Category tiles: the name on the left, the best as a big number on the right, each category in its own colour (--oc) */
 .ou-tile { --oc: 148, 163, 184; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; min-height: 84px; padding: 11px 12px; border-radius: 14px; text-align: left; cursor: pointer;
   border: 2px solid rgba(var(--oc), .45); background: linear-gradient(150deg, rgba(var(--oc), .30), rgba(var(--oc), .07) 70%), var(--card); color: var(--text); }
@@ -1665,7 +1668,9 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-tile.is-on { border-color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 6px 20px rgba(var(--oc), .3); }
 .ou-play { width: 100%; padding: 16px; border-radius: 14px; font: 900 16px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; }
 .ou-play i { font-style: normal; font-size: 12px; margin-left: 6px; }
-.ou-link { padding: 10px; border: 0; background: none; color: var(--muted); font: 800 13.5px/1.2 var(--font); cursor: pointer; }
+/* The leaderboard is a pill button, not a text link (audit L6, 16 Oct 2026) */
+.ou-link { display: flex; align-items: center; justify-content: center; gap: 6px; width: max-content; max-width: 100%; min-height: 40px; margin: 4px auto 0; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .06); color: #fff; font: 800 13.5px/1.2 var(--font); cursor: pointer; }
+@media (hover: hover) { .ou-link:hover { border-color: rgba(255, 255, 255, .45); } }
 
 /* The run */
 .ou-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -1764,7 +1769,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-chip b { font: 900 9.5px/1 var(--font); letter-spacing: .4px; }
 .ou-chip svg { width: 100%; height: 100%; display: block; }
 .ou-step-p { display: grid; gap: 2px; min-width: 0; text-align: left; }
-.ou-step-p b { font: 800 14px/1.15 var(--font); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-step-p b { font: 800 14px/1.15 var(--font); color: #fff; overflow-wrap: anywhere; text-wrap: balance; } /* a long name wraps, never "..." (audit T10, 16 Oct 2026) */
 .ou-step-p small { font: 700 10.5px/1 var(--font); color: var(--dim); }
 .ou-step-v { font: 900 18px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; text-align: right; min-width: 30px; }
 .ou-step.is-bad .ou-step-v { color: var(--bad); } .ou-step.is-bad .ou-step-p small { color: #fca5a5; font-weight: 800; }
@@ -1812,7 +1817,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch {
   --ez: 58px; --yd: 9px;
   position: relative; isolation: isolate; overflow: hidden; display: grid; gap: 8px;
-  padding: calc(var(--ez) + 58px) 12px 22px; border-radius: 12px;
+  padding: calc(var(--ez) + 24px) 12px 22px; border-radius: 12px; /* less empty grass above the line (the owner, 16 Oct 2026) */
   background:
     repeating-linear-gradient(180deg, rgba(255, 255, 255, .42) 0 1px, transparent 1px var(--yd)) 3px var(--ez) / 7px 100% no-repeat,
     repeating-linear-gradient(180deg, rgba(255, 255, 255, .42) 0 1px, transparent 1px var(--yd)) calc(100% - 3px) var(--ez) / 7px 100% no-repeat,
@@ -1844,7 +1849,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch-row.r-backs { padding: 0 16%; justify-content: space-between; }
 .pitch-row .slot { max-width: 33%; }
 @media (min-width: 900px) {
-  .pitch { --ez: 66px; --yd: 10px; padding-top: calc(var(--ez) + 70px); }
+  .pitch { --ez: 66px; --yd: 10px; padding-top: calc(var(--ez) + 28px); }
   .field-ez span { font-size: 32px; letter-spacing: 9px; }
 }
 
@@ -1853,3 +1858,12 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @media (hover: hover) and (pointer: fine) {
   .pcard-key { display: inline-grid; place-items: center; min-width: 17px; height: 17px; margin-right: 6px; padding: 0 3px; box-sizing: border-box; border-radius: 5px; border: 1px solid currentColor; font: inherit; font-size: 10px; line-height: 1; opacity: .75; vertical-align: 1px; }
 }
+
+/* One footer on every CAST game and the CAST Games home (audit L4/L5, 16 Oct 2026, the owner's rule: buttons, not text
+   links): the page links as pills, a credit's link inside its sentence as a soft tag, never underlined */
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 12px; }
+.footer-links > span[aria-hidden] { display: none; }
+.footer-links a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); color: #d6d6e4; font-size: 12.5px; font-weight: 800; text-decoration: none; }
+@media (hover: hover) { .footer-links a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
+.footer-legal a { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); color: #c9c9d8; font-weight: 700; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.footer-legal, .nf-sub { text-wrap: balance; } /* no word alone on the last line at 390px (audit T9) */

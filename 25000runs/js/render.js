@@ -99,7 +99,7 @@
   /* Home modes (29 Sep 2026, the user's call): 4000+ is the main mode, one big card with a clear Play button; the others
      are three small buttons in a row under it (each keeps its colour and one tag). A tap on any of them starts it. */
   var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Squads', nrlw: 'WBBL', wc: 'Test Runs', ou: 'New &middot; Beat the Clock' };
-  /* Play On's home card (15 Oct 2026, the owner: "lower, under the Daily, it shouldn't take away from the other modes"):
+  /* Free Hit's home card (as Play On's, 15 Oct 2026, the owner: "lower, under the Daily, it shouldn't take away from the other modes"):
      its own full-width card under the Daily Challenge (js/app.js placeOu), not in More Modes */
   R.ouCard = function () {
     // A small live look at the game (the owner, 15 Oct 2026: "more exciting, actual visuals"): two mini player cards in
@@ -107,7 +107,7 @@
     var mini = function (club, nm, num) {
       return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; // the player's name in his club's colours (the owner)
     };
-    return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Play On">' +
+    return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Free Hit">' +
       '<span class="oup-new">New</span>' +
       '<span class="oup-pair" aria-hidden="true">' + mini('strikers', 'Lynn', '4133') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('stars', 'Maxwell', '') + '</span>' +
       '<span class="oup-t"><b>Free Hit</b><small>More runs or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
@@ -153,9 +153,9 @@
       '<span class="mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>' +
       '</button>';
     var wc = opt.wc === 'top' || opt.wc === 'under' ? R.wcCard(selected, opt.guest, opt.free) : '';
-    // Play On (15 Oct 2026, 1000TRIES's Six Again for AFL): first in More Modes once it's on (launched, or the private link)
+    // Free Hit (the over/under, from 4000 GOALS's Play On): first in More Modes once it's on (launched, or the private link)
     var more = (opt.ou ? ['ou'] : []).concat(['exact', 'spin', 'nrlw']).concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
-      var mm = T.MODES[id] || { name: 'Play On' };
+      var mm = T.MODES[id] || { name: 'Free Hit' };
       return '<button type="button" class="mode-mini is-' + id + (id === selected ? ' is-on' : '') + '" data-mode="' + id + '" aria-label="Play ' + esc(mm.name) + '">' +
         '<span class="mm-ico" aria-hidden="true">' + MODE_CARD[id].ico + '</span><span class="mm-name">' + esc(mm.name) + '</span><span class="mm-tag">' + MINI_TAG[id] + '</span></button>';
     });
@@ -206,9 +206,9 @@
     if (k >= 1) return { color: '#4ade80', glow: 'rgba(74,222,128,.65)', stage: 'hit' };
     if (k >= 0.9) return { color: '#ff5a36', glow: 'rgba(255,90,54,.65)', stage: 'hot' };
     if (k >= 0.75) return { color: '#fb923c', glow: 'rgba(251,146,60,.55)', stage: 'warm' };
-    if (k >= 0.5) return { color: '#f1c073', glow: 'rgba(241,192,115,.5)', stage: 'mid' };
-    if (k >= 0.25) return { color: '#c9953a', glow: 'rgba(201,149,58,.4)', stage: 'low' };
-    return { color: '#8a7650', glow: 'rgba(138,118,80,.3)', stage: 'cold' };
+    if (k >= 0.5) return { color: '#ffb47a', glow: 'rgba(255,180,122,.5)', stage: 'mid' }; // 25000 RUNS (16 Oct 2026): cool blues, then the game's own colour, never gold
+    if (k >= 0.25) return { color: '#3f86d6', glow: 'rgba(63,134,214,.4)', stage: 'low' };
+    return { color: '#3b5b8a', glow: 'rgba(59,91,138,.3)', stage: 'cold' };
   };
 
   // The ground from above: the top six batting across the top two rows, the keeper at the stumps on the pitch, the four
@@ -655,7 +655,7 @@
   // A draft saved on this phone (js/app.js, Save the draft in progress): carry on, or start fresh
   R.resumeSheet = function (name, picks) {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
-      '<div class="confirm-ico" aria-hidden="true">&#x1F3C9;</div>' +
+      '<div class="confirm-ico" aria-hidden="true">&#x1F3CF;</div>' +
       '<div class="sheet-kicker">Your Draft Is Saved</div>' +
       '<h2 class="sheet-title center">Pick Up Where You Left Off?</h2>' +
       '<p class="sheet-sub center">Your ' + esc(name) + ' team has ' + picks + ' of ' + T.SLOTS.length + ' picked, with everything you used still in it.</p>' +

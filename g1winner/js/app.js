@@ -246,7 +246,7 @@
   // Hidden sound check for phones: open the site with ?audiodebug
   if (/[?&]audiodebug\b/.test(location.search)) {
     var dbg = document.createElement('div');
-    dbg.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;border:2px solid #f1c073;border-radius:12px;padding:10px;font:12px/1.4 monospace';
+    dbg.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;border:2px solid #5b8cff;border-radius:12px;padding:10px;font:12px/1.4 monospace';
     dbg.innerHTML = '<div id="adbInfo">tap a button</div>' +
       '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">' +
       '<button id="adbWeb" style="flex:1;padding:10px;font-weight:bold">Web Audio beep</button>' +

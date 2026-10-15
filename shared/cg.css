@@ -42,6 +42,8 @@ html.cg-sheet-open, html.cg-sheet-open body { overflow: hidden; }
 .cg-sp-list { display: grid; gap: 8px; }
 .cg-sp-game { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 12px; height: 64px; padding: 0 12px; border-radius: 14px; background: linear-gradient(135deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); color: #fff; text-decoration: none; }
 .cg-sp-game.is-on { border-color: #fff; }
+.cg-sp-game.is-wc { background: linear-gradient(135deg, #0f4c8a, #0a1f3d); } /* World Cup blue, as its home cards */
+.cg-sp-game.is-wc .cg-mark { font-size: 30px; }
 .cg-sp-game img { width: 76px; height: 44px; object-fit: contain; }
 .cg-sp-game .cg-mark { display: grid; place-items: center; font: 900 22px/1 Inter, sans-serif; }
 .cg-sp-game b { display: block; font: 900 15px/1.2 Inter, sans-serif; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }

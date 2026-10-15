@@ -244,7 +244,7 @@
   // Hidden sound check for phones: open the site with ?audiodebug
   if (/[?&]audiodebug\b/.test(location.search)) {
     var dbg = document.createElement('div');
-    dbg.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;border:2px solid #f1c073;border-radius:12px;padding:10px;font:12px/1.4 monospace';
+    dbg.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;border:2px solid #ff5c6c;border-radius:12px;padding:10px;font:12px/1.4 monospace';
     dbg.innerHTML = '<div id="adbInfo">tap a button</div>' +
       '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">' +
       '<button id="adbWeb" style="flex:1;padding:10px;font-weight:bold">Web Audio beep</button>' +
@@ -738,10 +738,13 @@
       var sides = {}, side = function (k) {
         if (!k || sides[k]) return;
         var c = T.club(k), nm = String(c.name || k), last = nm.split(' ').pop();
-        var J = ((window.CastIntl && window.CastIntl.JERSEYS) || {})[k] || {}; // the club's real jersey (js/cast-intl.js), else a V in its colours
-        sides[k] = { name: nm, short: k === 'stgeorge' ? 'St George' : nm.length <= 15 ? nm : last, // St George, not Dragons: today's Dragons are another club
-          code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: J.glow || c.primary, // Eastern Suburbs in full, Rabbitohs for South Sydney Rabbitohs
-          pattern: J.pattern, base: J.base, colors: J.colors, count: J.count, dir: J.dir, sizes: J.sizes, collar: J.collar };
+        /* The club's real kit (js/cast-kits.js; 16 Oct 2026, the owner: "make sure that they are accurate ... Don't just
+           assume always that they are a V-shaped jersey design"). CastIntl.JERSEYS is the NRL clubs' only; without the
+           kits it is plain in the club's colours, never a V */
+        var K = window.CastKits, fb = { base: c.primary, accent: c.accent || c.secondary };
+        sides[k] = { name: nm, short: nm.length <= 15 ? nm : last,
+          code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: c.primary, pattern: 'plain', colors: [c.accent || c.secondary],
+          draw: K && K.drawKit ? function (w, h) { return K.drawKit('afl', k, { w: w, h: h, fallback: fb }); } : null };
       };
       var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
       pool.forEach(side);

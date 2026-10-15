@@ -204,9 +204,9 @@
     if (k >= 1) return { color: '#4ade80', glow: 'rgba(74,222,128,.65)', stage: 'hit' };
     if (k >= 0.9) return { color: '#ff5a36', glow: 'rgba(255,90,54,.65)', stage: 'hot' };
     if (k >= 0.75) return { color: '#fb923c', glow: 'rgba(251,146,60,.55)', stage: 'warm' };
-    if (k >= 0.5) return { color: '#f1c073', glow: 'rgba(241,192,115,.5)', stage: 'mid' };
-    if (k >= 0.25) return { color: '#c9953a', glow: 'rgba(201,149,58,.4)', stage: 'low' };
-    return { color: '#8a7650', glow: 'rgba(138,118,80,.3)', stage: 'cold' };
+    if (k >= 0.5) return { color: '#ff8f84', glow: 'rgba(255,143,132,.5)', stage: 'mid' }; // 60000 RUNS (16 Oct 2026): cool blues, then the game's own colour, never gold
+    if (k >= 0.25) return { color: '#3f86d6', glow: 'rgba(63,134,214,.4)', stage: 'low' };
+    return { color: '#3b5b8a', glow: 'rgba(59,91,138,.3)', stage: 'cold' };
   };
 
   // The ground from above: the top six batting across the top two rows, the keeper at the stumps on the pitch, the four
@@ -653,7 +653,7 @@
   // A draft saved on this phone (js/app.js, Save the draft in progress): carry on, or start fresh
   R.resumeSheet = function (name, picks) {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
-      '<div class="confirm-ico" aria-hidden="true">&#x1F3C9;</div>' +
+      '<div class="confirm-ico" aria-hidden="true">&#x1F3CF;</div>' +
       '<div class="sheet-kicker">Your Draft Is Saved</div>' +
       '<h2 class="sheet-title center">Pick Up Where You Left Off?</h2>' +
       '<p class="sheet-sub center">Your ' + esc(name) + ' team has ' + picks + ' of ' + T.SLOTS.length + ' picked, with everything you used still in it.</p>' +

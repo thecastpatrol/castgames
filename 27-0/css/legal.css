@@ -1,0 +1,106 @@
+/* 27-0 content pages (How It Works, Privacy, Terms), 16 Oct 2026: the shared CAST legal look, copied from 1000TRIES's
+   css/main.css so these pages match the other games without loading 27-0's whole game theme */
+
+:root {
+  --gold: #f1c073;
+  --gold-dark: #c9953a;
+  --bg: #0a0a0f;
+  --line: #24243a;
+  --text: #f0f0f0;
+  --muted: #a2a2b8;
+  --dim: #7a7a92;
+  --radius: 12px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+main { flex: 1; }
+img { max-width: 100%; }
+a { color: var(--gold); -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 16px; }
+@media (min-width: 900px) { .wrap { max-width: 760px; } }
+
+/* Header */
+.site-header {
+  position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px; padding-top: calc(10px + env(safe-area-inset-top, 0px));
+  background: rgba(10, 10, 15, .92); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-bottom: 2px solid var(--gold);
+}
+.brand { display: flex; align-items: center; text-decoration: none; min-height: 36px; min-width: 40px; }
+.brand-logo { height: 38px; width: auto; max-width: 100%; display: block; object-fit: contain; object-position: left center; }
+.brand-fallback { font-weight: 900; font-size: 13px; letter-spacing: 2px; color: var(--gold); }
+.header-nav { display: flex; align-items: center; gap: 14px; }
+.header-nav a { font-size: 13px; font-weight: 700; text-decoration: none; color: var(--muted); }
+.header-nav .nav-play { padding: 7px 14px; border-radius: 10px; background: var(--gold); color: #111; font-weight: 900; text-transform: uppercase; letter-spacing: .5px; }
+@media (hover: hover) { .header-nav .nav-play:hover { background: var(--gold-dark); color: #111; } }
+@media (max-width: 400px) { .site-header { padding-left: 12px; padding-right: 12px; } .brand-logo { height: 32px; } }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px 22px;
+  border-radius: var(--radius); border: 2px solid transparent; font-size: 15px; font-weight: 800; letter-spacing: .5px;
+  text-transform: uppercase; cursor: pointer; text-decoration: none; transition: transform .12s, background .15s;
+}
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--gold); color: #111; }
+@media (hover: hover) { .btn-primary:hover { background: var(--gold-dark); } }
+.btn-block { width: 100%; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 6px; padding: 8px 14px; border-radius: 10px;
+  border: 1.5px solid var(--gold); color: var(--gold); font-size: 13px; font-weight: 900; letter-spacing: .5px; text-transform: uppercase; text-decoration: none;
+}
+@media (hover: hover) { .back-link:hover { background: var(--gold); color: #111; } }
+
+/* The page */
+.doc h1 { font-size: clamp(28px, 7vw, 38px); font-weight: 900; margin: 12px 0 4px; }
+.doc .updated { font-size: 12px; color: var(--dim); margin: 0 0 20px; }
+.doc h2 { font-size: 15px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin: 26px 0 8px; }
+.doc p, .doc li { color: #c0c0d0; }
+.doc ul, .doc ol { padding-left: 20px; }
+.doc li { margin-bottom: 6px; }
+.doc strong { color: #fff; }
+.doc table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0; }
+.doc th, .doc td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.doc th { color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.doc td { color: #c0c0d0; }
+@media (max-width: 560px) {
+  .doc thead { display: none; }
+  .doc table, .doc tbody, .doc tr, .doc td { display: block; }
+  .doc tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .doc td { padding: 2px 0; border: 0; }
+  .doc td:first-child { margin-bottom: 2px; color: #fff; font-size: 15px; }
+  .doc td[data-l]::before { content: attr(data-l) ": "; color: var(--gold); font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+}
+.doc .cta { margin-top: 26px; }
+/* Links inside a sentence: a soft tag, never underlined text */
+.doc p a, .doc li a { padding: 1px 6px; border-radius: 6px; background: rgba(241, 192, 115, .12); color: var(--gold); font-weight: 800; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+@media (hover: hover) { .doc p a:hover, .doc li a:hover { background: rgba(241, 192, 115, .24); color: #fff; } }
+
+/* Footer (the base look as on 1000TRIES; the shared footer restyle may replace it) */
+.site-footer { margin-top: 28px; padding: 18px 16px 32px; text-align: center; border-top: 1px solid #1a1a2a; }
+.socials { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; }
+.socials a { color: var(--gold); opacity: .85; }
+@media (hover: hover) { .socials a:hover { opacity: 1; } }
+.footer-links { font-size: 12px; color: var(--dim); margin: 0 0 10px; }
+.footer-links a { color: #9a9ab0; text-decoration: none; }
+@media (hover: hover) { .footer-links a:hover { color: var(--gold); } }
+.footer-copy { font-size: 11px; font-weight: 600; color: #78788e; margin: 0 0 6px; }
+.footer-legal { font-size: 11px; color: #78788e; max-width: 620px; margin: 0 auto; line-height: 1.6; text-wrap: pretty; }
+
+/* No lonely words (the owner's rule): short copy is balanced, long reads wrap "pretty" */
+html { text-wrap-style: pretty; }
+h1, h2, h3, p, li, summary, td, th, strong, b, span { text-wrap-style: balance; }
+.doc p, .doc li { text-wrap-style: pretty; }
+
+/* One footer on every CAST game and the CAST Games home (audit L4/L5, 16 Oct 2026, the owner's rule: buttons, not text
+   links): the page links as pills, a credit's link inside its sentence as a soft tag, never underlined */
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 12px; }
+.footer-links > span[aria-hidden] { display: none; }
+.footer-links a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); color: #d6d6e4; font-size: 12.5px; font-weight: 800; text-decoration: none; }
+@media (hover: hover) { .footer-links a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
+.footer-legal a { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); color: #c9c9d8; font-weight: 700; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.footer-legal { text-wrap: balance; }

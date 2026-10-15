@@ -123,8 +123,9 @@
     return (slot && slot.club) || (T.showClub ? T.showClub(slot.player) : T.lastClub(slot.player));
   };
 
-  /* Each club's jersey for the Legends and Immortal Pick reveal (8 Oct 2026, the owner: "make the jerseys more accurate"):
-     shared with 27-0's Immortal Pick, so the table lives in js/cast-intl.js (CastIntl.JERSEYS) */
+  /* Each club's kit for the Legends and Immortal Pick reveal: its real current home kit, drawn by js/cast-kits.js from
+     js/kits-data.js (16 Oct 2026, the owner: "Don't just assume always that they are a V-shaped jersey design"; the data
+     is researched in ~/cast-dev/kits). CastIntl.JERSEYS in js/cast-intl.js is the NRL clubs' only */
 
   /* Legends and Immortals (4000+ only): the Legends Pick and the rarer Immortal Pick.
      data/legends.json lists them with career premiership goals (NSWRL, ARL, Super League, AFL). None of them
@@ -196,8 +197,10 @@
   T.surname = function (name) {
     var n = String(name).replace(/\s*\([^)]*\)\s*$/, '').replace(/[\u201C"][^\u201D"]*[\u201D"]\s*/g, '').trim();
     if (SURNAME_OF[n]) return SURNAME_OF[n];
-    var parts = n.split(/\s+/);
-    return parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
+    var parts = n.split(/\s+/), rest = parts.slice(1);
+    // middle initials go too (16 Oct 2026): "M. J. K. Smith" read "J. K. Smith" on the tile
+    while (rest.length > 1 && /^(?:[A-Z]\.)+$|^[A-Z]$/.test(rest[0])) rest.shift();
+    return rest.length ? rest.join(' ') : parts[0];
   };
 
   T.fmt = function (n) {
@@ -226,7 +229,7 @@
   T.DATASETS = {
     // The AFL pack (key kept as 'nrl': the main pack everywhere in the code): goals since 1990, offers weighted by goals + 94
     // (~/cast-dev/afl/sim.py, set the way 4000 GOALS' 40 was)
-    nrl:  { file: 'data/players.json', target: 4000, weight: 40, label: 'AFL goals', era: 'AFL era goals', only: 'AFL goals since 1990', who: 'AFL' },
+    nrl:  { file: 'data/players.json', target: 4000, weight: 40, label: 'AFL goals', era: 'AFL goals since 1990', only: 'AFL goals since 1990', who: 'AFL' }, // era: the results total's label, in the game's own words (audit T12, 16 Oct 2026)
     // The AFLW pack (key kept as 'nrlw'): AFLW premiership goals since 2017. lowCut/lowFactor: players under 2 AFLW goals show up less, and never two in one offer
     nrlw: { live: true, file: 'data/aflw-players.json', target: 750, weight: 45, lowCut: 2, lowFactor: 0.3, label: 'AFLW goals', era: 'AFLW goals', only: 'AFLW premiership goals only', who: 'AFLW' },
     // World Cup 200+ (4 Oct 2026, the owner's call): senior Test players of the 2026 World Cup sides, Great Britain,
@@ -237,7 +240,7 @@
   };
   T.DATASET = 'nrl';
   T.TRY_LABEL = 'AFL goals';
-  T.ERA_LABEL = 'AFL era goals';
+  T.ERA_LABEL = 'AFL goals since 1990';
 
   // Only rows with a numeric tries_1998_plus are playable
   T.loadDataset = function (name) {

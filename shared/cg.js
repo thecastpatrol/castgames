@@ -174,7 +174,18 @@
       '<div class="cg-sp-list">' + gs.map(function (g) {
         return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
           (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
-      }).join('') + '</div></div>';
+      }).join('') + swModes() + '</div></div>';
+  }
+  /* The World Cup modes under NRL while the World Cup is on (16 Oct 2026, the owner: "very good modes and can be their own
+     game in a sense"): a tap goes straight into the mode; 27-0 and 1000TRIES still have them on their own homes too */
+  var WC_MODES = [{ name: 'World Cup 8-0', short: 'Spin a nation and win all eight', path: '27-0/?play=wc', game: '27-0' },
+                  { name: 'World Cup 200+', short: 'Draft World Cup squads to 200 tries', path: '1000tries/?play=wc', game: '1000tries' }];
+  function swModes() {
+    var A = window.CastAccount;
+    if (swSport !== 'nrl' || !(A && A.wcLive && A.wcLive())) return '';
+    return WC_MODES.map(function (m) {
+      return '<a class="cg-sp-game is-wc" href="' + url(m.path) + '"><span class="cg-mark" aria-hidden="true">&#x1F30F;</span><span><b>' + esc(m.name) + '</b><small>' + esc(m.short) + '</small></span></a>';
+    }).join('');
   }
   function openSwitcher() {
     if (!sheet) {

@@ -178,7 +178,7 @@
     clearInterval(st.offerT); st.hold = true; render(); // the countdown waits while they choose
     T.track('ou_rib_tap', { category: st.cat, streak: st.streak });
     var hook = { kicker: 'Run It Back', title: 'Keep Your Streak', line: 'Keep your ' + st.streak + ' in a row and play on with a new card.',
-      foot: 'Run It Backs work in Photo Finish, Six Again and 27-0. Saved ones stay on your CAST Profile.' };
+      foot: 'Run It Backs work in Photo Finish and other CAST games. Saved ones stay on your CAST Profile.' };
     CA.buyItem('rib', 'racing', function () {
       if (st.view !== 'out' || st.done) return;
       st.calls += 'B'; st.rib++; st.offer = 0; st.hold = false;

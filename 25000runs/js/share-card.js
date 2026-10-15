@@ -6,11 +6,11 @@
   'use strict';
 
   var W = 1080, H = 1350;
-  var GOLD = '#f1c073';
+  var GOLD = '#f1c073'; // the GOAT's only; the game's own colour is MODE_SKIN.plus (16 Oct 2026)
   // Each mode's own colour (matches the home cards and the in-game skin):
-  // 4000+ gold, Exactly 4000 red, Team Spin purple, NRLW teal.
+  // 25000+ floodlight orange (16 Oct 2026: the game's own colour, gold stays with the CAST Pass), Exactly red, Team Spin purple, NRLW teal.
   var MODE_SKIN = {
-    plus:  { id: 'plus',  a: '#f1c073', hi: '#ffe2a8', lo: '#c9953a', rgb: '241,192,115', pill: '#f1c073', ink: '#111111', icon: '',    bg: ['#17140f', '#07070b'] },
+    plus:  { id: 'plus',  a: '#ff7a2e', hi: '#ffd0a8', lo: '#d4541a', rgb: '255,122,46',  pill: '#ff7a2e', ink: '#111111', icon: '',    bg: ['#10162e', '#070a17'] },
     exact: { id: 'exact', a: '#ef4444', hi: '#fecaca', lo: '#b91c1c', rgb: '239,68,68',   pill: '#dc2626', ink: '#ffffff', icon: '🔥 ', bg: ['#1d0a0d', '#08060a'] },
     spin:  { id: 'spin',  a: '#a78bfa', hi: '#ede9fe', lo: '#7c3aed', rgb: '139,92,246',  pill: '#7c3aed', ink: '#ffffff', icon: '🎰 ', bg: ['#160f27', '#07070b'] },
     nrlw:  { id: 'nrlw',  a: '#2dd4bf', hi: '#ccfbf1', lo: '#0f9488', rgb: '20,184,166',  pill: '#2dd4bf', ink: '#042f2e', icon: '⭐ ', bg: ['#0a1b1b', '#06090b'] },
@@ -152,7 +152,7 @@
       ctx.drawImage(logoImg, x + cw + gapX, y, gw, LH);
       y += LH + 30;
     } else {
-      ctx.fillStyle = GOLD; ctx.font = '900 italic 92px ' + F; ctx.textAlign = 'center';
+      ctx.fillStyle = MODE_SKIN.plus.a; ctx.font = '900 italic 92px ' + F; ctx.textAlign = 'center'; // the game's own colour, not gold (16 Oct 2026)
       ctx.fillText('25000 RUNS', W / 2, y + 90); y += 120;
     }
 

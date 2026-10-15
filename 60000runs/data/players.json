@@ -7532,8 +7532,8 @@
 "ci": "47005"
 },
 {
-"id": "jim-parks-jr",
-"name": "Jim Parks, Jr.",
+"id": "jim-parks-jnr",
+"name": "Jim Parks Jnr",
 "tries_1998_plus": 1962,
 "primary_club": "eng",
 "club_years": [
@@ -8723,8 +8723,8 @@
 "ci": "232438"
 },
 {
-"id": "joe-hardstaff-junior",
-"name": "Joe Hardstaff junior",
+"id": "joe-hardstaff-jnr",
+"name": "Joe Hardstaff Jnr",
 "tries_1998_plus": 1636,
 "primary_club": "eng",
 "club_years": [
@@ -26569,8 +26569,8 @@
 "ci": "56107"
 },
 {
-"id": "lionel-tennyson-3rd-baron-tennyson",
-"name": "Lionel Tennyson, 3rd Baron Tennyson",
+"id": "lionel-tennyson",
+"name": "Lionel Tennyson",
 "tries_1998_plus": 345,
 "primary_club": "eng",
 "club_years": [
@@ -27889,8 +27889,8 @@
 "ci": "297635"
 },
 {
-"id": "joe-hardstaff-senior",
-"name": "Joe Hardstaff senior",
+"id": "joe-hardstaff-snr",
+"name": "Joe Hardstaff Snr",
 "tries_1998_plus": 311,
 "primary_club": "eng",
 "club_years": [
@@ -36585,8 +36585,8 @@
 "ci": "38999"
 },
 {
-"id": "b-subrahmanyam-chandrashekhar",
-"name": "B. Subrahmanyam. Chandrashekhar",
+"id": "b-s-chandrasekhar",
+"name": "B. S. Chandrasekhar",
 "tries_1998_plus": 167,
 "primary_club": "ind",
 "club_years": [
@@ -38436,8 +38436,8 @@
 "ci": "8291"
 },
 {
-"id": "george-harris-4th-baron-harris",
-"name": "George Harris, 4th Baron Harris",
+"id": "george-harris",
+"name": "George Harris",
 "tries_1998_plus": 145,
 "primary_club": "eng",
 "club_years": [
@@ -47622,8 +47622,8 @@
 "ci": "52675"
 },
 {
-"id": "shakeel-ahmed-jr",
-"name": "Shakeel Ahmed, Jr.",
+"id": "shakeel-ahmed-jnr",
+"name": "Shakeel Ahmed Jnr",
 "tries_1998_plus": 74,
 "primary_club": "pak",
 "club_years": [
@@ -49881,8 +49881,8 @@
 "ci": "51111"
 },
 {
-"id": "ivo-bligh-8th-earl-of-darnley",
-"name": "Ivo Bligh, 8th Earl of Darnley",
+"id": "ivo-bligh",
+"name": "Ivo Bligh",
 "tries_1998_plus": 62,
 "primary_club": "eng",
 "club_years": [
@@ -50572,8 +50572,8 @@
 "ci": "44124"
 },
 {
-"id": "enamul-haque-jr",
-"name": "Enamul Haque Jr",
+"id": "enamul-haque-jnr",
+"name": "Enamul Haque Jnr",
 "tries_1998_plus": 59,
 "primary_club": "ban",
 "club_years": [
@@ -50687,8 +50687,8 @@
 "ci": "392946"
 },
 {
-"id": "sir-tim-o-brien-3rd-baronet",
-"name": "Sir Tim O'Brien, 3rd Baronet",
+"id": "tim-o-brien",
+"name": "Tim O'Brien",
 "tries_1998_plus": 59,
 "primary_club": "eng",
 "club_years": [
@@ -51356,8 +51356,8 @@
 "ci": "557295"
 },
 {
-"id": "martin-hawke-7th-baron-hawke",
-"name": "Martin Hawke, 7th Baron Hawke",
+"id": "martin-hawke",
+"name": "Martin Hawke",
 "tries_1998_plus": 55,
 "primary_club": "eng",
 "club_years": [
@@ -55674,8 +55674,8 @@
 "ci": "55666"
 },
 {
-"id": "william-orourke",
-"name": "William O’Rourke",
+"id": "william-o-rourke",
+"name": "William O'Rourke",
 "tries_1998_plus": 38,
 "primary_club": "nz",
 "club_years": [
@@ -58046,7 +58046,7 @@
 },
 {
 "id": "ijaz-ahmed-jnr",
-"name": "Ijaz Ahmed jnr",
+"name": "Ijaz Ahmed Jnr",
 "tries_1998_plus": 29,
 "primary_club": "pak",
 "club_years": [
@@ -58114,8 +58114,8 @@
 "ci": "32157"
 },
 {
-"id": "jim-parks-sr",
-"name": "Jim Parks, Sr.",
+"id": "jim-parks-snr",
+"name": "Jim Parks Snr",
 "tries_1998_plus": 29,
 "primary_club": "eng",
 "club_years": [
@@ -61800,8 +61800,8 @@
 "ci": "22381"
 },
 {
-"id": "rajazahid",
-"name": "RajaZahid",
+"id": "zahid-mahmood",
+"name": "Zahid Mahmood",
 "tries_1998_plus": 20,
 "primary_club": "pak",
 "club_years": [
@@ -65439,8 +65439,8 @@
 "ci": "990031"
 },
 {
-"id": "wafadar",
-"name": "Wafadar",
+"id": "wafadar-momand",
+"name": "Wafadar Momand",
 "tries_1998_plus": 12,
 "primary_club": "afg",
 "club_years": [
@@ -72869,7 +72869,7 @@
 },
 {
 "id": "shakeel-ahmed-snr",
-"name": "Shakeel Ahmed snr",
+"name": "Shakeel Ahmed Snr",
 "tries_1998_plus": 1,
 "primary_club": "pak",
 "club_years": [

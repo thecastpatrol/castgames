@@ -703,7 +703,7 @@ const FIELD_POSITIONS={
   12:{x:50,   y:91, a:'LK'},
 };
 // Position names shown inside the empty tiles (same words as 1000TRIES)
-const FIELD_POS_NAME={FB:'Fullback',W:'Winger',C:'Centre',FE:'Five-eighth',HB:'Halfback',P:'Prop',HK:'Hooker',SR:'Second row',LK:'Lock'};
+const FIELD_POS_NAME={FB:'Fullback',W:'Winger',C:'Centre',FE:'Five-Eighth',HB:'Halfback',P:'Prop',HK:'Hooker',SR:'Second Row',LK:'Lock'}; // Title Case labels (audit T11, 16 Oct 2026)
 // Tile size for a field: four across the backs row, six rows down, never bigger than the field allows
 function fieldTileSize(wrap){
   const rect=wrap.getBoundingClientRect();
