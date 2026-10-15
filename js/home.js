@@ -18,14 +18,51 @@
   function art(g, cls) { return g.logo ? '<img class="' + (cls || 'cg-art') + '" src="' + esc(g.logo) + '" alt="' + esc(g.name) + '">' : '<span class="' + (cls || 'cg-art') + ' cg-mark">' + g.mark + '</span>'; }
   function game(id) { for (var i = 0; i < CG.GAMES.length; i++) if (CG.GAMES[i].id === id) return CG.GAMES[i]; return null; }
 
-  // Promos on now: the World Cup (while World Cup mode is live) and the Team of the Week (while one is on)
+  /* The featured banner slides (16 Oct 2026, the owner: "it's just there and doesn't offer anything"): the World Cup while
+     it's on, CAST Pass for anyone without it (money cards first), the newest game, and today's Daily Challenge. Each slide
+     wears its own colours; they rotate on their own and swipe by hand */
+  function newest() {
+    var gs = CG.liveGames().filter(function (g) { return g.badge && g.logo; });
+    return gs.length ? gs[gs.length - 1] : null;
+  }
   function promos() {
     var a = A(), out = [];
-    if (a && a.wcLive && a.wcLive()) out.push({ k: 'Featured · World Cup', t: 'World Cup 8-0', p: 'Spin a nation, draft from its 2026 squad and win all eight.', b: 'Play Now', href: '27-0/?play=wc', art: 'assets/logos/27-0.png' });
+    if (a && a.wcLive && a.wcLive()) out.push({ k: 'Featured · World Cup', t: 'World Cup 8-0', p: 'Spin a nation, draft from its 2026 squad and win all eight.', b: 'Play Now', href: '27-0/?play=wc', art: 'assets/logos/27-0.png', c1: '#0f4c8a', c2: '#081a33', ac: '56,189,248' });
     var w = a && a.totw ? a.totw() : null;
-    if (w) out.push({ k: 'World Cup · ' + w.label, t: 'Team of the Week', p: '13 players boosted in World Cup 8-0 this week.', b: 'See the 13', href: '27-0/?play=wc', side: true });
-    if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL, AFL, cricket, NFL and horse racing fans.', b: 'Browse Games', href: '#cgSports', art: 'assets/logos/castgames.png' });
+    if (w) out.push({ k: 'World Cup · ' + w.label, t: 'Team of the Week', p: '13 players boosted in World Cup 8-0 this week.', b: 'See the 13', href: '27-0/?play=wc', art: 'assets/logos/27-0.png', c1: '#0f4c8a', c2: '#081a33', ac: '56,189,248' });
+    if (!(a && a.hasPass && a.hasPass())) out.push({ k: 'CAST Pass', t: 'Play Every Game Like a Member', p: 'Free wildcards in every game, no ads, and a free Pick every promo.', b: 'See CAST Pass', open: 'pass', art: 'assets/cast-pass-logo.png', c1: '#3a2a0c', c2: '#120d04', ac: '241,192,115', pass: true });
+    var g = newest();
+    if (g) out.push({ k: 'New Game · ' + ((CG.sportOf(g.sport) || {}).name || ''), t: g.name, p: g.line, b: 'Play Free', href: g.path, art: g.logo, c1: g.c1, c2: g.c2, ac: (CG.sportOf(g.sport) || {}).c || '255,255,255' });
+    var dg = CG.popular(0).filter(function (x) { return x.daily && dailyOf(x.id); })[0];
+    if (dg) { var dx = dailyOf(dg.id); out.push({ k: 'Daily Challenge', t: dg.name + ' Daily', p: dx.head + (dx.reward ? '. ' + dx.reward.trim() : ''), b: 'Play Today', href: dg.path + '?play=daily', art: dg.logo, c1: dg.c1, c2: dg.c2, ac: (CG.sportOf(dg.sport) || {}).c || '255,255,255' }); }
+    if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL, AFL, cricket, NFL and horse racing fans.', b: 'Browse Games', href: '#cgSports', art: 'assets/logos/castgames.png', c1: '#0c2747', c2: '#081322', ac: '56,189,248' });
     return out;
+  }
+  function slide(p, i) {
+    var st = ' style="--c1:' + p.c1 + ';--c2:' + p.c2 + ';--ac:' + p.ac + '"', inner = '<span class="cg-k">' + esc(p.k) + '</span><b>' + esc(p.t) + '</b><p>' + esc(p.p) + '</p><span class="cg-btn">' + esc(p.b) + '</span>' +
+      (p.art ? '<img class="cg-promo-art" src="' + esc(p.art) + '" alt="" aria-hidden="true">' : '');
+    var cls = 'cg-promo' + (p.pass ? ' is-pass' : '');
+    return p.open ? '<button type="button" class="' + cls + '" data-open="' + p.open + '" data-slide="' + i + '"' + st + '>' + inner + '</button>'
+      : '<a class="' + cls + '" href="' + esc(p.href) + '" data-slide="' + i + '"' + st + '>' + inner + '</a>';
+  }
+  // The rotation: every 6 s, paused while a finger or mouse is on it, off for reduced motion; it keeps its place on a redraw
+  var heroAt = 0, heroTimer = null;
+  function heroGo(track, i, smooth) {
+    var n = track.children.length; if (!n) return;
+    heroAt = (i + n) % n;
+    track.scrollTo({ left: track.children[heroAt].offsetLeft - track.offsetLeft, behavior: smooth ? 'smooth' : 'auto' });
+    var dots = track.parentNode.querySelectorAll('.cg-dot');
+    Array.prototype.forEach.call(dots, function (d, k) { d.classList.toggle('is-on', k === heroAt); d.setAttribute('aria-current', k === heroAt ? 'true' : 'false'); });
+  }
+  function heroWire() {
+    var track = el.querySelector('.cg-hero-track'); clearInterval(heroTimer);
+    if (!track || track.children.length < 2) return;
+    heroGo(track, heroAt, false);
+    var held = false, still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    ['pointerenter', 'touchstart', 'focusin'].forEach(function (e) { track.addEventListener(e, function () { held = true; }, { passive: true }); });
+    ['pointerleave', 'touchend', 'focusout'].forEach(function (e) { track.addEventListener(e, function () { held = false; }, { passive: true }); });
+    var t; track.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(function () { var w = track.clientWidth || 1, i = Math.round(track.scrollLeft / w); if (i !== heroAt) heroGo(track, i, false); }, 120); }, { passive: true });
+    if (!still) heroTimer = setInterval(function () { if (!held && !document.hidden) heroGo(track, heroAt + 1, true); }, 6000);
   }
   // Drafts waiting on this device: 1000TRIES and 4000 GOALS keep theirs under their own names here, 27-0 under its own
   function drafts() {
@@ -101,12 +138,10 @@
   }
   function draw() {
     var live = CG.liveGames(), h = '';
-    // Featured
-    h += '<section class="cg-hero">' + promos().map(function (p) {
-      // its game's logo on the right when it has the row to itself on desktop (audit L10: the card was mostly empty)
-      return '<a class="cg-promo' + (p.side ? ' is-side' : '') + '" href="' + esc(p.href) + '"><span class="cg-k">' + esc(p.k) + '</span><b>' + esc(p.t) + '</b><p>' + esc(p.p) + '</p><span class="cg-btn">' + esc(p.b) + '</span>' +
-        (p.art ? '<img class="cg-promo-art" src="' + esc(p.art) + '" alt="" aria-hidden="true">' : '') + '</a>';
-    }).join('') + '</section>';
+    // Featured: the rotating banner (a single slide when only one is on)
+    var ps = promos();
+    h += '<section class="cg-hero" aria-roledescription="carousel" aria-label="Featured"><div class="cg-hero-track">' + ps.map(slide).join('') + '</div>' +
+      (ps.length > 1 ? '<div class="cg-dots">' + ps.map(function (p, i) { return '<button type="button" class="cg-dot" data-dot="' + i + '" aria-label="' + esc(p.t) + '"></button>'; }).join('') + '</div>' : '') + '</section>';
     // Continue and Daily side by side on desktop
     var dr = drafts(), daily = live.filter(function (g) { return g.daily; });
     h += '<div class="cg-two">';
@@ -133,8 +168,11 @@
     h += '<section class="cg-sec cg-two"><button type="button" class="cg-wide" data-open="boards"><span>&#x1F3C6;</span><b>Leaderboards</b><small>Every game, every week</small></button>' +
       '<button type="button" class="cg-wide is-pass" data-open="pass"><span>&#x2B50;</span><b>CAST Pass</b><small>Free wildcards every game, no ads, and a free Pick every promo</small></button></section>';
     el.innerHTML = h;
+    heroWire();
   }
   el.addEventListener('click', function (e) {
+    var dot = e.target.closest('[data-dot]');
+    if (dot) { var tr = el.querySelector('.cg-hero-track'); if (tr) heroGo(tr, +dot.getAttribute('data-dot'), true); return; }
     var o = e.target.closest('[data-open]'), a = A();
     if (o && a) { if (o.getAttribute('data-open') === 'boards') a.openBoards(null); else if (a.openPass) a.openPass(); else a.open('pass'); }
   });

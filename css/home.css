@@ -7,15 +7,22 @@ a { color: inherit; }
 .cg-sec { margin-top: 24px; }
 .cg-sec h2 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 10px; font: 900 13px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: var(--muted); }
 .cg-sec h2 small { font: 800 11.5px/1 Inter, sans-serif; letter-spacing: .2px; text-transform: none; color: var(--sky); }
-/* Featured */
-.cg-hero { display: grid; gap: 10px; }
-.cg-promo { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-height: 170px; padding: 16px; border-radius: 18px; text-decoration: none;
-  background: radial-gradient(120% 90% at 0% 0%, rgba(56, 189, 248, .32), transparent 60%), linear-gradient(135deg, #0c2747, #081322); border: 1.5px solid #38bdf8; }
-.cg-promo.is-side { background: radial-gradient(120% 90% at 100% 0%, rgba(56, 189, 248, .26), transparent 60%), #0b1424; }
-.cg-k { font: 900 11px/1 Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sky); }
-.cg-promo b { font: 900 22px/1.15 Inter, sans-serif; }
-.cg-promo p { margin: 0; font: 600 13.5px/1.4 Inter, sans-serif; color: #c9d2e3; }
-.cg-promo-art { display: none; }
+/* Featured: a rotating banner (16 Oct 2026): every slide the same size, its own colours, text left and art right */
+.cg-hero { position: relative; }
+.cg-hero-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 18px; }
+.cg-hero-track::-webkit-scrollbar { display: none; }
+.cg-promo { flex: 0 0 100%; scroll-snap-align: start; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) 96px; grid-template-rows: auto auto 1fr auto; column-gap: 12px; row-gap: 6px;
+  height: 200px; padding: 16px; border-radius: 18px; text-decoration: none; text-align: left; color: #fff; font: inherit; cursor: pointer;
+  background: radial-gradient(120% 90% at 0% 0%, rgba(var(--ac, 56, 189, 248), .3), transparent 60%), linear-gradient(135deg, var(--c1, #0c2747), var(--c2, #081322)); border: 1.5px solid rgba(var(--ac, 56, 189, 248), .85); }
+.cg-promo > :not(.cg-promo-art) { grid-column: 1; min-width: 0; }
+.cg-k { font: 900 11px/1.2 Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: rgb(var(--ac, 56, 189, 248)); }
+.cg-promo b { font: 900 22px/1.15 Inter, sans-serif; text-wrap: balance; }
+.cg-promo p { margin: 0; font: 600 13.5px/1.4 Inter, sans-serif; color: rgba(255, 255, 255, .8); text-wrap: pretty; }
+.cg-promo .cg-btn { align-self: end; justify-self: start; background: rgb(var(--ac, 56, 189, 248)); }
+.cg-promo-art { grid-column: 2; grid-row: 1 / -1; align-self: center; width: 96px; height: auto; max-height: 120px; object-fit: contain; }
+.cg-dots { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+.cg-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .25); cursor: pointer; transition: width .2s ease, background .2s ease; }
+.cg-dot.is-on { width: 22px; background: #fff; }
 .cg-btn { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border-radius: 999px; background: var(--sky); color: #04121f; font: 900 13.5px/1 Inter, sans-serif; }
 .cg-btn.is-white { background: #fff; color: #0a0a0f; width: 100%; margin-top: auto; }
 /* Small cards: Continue and Daily (three in a row, all the same size) */
@@ -100,13 +107,8 @@ a { color: inherit; }
 .cg-foot small { flex-basis: 100%; margin-top: 6px; text-align: center; color: #78788e; font: 700 12px/1.4 Inter, sans-serif; }
 @media (min-width: 900px) {
   .wrap { padding: 24px 16px 40px; }
-  .cg-hero { grid-template-columns: 2fr 1fr; } .cg-hero:has(.cg-promo:only-child) { grid-template-columns: 1fr; }
-  .cg-promo { min-height: 230px; } .cg-promo b { font-size: 28px; }
-  /* One promo on its own: a banner with its logo on the right, not a tall empty box (audit L10, 16 Oct 2026) */
-  .cg-hero:has(.cg-promo:only-child) .cg-promo { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-auto-rows: auto; align-content: center; justify-items: start; column-gap: 32px; row-gap: 8px; min-height: 0; padding: 24px 28px; }
-  .cg-hero:has(.cg-promo:only-child) .cg-promo > :not(.cg-promo-art) { grid-column: 1; }
-  .cg-hero:has(.cg-promo:only-child) .cg-btn { margin-top: 6px; }
-  .cg-hero:has(.cg-promo:only-child) .cg-promo-art { display: block; grid-column: 2; grid-row: 1 / span 4; align-self: center; width: auto; height: 130px; max-width: 300px; object-fit: contain; }
+  .cg-promo { height: 240px; grid-template-columns: minmax(0, 1fr) 300px; padding: 26px 30px; column-gap: 32px; } .cg-promo b { font-size: 30px; } .cg-promo p { font-size: 15px; max-width: 560px; }
+  .cg-promo-art { width: 300px; max-height: 170px; }
   /* Four or more Dailies: the full width, in even rows (7 = 4 + 3, 5 and 6 = rows of 3) */
   .cg-two:has(.cg-daily-all) { grid-template-columns: 1fr; }
   .cg-cards.n4, .cg-cards.n7, .cg-cards.n8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
