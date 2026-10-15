@@ -36,8 +36,12 @@
 
   /* A run: list (a category's [[name, value, club]] highest first), seed. draw(level) gives the index of the next right
      player for the current left one. The pool (the best known: the top base + step x level) grows with the streak */
-  function Run(list, cat, seed) {
-    this.list = list; this.cat = CATS[cat] || CATS.nrl; this.r = rng(cat + '|' + seed); this.used = {};
+  /* Versions: 1 the launch draw; 2 (15 Oct 2026, the owner: "throw in some bad players every now and then, like a prop")
+     adds an easy call now and then. A run keeps the version its page started with (d.ouv), so the server replays it the
+     same way */
+  var VERSION = 2, EASY_ODDS = 0.13, EASY_FROM = 2;
+  function Run(list, cat, seed, v) {
+    this.list = list; this.cat = CATS[cat] || CATS.nrl; this.r = rng(cat + '|' + seed); this.used = {}; this.v = v === 2 ? 2 : 1; this.easyLast = false;
     this.left = this.first();
     this.right = this.draw(0);
   }
@@ -47,7 +51,26 @@
     this.used[i] = 1;
     return i;
   };
+  /* An easy call (version 2): from the third call, about 1 in 8 and never twice running, a player far below the left one
+     (a fifth of his number or less, and 5 or more under), from anywhere in the list: a prop next to a winger. None when
+     the left player's number is too small for one */
+  Run.prototype.easy = function (level) {
+    if (this.v < 2 || level < EASY_FROM) return -1;
+    if (this.easyLast) { this.easyLast = false; return -1; }
+    if (this.r() >= EASY_ODDS) return -1;
+    var L = this.list, lv = L[this.left][1], cap = Math.min(Math.floor(lv * 0.2), lv - 5), start = -1;
+    if (cap < 0) return -1;
+    for (var j = 0; j < L.length; j++) if (L[j][1] <= cap) { start = j; break; }
+    if (start < 0) return -1;
+    for (var k = 0; k < 20; k++) {
+      var i = start + Math.floor(this.r() * (L.length - start));
+      if (!this.used[i]) { this.used[i] = 1; this.easyLast = true; return i; }
+    }
+    return -1;
+  };
   Run.prototype.draw = function (level) {
+    var e = this.easy(level);
+    if (e >= 0) return e;
     var L = this.list, lv = L[this.left][1], n = this.poolSize(level), b = band(level), best = -1, bestMiss = Infinity;
     for (var tries = 0; tries < 80; tries++) {
       var i = Math.floor(this.r() * n);
@@ -69,10 +92,10 @@
 
   /* The whole run from its seed and calls: { ok, why, streak, ribs, rerolls, calls, players } (players: the right-hand
      picks in order, for the share card and team sheet). The server's check (lib/boards.js) and the site's own record */
-  function replay(list, cat, seed, calls) {
+  function replay(list, cat, seed, calls, v) {
     if (!CATS[cat]) return { ok: false, why: 'category' };
     if (typeof calls !== 'string' || !/^[OUTRB]{0,8000}$/.test(calls)) return { ok: false, why: 'calls' }; // more than any list has players (a 600 cap cut off real runs past 600, found 15 Oct 2026)
-    var run = new Run(list, cat, seed), streak = 0, ribs = 0, rerolls = 0, out = false, seen = [list[run.left][0]];
+    var run = new Run(list, cat, seed, v), streak = 0, ribs = 0, rerolls = 0, out = false, seen = [list[run.left][0]];
     for (var k = 0; k < calls.length; k++) {
       var c = calls[k];
       if (run.right < 0) return { ok: false, why: 'no players left' };
@@ -94,7 +117,7 @@
     return { ok: true, streak: streak, ribs: ribs, rerolls: rerolls, ended: out, players: seen };
   }
 
-  var api = { CATS: CATS, BANDS: BANDS, callTime: callTime, Run: Run, replay: replay, gap: gap, gameOf: gameOf };
+  var api = { VERSION: VERSION, CATS: CATS, BANDS: BANDS, callTime: callTime, Run: Run, replay: replay, gap: gap, gameOf: gameOf };
   root.OU_ENGINE = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

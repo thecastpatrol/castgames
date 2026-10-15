@@ -27,7 +27,7 @@
   function A() { return window.CastAccount || null; }
   function load() {
     if (D) return Promise.resolve(D);
-    if (!loading) loading = fetch('data/ou.json?v=20261015.4').then(function (r) { return r.json(); }).then(function (d) { D = d; return d; });
+    if (!loading) loading = fetch('data/ou.json?v=20261015.5').then(function (r) { return r.json(); }).then(function (d) { D = d; return d; });
     return loading;
   }
   function newSeed() { var s = '', c = 'abcdefghijkmnpqrstuvwxyz23456789'; for (var i = 0; i < 12; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
@@ -51,7 +51,7 @@
     if (CG && CG.ouGate && !CG.ouGate(function () { if (T.ou) T.ou.open(); })) { st = { view: 'start', cat: st.cat }; render(); return; } // a guest's 2 free runs a day (cast-account.js ouGate); the start screen waits behind the sign-in
     var cat = st.cat;
     st = { view: 'play', cat: cat, seed: newSeed(), calls: '', streak: 0, rib: 0, rr: 0, ice: 0, iceBest: 0, ms: 0, done: false, busy: false, log: [] };
-    st.run = new E.Run(D[cat], cat, st.seed);
+    st.run = new E.Run(D[cat], cat, st.seed, E.VERSION); // the engine's newest draw (version 2: easy calls now and then), saved as d.ouv
     st.first = st.run.left; // the results ladder starts with him
     // Rerolls and Run It Backs: the Vault's first, then paid. Nothing free, CAST Pass included (the owner, 15 Oct 2026)
     var CA = A(); st.rrPaid = 0;
@@ -207,7 +207,7 @@
     clearClock();
     var CA = A();
     if (!CA) return;
-    var d = { cat: st.cat, seed: st.seed, calls: st.calls, ms: Math.round(st.ms) };
+    var d = { cat: st.cat, seed: st.seed, calls: st.calls, ms: Math.round(st.ms), ouv: st.run && st.run.v };
     if (st.rib) d.rib = st.rib;
     if (st.rrPaid) d.rr = st.rrPaid; // every Reroll in the run (all Vault or paid), each one noted on the server
     try {
