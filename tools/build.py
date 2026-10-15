@@ -80,8 +80,20 @@ def rewrite_links(text, in_js):
     return text
 
 
+# On CAST Games a game's hero says what the game is, not "From the makers of 27-0 and 1000TRIES, The Cast Patrol brings
+# you ..." (the owner, 16 Oct 2026: the whole site is CAST's). The games' own sites keep their line
+EXPLAIN = {
+    '1000tries': 'Roll 3, pick 1 and draft 13 NRL players with their tries hidden. Can you reach <strong>1000 career tries</strong>?',
+    '4000goals': 'Draft an AFL 18 with their goals hidden. Can you reach <strong>4000 career goals</strong>?',
+    '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25,000 BBL runs</strong>?',
+    '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60,000 Test runs</strong>?',
+}
+
+
 def fit_page(path, folder, gid, hide_css, play_js, base=None):
     s = open(path, encoding='utf-8').read()
+    if folder in EXPLAIN:
+        s = re.sub(r'<p class="hero-pitch">From the makers of.*?</p>', lambda m: '<p class="hero-pitch">' + EXPLAIN[folder] + '</p>', s, count=1, flags=re.S)
     s = rewrite_links(s, False)
     # Another game is on this site now: open it in the same tab (the point of one address)
     s = re.sub(r'(href="' + re.escape(SITE) + r'[^"]*")\s+target="_blank"(\s+rel="noopener")?', r'\1', s)
