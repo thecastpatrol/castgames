@@ -73,3 +73,8 @@ html.cg-in-game .screen.active { top: calc(var(--cg-bar-h, 112px) + env(safe-are
    were picked): the chips stay put and the games scroll underneath */
 .cg-sheet-box.is-sw { height: min(80vh, 640px); height: min(80dvh, 640px); max-height: none; display: flex; flex-direction: column; overflow: hidden; }
 .cg-sheet-box.is-sw .cg-sw-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 8px; }
+/* Shop and Admin live in the CAST Games bar: a game's own copies (27-0's screen headers) never show a second time
+   (16 Oct 2026, the owner) */
+html.cg-in-game [data-cast-shop]:not(.cg-bar *), html.cg-in-game [data-cast-admin]:not(.cg-bar *) { display: none !important; }
+/* On a phone 27-0's draft header has nothing left to show inside CAST Games: no empty strip above Team Strength */
+@media (max-width: 899px) { html.cg-in-game #draft > .header { display: none !important; } }
