@@ -27,7 +27,9 @@
     bblwkts: { name: 'BBL Wickets', unit: 'BBL wickets', one: 'BBL wicket', base: 40, step: 10, game: 'bigbash' },
     // Follow On (16 Oct 2026): 60000 RUNS' version, career Test runs and wickets
     testruns: { name: 'Test Runs', unit: 'Test runs', one: 'Test run', base: 150, step: 45, game: 'tests' },
-    testwkts: { name: 'Test Wickets', unit: 'Test wickets', one: 'Test wicket', base: 120, step: 40, game: 'tests' }
+    testwkts: { name: 'Test Wickets', unit: 'Test wickets', one: 'Test wicket', base: 120, step: 40, game: 'tests' },
+    // Two Point (16 Oct 2026): 700 TDS' version, career scored touchdowns (never passing TDs)
+    nfltds: { name: 'Career TDs', unit: 'career TDs', one: 'career TD', base: 150, step: 45, game: 'nfl' }
   };
   function gameOf(cat) { return (CATS[cat] && CATS[cat].game) || '1000tries'; }
   // The relative gap a pair aims for, by streak: |a - b| / max(a, b). Far apart early, close later

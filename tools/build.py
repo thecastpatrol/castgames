@@ -55,13 +55,16 @@ GAMES = [
     # G1 WINNERS SPINNER (16 Oct 2026, the racing game): developed in ~/cast-dev/racing/game, copied to CAST Games/G1 WINNERS Game
     ('g1winners', 'G1 WINNERS Game', 'g1winners', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
+    # 700 TDS (16 Oct 2026, the NFL game): developed in ~/cast-dev/nfl/game, copied to CAST Games/700 TDS Game
+    ('700tds', '700 TDS Game', '700tds', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
 ]
 # The old domains, and the folder each one is now
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
-SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('racing', 'Horse Racing')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
+SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', 'NFL'), ('racing', 'Horse Racing')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
@@ -90,6 +93,7 @@ EXPLAIN = {
     '4000goals': 'Draft an AFL 18 with their goals hidden. Can you reach <strong>4000 career goals</strong>?',
     '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25,000 BBL runs</strong>?',
     '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60,000 Test runs</strong>?',
+    '700tds': 'Draft an NFL offence with their touchdowns hidden. Can you reach <strong>700 career touchdowns</strong>?',
     'g1winners': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
 }
 
@@ -132,7 +136,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winners.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winners.png', 'assets/logos/700tds.png']
 
 
 def clear_byline(path):
@@ -140,20 +144,22 @@ def clear_byline(path):
     im = Image.open(path).convert('RGBA')
     w, h = im.size
     a = im.split()[3]
-    rows = [y for y in range(h) if a.crop((0, y, w, y + 1)).getbbox()]
-    if not rows:
-        return
-    prev, cut = rows[0], None
-    for y in rows[1:]:
-        if y - prev > max(6, h // 60):
-            cut = y
-            break
-        prev = y
-    if not cut or cut > h * 0.4:  # no byline at the top
-        return
-    clear = Image.new('RGBA', (w, cut), (0, 0, 0, 0))
-    im.paste(clear, (0, 0))
-    im.save(path)
+    # The byline sits at the top; look for the gap under it across the whole width, then (700 TDS' goalposts rise past
+    # it on the right, 16 Oct 2026) across the left three quarters only, clearing just that part
+    for right in (w, int(w * 0.72)):
+        rows = [y for y in range(h) if a.crop((0, y, right, y + 1)).getbbox()]
+        if not rows:
+            continue
+        prev, cut = rows[0], None
+        for y in rows[1:]:
+            if y - prev > max(6, h // 60):
+                cut = y
+                break
+            prev = y
+        if cut and cut <= h * 0.4:
+            im.paste(Image.new('RGBA', (right, cut), (0, 0, 0, 0)), (0, 0))
+            im.save(path)
+            return
 
 
 def main():

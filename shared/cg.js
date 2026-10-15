@@ -21,7 +21,7 @@
     { id: 'nrl', name: 'NRL', long: 'Rugby League', c: '34,197,94', status: 'live', path: 'nrl/' }, // path: its See All page
     { id: 'afl', name: 'AFL', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
     { id: 'cricket', name: 'Cricket', long: 'The Big Bash and Tests', c: '255,122,46', status: 'live', path: 'cricket/' },
-    { id: 'nfl', name: 'NFL', long: 'American Football', c: '129,140,248', status: 'soon' },
+    { id: 'nfl', name: 'NFL', long: 'American Football', c: '54,226,126', status: 'live', path: 'nfl/' },
     { id: 'racing', name: 'Horse Racing', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
   ];
   var GAMES = [
@@ -39,6 +39,9 @@
     // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60,000 career Test runs
     { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
       line: 'Draft a Test XI from every Test since 1877 and reach 60,000 career Test runs.', short: 'Draft a Test XI to 60,000 runs' },
+    // 700 TDS (16 Oct 2026): the NFL game, an offence of 9 to 700 career touchdowns
+    { id: '700tds', sport: 'nfl', name: '700 TDS', path: '700tds/', logo: 'assets/logos/700tds.png', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
+      line: 'Draft an NFL offence and reach 700 career touchdowns.', short: 'Draft 9 to 700 touchdowns' },
     // G1 WINNERS SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
     { id: 'g1winners', sport: 'racing', name: 'G1 WINNERS SPINNER', path: 'g1winners/', logo: 'assets/logos/g1winners.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
       line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s' },

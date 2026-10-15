@@ -1,0 +1,990 @@
+{
+ "source": "Whole NFL regular-season careers from Wikipedia player articles (CC BY-SA 4.0), season by season, checked against each article's infobox and career row, Wikipedia's career rushing and receiving touchdown lists, and nflverse (CC BY 4.0) for 1999+ seasons. Snapshot 2026-10-15.",
+ "stat": "career scored touchdowns: rushing + receiving + kick/punt/other returns + interception and fumble returns (no passing TDs)",
+ "odds": {
+  "legends": 0.33,
+  "immortal": 0
+ },
+ "players": [
+  {
+   "id": "legend-jerry-rice",
+   "name": "Jerry Rice",
+   "tries_1998_plus": 208,
+   "primary_club": "49ers",
+   "club_years": [
+    {
+     "club": "49ers",
+     "from": 1985,
+     "to": 2000
+    },
+    {
+     "club": "raiders",
+     "from": 2001,
+     "to": 2004
+    },
+    {
+     "club": "seahawks",
+     "from": 2004,
+     "to": 2004
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1985-2004",
+   "td": {
+    "rush": 10,
+    "rec": 197,
+    "other": 1
+   },
+   "tier": "legend",
+   "record_name": "Jerry Rice (Legend)"
+  },
+  {
+   "id": "legend-emmitt-smith",
+   "name": "Emmitt Smith",
+   "tries_1998_plus": 175,
+   "primary_club": "cowboys",
+   "club_years": [
+    {
+     "club": "cowboys",
+     "from": 1990,
+     "to": 2002
+    },
+    {
+     "club": "cardinals",
+     "from": 2003,
+     "to": 2004
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1990-2004",
+   "td": {
+    "rush": 164,
+    "rec": 11
+   },
+   "tier": "legend",
+   "record_name": "Emmitt Smith (Legend)"
+  },
+  {
+   "id": "legend-marcus-allen",
+   "name": "Marcus Allen",
+   "tries_1998_plus": 144,
+   "primary_club": "raiders",
+   "club_years": [
+    {
+     "club": "raiders",
+     "from": 1982,
+     "to": 1992
+    },
+    {
+     "club": "chiefs",
+     "from": 1993,
+     "to": 1997
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1982-1997",
+   "td": {
+    "rush": 123,
+    "rec": 21
+   },
+   "tier": "legend",
+   "record_name": "Marcus Allen (Legend)"
+  },
+  {
+   "id": "legend-cris-carter",
+   "name": "Cris Carter",
+   "tries_1998_plus": 130,
+   "primary_club": "vikings",
+   "club_years": [
+    {
+     "club": "eagles",
+     "from": 1987,
+     "to": 1989
+    },
+    {
+     "club": "vikings",
+     "from": 1990,
+     "to": 2001
+    },
+    {
+     "club": "dolphins",
+     "from": 2002,
+     "to": 2002
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1987-2002",
+   "td": {
+    "rec": 130
+   },
+   "tier": "legend",
+   "record_name": "Cris Carter (Legend)"
+  },
+  {
+   "id": "legend-jim-brown",
+   "name": "Jim Brown",
+   "tries_1998_plus": 126,
+   "primary_club": "browns",
+   "club_years": [
+    {
+     "club": "browns",
+     "from": 1957,
+     "to": 1965
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1957-1965",
+   "td": {
+    "rush": 106,
+    "rec": 20
+   },
+   "tier": "legend",
+   "record_name": "Jim Brown (Legend)"
+  },
+  {
+   "id": "legend-walter-payton",
+   "name": "Walter Payton",
+   "tries_1998_plus": 125,
+   "primary_club": "bears",
+   "club_years": [
+    {
+     "club": "bears",
+     "from": 1975,
+     "to": 1987
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1975-1987",
+   "td": {
+    "rush": 110,
+    "rec": 15
+   },
+   "tier": "legend",
+   "record_name": "Walter Payton (Legend)"
+  },
+  {
+   "id": "legend-john-riggins",
+   "name": "John Riggins",
+   "tries_1998_plus": 116,
+   "primary_club": "commanders",
+   "club_years": [
+    {
+     "club": "jets",
+     "from": 1971,
+     "to": 1975
+    },
+    {
+     "club": "commanders",
+     "from": 1976,
+     "to": 1985
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1971-1985",
+   "td": {
+    "rush": 104,
+    "rec": 12
+   },
+   "tier": "legend",
+   "record_name": "John Riggins (Legend)"
+  },
+  {
+   "id": "legend-lenny-moore",
+   "name": "Lenny Moore",
+   "tries_1998_plus": 111,
+   "primary_club": "colts",
+   "club_years": [
+    {
+     "club": "colts",
+     "from": 1956,
+     "to": 1967
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1956-1967",
+   "td": {
+    "rush": 63,
+    "rec": 48
+   },
+   "tier": "legend",
+   "record_name": "Lenny Moore (Legend)"
+  },
+  {
+   "id": "legend-barry-sanders",
+   "name": "Barry Sanders",
+   "tries_1998_plus": 109,
+   "primary_club": "lions",
+   "club_years": [
+    {
+     "club": "lions",
+     "from": 1989,
+     "to": 1998
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1989-1998",
+   "td": {
+    "rush": 99,
+    "rec": 10
+   },
+   "tier": "legend",
+   "record_name": "Barry Sanders (Legend)"
+  },
+  {
+   "id": "legend-don-hutson",
+   "name": "Don Hutson",
+   "tries_1998_plus": 105,
+   "primary_club": "packers",
+   "club_years": [
+    {
+     "club": "packers",
+     "from": 1935,
+     "to": 1945
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1935-1945",
+   "td": {
+    "rush": 3,
+    "rec": 99,
+    "ret": 2,
+    "def": 1
+   },
+   "tier": "legend",
+   "record_name": "Don Hutson (Legend)"
+  },
+  {
+   "id": "legend-tim-brown",
+   "name": "Tim Brown",
+   "tries_1998_plus": 105,
+   "primary_club": "raiders",
+   "club_years": [
+    {
+     "club": "raiders",
+     "from": 1988,
+     "to": 2003
+    },
+    {
+     "club": "buccaneers",
+     "from": 2004,
+     "to": 2004
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1988-2004",
+   "td": {
+    "rush": 1,
+    "rec": 100,
+    "ret": 4
+   },
+   "tier": "legend",
+   "record_name": "Tim Brown (Legend)"
+  },
+  {
+   "id": "legend-franco-harris",
+   "name": "Franco Harris",
+   "tries_1998_plus": 100,
+   "primary_club": "steelers",
+   "club_years": [
+    {
+     "club": "steelers",
+     "from": 1972,
+     "to": 1983
+    },
+    {
+     "club": "seahawks",
+     "from": 1984,
+     "to": 1984
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1972-1984",
+   "td": {
+    "rush": 91,
+    "rec": 9
+   },
+   "tier": "legend",
+   "record_name": "Franco Harris (Legend)"
+  },
+  {
+   "id": "legend-steve-largent",
+   "name": "Steve Largent",
+   "tries_1998_plus": 100,
+   "primary_club": "seahawks",
+   "club_years": [
+    {
+     "club": "seahawks",
+     "from": 1976,
+     "to": 1989
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1976-1989",
+   "td": {
+    "rec": 100
+   },
+   "tier": "legend",
+   "record_name": "Steve Largent (Legend)"
+  },
+  {
+   "id": "legend-eric-dickerson",
+   "name": "Eric Dickerson",
+   "tries_1998_plus": 96,
+   "primary_club": "rams",
+   "club_years": [
+    {
+     "club": "rams",
+     "from": 1983,
+     "to": 1987
+    },
+    {
+     "club": "colts",
+     "from": 1987,
+     "to": 1991
+    },
+    {
+     "club": "raiders",
+     "from": 1992,
+     "to": 1992
+    },
+    {
+     "club": "falcons",
+     "from": 1993,
+     "to": 1993
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1983-1993",
+   "td": {
+    "rush": 90,
+    "rec": 6
+   },
+   "tier": "legend",
+   "record_name": "Eric Dickerson (Legend)"
+  },
+  {
+   "id": "legend-jim-taylor",
+   "name": "Jim Taylor",
+   "tries_1998_plus": 93,
+   "primary_club": "packers",
+   "club_years": [
+    {
+     "club": "packers",
+     "from": 1958,
+     "to": 1966
+    },
+    {
+     "club": "saints",
+     "from": 1967,
+     "to": 1967
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1958-1967",
+   "td": {
+    "rush": 83,
+    "rec": 10
+   },
+   "tier": "legend",
+   "record_name": "Jim Taylor (Legend)"
+  },
+  {
+   "id": "legend-bobby-mitchell",
+   "name": "Bobby Mitchell",
+   "tries_1998_plus": 91,
+   "primary_club": "commanders",
+   "club_years": [
+    {
+     "club": "browns",
+     "from": 1958,
+     "to": 1961
+    },
+    {
+     "club": "commanders",
+     "from": 1962,
+     "to": 1968
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1958-1968",
+   "td": {
+    "rush": 18,
+    "rec": 65,
+    "ret": 8
+   },
+   "tier": "legend",
+   "record_name": "Bobby Mitchell (Legend)"
+  },
+  {
+   "id": "legend-ricky-watters",
+   "name": "Ricky Watters",
+   "tries_1998_plus": 91,
+   "primary_club": "49ers",
+   "club_years": [
+    {
+     "club": "49ers",
+     "from": 1992,
+     "to": 1994
+    },
+    {
+     "club": "eagles",
+     "from": 1995,
+     "to": 1997
+    },
+    {
+     "club": "seahawks",
+     "from": 1998,
+     "to": 2001
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1992-2001",
+   "td": {
+    "rush": 78,
+    "rec": 13
+   },
+   "tier": "legend",
+   "record_name": "Ricky Watters (Legend)"
+  },
+  {
+   "id": "legend-tony-dorsett",
+   "name": "Tony Dorsett",
+   "tries_1998_plus": 91,
+   "primary_club": "cowboys",
+   "club_years": [
+    {
+     "club": "cowboys",
+     "from": 1977,
+     "to": 1987
+    },
+    {
+     "club": "broncos",
+     "from": 1988,
+     "to": 1988
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1977-1988",
+   "td": {
+    "rush": 77,
+    "rec": 13,
+    "other": 1
+   },
+   "tier": "legend",
+   "record_name": "Tony Dorsett (Legend)"
+  },
+  {
+   "id": "legend-charley-taylor",
+   "name": "Charley Taylor",
+   "tries_1998_plus": 90,
+   "primary_club": "commanders",
+   "club_years": [
+    {
+     "club": "commanders",
+     "from": 1964,
+     "to": 1977
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1964-1977",
+   "td": {
+    "rush": 11,
+    "rec": 79
+   },
+   "tier": "legend",
+   "record_name": "Charley Taylor (Legend)"
+  },
+  {
+   "id": "legend-leroy-kelly",
+   "name": "Leroy Kelly",
+   "tries_1998_plus": 90,
+   "primary_club": "browns",
+   "club_years": [
+    {
+     "club": "browns",
+     "from": 1964,
+     "to": 1973
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1964-1973",
+   "td": {
+    "rush": 74,
+    "rec": 13,
+    "ret": 3
+   },
+   "tier": "legend",
+   "record_name": "Leroy Kelly (Legend)"
+  },
+  {
+   "id": "legend-andre-reed",
+   "name": "Andre Reed",
+   "tries_1998_plus": 88,
+   "primary_club": "bills",
+   "club_years": [
+    {
+     "club": "bills",
+     "from": 1985,
+     "to": 1999
+    },
+    {
+     "club": "commanders",
+     "from": 2000,
+     "to": 2000
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1985-2000",
+   "td": {
+    "rush": 1,
+    "rec": 87
+   },
+   "tier": "legend",
+   "record_name": "Andre Reed (Legend)"
+  },
+  {
+   "id": "legend-don-maynard",
+   "name": "Don Maynard",
+   "tries_1998_plus": 88,
+   "primary_club": "jets",
+   "club_years": [
+    {
+     "club": "giants",
+     "from": 1958,
+     "to": 1958
+    },
+    {
+     "club": "jets",
+     "from": 1960,
+     "to": 1972
+    },
+    {
+     "club": "cardinals",
+     "from": 1973,
+     "to": 1973
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1958-1973",
+   "td": {
+    "rec": 88
+   },
+   "tier": "legend",
+   "record_name": "Don Maynard (Legend)"
+  },
+  {
+   "id": "legend-irving-fryar",
+   "name": "Irving Fryar",
+   "tries_1998_plus": 88,
+   "primary_club": "patriots",
+   "club_years": [
+    {
+     "club": "patriots",
+     "from": 1984,
+     "to": 1992
+    },
+    {
+     "club": "dolphins",
+     "from": 1993,
+     "to": 1995
+    },
+    {
+     "club": "eagles",
+     "from": 1996,
+     "to": 1998
+    },
+    {
+     "club": "commanders",
+     "from": 1999,
+     "to": 2000
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1984-2000",
+   "td": {
+    "rush": 1,
+    "rec": 84,
+    "ret": 3
+   },
+   "tier": "legend",
+   "record_name": "Irving Fryar (Legend)"
+  },
+  {
+   "id": "legend-thurman-thomas",
+   "name": "Thurman Thomas",
+   "tries_1998_plus": 88,
+   "primary_club": "bills",
+   "club_years": [
+    {
+     "club": "bills",
+     "from": 1988,
+     "to": 1999
+    },
+    {
+     "club": "dolphins",
+     "from": 2000,
+     "to": 2000
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1988-2000",
+   "td": {
+    "rush": 65,
+    "rec": 23
+   },
+   "tier": "legend",
+   "record_name": "Thurman Thomas (Legend)"
+  },
+  {
+   "id": "legend-lance-alworth",
+   "name": "Lance Alworth",
+   "tries_1998_plus": 87,
+   "primary_club": "chargers",
+   "club_years": [
+    {
+     "club": "chargers",
+     "from": 1962,
+     "to": 1970
+    },
+    {
+     "club": "cowboys",
+     "from": 1971,
+     "to": 1972
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1962-1972",
+   "td": {
+    "rush": 2,
+    "rec": 85
+   },
+   "tier": "legend",
+   "record_name": "Lance Alworth (Legend)"
+  },
+  {
+   "id": "legend-ottis-anderson",
+   "name": "Ottis Anderson",
+   "tries_1998_plus": 86,
+   "primary_club": "cardinals",
+   "club_years": [
+    {
+     "club": "cardinals",
+     "from": 1979,
+     "to": 1986
+    },
+    {
+     "club": "giants",
+     "from": 1986,
+     "to": 1992
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1979-1992",
+   "td": {
+    "rush": 81,
+    "rec": 5
+   },
+   "tier": "legend",
+   "record_name": "Ottis Anderson (Legend)"
+  },
+  {
+   "id": "legend-mark-clayton",
+   "name": "Mark Clayton",
+   "tries_1998_plus": 85,
+   "primary_club": "dolphins",
+   "club_years": [
+    {
+     "club": "dolphins",
+     "from": 1983,
+     "to": 1992
+    },
+    {
+     "club": "packers",
+     "from": 1993,
+     "to": 1993
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1983-1993",
+   "td": {
+    "rec": 84,
+    "ret": 1
+   },
+   "tier": "legend",
+   "record_name": "Mark Clayton (Legend)"
+  },
+  {
+   "id": "legend-paul-warfield",
+   "name": "Paul Warfield",
+   "tries_1998_plus": 85,
+   "primary_club": "browns",
+   "club_years": [
+    {
+     "club": "browns",
+     "from": 1964,
+     "to": 1969
+    },
+    {
+     "club": "dolphins",
+     "from": 1970,
+     "to": 1975
+    },
+    {
+     "club": "browns",
+     "from": 1976,
+     "to": 1977
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1964-1977",
+   "td": {
+    "rec": 85
+   },
+   "tier": "legend",
+   "record_name": "Paul Warfield (Legend)"
+  },
+  {
+   "id": "legend-andre-rison",
+   "name": "Andre Rison",
+   "tries_1998_plus": 84,
+   "primary_club": "falcons",
+   "club_years": [
+    {
+     "club": "colts",
+     "from": 1989,
+     "to": 1989
+    },
+    {
+     "club": "falcons",
+     "from": 1990,
+     "to": 1994
+    },
+    {
+     "club": "browns",
+     "from": 1995,
+     "to": 1995
+    },
+    {
+     "club": "jaguars",
+     "from": 1996,
+     "to": 1996
+    },
+    {
+     "club": "packers",
+     "from": 1996,
+     "to": 1996
+    },
+    {
+     "club": "chiefs",
+     "from": 1997,
+     "to": 1999
+    },
+    {
+     "club": "raiders",
+     "from": 2000,
+     "to": 2000
+    }
+   ],
+   "positions_played": [
+    "WR"
+   ],
+   "draft_role": "WR",
+   "position": "WR",
+   "active": false,
+   "career_span": "1989-2000",
+   "td": {
+    "rec": 84
+   },
+   "tier": "legend",
+   "record_name": "Andre Rison (Legend)"
+  },
+  {
+   "id": "legend-herschel-walker",
+   "name": "Herschel Walker",
+   "tries_1998_plus": 84,
+   "primary_club": "cowboys",
+   "club_years": [
+    {
+     "club": "cowboys",
+     "from": 1986,
+     "to": 1989
+    },
+    {
+     "club": "vikings",
+     "from": 1989,
+     "to": 1991
+    },
+    {
+     "club": "eagles",
+     "from": 1992,
+     "to": 1994
+    },
+    {
+     "club": "giants",
+     "from": 1995,
+     "to": 1995
+    },
+    {
+     "club": "cowboys",
+     "from": 1996,
+     "to": 1997
+    }
+   ],
+   "positions_played": [
+    "RB"
+   ],
+   "draft_role": "RB",
+   "position": "RB",
+   "active": false,
+   "career_span": "1986-1997",
+   "td": {
+    "rush": 61,
+    "rec": 21,
+    "ret": 2
+   },
+   "tier": "legend",
+   "record_name": "Herschel Walker (Legend)"
+  }
+ ],
+ "replaces": []
+}
