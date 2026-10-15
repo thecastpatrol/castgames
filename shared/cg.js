@@ -42,8 +42,8 @@
     // 700 TDS (16 Oct 2026): the NFL game, an offence of 9 to 700 career touchdowns
     { id: '700tds', sport: 'nfl', name: '700 TDS', path: '700tds/', logo: 'assets/logos/700tds.png', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
       line: 'Draft an NFL offence and reach 700 career touchdowns.', short: 'Draft 9 to 700 touchdowns' },
-    // G1 WINNERS SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
-    { id: 'g1winners', sport: 'racing', name: 'G1 WINNERS SPINNER', path: 'g1winners/', logo: 'assets/logos/g1winners.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
+    // G1 WINNER SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
+    { id: 'g1winner', sport: 'racing', name: 'G1 WINNER SPINNER', path: 'g1winner/', logo: 'assets/logos/g1winner.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
       line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s' },
     // Play On (15 Oct 2026): 4000 GOALS's Six Again, its own page like Six Again's
     { id: 'play-on', sport: 'afl', name: 'Play On', path: 'play-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#5a1a1a', c2: '#1c0b10', status: 'live', launch: 'po', badge: 'New',

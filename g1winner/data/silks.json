@@ -1,0 +1,650 @@
+{
+"Winx": {
+"colours": [
+"#0b1f4b",
+"#ffffff"
+],
+"pattern": "epaulettes",
+"words": "Dark blue, white M, white epaulettes and pom pom (Magic Bloodstock)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Black Caviar": {
+"colours": [
+"#f4a582",
+"#111111"
+],
+"pattern": "spots",
+"words": "Salmon, black spots, salmon and black spots cap",
+"source": "https://en.wikipedia.org/wiki/Black_Caviar"
+},
+"Melody Belle": {
+"colours": [
+"#f47b20",
+"#1f4fbf"
+],
+"pattern": "stars",
+"words": "Tangerine, white sash with Fortuna logo, royal blue stars, striped sleeves and quartered cap (Fortuna Melody Belle Syndicate)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/06/empire-rose-stakes.html"
+},
+"Sunline": {
+"colours": [
+"#6cace4",
+"#d4202c"
+],
+"pattern": "plain",
+"words": "Pale blue, red and yellow striped sleeves, yellow cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Lonhro": {
+"colours": [
+"#d81b60",
+"#d81b60"
+],
+"pattern": "plain",
+"words": "Cerise (Woodlands Stud, Ingham family)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Octagonal": {
+"colours": [
+"#d81b60",
+"#d81b60"
+],
+"pattern": "plain",
+"words": "Cerise (Woodlands Stud, Ingham family)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Makybe Diva": {
+"colours": [
+"#1f4fbf",
+"#ffffff"
+],
+"pattern": "stars",
+"words": "Royal blue, white stars (Southern Cross), red and white checks and checked cap (Tony Santic)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Might and Power": {
+"colours": [
+"#ffffff",
+"#9aa3ad"
+],
+"pattern": "sash",
+"words": "White, grey sash, pink striped sleeves, grey cap (Nick Moraitis)",
+"source": "https://mittys.com.au/news/top-10-most-iconic-racing-colours-in-australian-horse-racing-history/"
+},
+"So You Think": {
+"colours": [
+"#111111",
+"#ffffff"
+],
+"pattern": "checks",
+"words": "Black and white check, yellow sleeves, black and white checked cap (Dato Tan Chin Nam and Tunku Ahmad Yahaya)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/lks-mackinnon-stakes.html"
+},
+"Verry Elleegant": {
+"colours": [
+"#d4202c",
+"#1f4fbf"
+],
+"pattern": "hoops",
+"words": "Red, royal blue band, royal blue armbands, red cap, royal blue tassel and band on cap (Jomara Bloodstock)",
+"source": "https://en.wikipedia.org/wiki/Verry_Elleegant"
+},
+"Mahogany": {
+"colours": [
+"#0b1f4b",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Navy blue, white armbands and cap (Lloyd Williams and Kerry Packer)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/victoria-derby.html"
+},
+"Anamoe": {
+"colours": [
+"#1f4fbf",
+"#1f4fbf"
+],
+"pattern": "plain",
+"words": "Godolphin royal blue",
+"source": "https://www.godolphin.com/news/might-and-power-victory-places-anamoe-among-the-greats"
+},
+"Better Loosen Up": {
+"colours": [
+"#ffffff",
+"#0f8a4b"
+],
+"pattern": "sash",
+"words": "White, green sash, black sleeves and cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Takeover Target": {
+"colours": [
+"#d4202c",
+"#111111"
+],
+"pattern": "checks",
+"words": "Red and black checks, white sleeves and cap (Joe Janiak)",
+"source": "https://racingnsw.com.au/news/latest-racing-news/takeover-target-lives-again-at-coffs-harbour"
+},
+"Alligator Blood": {
+"colours": [
+"#1f4fbf",
+"#ffffff"
+],
+"pattern": "cross",
+"words": "Royal blue, white crossed sashes (Gerry Harvey)",
+"source": "https://www.anzbloodstocknews.com/story-continues-with-alligator-blood/"
+},
+"Typhoon Tracy": {
+"colours": [
+"#d4202c",
+"#f2c200"
+],
+"pattern": "epaulettes",
+"words": "Red, gold epaulettes and striped cap (Hutchins Thoroughbreds)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2018/09/futurity-stakes.html"
+},
+"Niconero": {
+"colours": [
+"#1f4fbf",
+"#f472b6"
+],
+"pattern": "stripes",
+"words": "Royal blue and pink diagonal stripes, striped sleeves, pink cap with royal blue seams",
+"source": "http://thecoloursofhorseracing.blogspot.com/2018/09/futurity-stakes.html"
+},
+"Black Heart Bart": {
+"colours": [
+"#0b1f4b",
+"#ffd100"
+],
+"pattern": "plain",
+"words": "Dark blue, yellow sleeves",
+"source": "http://thecoloursofhorseracing.blogspot.com/2018/09/futurity-stakes.html"
+},
+"Mr Brightside": {
+"colours": [
+"#ffffff",
+"#0f8a4b"
+],
+"pattern": "sash",
+"words": "White, green sash, black sleeves and cap",
+"source": "http://thecoloursofhorseracing.blogspot.com/2018/09/futurity-stakes.html"
+},
+"Vo Rogue": {
+"colours": [
+"#6b3f1f",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Brown, white armbands and cap (J. W. Perry and G. W. Roberts)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Testa Rossa": {
+"colours": [
+"#0f8a4b",
+"#ffffff"
+],
+"pattern": "hoops",
+"words": "Green, white and red bands, hooped cap",
+"source": "http://thecoloursofhorseracing.blogspot.com/2018/09/futurity-stakes.html"
+},
+"Chautauqua": {
+"colours": [
+"#0b1f4b",
+"#f2c200"
+],
+"pattern": "plain",
+"words": "Navy blue, gold lightning bolt, gold and white armbands, gold cap (Rupert Legh and partners)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/04/t-j-smith-stakes.html"
+},
+"Northerly": {
+"colours": [
+"#ffd100",
+"#111111"
+],
+"pattern": "cross",
+"words": "Yellow, black Maltese cross, quartered cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/01/the-caulfield-cup.html"
+},
+"More Joyous": {
+"colours": [
+"#1f4fbf",
+"#ffffff"
+],
+"pattern": "cross",
+"words": "Royal blue, white crossed sashes (Strawberry Hill Stud, John Singleton)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Racing to Win": {
+"colours": [
+"#0b1f4b",
+"#6cace4"
+],
+"pattern": "chevrons",
+"words": "Dark blue, pale blue chevrons, striped cap, white pom pom",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Grand Armee": {
+"colours": [
+"#9aa3ad",
+"#d4202c"
+],
+"pattern": "stripes",
+"words": "Grey, red diagonal stripes (A. R. Bell)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Super Impose": {
+"colours": [
+"#111111",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Black, white sleeves, red cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Emancipation": {
+"colours": [
+"#ffffff",
+"#d4202c"
+],
+"pattern": "diamonds",
+"words": "White, red diamond, yellow sleeves and cap (Muskoka Farms)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/04/doncaster-handicap.html"
+},
+"Pierro": {
+"colours": [
+"#1f4fbf",
+"#d4202c"
+],
+"pattern": "plain",
+"words": "Royal blue, red lightning bolt and hooped sleeves, red cap with royal blue lightning bolt (G. and D. Kolivos)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2014/12/the-golden-slipper.html"
+},
+"Miss Finland": {
+"colours": [
+"#111111",
+"#ffd100"
+],
+"pattern": "diamonds",
+"words": "Black and yellow diamonds, yellow cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2014/12/the-golden-slipper.html"
+},
+"Bounding Away": {
+"colours": [
+"#1f4fbf",
+"#0f8a4b"
+],
+"pattern": "stripes",
+"words": "Blue, green stripes (T. J. Smith)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2014/12/the-golden-slipper.html"
+},
+"Intergaze": {
+"colours": [
+"#ffffff",
+"#0b1f4b"
+],
+"pattern": "stripes",
+"words": "White, dark blue diagonal stripes and quartered cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Durbridge": {
+"colours": [
+"#f472b6",
+"#6b2fa0"
+],
+"pattern": "cross",
+"words": "Pink, purple Maltese cross, sleeves and cap (Noonamah Stud)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Veandercross": {
+"colours": [
+"#f472b6",
+"#6cace4"
+],
+"pattern": "quarters",
+"words": "Pink, pale blue quarters and quartered cap (B. and C. B. Turner)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Bonecrusher": {
+"colours": [
+"#f3e9cf",
+"#6b3f1f"
+],
+"pattern": "sash",
+"words": "Cream, brown sash, striped sleeves and cap (P. J. Mitchell)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/03/australian-cup.html"
+},
+"Rough Habit": {
+"colours": [
+"#7a0f2e",
+"#ffd100"
+],
+"pattern": "diamonds",
+"words": "Maroon, yellow diamond band, dark blue and yellow hooped sleeves, maroon and dark blue quartered cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/11/doomben-cup.html"
+},
+"Danewin": {
+"colours": [
+"#d4202c",
+"#0f8a4b"
+],
+"pattern": "halves",
+"words": "Red, green halves and armbands, red, green and white hooped cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/11/doomben-cup.html"
+},
+"Boban": {
+"colours": [
+"#6b2fa0",
+"#ffffff"
+],
+"pattern": "seams",
+"words": "Purple, white seams, purple and white seams cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/05/epsom-handicap.html"
+},
+"Theseo": {
+"colours": [
+"#6b2fa0",
+"#ffffff"
+],
+"pattern": "stars",
+"words": "Purple, white stars and cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/05/epsom-handicap.html"
+},
+"Desert War": {
+"colours": [
+"#d4202c",
+"#111111"
+],
+"pattern": "stripes",
+"words": "Red, black stripes (Gooree Pastoral)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/05/epsom-handicap.html"
+},
+"Shaftesbury Avenue": {
+"colours": [
+"#111111",
+"#f472b6"
+],
+"pattern": "plain",
+"words": "Black, pink striped sleeves and cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+},
+"Schillaci": {
+"colours": [
+"#9aa3ad",
+"#d4202c"
+],
+"pattern": "stripes",
+"words": "Grey, red diagonal stripes (Bury Management, A. R. Bell)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+},
+"Miss Andretti": {
+"colours": [
+"#111111",
+"#0f8a4b"
+],
+"pattern": "chevrons",
+"words": "Black, emerald green chevrons, white and emerald green seam sleeves, black and green striped cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+},
+"Weekend Hussler": {
+"colours": [
+"#d4202c",
+"#111111"
+],
+"pattern": "hoops",
+"words": "Red and black hoops, white cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+},
+"Lankan Rupee": {
+"colours": [
+"#ffd100",
+"#d4202c"
+],
+"pattern": "plain",
+"words": "Yellow, red square, lime and orange hooped sleeves, yellow and red quartered cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+},
+"Joliestar": {
+"colours": [
+"#111111",
+"#ffd100"
+],
+"pattern": "checks",
+"words": "Black, yellow checks and armbands, checked cap (B. J. and J. E. A. Lindsay)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2015/05/newmarket-handicap.html"
+},
+"Santa Ana Lane": {
+"colours": [
+"#1f4fbf",
+"#f2c200"
+],
+"pattern": "plain",
+"words": "Royal blue, gold armbands and cap (William St Syndicate)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/06/stradbroke-handicap.html"
+},
+"Campaign King": {
+"colours": [
+"#d4202c",
+"#f472b6"
+],
+"pattern": "hoops",
+"words": "Red and pink hoops, yellow sleeves, dark blue cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/06/stradbroke-handicap.html"
+},
+"Beau Zam": {
+"colours": [
+"#0f8a4b",
+"#f2c200"
+],
+"pattern": "stripes",
+"words": "Green and gold diagonal stripes, white cap (Bart Cummings)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/ajc-derby.html"
+},
+"Eremein": {
+"colours": [
+"#ffffff",
+"#6b2fa0"
+],
+"pattern": "stars",
+"words": "White, purple star and hooped sleeves",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/ajc-derby.html"
+},
+"Shoot Out": {
+"colours": [
+"#7a0f2e",
+"#f2c200"
+],
+"pattern": "stripes",
+"words": "Maroon, gold diagonal stripes, white sleeves, gold cap (G. L. and L. F. Huddy)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/ajc-derby.html"
+},
+"It's A Dundeel": {
+"colours": [
+"#1f4fbf",
+"#f2c200"
+],
+"pattern": "braces",
+"words": "Royal blue, gold braces, light blue armbands, royal blue and gold quartered cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/ajc-derby.html"
+},
+"Tie the Knot": {
+"colours": [
+"#d4202c",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Red, white cap (O. P. Tait and J. G. Nivison)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2017/03/rosehill-guineas.html"
+},
+"Surfers Paradise": {
+"colours": [
+"#ffd100",
+"#0b1f4b"
+],
+"pattern": "plain",
+"words": "Yellow, dark blue striped sleeves and quartered cap",
+"source": "https://thecoloursofhorseracing.blogspot.com/2017/03/rosehill-guineas.html"
+},
+"Jimmy Choux": {
+"colours": [
+"#d4202c",
+"#1f4fbf"
+],
+"pattern": "diamonds",
+"words": "Red, royal blue diamonds and armbands",
+"source": "https://thecoloursofhorseracing.blogspot.com/2017/03/rosehill-guineas.html"
+},
+"The Autumn Sun": {
+"colours": [
+"#0b5d3b",
+"#d4202c"
+],
+"pattern": "chevrons",
+"words": "Dark green, red chevrons, dark green chevrons sleeves, red stripe cap (Hermitage and Arrowfield)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2017/03/rosehill-guineas.html"
+},
+"Via Sistina": {
+"colours": [
+"#0b5d3b",
+"#ffffff"
+],
+"pattern": "plain",
+"words": "Bottle green, white checked sleeves, white cap (Yulong)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2022/05/rawson-stakes.html"
+},
+"McGinty": {
+"colours": [
+"#f47b20",
+"#0f8a4b"
+],
+"pattern": "cross",
+"words": "Orange, green Maltese cross and sleeves, orange cap (H. K. Haub and B. J. McCahill)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2022/05/rawson-stakes.html"
+},
+"Imperatriz": {
+"colours": [
+"#f47b20",
+"#1f4fbf"
+],
+"pattern": "stars",
+"words": "Tangerine, royal blue stars, striped sleeves, tangerine cap (Te Akau)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2021/03/manikato-stakes-manikato-stakes-was.html"
+},
+"Buffering": {
+"colours": [
+"#1f4fbf",
+"#111111"
+],
+"pattern": "checks",
+"words": "Royal blue and black checks, checked cap",
+"source": "http://thecoloursofhorseracing.blogspot.com/2021/03/manikato-stakes-manikato-stakes-was.html"
+},
+"Apache Cat": {
+"colours": [
+"#7a0f2e",
+"#9bd13b"
+],
+"pattern": "plain",
+"words": "Burgundy, lime stars on sleeves and cap",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/04/t-j-smith-stakes.html"
+},
+"Nature Strip": {
+"colours": [
+"#ffd100",
+"#d4202c"
+],
+"pattern": "stripes",
+"words": "Yellow and red stripes, navy blue sleeves, navy blue and yellow spots cap",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/04/t-j-smith-stakes.html"
+},
+"Ocean Park": {
+"colours": [
+"#6b2fa0",
+"#ffffff"
+],
+"pattern": "cross",
+"words": "Purple, white crossed sashes and sleeves, red cap (A. Wong, S. Han and G. Hennessy)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/06/underwood-stakes.html"
+},
+"Bounty Hawk": {
+"colours": [
+"#111111",
+"#0f8a4b"
+],
+"pattern": "hoops",
+"words": "Black, green hoops, brown sleeves, white cap (M. J. Atkins)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/06/underwood-stakes.html"
+},
+"Dissident": {
+"colours": [
+"#ffffff",
+"#1f4fbf"
+],
+"pattern": "plain",
+"words": "White, blue and white striped sleeves and striped cap",
+"source": "http://thecoloursofhorseracing.blogspot.com/2021/04/memsie-stakes.html"
+},
+"Encounter": {
+"colours": [
+"#d81b60",
+"#0b1f4b"
+],
+"pattern": "sash",
+"words": "Cerise, dark blue sash and striped sleeves, white cap (Newhaven Park Stud and J. H. Ingham)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2018/04/ajc-sires-produce-stakes.html"
+},
+"Horlicks": {
+"colours": [
+"#111111",
+"#ffffff"
+],
+"pattern": "stripes",
+"words": "Black and white stripes, red sleeves, gold armbands, black and white quartered cap (G. W. DeGruchy)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2016/01/lks-mackinnon-stakes.html"
+},
+"Triscay": {
+"colours": [
+"#ffffff",
+"#6b2fa0"
+],
+"pattern": "stars",
+"words": "White, purple star and hooped sleeves (G. and B. White)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2018/05/flight-stakes_14.html"
+},
+"Slight Chance": {
+"colours": [
+"#a8e6a1",
+"#f47b20"
+],
+"pattern": "stars",
+"words": "Pale green, orange stars, green cap (Silverdale Lodge)",
+"source": "https://thecoloursofhorseracing.blogspot.com/2018/05/flight-stakes_14.html"
+},
+"Castletown": {
+"colours": [
+"#6b3f1f",
+"#f2c200"
+],
+"pattern": "plain",
+"words": "Brown, gold striped sleeves, gold cap with brown stars",
+"source": "http://thecoloursofhorseracing.blogspot.com/2022/04/caulfield-stakes.html"
+},
+"Planet Ruler": {
+"colours": [
+"#c8a2c8",
+"#ffffff"
+],
+"pattern": "stars",
+"words": "Lilac, white stars",
+"source": "http://thecoloursofhorseracing.blogspot.com/2017/01/toorak-handicap.html"
+},
+"Mufhasa": {
+"colours": [
+"#9aa3ad",
+"#0b1f4b"
+],
+"pattern": "stars",
+"words": "Grey, dark blue stars and sleeves, quartered cap (Archer family)",
+"source": "http://thecoloursofhorseracing.blogspot.com/2017/01/toorak-handicap.html"
+}
+}

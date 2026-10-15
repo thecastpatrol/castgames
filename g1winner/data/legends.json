@@ -1,0 +1,1940 @@
+{
+"source": "Group 1 results from breednet.com.au and Wikipedia (CC BY-SA), Australia and New Zealand since 1983, 15 Oct 2026.",
+"odds": {
+"legends": 0.33,
+"immortal": 0
+},
+"players": [
+{
+"id": "legend-damien-oliver",
+"name": "Damien Oliver",
+"tries_1998_plus": 129,
+"primary_club": "vic",
+"club_years": [
+{
+"club": "vic",
+"from": 1990,
+"to": 2005
+},
+{
+"club": "sa",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "nsw",
+"from": 1992,
+"to": 1993
+},
+{
+"club": "wa",
+"from": 1992,
+"to": 1992
+},
+{
+"club": "nsw",
+"from": 1995,
+"to": 1995
+},
+{
+"club": "nz",
+"from": 1995,
+"to": 1995
+},
+{
+"club": "nz",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "nsw",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "qld",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "sa",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "nsw",
+"from": 2001,
+"to": 2002
+},
+{
+"club": "nz",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "sa",
+"from": 2001,
+"to": 2002
+},
+{
+"club": "qld",
+"from": 2002,
+"to": 2002
+},
+{
+"club": "nsw",
+"from": 2004,
+"to": 2004
+},
+{
+"club": "sa",
+"from": 2005,
+"to": 2005
+},
+{
+"club": "nsw",
+"from": 2007,
+"to": 2011
+},
+{
+"club": "qld",
+"from": 2007,
+"to": 2009
+},
+{
+"club": "vic",
+"from": 2007,
+"to": 2015
+},
+{
+"club": "wa",
+"from": 2009,
+"to": 2009
+},
+{
+"club": "nz",
+"from": 2010,
+"to": 2010
+},
+{
+"club": "sa",
+"from": 2012,
+"to": 2012
+},
+{
+"club": "qld",
+"from": 2014,
+"to": 2014
+},
+{
+"club": "nsw",
+"from": 2016,
+"to": 2018
+},
+{
+"club": "sa",
+"from": 2017,
+"to": 2017
+},
+{
+"club": "vic",
+"from": 2018,
+"to": 2021
+},
+{
+"club": "wa",
+"from": 2018,
+"to": 2018
+},
+{
+"club": "sa",
+"from": 2019,
+"to": 2019
+},
+{
+"club": "nsw",
+"from": 2022,
+"to": 2022
+},
+{
+"club": "qld",
+"from": 2023,
+"to": 2023
+},
+{
+"club": "vic",
+"from": 2023,
+"to": 2023
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1990-2023",
+"by_jur": {
+"vic": 79,
+"sa": 11,
+"nsw": 25,
+"wa": 3,
+"nz": 4,
+"qld": 7
+},
+"big": 18,
+"mc": 3,
+"cox": 2,
+"tier": "legend",
+"record_name": "Damien Oliver (Legend)"
+},
+{
+"id": "legend-jim-cassidy",
+"name": "Jim Cassidy",
+"tries_1998_plus": 101,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nz",
+"from": 1983,
+"to": 1984
+},
+{
+"club": "vic",
+"from": 1983,
+"to": 1983
+},
+{
+"club": "nsw",
+"from": 1985,
+"to": 1986
+},
+{
+"club": "vic",
+"from": 1985,
+"to": 1987
+},
+{
+"club": "qld",
+"from": 1986,
+"to": 1986
+},
+{
+"club": "qld",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "sa",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "nsw",
+"from": 1989,
+"to": 1990
+},
+{
+"club": "vic",
+"from": 1989,
+"to": 1991
+},
+{
+"club": "qld",
+"from": 1991,
+"to": 1994
+},
+{
+"club": "nsw",
+"from": 1992,
+"to": 1995
+},
+{
+"club": "vic",
+"from": 1993,
+"to": 1995
+},
+{
+"club": "nsw",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "qld",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "vic",
+"from": 1997,
+"to": 2000
+},
+{
+"club": "wa",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "nsw",
+"from": 2000,
+"to": 2004
+},
+{
+"club": "sa",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "nsw",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "vic",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "nsw",
+"from": 2009,
+"to": 2009
+},
+{
+"club": "qld",
+"from": 2012,
+"to": 2013
+},
+{
+"club": "vic",
+"from": 2012,
+"to": 2013
+},
+{
+"club": "nsw",
+"from": 2013,
+"to": 2015
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-2015",
+"by_jur": {
+"nz": 4,
+"vic": 39,
+"nsw": 41,
+"qld": 14,
+"sa": 2,
+"wa": 1
+},
+"big": 14,
+"mc": 2,
+"cox": 1,
+"tier": "legend",
+"record_name": "Jim Cassidy (Legend)"
+},
+{
+"id": "legend-shane-dye",
+"name": "Shane Dye",
+"tries_1998_plus": 92,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nz",
+"from": 1984,
+"to": 1984
+},
+{
+"club": "nsw",
+"from": 1986,
+"to": 2000
+},
+{
+"club": "qld",
+"from": 1989,
+"to": 1993
+},
+{
+"club": "vic",
+"from": 1989,
+"to": 1989
+},
+{
+"club": "sa",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "vic",
+"from": 1991,
+"to": 1993
+},
+{
+"club": "qld",
+"from": 1995,
+"to": 1995
+},
+{
+"club": "vic",
+"from": 1995,
+"to": 2000
+},
+{
+"club": "qld",
+"from": 1997,
+"to": 1998
+},
+{
+"club": "sa",
+"from": 1997,
+"to": 1998
+},
+{
+"club": "nz",
+"from": 1998,
+"to": 1998
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1984-2000",
+"by_jur": {
+"nz": 3,
+"nsw": 51,
+"vic": 22,
+"qld": 12,
+"sa": 4
+},
+"big": 10,
+"mc": 1,
+"cox": 1,
+"tier": "legend",
+"record_name": "Shane Dye (Legend)"
+},
+{
+"id": "legend-glen-boss",
+"name": "Glen Boss",
+"tries_1998_plus": 90,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nsw",
+"from": 1994,
+"to": 1997
+},
+{
+"club": "vic",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "nsw",
+"from": 1999,
+"to": 2011
+},
+{
+"club": "qld",
+"from": 1999,
+"to": 2000
+},
+{
+"club": "vic",
+"from": 2000,
+"to": 2005
+},
+{
+"club": "qld",
+"from": 2003,
+"to": 2005
+},
+{
+"club": "vic",
+"from": 2009,
+"to": 2015
+},
+{
+"club": "nsw",
+"from": 2015,
+"to": 2015
+},
+{
+"club": "nsw",
+"from": 2019,
+"to": 2021
+},
+{
+"club": "vic",
+"from": 2020,
+"to": 2020
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1994-2021",
+"by_jur": {
+"nsw": 52,
+"vic": 32,
+"qld": 6
+},
+"big": 21,
+"mc": 3,
+"cox": 4,
+"tier": "legend",
+"record_name": "Glen Boss (Legend)"
+},
+{
+"id": "legend-darren-beadman",
+"name": "Darren Beadman",
+"tries_1998_plus": 81,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nsw",
+"from": 1984,
+"to": 1984
+},
+{
+"club": "nsw",
+"from": 1986,
+"to": 1986
+},
+{
+"club": "nsw",
+"from": 1988,
+"to": 1989
+},
+{
+"club": "vic",
+"from": 1989,
+"to": 1990
+},
+{
+"club": "nsw",
+"from": 1991,
+"to": 1992
+},
+{
+"club": "vic",
+"from": 1992,
+"to": 1992
+},
+{
+"club": "nsw",
+"from": 1994,
+"to": 1997
+},
+{
+"club": "vic",
+"from": 1995,
+"to": 1997
+},
+{
+"club": "nz",
+"from": 1996,
+"to": 1997
+},
+{
+"club": "qld",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "vic",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "nsw",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "vic",
+"from": 2002,
+"to": 2005
+},
+{
+"club": "nsw",
+"from": 2003,
+"to": 2009
+},
+{
+"club": "qld",
+"from": 2007,
+"to": 2007
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1984-2009",
+"by_jur": {
+"nsw": 52,
+"vic": 23,
+"qld": 4,
+"nz": 2
+},
+"big": 9,
+"mc": 2,
+"cox": 1,
+"tier": "legend",
+"record_name": "Darren Beadman (Legend)"
+},
+{
+"id": "legend-mick-dittman",
+"name": "Mick Dittman",
+"tries_1998_plus": 67,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nsw",
+"from": 1983,
+"to": 1993
+},
+{
+"club": "qld",
+"from": 1983,
+"to": 1983
+},
+{
+"club": "vic",
+"from": 1983,
+"to": 1986
+},
+{
+"club": "qld",
+"from": 1985,
+"to": 1985
+},
+{
+"club": "wa",
+"from": 1985,
+"to": 1985
+},
+{
+"club": "wa",
+"from": 1987,
+"to": 1989
+},
+{
+"club": "vic",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "qld",
+"from": 1990,
+"to": 1991
+},
+{
+"club": "vic",
+"from": 1990,
+"to": 1995
+},
+{
+"club": "qld",
+"from": 1994,
+"to": 1995
+},
+{
+"club": "qld",
+"from": 1998,
+"to": 1998
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-1998",
+"by_jur": {
+"nsw": 34,
+"qld": 8,
+"vic": 21,
+"wa": 4
+},
+"big": 9,
+"mc": 0,
+"cox": 2,
+"tier": "legend",
+"record_name": "Mick Dittman (Legend)"
+},
+{
+"id": "legend-lance-o-sullivan",
+"name": "Lance O'Sullivan",
+"tries_1998_plus": 61,
+"primary_club": "nz",
+"club_years": [
+{
+"club": "nsw",
+"from": 1984,
+"to": 1984
+},
+{
+"club": "nz",
+"from": 1985,
+"to": 1997
+},
+{
+"club": "nsw",
+"from": 1987,
+"to": 1987
+},
+{
+"club": "vic",
+"from": 1989,
+"to": 1989
+},
+{
+"club": "sa",
+"from": 1990,
+"to": 1990
+},
+{
+"club": "nsw",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "vic",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "qld",
+"from": 1992,
+"to": 1992
+},
+{
+"club": "nz",
+"from": 1999,
+"to": 2003
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1984-2003",
+"by_jur": {
+"nsw": 5,
+"nz": 51,
+"vic": 2,
+"sa": 1,
+"qld": 2
+},
+"big": 1,
+"mc": 0,
+"cox": 1,
+"tier": "legend",
+"record_name": "Lance O'Sullivan (Legend)"
+},
+{
+"id": "legend-greg-childs",
+"name": "Greg Childs",
+"tries_1998_plus": 58,
+"primary_club": "vic",
+"club_years": [
+{
+"club": "nz",
+"from": 1983,
+"to": 1985
+},
+{
+"club": "nz",
+"from": 1987,
+"to": 1989
+},
+{
+"club": "wa",
+"from": 1990,
+"to": 1990
+},
+{
+"club": "vic",
+"from": 1991,
+"to": 1993
+},
+{
+"club": "nz",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "vic",
+"from": 1997,
+"to": 2002
+},
+{
+"club": "nsw",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "nsw",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "nz",
+"from": 2001,
+"to": 2003
+},
+{
+"club": "nsw",
+"from": 2002,
+"to": 2002
+},
+{
+"club": "qld",
+"from": 2004,
+"to": 2005
+},
+{
+"club": "sa",
+"from": 2004,
+"to": 2004
+},
+{
+"club": "vic",
+"from": 2004,
+"to": 2006
+},
+{
+"club": "sa",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "qld",
+"from": 2007,
+"to": 2007
+},
+{
+"club": "sa",
+"from": 2008,
+"to": 2008
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-2008",
+"by_jur": {
+"nz": 14,
+"wa": 1,
+"vic": 27,
+"nsw": 8,
+"sa": 5,
+"qld": 3
+},
+"big": 8,
+"mc": 0,
+"cox": 2,
+"tier": "legend",
+"record_name": "Greg Childs (Legend)"
+},
+{
+"id": "legend-grant-cooksley",
+"name": "Grant Cooksley",
+"tries_1998_plus": 50,
+"primary_club": "nz",
+"club_years": [
+{
+"club": "nz",
+"from": 1983,
+"to": 1983
+},
+{
+"club": "nz",
+"from": 1985,
+"to": 1987
+},
+{
+"club": "qld",
+"from": 1985,
+"to": 1985
+},
+{
+"club": "nsw",
+"from": 1989,
+"to": 1995
+},
+{
+"club": "nz",
+"from": 1989,
+"to": 1991
+},
+{
+"club": "sa",
+"from": 1989,
+"to": 1989
+},
+{
+"club": "vic",
+"from": 1990,
+"to": 1990
+},
+{
+"club": "wa",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "nz",
+"from": 1994,
+"to": 1998
+},
+{
+"club": "qld",
+"from": 1994,
+"to": 1995
+},
+{
+"club": "nsw",
+"from": 1997,
+"to": 1998
+},
+{
+"club": "vic",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "vic",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "nz",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "nz",
+"from": 2003,
+"to": 2004
+},
+{
+"club": "nz",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "nz",
+"from": 2017,
+"to": 2017
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-2017",
+"by_jur": {
+"nz": 24,
+"qld": 5,
+"sa": 1,
+"nsw": 15,
+"vic": 4,
+"wa": 1
+},
+"big": 2,
+"mc": 0,
+"cox": 0,
+"tier": "legend",
+"record_name": "Grant Cooksley (Legend)"
+},
+{
+"id": "legend-corey-brown",
+"name": "Corey Brown",
+"tries_1998_plus": 49,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nsw",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "nsw",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "qld",
+"from": 2002,
+"to": 2002
+},
+{
+"club": "nsw",
+"from": 2003,
+"to": 2005
+},
+{
+"club": "vic",
+"from": 2003,
+"to": 2004
+},
+{
+"club": "qld",
+"from": 2004,
+"to": 2004
+},
+{
+"club": "sa",
+"from": 2007,
+"to": 2007
+},
+{
+"club": "vic",
+"from": 2007,
+"to": 2012
+},
+{
+"club": "nsw",
+"from": 2008,
+"to": 2011
+},
+{
+"club": "qld",
+"from": 2008,
+"to": 2008
+},
+{
+"club": "qld",
+"from": 2010,
+"to": 2011
+},
+{
+"club": "nsw",
+"from": 2017,
+"to": 2019
+},
+{
+"club": "qld",
+"from": 2017,
+"to": 2017
+},
+{
+"club": "vic",
+"from": 2017,
+"to": 2017
+},
+{
+"club": "vic",
+"from": 2019,
+"to": 2019
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1999-2019",
+"by_jur": {
+"nsw": 23,
+"qld": 9,
+"vic": 16,
+"sa": 1
+},
+"big": 6,
+"mc": 2,
+"cox": 0,
+"tier": "legend",
+"record_name": "Corey Brown (Legend)"
+},
+{
+"id": "legend-steven-king",
+"name": "Steven King",
+"tries_1998_plus": 46,
+"primary_club": "vic",
+"club_years": [
+{
+"club": "sa",
+"from": 1990,
+"to": 1990
+},
+{
+"club": "vic",
+"from": 1991,
+"to": 1994
+},
+{
+"club": "qld",
+"from": 1993,
+"to": 1993
+},
+{
+"club": "sa",
+"from": 1993,
+"to": 1993
+},
+{
+"club": "nsw",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "qld",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "vic",
+"from": 1996,
+"to": 1998
+},
+{
+"club": "sa",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "nsw",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "nsw",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "vic",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "vic",
+"from": 2002,
+"to": 2006
+},
+{
+"club": "nsw",
+"from": 2003,
+"to": 2003
+},
+{
+"club": "sa",
+"from": 2003,
+"to": 2003
+},
+{
+"club": "sa",
+"from": 2005,
+"to": 2005
+},
+{
+"club": "nsw",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "sa",
+"from": 2007,
+"to": 2007
+},
+{
+"club": "vic",
+"from": 2008,
+"to": 2008
+},
+{
+"club": "sa",
+"from": 2010,
+"to": 2010
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1990-2010",
+"by_jur": {
+"sa": 8,
+"vic": 29,
+"qld": 2,
+"nsw": 7
+},
+"big": 7,
+"mc": 1,
+"cox": 1,
+"tier": "legend",
+"record_name": "Steven King (Legend)"
+},
+{
+"id": "legend-greg-hall",
+"name": "Greg Hall",
+"tries_1998_plus": 40,
+"primary_club": "vic",
+"club_years": [
+{
+"club": "wa",
+"from": 1983,
+"to": 1983
+},
+{
+"club": "qld",
+"from": 1984,
+"to": 1985
+},
+{
+"club": "vic",
+"from": 1985,
+"to": 1994
+},
+{
+"club": "nsw",
+"from": 1987,
+"to": 1987
+},
+{
+"club": "qld",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "sa",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "sa",
+"from": 1990,
+"to": 1990
+},
+{
+"club": "nsw",
+"from": 1991,
+"to": 1992
+},
+{
+"club": "sa",
+"from": 1992,
+"to": 1993
+},
+{
+"club": "qld",
+"from": 1993,
+"to": 1993
+},
+{
+"club": "nsw",
+"from": 1994,
+"to": 1994
+},
+{
+"club": "nsw",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "vic",
+"from": 1996,
+"to": 1998
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-1998",
+"by_jur": {
+"wa": 1,
+"qld": 5,
+"vic": 23,
+"nsw": 6,
+"sa": 5
+},
+"big": 8,
+"mc": 1,
+"cox": 1,
+"tier": "legend",
+"record_name": "Greg Hall (Legend)"
+},
+{
+"id": "legend-larry-cassidy",
+"name": "Larry Cassidy",
+"tries_1998_plus": 40,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nz",
+"from": 1989,
+"to": 1989
+},
+{
+"club": "nz",
+"from": 1991,
+"to": 1992
+},
+{
+"club": "nsw",
+"from": 1992,
+"to": 2002
+},
+{
+"club": "qld",
+"from": 1995,
+"to": 1996
+},
+{
+"club": "qld",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "vic",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "qld",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "nsw",
+"from": 2004,
+"to": 2006
+},
+{
+"club": "qld",
+"from": 2005,
+"to": 2005
+},
+{
+"club": "vic",
+"from": 2005,
+"to": 2005
+},
+{
+"club": "qld",
+"from": 2009,
+"to": 2009
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1989-2009",
+"by_jur": {
+"nz": 6,
+"nsw": 24,
+"qld": 8,
+"vic": 2
+},
+"big": 4,
+"mc": 0,
+"cox": 0,
+"tier": "legend",
+"record_name": "Larry Cassidy (Legend)"
+},
+{
+"id": "legend-chris-munce",
+"name": "Chris Munce",
+"tries_1998_plus": 39,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "qld",
+"from": 1992,
+"to": 1992
+},
+{
+"club": "nsw",
+"from": 1995,
+"to": 2004
+},
+{
+"club": "qld",
+"from": 1995,
+"to": 1997
+},
+{
+"club": "sa",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "vic",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "nz",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "qld",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "vic",
+"from": 2002,
+"to": 2002
+},
+{
+"club": "qld",
+"from": 2003,
+"to": 2004
+},
+{
+"club": "vic",
+"from": 2004,
+"to": 2004
+},
+{
+"club": "qld",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "vic",
+"from": 2006,
+"to": 2006
+},
+{
+"club": "qld",
+"from": 2010,
+"to": 2010
+},
+{
+"club": "vic",
+"from": 2010,
+"to": 2010
+},
+{
+"club": "qld",
+"from": 2012,
+"to": 2012
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1992-2012",
+"by_jur": {
+"qld": 13,
+"nsw": 17,
+"sa": 1,
+"vic": 7,
+"nz": 1
+},
+"big": 8,
+"mc": 1,
+"cox": 1,
+"tier": "legend",
+"record_name": "Chris Munce (Legend)"
+},
+{
+"id": "legend-michael-coleman",
+"name": "Michael Coleman",
+"tries_1998_plus": 39,
+"primary_club": "nz",
+"club_years": [
+{
+"club": "nz",
+"from": 1987,
+"to": 1987
+},
+{
+"club": "nz",
+"from": 1989,
+"to": 1989
+},
+{
+"club": "nz",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "nz",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "nz",
+"from": 2000,
+"to": 2010
+},
+{
+"club": "nz",
+"from": 2012,
+"to": 2016
+},
+{
+"club": "nz",
+"from": 2018,
+"to": 2018
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1987-2018",
+"by_jur": {
+"nz": 39
+},
+"big": 0,
+"mc": 0,
+"cox": 0,
+"tier": "legend",
+"record_name": "Michael Coleman (Legend)"
+},
+{
+"id": "legend-noel-harris",
+"name": "Noel Harris",
+"tries_1998_plus": 37,
+"primary_club": "nz",
+"club_years": [
+{
+"club": "nz",
+"from": 1984,
+"to": 1985
+},
+{
+"club": "vic",
+"from": 1985,
+"to": 1985
+},
+{
+"club": "nz",
+"from": 1988,
+"to": 1995
+},
+{
+"club": "vic",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "nsw",
+"from": 1989,
+"to": 1990
+},
+{
+"club": "vic",
+"from": 1992,
+"to": 1992
+},
+{
+"club": "sa",
+"from": 1995,
+"to": 1995
+},
+{
+"club": "nz",
+"from": 1997,
+"to": 1997
+},
+{
+"club": "nz",
+"from": 1999,
+"to": 2004
+},
+{
+"club": "nz",
+"from": 2006,
+"to": 2008
+},
+{
+"club": "nz",
+"from": 2010,
+"to": 2010
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1984-2010",
+"by_jur": {
+"nz": 30,
+"vic": 3,
+"nsw": 3,
+"sa": 1
+},
+"big": 1,
+"mc": 0,
+"cox": 1,
+"tier": "legend",
+"record_name": "Noel Harris (Legend)"
+},
+{
+"id": "legend-john-marshall",
+"name": "John Marshall",
+"tries_1998_plus": 35,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nsw",
+"from": 1983,
+"to": 1985
+},
+{
+"club": "qld",
+"from": 1986,
+"to": 1989
+},
+{
+"club": "vic",
+"from": 1986,
+"to": 1986
+},
+{
+"club": "nsw",
+"from": 1987,
+"to": 1991
+},
+{
+"club": "vic",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "nsw",
+"from": 1996,
+"to": 1999
+},
+{
+"club": "vic",
+"from": 1999,
+"to": 1999
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-1999",
+"by_jur": {
+"nsw": 25,
+"qld": 6,
+"vic": 4
+},
+"big": 5,
+"mc": 1,
+"cox": 0,
+"tier": "legend",
+"record_name": "John Marshall (Legend)"
+},
+{
+"id": "legend-darren-gauci",
+"name": "Darren Gauci",
+"tries_1998_plus": 33,
+"primary_club": "vic",
+"club_years": [
+{
+"club": "vic",
+"from": 1983,
+"to": 1985
+},
+{
+"club": "nsw",
+"from": 1986,
+"to": 1986
+},
+{
+"club": "sa",
+"from": 1987,
+"to": 1987
+},
+{
+"club": "vic",
+"from": 1988,
+"to": 1988
+},
+{
+"club": "qld",
+"from": 1989,
+"to": 1990
+},
+{
+"club": "sa",
+"from": 1989,
+"to": 1989
+},
+{
+"club": "nsw",
+"from": 1990,
+"to": 1990
+},
+{
+"club": "vic",
+"from": 1991,
+"to": 1992
+},
+{
+"club": "vic",
+"from": 1995,
+"to": 1996
+},
+{
+"club": "vic",
+"from": 1998,
+"to": 1999
+},
+{
+"club": "qld",
+"from": 1999,
+"to": 1999
+},
+{
+"club": "nsw",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "sa",
+"from": 2000,
+"to": 2000
+},
+{
+"club": "qld",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "vic",
+"from": 2001,
+"to": 2001
+},
+{
+"club": "vic",
+"from": 2003,
+"to": 2003
+},
+{
+"club": "vic",
+"from": 2005,
+"to": 2006
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1983-2006",
+"by_jur": {
+"vic": 22,
+"nsw": 3,
+"sa": 4,
+"qld": 4
+},
+"big": 2,
+"mc": 0,
+"cox": 0,
+"tier": "legend",
+"record_name": "Darren Gauci (Legend)"
+},
+{
+"id": "legend-leith-innes",
+"name": "Leith Innes",
+"tries_1998_plus": 31,
+"primary_club": "nz",
+"club_years": [
+{
+"club": "nz",
+"from": 1998,
+"to": 1999
+},
+{
+"club": "nz",
+"from": 2002,
+"to": 2002
+},
+{
+"club": "nz",
+"from": 2004,
+"to": 2008
+},
+{
+"club": "nz",
+"from": 2010,
+"to": 2010
+},
+{
+"club": "nz",
+"from": 2012,
+"to": 2013
+},
+{
+"club": "qld",
+"from": 2013,
+"to": 2013
+},
+{
+"club": "nz",
+"from": 2015,
+"to": 2018
+},
+{
+"club": "qld",
+"from": 2016,
+"to": 2016
+},
+{
+"club": "nz",
+"from": 2020,
+"to": 2020
+},
+{
+"club": "qld",
+"from": 2022,
+"to": 2022
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1998-2022",
+"by_jur": {
+"nz": 28,
+"qld": 3
+},
+"big": 0,
+"mc": 0,
+"cox": 0,
+"tier": "legend",
+"record_name": "Leith Innes (Legend)"
+},
+{
+"id": "legend-brian-york",
+"name": "Brian York",
+"tries_1998_plus": 30,
+"primary_club": "nsw",
+"club_years": [
+{
+"club": "nz",
+"from": 1985,
+"to": 1985
+},
+{
+"club": "vic",
+"from": 1988,
+"to": 1989
+},
+{
+"club": "nsw",
+"from": 1990,
+"to": 1991
+},
+{
+"club": "qld",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "vic",
+"from": 1991,
+"to": 1991
+},
+{
+"club": "nsw",
+"from": 1993,
+"to": 1994
+},
+{
+"club": "vic",
+"from": 1995,
+"to": 1995
+},
+{
+"club": "nsw",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "qld",
+"from": 1997,
+"to": 1998
+},
+{
+"club": "nsw",
+"from": 1998,
+"to": 2002
+},
+{
+"club": "vic",
+"from": 1998,
+"to": 1998
+},
+{
+"club": "qld",
+"from": 2001,
+"to": 2001
+}
+],
+"positions_played": [
+"R"
+],
+"draft_role": "R",
+"position": "R",
+"active": false,
+"career_span": "1985-2002",
+"by_jur": {
+"nz": 1,
+"vic": 9,
+"nsw": 15,
+"qld": 5
+},
+"big": 3,
+"mc": 0,
+"cox": 0,
+"tier": "legend",
+"record_name": "Brian York (Legend)"
+}
+],
+"replaces": []
+}
