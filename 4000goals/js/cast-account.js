@@ -3635,10 +3635,12 @@
     var gname = (GAMES[n.game] || {}).name || n.game || '', next = n.src === 'streak' && D ? D.nextStreakReward(n.days) : null;
     if (n.src === 'toty') ico = '&#x1F3C5;';
     if (n.src === 'prem') ico = '&#x1F3C6;';
+    if (n.src === 'potw') ico = '&#x1F31F;'; // the Player of the Week prize (16 Oct 2026)
     if (n.src === 'welcome' || n.src === 'gift') ico = '&#x1F381;'; // a new CAST Profile's two keys (7 Oct 2026); the owner's Give Items (11 Oct 2026)
-    var kicker = n.src === 'streak' ? n.days + '-Day Streak' : n.src === 'gift' ? 'From The Cast Patrol' : n.src === 'optin' ? 'Thanks for Joining' : n.src === 'welcome' ? 'Welcome to CAST Games' : n.src === 'toty' ? 'Team of the Year' : n.src === 'prem' ? '2026 Premiers' : 'Daily Challenge Complete';
-    var title = n.src === 'welcome' ? 'Your Welcome Gift' : items + (n.src === 'streak' ? '' : ' Added');
+    var kicker = n.src === 'streak' ? n.days + '-Day Streak' : n.src === 'potw' ? 'CAST Player of the Week' : n.src === 'gift' ? 'From The Cast Patrol' : n.src === 'optin' ? 'Thanks for Joining' : n.src === 'welcome' ? 'Welcome to CAST Games' : n.src === 'toty' ? 'Team of the Year' : n.src === 'prem' ? '2026 Premiers' : 'Daily Challenge Complete';
+    var title = n.src === 'welcome' ? 'Your Welcome Gift' : n.src === 'potw' ? 'Your Player of the Week Prize' : items + (n.src === 'streak' ? '' : ' Added');
     var line = n.src === 'streak' ? 'You’ve played ' + n.days + ' days in a row. Your reward is in your Vault.' + (next && next.items ? ' Next: ' + D.itemsText(next.items) + ' at ' + next.days + ' days.' : '')
+      : n.src === 'potw' ? 'You\u2019re this week\u2019s CAST Player of the Week. ' + items + ' are in your Vault, ready for your next games.'
       : n.src === 'gift' ? 'A gift for you. ' + (Object.keys(n.items || {}).reduce(function (t, k) { return t + (+n.items[k] || 0); }, 0) > 1 ? 'They\u2019re' : 'It\u2019s') + ' in your Vault, ready for your next game.'
       : n.src === 'optin' ? 'Thanks for joining the CAST Games emails. Your free Reveal is in your Vault, ready for your next draft.'
       : n.src === 'welcome' ? (CFG.game === '4000goals' ? 'A Legend Key for 4000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'bigbash' ? 'A Legend Key for 25,000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : 'A Superstar Key for 27-0 and a Legend Key for ' + (G4ON ? '1000TRIES or 4000 GOALS' : '1000TRIES') + ' are in your Vault, ready for your next draft.')
@@ -7837,7 +7839,7 @@
     // Awards: Player of the Week (the owner names them; both home pages show it for 7 days) and Give Trophy
     h += sec('Awards', u.name && mod.owner ? btns((isPotw(u.name) ? '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan">&#x1F3C6; Update Their Stats</button>' +
         fanClearBtns(u.name)
-        : mod.fanAsk ? '<span class="ca-adm-fanask">Make ' + esc(u.name) + ' the CAST Player of the Week? <button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-fan">Yes</button>' +
+        : mod.fanAsk ? '<span class="ca-adm-fanask">Make ' + esc(u.name) + ' the CAST Player of the Week? Their prize (5 of each wildcard and 5 World Legend Picks) goes straight into their Vault. <button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-fan">Yes</button>' +
         '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-cancel">Cancel</button></span>' : '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-ask">&#x1F3C6; Make Player of the Week</button>') +
       (!(mod.trophy && mod.trophy.name === u.name) ? '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-trophy-open">&#x1F3C5; Give Trophy</button>' : '')) + trophyGiveAdmin(u) : '');
     // Give Items (the owner only; the server checks it's the owner too): anything from the Vault, a pop-up tells them
@@ -8421,7 +8423,7 @@
     callFn('adminFan', clear ? { clear: true } : { name: u.name }).then(function (x) {
       track('admin_fan', { on: clear ? 0 : 1 });
       flash(clear ? 'The Player of the Week is down.' : x.same ? x.fan.name + '’s stats are up to date. Still on both home pages until ' + joinedAt(x.fan.until) + '.'
-        : x.fan.name + ' is the CAST Player of the Week, on both home pages for 7 days.');
+        : x.fan.name + ' is the CAST Player of the Week, on both home pages for 7 days.' + (x.prize ? ' Their prize is in their Vault.' : ''));
       fanNow = x.fan || null; launchAt = 0; checkLaunch(true); refreshAll();
       if (mod.fans) admFetch('fans', 'adminFans', {}, true);
     }, function (err) { flash(fnError(err)); });
@@ -9334,6 +9336,23 @@
     }, function () { /* no teaser this time */ });
     return null;
   }
+  /* A guest's moments to sign up (16 Oct 2026, the owner's picks): a trophy just unlocked, a Daily Challenge done, a near
+     miss, or a new personal best, in that order, on the results strip after that game. The first game here keeps the Rank
+     Teaser. GA: guest_moment_view (once per game), and the Sign In tap says which moment it was */
+  var gm = { id: null, seen: null };
+  var PB_MODES = { '1000tries': ['plus', 'spin', 'nrlw'], '4000goals': ['plus', 'spin', 'aflw'], bigbash: ['plus', 'spin'], '27-0': ['classic', 'hard', 'pack'] };
+  function guestMoment(last, mine) {
+    if (!last || likelySignedIn() || Date.now() - (last.at || 0) > 10 * 60000) return null;
+    var t = localTrophies(), prevAt = mine.length > 1 ? mine[mine.length - 2].at || 0 : 0, fresh = Object.keys(t).filter(function (k) { return t[k] > prevAt && t[k] >= (last.at || 0) - 30000 && trophyDef(k); }).sort(function (a, b) { return t[b] - t[a]; });
+    if (fresh.length) { var td = trophyDef(fresh[0]); return { k: 'trophy', ico: td[1], b: 'Trophy Unlocked: ' + td[2], s: 'Sign in free to keep it in your trophy cabinet' }; }
+    // Any finished Daily go (27-0's win means premiers, not the challenge, so it says Played there unless it hit the target)
+    if (last.mode === 'daily') return { k: 'daily', ico: '&#x1F525;', b: last.game !== '27-0' && last.win || last.top ? 'Daily Challenge Done' : 'Daily Challenge Played', s: 'Sign in free to start a streak and earn Daily Challenge rewards' };
+    if (nearMiss(last)) return { k: 'close', ico: '&#x1F62C;', b: 'So Close', s: 'Sign in free and a Legend Key and a Superstar Key are yours for the next go' };
+    var modes = PB_MODES[last.game] || [], prev = mine.filter(function (g) { return g !== last && g.mode === last.mode && typeof g.score === 'number'; });
+    if (modes.indexOf(last.mode) >= 0 && prev.length && typeof last.score === 'number' && last.score > Math.max.apply(null, prev.map(function (g) { return g.score; })))
+      return { k: 'pb', ico: '&#x1F4C8;', b: 'New Personal Best: ' + fmt(last.score), s: 'Sign in free to save it and see where it ranks' };
+    return null;
+  }
   function refreshCtas() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-cast-results]'), function (box) {
       box.hidden = !ENABLED;
@@ -9343,7 +9362,8 @@
       var last = mine[mine.length - 1];
       var saved = on && last && last.synced;
       if (on && sentFor && last && sentFor.id === last.id) { box.className = 'ca-cta is-in is-ch'; box.innerHTML = sentLine(); wireCta(box); chCard(box, null); return; }
-      var chLine = on ? lastChallengeLine(last) : '', tz = on ? null : teaseFor(last);
+      var chLine = on ? lastChallengeLine(last) : '', tz = on ? null : teaseFor(last), mo = on || tz ? null : guestMoment(last, mine);
+      if (mo && gm.seen !== last.id) { gm.seen = last.id; track('guest_moment_view', { game: CFG.game, moment: mo.k }); }
       var canCh = on && named() && challengeable(last) && !chLine;
       // A slim strip under the results buttons (4 Oct 2026, the owner's call): one line, the next thing to tap on the right
       box.className = 'ca-cta is-slim' + (saved ? ' is-in' : '') + (chLine ? ' is-ch' : '');
@@ -9358,6 +9378,9 @@
         : tz
           ? '<span class="ca-cta-ico" aria-hidden="true">&#x1F3C6;</span><span class="ca-cta-txt"><b>' + (tz.rank === 1 ? 'That Score Would Top Today&rsquo;s Board' : 'That Score Would Be #' + fmt(tz.rank) + ' Today') + '</b><small>Sign in free to put it there</small></span>' +
             '<button type="button" class="ca-cta-btn" data-ca-open data-ca-from="rank">Sign In</button>'
+          : mo
+          ? '<span class="ca-cta-ico" aria-hidden="true">' + mo.ico + '</span><span class="ca-cta-txt"><b>' + mo.b + '</b><small>' + mo.s + '</small></span>' + // our own words and trophy names
+            '<button type="button" class="ca-cta-btn" data-ca-open data-ca-from="' + mo.k + '">Sign In</button>'
           : '<span class="ca-cta-ico" aria-hidden="true">&#x1F4BE;</span><span class="ca-cta-txt"><b>Save This Result</b><small>Sign in free to keep it</small></span>' +
             '<button type="button" class="ca-cta-btn" data-ca-open>Sign In</button>';
       wireCta(box);
@@ -9416,7 +9439,7 @@
     box.addEventListener('click', function (e) {
       if (e.target.closest('[data-ca-rank]')) { track('leaderboard_open', { game: CFG.game, where: 'results' }); openBoards(boardForGame(lastOwnGame())); return; }
       var op = e.target.closest('[data-ca-open]');
-      if (op) { track('account_cta_click', { game: CFG.game, where: op.getAttribute('data-ca-from') === 'rank' ? 'rank_teaser' : 'results' }); open('profile'); return; }
+      if (op) { track('account_cta_click', { game: CFG.game, where: op.getAttribute('data-ca-from') === 'rank' ? 'rank_teaser' : op.getAttribute('data-ca-from') ? 'moment_' + op.getAttribute('data-ca-from') : 'results' }); open('profile'); return; }
       var ch = e.target.closest('[data-ca-ch]');
       if (ch && ch.getAttribute('data-ca-ch') === 'list') { openFriends('challenges'); return; }
       if (ch) { var g = lastOwnGame(); track('challenge_open', { game: CFG.game, where: 'results' }); openChallengeSend(g && g.id, rematchTo); rematchTo = null; }
@@ -9801,7 +9824,7 @@
     }).then(function (j) {
       launchBusy = false;
       var f = j.fields || {};
-      gotLaunch(fsVal(f.launched) || [], { rwAt: fsVal(f.rewardsAt) || 0, upsell: fsVal(f.upsell) || 'auto', fan: fsVal(f.fan) || null, premiers: fsVal(f.premiers) || null, totw: fsVal(f.totw) || null });
+      gotLaunch(fsVal(f.launched) || [], { rwAt: fsVal(f.rewardsAt) || 0, upsell: fsVal(f.upsell) || 'auto', fan: fsVal(f.fan) || null, shopTop: fsVal(f.shopTop) || null, premiers: fsVal(f.premiers) || null, totw: fsVal(f.totw) || null });
     }, function () { launchBusy = false; });
   }
   function gotLaunch(list, extra) {
@@ -9814,8 +9837,9 @@
     // again, and on the home page its pop-up shows (once a day per league)
     if (Object.prototype.hasOwnProperty.call(extra, 'premiers')) premiersFrom(extra.premiers);
     if (Object.prototype.hasOwnProperty.call(extra, 'totw')) totwFrom(extra.totw); // World Cup Team of the Week
+    if (Object.prototype.hasOwnProperty.call(extra, 'shopTop') && JSON.stringify(extra.shopTop) !== JSON.stringify(shopTopNow)) { shopTopNow = extra.shopTop; setTimeout(wildRender, 0); } // the Shop cards' best sellers
     launchOn = list.slice();
-    lsSet(LS_LAUNCH, JSON.stringify({ on: list, at: launchAt, rwAt: extra.rwAt || 0, upsell: extra.upsell || 'auto', fan: fanNow, totw: totwRaw }));
+    lsSet(LS_LAUNCH, JSON.stringify({ on: list, at: launchAt, rwAt: extra.rwAt || 0, upsell: extra.upsell || 'auto', fan: fanNow, totw: totwRaw, shopTop: shopTopNow }));
     rewardsAt = extra.rwAt || 0; upsellMode = extra.upsell || 'auto';
     // Rewards switched on (or off): the Daily cards, the streak card and the results show them (or stop)
     var rl = list.indexOf('rewards') >= 0;
@@ -10064,12 +10088,17 @@
     }, 5000);
   }
   // The reason to lead with: a near miss, otherwise the next perk in turn
-  function pfHook(e, x) {
+  // A near miss: the last 10% short of the target, or a 27-0 season that ended in the finals or premiers with 2 losses or
+  // fewer (also the guests' sign-up moment, guestMoment)
+  function nearMiss(e) {
     var d = e.d || {};
-    if (e.game === '1000tries' && e.mode === 'plus' && e.score >= 900 && e.score < 1000) return 'close';
-    if (e.game === '4000goals' && e.mode === 'plus' && e.score >= 3600 && e.score < 4000) return 'close'; // the same last 10%
-    if (e.game === 'bigbash' && e.mode === 'plus' && e.score >= 22500 && e.score < 25000) return 'close';
-    if (e.game === '27-0' && (e.result === 'finals' || (e.result === 'premiers' && (d.losses || 0) <= 2))) return 'close';
+    if (e.game === '1000tries' && e.mode === 'plus' && e.score >= 900 && e.score < 1000) return true;
+    if (e.game === '4000goals' && e.mode === 'plus' && e.score >= 3600 && e.score < 4000) return true; // the same last 10%
+    if (e.game === 'bigbash' && e.mode === 'plus' && e.score >= 22500 && e.score < 25000) return true;
+    return e.game === '27-0' && (e.result === 'finals' || (e.result === 'premiers' && (d.losses || 0) <= 2));
+  }
+  function pfHook(e, x) {
+    if (nearMiss(e)) return 'close';
     if (passPushOn()) return 'wild'; // the weekend push leads with Double Wildcards
     var list = ['wild', 'vault', 'photo', 'stats'];
     return list[(x.shown || 0) % list.length];
@@ -10359,7 +10388,7 @@
   }
   /* At most 6 cards (the owner, 15 Oct 2026: optimised for CAST Pass sign-ups, ~36 s a lap so every card is seen). Over
      6, the least important wait for another visit, in this order; a challenge waiting for you is never left out */
-  var SPOT_MAX = 6, SPOT_DROP = ['[data-cast-upgrades]', '[data-cast-trophy]', '[data-cast-dual]', '.spot-promo:not([data-cast-launch])', '[data-cast-wild2]', '[data-cast-wcx]', '[data-cast-launch="4000goals"]'];
+  var SPOT_MAX = 6, SPOT_DROP = ['[data-cast-upgrades]', '[data-cast-trophy]', '[data-cast-dual]', '.spot-promo:not([data-cast-launch])', '[data-cast-wcx]', '[data-cast-launch="4000goals"]'];
   function spotItems(box) {
     spotPlace(box);
     var all = Array.prototype.filter.call(box.children, function (c) { return !c.hidden && !!c.innerHTML.trim(); });
@@ -10382,6 +10411,9 @@
     // The Shop's wildcard offer ahead of the Player of the Week (the owner, 15 Oct 2026: the slider sells first)
     var wi = rest.findIndex(function (c) { return c.hasAttribute('data-cast-wild'); }), fi = rest.findIndex(function (c) { return c.hasAttribute('data-cast-fan'); });
     if (wi > fi && fi >= 0) { var w = rest.splice(wi, 1)[0]; rest.splice(fi, 0, w); }
+    // The Picks card halfway round from the Wildcards card, so the two Shop cards are never back to back
+    var w1 = rest.findIndex(function (c) { return c.hasAttribute('data-cast-wild'); }), w2 = rest.findIndex(function (c) { return c.hasAttribute('data-cast-wild2'); });
+    if (w1 >= 0 && w2 >= 0 && rest.length > 3) { var pk = rest.splice(w2, 1)[0], at = (rest.indexOf(rest[w1 < w2 ? w1 : w1 - 1]) + Math.ceil((rest.length + 1) / 2)) % (rest.length + 1); rest.splice(at, 0, pk); }
     return rest;
   }
   /* The spot holds its full height from the first frame (5 Oct 2026, the owner's call: the home page jolted when the
@@ -10518,7 +10550,8 @@
     var was = items[spot.i];
     spot.i = (i + n) % n; spot.at = Date.now();
     // The wildcard card shows the next wildcard each time the spot's own turn comes back to it from another card
-    if (auto && was && items[spot.i] !== was && items[spot.i].hasAttribute('data-cast-wild')) wildNext();
+    if (auto && was && items[spot.i] !== was && items[spot.i].hasAttribute('data-cast-wild')) wildNext(false);
+    if (auto && was && items[spot.i] !== was && items[spot.i].hasAttribute('data-cast-wild2')) wildNext(true);
     spotRefresh();
   }
   // Only while the home page is on screen and the tab is open
@@ -10547,16 +10580,20 @@
     rm: ['Undo That Pick', 'Remove a player from your ' + TEAM_N + ' and go again.'],
     rib: ['Run It Back', 'Run your season back and your closest loss becomes a win.']
   };
-  var LS_WILD = 'cast_wild_i', wild = { i: null, seen: {} };
+  /* Two Shop cards always in the spot (16 Oct 2026, the owner): Wildcards ([data-cast-wild]: Reroll, Remove Player, Run
+     It Back) and Picks ([data-cast-wild2]: the Picks on sale), each in best-seller order (config/launch.shopTop, from the
+     last 30 days of sales on the server, lib/shoptop.js). Each visit starts on the best seller; the spot's next pass
+     shows the next one along */
+  var PICK_IDS = ['ileg', 'wcp', 'prem', 'toty', 'imm', 'goat'], SHOP_TOP_USUAL = ['rm', 'rr', 'rib', 'ileg', 'imm', 'wcp', 'prem', 'toty', 'goat'];
+  var shopTopNow = (function () { var c = launchCache(); return c.shopTop || null; })();
+  function topRank(id) { var t = shopTopNow || SHOP_TOP_USUAL, i = t.indexOf(id); return i < 0 ? 99 : i; }
+  var wild = { i: 0, j: 0, seen: {} };
   // The Team of the Year and Premiers Picks: while their promo runs; the Immortal Pick: once it's rolled out. A wildcard
   // with no WILD_COPY never joins (its card would be empty and the spot would stop turning to the next one)
-  function wildList() { return (WILD[CFG.game] || []).filter(function (w) { return !!WILD_COPY[w[0]] && (w[0] !== 'toty' || totyOn()) && (w[0] !== 'prem' || premOn()) && (w[0] !== 'imm' || immOn()) && (w[0] !== 'wcp' || wcpOn()) && (w[0] !== 'ileg' || ilegOn()); }); }
-  function wildOn() { return ENABLED && status === 'signed-in' && !!profile && (ageNow() || 0) >= 15 && wildList().length > 0; }
-  function wildIdx() {
-    if (wild.i == null) { var n = parseInt(lsGet(LS_WILD), 10); wild.i = n >= 0 ? n : 0; }
-    return wild.i % wildList().length;
-  }
-  function wildNext() { if (!wildList().length) return; wild.i = (wildIdx() + 1) % wildList().length; lsSet(LS_WILD, String(wild.i)); wildRender(); }
+  function wildList(picks) { return wildAll().filter(function (w) { return (PICK_IDS.indexOf(w[0]) >= 0) === !!picks; }).sort(function (a, b) { return topRank(a[0]) - topRank(b[0]); }); }
+  function wildAll() { return (WILD[CFG.game] || []).filter(function (w) { return !!WILD_COPY[w[0]] && (w[0] !== 'toty' || totyOn()) && (w[0] !== 'prem' || premOn()) && (w[0] !== 'imm' || immOn()) && (w[0] !== 'wcp' || wcpOn()) && (w[0] !== 'ileg' || ilegOn()); }); }
+  function wildOn() { return ENABLED && status === 'signed-in' && !!profile && (ageNow() || 0) >= 15 && wildAll().length > 0; }
+  function wildNext(picks) { var k = picks ? 'j' : 'i', n = wildList(picks).length; if (!n) return; wild[k] = (wild[k] + 1) % n; wildRender(); }
   // One wildcard's card, like the Shop's item: its price and Buy (or a Pass holder's free promo Pick, to Play)
   function wildCard(it) {
     var P = it && PACKS[it[1]], cp = it && WILD_COPY[it[0]];
@@ -10567,17 +10604,14 @@
     return P && cp ? '<button type="button" class="ca-wild is-' + it[0] + '" data-wild="' + (gift ? (it[0] === 'wcp' || it[0] === 'ileg' ? 'pick-play-wc' : 'pick-play') : it[1]) + '" aria-label="' + esc(gift ? cp[0] + '. Play now' : cp[0] + ' ' + packLabel(it[1]) + ', ' + price + '. Buy now') + '">' +
       '<span class="ca-wild-ico" aria-hidden="true">' + (row ? row[1] : P.ico) + '</span>' +
       // The World Legend Pick: its nations instead of the line, so the card stays the spot's size
-      '<span class="ca-wild-txt"><em>Wildcard</em><b>' + esc(cp[0]) + '</b>' + (it[0] === 'ileg' && !gift ? natStrip() : '<small>' + esc(CFG.game === '27-0' && cp[2] ? cp[2] : cp[1]) + '</small>') + '</span>' +
+      '<span class="ca-wild-txt"><em>' + (PICK_IDS.indexOf(it[0]) >= 0 ? 'Pick' : 'Wildcard') + '</em><b>' + esc(cp[0]) + '</b>' + (it[0] === 'ileg' && !gift ? natStrip() : '<small>' + esc(CFG.game === '27-0' && cp[2] ? cp[2] : cp[1]) + '</small>') + '</span>' +
       '<span class="ca-wild-buy"><b>' + (gift ? 'Free' : esc(price)) + '</b><i>' + (gift ? 'Play' : 'Buy') + '</i></span></button>' : '';
   }
-  /* The spot always carries two shop cards (5 Oct 2026, the owner's call): the CAST Pass card and this wildcard card, or
-     for a CAST Pass holder two wildcard cards ([data-cast-wild] and [data-cast-wild2]), the second always the next
-     wildcard along, so the two are never the same. Signed-in players 15 and over */
+  // The two Shop cards (see PICK_IDS above). Signed-in players 15 and over (paid items)
   function wildRender() {
-    var list = wildOn() ? wildList() : [], i = list.length ? wildIdx() : 0;
-    var two = list.length > 1 && hasPass() ? list[(i + 1) % list.length] : null;
-    wildFill('[data-cast-wild]', list.length ? wildCard(list[i]) : '');
-    wildFill('[data-cast-wild2]', two ? wildCard(two) : '');
+    var on = wildOn(), w = on ? wildList(false) : [], p = on ? wildList(true) : [];
+    wildFill('[data-cast-wild]', w.length ? wildCard(w[wild.i % w.length]) : '');
+    wildFill('[data-cast-wild2]', p.length ? wildCard(p[wild.j % p.length]) : '');
   }
   function wildFill(sel, html) {
     Array.prototype.forEach.call(document.querySelectorAll(sel), function (box) {

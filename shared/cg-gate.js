@@ -3,7 +3,7 @@
    casual visitors out, not someone who reads the files. tools/build.py adds it to every page until the --live build.
    To change the password: put the new one's SHA-256 in H (python3 -c "import hashlib;print(hashlib.sha256(b'new').hexdigest())"). */
 (function () {
-  var K = 'cg_gate_v1', H = '4198bf5ee0ce549b83b3f72985c10ce0755aa94605dc9b1e092a13561334defe';
+  var K = 'cg_gate_v1', H = '1ac7d344b66a9785d33317ef45c038f3e42090cdc62c4d412897c92970dcd25b';
   try { if (localStorage.getItem(K) === H) return; } catch (e) { /* storage blocked: ask every time */ }
   var root = document.documentElement;
   root.classList.add('cg-locked');

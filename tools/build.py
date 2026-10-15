@@ -28,7 +28,7 @@ GAMES_DIR = os.path.dirname(HERE)  # CAST Games
 LIVE = '--live' in sys.argv
 SITE = 'https://castgames.com.au/'
 # Testers only until the switch-over (16 Oct 2026, the owner): shared/cg-gate.js hides every page until the tester password
-GATE = '' if LIVE else '<script src="/shared/cg-gate.js"></script><!-- CG_GATE -->\n'
+GATE = '' if LIVE else '<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->\n'
 
 
 def _ver(rel):
@@ -188,7 +188,7 @@ def main():
     idx = os.path.join(HERE, 'index.html')
     s = open(idx, encoding='utf-8').read()
     has = '<meta name="robots" content="noindex"><!-- CG_HIDDEN' in s
-    s = re.sub(r'<script src="/shared/cg-gate\.js"></script><!-- CG_GATE -->\n?', '', s)
+    s = re.sub(r'<script src="/shared/cg-gate\.js[^"]*"></script><!-- CG_GATE -->\n?', '', s)
     if GATE:
         s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + GATE.rstrip('\n'), s, count=1)
     if LIVE and has:
