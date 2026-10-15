@@ -22,7 +22,7 @@
     { id: 'afl', name: 'AFL', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
     { id: 'cricket', name: 'Cricket', long: 'The Big Bash and Tests', c: '255,122,46', status: 'live', path: 'cricket/' },
     { id: 'nfl', name: 'NFL', long: 'American Football', c: '129,140,248', status: 'soon' },
-    { id: 'racing', name: 'Horse Racing', long: 'The Races', c: '250,204,21', status: 'soon' }
+    { id: 'racing', name: 'Horse Racing', long: 'Group 1 Jockeys', c: '59,130,246', status: 'live', path: 'racing/' }
   ];
   var GAMES = [
     { id: '27-0', sport: 'nrl', name: '27-0', path: '27-0/', logo: 'assets/logos/27-0.png', c1: '#1f2a55', c2: '#11152a', status: 'live',
@@ -39,6 +39,9 @@
     // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60,000 career Test runs
     { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
       line: 'Draft a Test XI from every Test since 1877 and reach 60,000 career Test runs.', short: 'Draft a Test XI to 60,000 runs' },
+    // 525 WINS (16 Oct 2026): the racing game, 8 jockeys to 525 Group 1 wins since 1983
+    { id: '525wins', sport: 'racing', name: '525 WINS', path: '525wins/', logo: 'assets/logos/525wins.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
+      line: 'Draft 8 jockeys and reach 525 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 525 Group 1s' },
     // Play On (15 Oct 2026): 4000 GOALS's Six Again, its own page like Six Again's
     { id: 'play-on', sport: 'afl', name: 'Play On', path: 'play-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#5a1a1a', c2: '#1c0b10', status: 'live', launch: 'po', badge: 'New',
       line: 'Over or under? Call AFL players before the clock runs out.', short: 'Over or under, vs the clock' }
