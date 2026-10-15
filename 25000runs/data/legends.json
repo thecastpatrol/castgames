@@ -1,0 +1,809 @@
+{
+"source": "Cricsheet (cricsheet.org, ODC-By) ball-by-ball data, checked against ESPNcricinfo career totals, 15 Oct 2026.",
+"odds": {
+"legends": 0.33,
+"immortal": 0
+},
+"players": [
+{
+"id": "legend-aaron-finch",
+"name": "Aaron Finch",
+"tries_1998_plus": 3311,
+"primary_club": "renegades",
+"club_years": [
+{
+"club": "renegades",
+"from": 2011,
+"to": 2023
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2024",
+"matches": 105,
+"tier": "legend",
+"record_name": "Aaron Finch (Legend)"
+},
+{
+"id": "legend-shaun-marsh",
+"name": "Shaun Marsh",
+"tries_1998_plus": 2810,
+"primary_club": "scorchers",
+"club_years": [
+{
+"club": "scorchers",
+"from": 2011,
+"to": 2018
+},
+{
+"club": "renegades",
+"from": 2019,
+"to": 2023
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2024",
+"matches": 77,
+"tier": "legend",
+"record_name": "Shaun Marsh (Legend)"
+},
+{
+"id": "legend-jonathan-wells",
+"name": "Jonathan Wells",
+"tries_1998_plus": 2999,
+"primary_club": "hurricanes",
+"club_years": [
+{
+"club": "hurricanes",
+"from": 2011,
+"to": 2016
+},
+{
+"club": "strikers",
+"from": 2017,
+"to": 2021
+},
+{
+"club": "renegades",
+"from": 2022,
+"to": 2024
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2025",
+"matches": 134,
+"tier": "legend",
+"record_name": "Jonathan Wells (Legend)"
+},
+{
+"id": "legend-daniel-christian",
+"name": "Daniel Christian",
+"tries_1998_plus": 2121,
+"primary_club": "heat",
+"club_years": [
+{
+"club": "heat",
+"from": 2011,
+"to": 2014
+},
+{
+"club": "hurricanes",
+"from": 2015,
+"to": 2017
+},
+{
+"club": "renegades",
+"from": 2018,
+"to": 2019
+},
+{
+"club": "sixers",
+"from": 2020,
+"to": 2022
+},
+{
+"club": "thunder",
+"from": 2024,
+"to": 2024
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2025",
+"matches": 135,
+"tier": "legend",
+"record_name": "Daniel Christian (Legend)"
+},
+{
+"id": "legend-michael-klinger",
+"name": "Michael Klinger",
+"tries_1998_plus": 1947,
+"primary_club": "scorchers",
+"club_years": [
+{
+"club": "strikers",
+"from": 2011,
+"to": 2013
+},
+{
+"club": "scorchers",
+"from": 2014,
+"to": 2018
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2019",
+"matches": 67,
+"tier": "legend",
+"record_name": "Michael Klinger (Legend)"
+},
+{
+"id": "legend-callum-ferguson",
+"name": "Callum Ferguson",
+"tries_1998_plus": 1935,
+"primary_club": "thunder",
+"club_years": [
+{
+"club": "strikers",
+"from": 2011,
+"to": 2013
+},
+{
+"club": "renegades",
+"from": 2014,
+"to": 2014
+},
+{
+"club": "renegades",
+"from": 2016,
+"to": 2016
+},
+{
+"club": "thunder",
+"from": 2017,
+"to": 2020
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2021",
+"matches": 84,
+"tier": "legend",
+"record_name": "Callum Ferguson (Legend)"
+},
+{
+"id": "legend-ben-dunk",
+"name": "Ben Dunk",
+"tries_1998_plus": 1727,
+"primary_club": "stars",
+"club_years": [
+{
+"club": "thunder",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "hurricanes",
+"from": 2013,
+"to": 2015
+},
+{
+"club": "strikers",
+"from": 2016,
+"to": 2016
+},
+{
+"club": "stars",
+"from": 2017,
+"to": 2020
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2021",
+"matches": 81,
+"tier": "legend",
+"record_name": "Ben Dunk (Legend)"
+},
+{
+"id": "legend-george-bailey",
+"name": "George Bailey",
+"tries_1998_plus": 1673,
+"primary_club": "hurricanes",
+"club_years": [
+{
+"club": "stars",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "hurricanes",
+"from": 2012,
+"to": 2019
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2020",
+"matches": 75,
+"tier": "legend",
+"record_name": "George Bailey (Legend)"
+},
+{
+"id": "legend-cameron-white",
+"name": "Cameron White",
+"tries_1998_plus": 1582,
+"primary_club": "renegades",
+"club_years": [
+{
+"club": "stars",
+"from": 2011,
+"to": 2014
+},
+{
+"club": "renegades",
+"from": 2015,
+"to": 2018
+},
+{
+"club": "strikers",
+"from": 2019,
+"to": 2019
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2020",
+"matches": 72,
+"tier": "legend",
+"record_name": "Cameron White (Legend)"
+},
+{
+"id": "legend-luke-wright",
+"name": "Luke Wright",
+"tries_1998_plus": 1479,
+"primary_club": "stars",
+"club_years": [
+{
+"club": "stars",
+"from": 2011,
+"to": 2017
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2018",
+"matches": 53,
+"tier": "legend",
+"record_name": "Luke Wright (Legend)"
+},
+{
+"id": "legend-tom-cooper",
+"name": "Tom Cooper",
+"tries_1998_plus": 1445,
+"primary_club": "renegades",
+"club_years": [
+{
+"club": "strikers",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "renegades",
+"from": 2012,
+"to": 2019
+},
+{
+"club": "heat",
+"from": 2020,
+"to": 2021
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2022",
+"matches": 86,
+"tier": "legend",
+"record_name": "Tom Cooper (Legend)"
+},
+{
+"id": "legend-brad-hodge",
+"name": "Brad Hodge",
+"tries_1998_plus": 1412,
+"primary_club": "strikers",
+"club_years": [
+{
+"club": "renegades",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "stars",
+"from": 2012,
+"to": 2013
+},
+{
+"club": "strikers",
+"from": 2014,
+"to": 2016
+},
+{
+"club": "renegades",
+"from": 2017,
+"to": 2017
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2018",
+"matches": 47,
+"tier": "legend",
+"record_name": "Brad Hodge (Legend)"
+},
+{
+"id": "legend-tim-paine",
+"name": "Tim Paine",
+"tries_1998_plus": 1129,
+"primary_club": "hurricanes",
+"club_years": [
+{
+"club": "hurricanes",
+"from": 2012,
+"to": 2017
+},
+{
+"club": "hurricanes",
+"from": 2022,
+"to": 2022
+}
+],
+"positions_played": [
+"B",
+"K"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2012-2022",
+"matches": 40,
+"tier": "legend",
+"record_name": "Tim Paine (Legend)"
+},
+{
+"id": "legend-kevin-pietersen",
+"name": "Kevin Pietersen",
+"tries_1998_plus": 1110,
+"primary_club": "stars",
+"club_years": [
+{
+"club": "stars",
+"from": 2014,
+"to": 2017
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2014-2018",
+"matches": 31,
+"tier": "legend",
+"record_name": "Kevin Pietersen (Legend)"
+},
+{
+"id": "legend-adam-voges",
+"name": "Adam Voges",
+"tries_1998_plus": 1040,
+"primary_club": "scorchers",
+"club_years": [
+{
+"club": "stars",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "scorchers",
+"from": 2012,
+"to": 2017
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2018",
+"matches": 52,
+"tier": "legend",
+"record_name": "Adam Voges (Legend)"
+},
+{
+"id": "legend-shane-watson",
+"name": "Shane Watson",
+"tries_1998_plus": 1031,
+"primary_club": "thunder",
+"club_years": [
+{
+"club": "heat",
+"from": 2012,
+"to": 2012
+},
+{
+"club": "thunder",
+"from": 2015,
+"to": 2018
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2012-2019",
+"matches": 39,
+"tier": "legend",
+"record_name": "Shane Watson (Legend)"
+},
+{
+"id": "legend-ben-rohrer",
+"name": "Ben Rohrer",
+"tries_1998_plus": 1000,
+"primary_club": "thunder",
+"club_years": [
+{
+"club": "sixers",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "renegades",
+"from": 2012,
+"to": 2014
+},
+{
+"club": "thunder",
+"from": 2015,
+"to": 2017
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2018",
+"matches": 55,
+"tier": "legend",
+"record_name": "Ben Rohrer (Legend)"
+},
+{
+"id": "legend-brad-haddin",
+"name": "Brad Haddin",
+"tries_1998_plus": 602,
+"primary_club": "sixers",
+"club_years": [
+{
+"club": "sixers",
+"from": 2011,
+"to": 2012
+},
+{
+"club": "sixers",
+"from": 2015,
+"to": 2016
+}
+],
+"positions_played": [
+"B",
+"K"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2017",
+"matches": 24,
+"tier": "legend",
+"record_name": "Brad Haddin (Legend)"
+},
+{
+"id": "legend-michael-hussey",
+"name": "Michael Hussey",
+"tries_1998_plus": 776,
+"primary_club": "thunder",
+"club_years": [
+{
+"club": "scorchers",
+"from": 2011,
+"to": 2012
+},
+{
+"club": "thunder",
+"from": 2013,
+"to": 2015
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2016",
+"matches": 24,
+"tier": "legend",
+"record_name": "Michael Hussey (Legend)"
+},
+{
+"id": "legend-david-hussey",
+"name": "David Hussey",
+"tries_1998_plus": 855,
+"primary_club": "stars",
+"club_years": [
+{
+"club": "stars",
+"from": 2011,
+"to": 2016
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2017",
+"matches": 43,
+"tier": "legend",
+"record_name": "David Hussey (Legend)"
+},
+{
+"id": "legend-chris-gayle",
+"name": "Chris Gayle",
+"tries_1998_plus": 649,
+"primary_club": "thunder",
+"club_years": [
+{
+"club": "thunder",
+"from": 2011,
+"to": 2012
+},
+{
+"club": "renegades",
+"from": 2015,
+"to": 2015
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2016",
+"matches": 20,
+"tier": "legend",
+"record_name": "Chris Gayle (Legend)"
+},
+{
+"id": "legend-brendon-mccullum",
+"name": "Brendon McCullum",
+"tries_1998_plus": 920,
+"primary_club": "heat",
+"club_years": [
+{
+"club": "heat",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "heat",
+"from": 2016,
+"to": 2018
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2019",
+"matches": 35,
+"tier": "legend",
+"record_name": "Brendon McCullum (Legend)"
+},
+{
+"id": "legend-ricky-ponting",
+"name": "Ricky Ponting",
+"tries_1998_plus": 253,
+"primary_club": "hurricanes",
+"club_years": [
+{
+"club": "hurricanes",
+"from": 2011,
+"to": 2012
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2013",
+"matches": 4,
+"tier": "legend",
+"record_name": "Ricky Ponting (Legend)"
+},
+{
+"id": "legend-matthew-hayden",
+"name": "Matthew Hayden",
+"tries_1998_plus": 207,
+"primary_club": "heat",
+"club_years": [
+{
+"club": "heat",
+"from": 2011,
+"to": 2011
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2012",
+"matches": 5,
+"tier": "legend",
+"record_name": "Matthew Hayden (Legend)"
+},
+{
+"id": "legend-jacques-kallis",
+"name": "Jacques Kallis",
+"tries_1998_plus": 372,
+"primary_club": "thunder",
+"club_years": [
+{
+"club": "thunder",
+"from": 2014,
+"to": 2015
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2014-2016",
+"matches": 13,
+"tier": "legend",
+"record_name": "Jacques Kallis (Legend)"
+},
+{
+"id": "legend-dwayne-bravo",
+"name": "Dwayne Bravo",
+"tries_1998_plus": 677,
+"primary_club": "renegades",
+"club_years": [
+{
+"club": "sixers",
+"from": 2011,
+"to": 2011
+},
+{
+"club": "renegades",
+"from": 2013,
+"to": 2017
+},
+{
+"club": "stars",
+"from": 2018,
+"to": 2018
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2019",
+"matches": 47,
+"tier": "legend",
+"record_name": "Dwayne Bravo (Legend)"
+},
+{
+"id": "legend-ben-cutting",
+"name": "Ben Cutting",
+"tries_1998_plus": 1708,
+"primary_club": "heat",
+"club_years": [
+{
+"club": "heat",
+"from": 2012,
+"to": 2019
+},
+{
+"club": "thunder",
+"from": 2020,
+"to": 2022
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2012-2023",
+"matches": 116,
+"tier": "legend",
+"record_name": "Ben Cutting (Legend)"
+}
+],
+"replaces": []
+}

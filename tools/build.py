@@ -44,13 +44,16 @@ GAMES = [
      "var b = document.querySelector('.screen.active .cp-new-tab'); if (b && b.offsetParent !== null) { b.click(); return true; } return false;"),
     ('1000tries', '1000TRIES Game', '1000tries', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
+    # 25000 RUNS (15 Oct 2026, the Big Bash game): developed in ~/cast-dev/bigbash/game, copied to CAST Games/25000 RUNS Game
+    ('25000runs', '25000 RUNS Game', '25000runs', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
 ]
 # The old domains, and the folder each one is now
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
-SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
+SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
@@ -98,8 +101,8 @@ def fit_code(dst, folder):
             p = os.path.join(root, f)
             s = open(p, encoding='utf-8').read()
             t = rewrite_links(s, True) if f.endswith('.js') else s
-            if folder == '4000goals' and f.endswith('.js'):
-                t = t.replace("'1000tries_", "'4000goals_")  # its own saved data here (sound, draft, played...)
+            if folder in ('4000goals', '25000runs') and f.endswith('.js'):
+                t = t.replace("'1000tries_", "'" + folder + "_")  # its own saved data here (sound, draft, played...)
             if t != s:
                 open(p, 'w', encoding='utf-8').write(t)
 
@@ -107,7 +110,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png']
 
 
 def clear_byline(path):
