@@ -3808,3 +3808,29 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-adm-launches-row small { color: var(--ca-muted); font: 700 12px/1 Inter, sans-serif; }
 .ca-adm-launches-row i { font-style: normal; font-size: 20px; color: var(--ca-muted); }
 @media (hover: hover) { .ca-adm-launches-row:hover { background: rgba(255, 255, 255, .08); } }
+
+/* 700 TDS team sheets (16 Oct 2026): a gridiron like the game's field, the offence lined up from behind and heading up the
+   page. White sidelines, a yard line every few metres, the end zone across the top and the line of scrimmage just in front
+   of the receivers and tight end */
+.ca-pitch.is-gridiron { position: relative; isolation: isolate; border-radius: 6px; padding: 46px 12px 18px; gap: 12px; border: 2px solid rgba(255, 255, 255, .75);
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, .07) 0 8px, transparent 8px 16px) 0 0 / 100% 30px no-repeat,
+    linear-gradient(180deg, #0d3a22 0 30px, rgba(255, 255, 255, .7) 30px 32px, transparent 32px),
+    repeating-linear-gradient(180deg, transparent 0 42px, rgba(255, 255, 255, .16) 42px 44px),
+    linear-gradient(180deg, #1a6a3a, #13542d); }
+.ca-pitch.is-gridiron::before { content: 'END ZONE'; position: absolute; top: 9px; left: 0; right: 0; text-align: center; font: 900 10px/1 Inter, sans-serif;
+  letter-spacing: 3px; color: rgba(255, 255, 255, .55); pointer-events: none; }
+.ca-pitch.is-gridiron .ca-spot { flex-basis: 30%; }
+.ca-pitch.is-gridiron .ca-pitch-row:first-child { position: relative; padding-top: 10px; }
+.ca-pitch.is-gridiron .ca-pitch-row:first-child::before { content: ''; position: absolute; top: 0; left: -4px; right: -4px; height: 3px; border-radius: 2px;
+  background: #4da3ff; box-shadow: 0 0 8px rgba(77, 163, 255, .55); pointer-events: none; }
+
+/* G1 WINNER SPINNER team sheets (16 Oct 2026): a racecourse, two rows of four races on an oval track. The turf track with
+   its white running rail goes round the green infield */
+.ca-pitch.is-track { position: relative; isolation: isolate; border-radius: 999px; padding: 34px 26px; gap: 14px; border: 2px solid rgba(255, 255, 255, .8);
+  background: radial-gradient(ellipse at 50% 50%, #1d5c34 0 52%, rgba(255, 255, 255, .7) 52% 53.5%, #2f7d45 53.5% 100%); }
+.ca-pitch.is-track::before { content: ''; position: absolute; inset: 9px; border-radius: 999px; border: 1.5px dashed rgba(255, 255, 255, .35); pointer-events: none; z-index: -1; }
+.ca-pitch.is-track .ca-spot { flex-basis: 23%; }
+@media (max-width: 420px) {
+  .ca-pitch.is-track { border-radius: 48% / 26%; padding: 30px 12px; }
+}

@@ -276,7 +276,7 @@
   function fillRank() {
     var el = document.getElementById('dlyRank');
     if (!el) return;
-    CastAccount.dailyRank('bbdaily').then(function (r) {
+    CastAccount.dailyRank('nfldaily').then(function (r) {
       if (!el.isConnected) return;
       if (r.who === 'off') el.remove(); else el.innerHTML = rankLine(r);
     }, function () { if (el.isConnected) el.innerHTML = rankLine({ who: 'failed' }); });

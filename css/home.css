@@ -23,7 +23,7 @@ a { color: inherit; }
 .cg-art { width: 100%; height: 100%; object-fit: contain; }
 .cg-mark { display: grid; place-items: center; font: 900 28px/1 Inter, sans-serif; color: #fff; }
 .cg-card-t { margin-top: 6px; min-width: 0; }
-.cg-card-t b, .cg-card-t small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cg-card-t b, .cg-card-t small { display: block; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
 .cg-card-t b { font: 900 13.5px/1.2 Inter, sans-serif; letter-spacing: -.1px; }
 .cg-card-t small { font: 700 11.5px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .72); }
 .cg-cta { align-self: end; justify-self: start; padding: 6px 12px; border-radius: 999px; background: #fff; color: #000; font: 900 11.5px/1 Inter, sans-serif; }
@@ -42,8 +42,8 @@ a { color: inherit; }
 .cg-count { margin-left: auto; padding: 5px 9px; border-radius: 999px; background: rgba(0, 0, 0, .35); font: 900 11px/1 Inter, sans-serif; }
 .cg-games { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .cg-game-t { position: relative; display: grid; grid-template-rows: 84px auto auto 1fr; height: 240px; padding: 12px; border-radius: 16px; text-decoration: none; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); }
-.cg-game-t b { margin-top: 8px; font: 900 16px/1.2 Inter, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cg-game-t small { margin-top: 3px; font: 600 12px/1.35 Inter, sans-serif; color: rgba(255, 255, 255, .72); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cg-game-t b { margin-top: 8px; font: 900 16px/1.2 Inter, sans-serif; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
+.cg-game-t small { margin-top: 3px; font: 600 12px/1.35 Inter, sans-serif; color: rgba(255, 255, 255, .72); display: block; text-wrap: pretty; }
 .cg-game-t .cg-btn { align-self: end; }
 .cg-new { position: absolute; top: 10px; right: 10px; z-index: 1; padding: 4px 9px; border-radius: 999px; background: var(--sky); color: #04121f; font: 900 10.5px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; }
 .cg-game-t.is-soon { display: grid; place-content: center; text-align: center; border: 1.5px dashed rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .03); }
@@ -56,7 +56,7 @@ a { color: inherit; }
 /* Daily Challenge cards: today's challenge in small text, then its reward. Rows on phones (room for the words), three
    across on desktop */
 .cg-dcard { height: auto; min-height: 176px; grid-template-rows: 62px auto 1fr; }
-.cg-dcard .cg-dhead { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: rgba(255, 255, 255, .85); margin-top: 2px; }
+.cg-dcard .cg-dhead { white-space: normal; display: block; text-wrap: pretty; color: rgba(255, 255, 255, .85); margin-top: 2px; }
 .cg-dcard .cg-dreward { margin-top: 4px; color: #a7f3d0; }
 .cg-dcard .cg-cta { margin-top: 8px; }
 @media (max-width: 899px) {
@@ -74,7 +74,7 @@ a { color: inherit; }
   background: linear-gradient(135deg, rgba(var(--sc), .28), rgba(20, 20, 32, .7) 80%); border: 1px solid rgba(var(--sc), .5); }
 .cg-sport-link .cg-sport-ico { width: 52px; height: 52px; }
 .cg-sl-t { min-width: 0; } .cg-sl-t b { display: block; font: 900 18px/1.15 Inter, sans-serif; }
-.cg-sl-t small { display: block; margin-top: 4px; font: 700 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cg-sl-t small { display: block; margin-top: 4px; font: 700 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .7); white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
 .cg-sl-go { padding: 9px 14px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 13px/1 Inter, sans-serif; white-space: nowrap; }
 .cg-sl-go i { font-style: normal; }
 /* A sport's own page */
@@ -103,3 +103,5 @@ a { color: inherit; }
   .cg-game-t { height: 250px; }
 }
 .cg-two > :only-child { grid-column: 1 / -1; }
+
+/* No text is ever cut off with "..." (16 Oct 2026, the owner): names and lines wrap instead */

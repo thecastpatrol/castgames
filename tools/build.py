@@ -163,6 +163,10 @@ def clear_byline(path):
 
 
 def main():
+    # The home page's own copies of the logos lose the byline too (16 Oct 2026: 700 TDS' home card still said created by cast)
+    for rel in LOGOS:
+        if os.path.exists(os.path.join(HERE, rel)):
+            clear_byline(os.path.join(HERE, rel))
     for folder, src, gid, hide, play in GAMES:
         dst = copy_game(folder, src)
         fit_code(dst, folder)
