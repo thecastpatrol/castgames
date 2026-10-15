@@ -1880,19 +1880,24 @@ body {
     linear-gradient(180deg, #17542e, #124526);
   box-shadow: inset 0 0 24px rgba(0, 0, 0, .35);
 }
-/* The home straight's finish line, across the track at the bottom right */
+/* The finish line (16 Oct 2026, the owner: the red and white disc outside the rail read like a warning sign): a
+   chequered line straight across the track on the home straight, inside the rails, with a small post on the inside rail */
 .pitch::after {
-  content: ''; position: absolute; z-index: 0; pointer-events: none; right: 26%; bottom: -3px; width: 5px; height: 25px;
-  background: repeating-linear-gradient(180deg, #fff 0 5px, #111 5px 10px);
-  border-radius: 1px;
+  content: ''; position: absolute; z-index: 0; pointer-events: none; inset: auto; right: 24%; bottom: 0; width: 8px; height: 20px; border: 0; border-radius: 0;
+  background: conic-gradient(#fff 0 25%, #111 0 50%, #fff 0 75%, #111 0) 0 0 / 8px 8px;
+  opacity: .9;
 }
-/* The winning post: a white post with the red and white disc, just outside the rail */
-.rc-post { position: absolute; right: calc(26% - 9px); bottom: -24px; z-index: 2; width: 22px; height: 22px; border-radius: 50%; pointer-events: none;
-  background: conic-gradient(#e11d48 0 25%, #fff 0 50%, #e11d48 0 75%, #fff 0); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .5); }
+.rc-post { display: none; }
+@media (min-width: 900px) { .pitch::after { height: 26px; width: 10px; background-size: 10px 10px; } }
+@media (max-width: 380px) { .pitch::after { height: 15px; } }
 .rc-label { position: absolute; z-index: 1; left: 50%; transform: translateX(-50%); font: 900 9px/1 var(--font); letter-spacing: 2px;
   text-transform: uppercase; color: rgba(255, 255, 255, .7); white-space: nowrap; pointer-events: none; }
-.rc-label.is-top { top: 7px; }
-.rc-label.is-bottom { bottom: 7px; }
+.rc-label.is-top { top: 6px; }
+.rc-label.is-bottom { bottom: 6px; }
+/* Centred in the track lane between the outside rail and the inside rail (16 Oct 2026, the owner: the words sat on the
+   rail). The lane is the inside rail's inset deep: 20px here, 26px from 900px wide, 15px under 380px */
+@media (min-width: 900px) { .rc-label.is-top { top: 9px; } .rc-label.is-bottom { bottom: 9px; } }
+@media (max-width: 380px) { .rc-label { font-size: 7.5px; letter-spacing: 1.5px; } .rc-label.is-top { top: 4px; } .rc-label.is-bottom { bottom: 4px; } }
 .pitch-row { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 0 !important; margin: 0 !important; }
 .pitch-row .slot { max-width: none !important; min-width: 0; min-height: 70px; }
 .slot.is-empty { border: 2px dashed rgba(255, 255, 255, .55); background: rgba(4, 20, 11, .45); }
