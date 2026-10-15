@@ -109,6 +109,10 @@
     document.documentElement.classList.add('cg-on');
     if (HERE) document.documentElement.classList.add('cg-in-game', 'cg-g-' + HERE);
     el.addEventListener('click', onBar);
+    // The game's own sticky parts (the scoreboard, the desktop offer panel) sit under this bar, not behind it (16 Oct 2026):
+    // its height, measured, as --cg-bar-h for cg.css
+    var barH = function () { document.documentElement.style.setProperty('--cg-bar-h', el.offsetHeight + 'px'); };
+    barH(); window.addEventListener('resize', barH); window.addEventListener('load', barH);
     var A = acct(); if (A && A.refresh) { try { A.refresh(); } catch (e) { /* later */ } }
   }
   function onBar(e) {
