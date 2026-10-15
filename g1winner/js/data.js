@@ -11,6 +11,9 @@
 
   // An 8-race Group 1 card with no positions (the owner, 16 Oct 2026): every jockey can ride any race, so every race has
   // the one code 'R' and a pick goes straight into the next open race. The races show as Race 1 to Race 8 (R1 to R8)
+  // The over/under mode is a separate game on CAST Games (its own page); this home shows no card for it
+  T.OU_SEPARATE = true;
+
   T.SLOTS = ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'];
 
   T.POS_NAMES = { R: 'Race' };

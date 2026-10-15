@@ -328,6 +328,8 @@
   // Free Hit's card (15 Oct 2026, the owner): straight under the Daily Challenge, wherever the Daily sits, once it's on
   function placeOu() {
     var d = $('dailyCard'), c = $('ouHome');
+    // The over/under is its own game (16 Oct 2026, the owner: separate everywhere, Six Again excepted): no card on this home
+    if (T.OU_SEPARATE) { if (c) c.hidden = true; return; }
     if (!d) return;
     if (!c) { c = document.createElement('div'); c.id = 'ouHome'; c.className = 'ou-home'; }
     var on = !!(T.ou && T.ou.on());

@@ -6,6 +6,9 @@
   T.TARGET = 4000;
 
   // The 18 in draft order: 6 backs, 6 midfielders (the ruck among them), 6 forwards
+  // The over/under mode is a separate game on CAST Games (its own page); this home shows no card for it
+  T.OU_SEPARATE = true;
+
   T.SLOTS = ['B', 'B', 'B', 'B', 'B', 'B', 'M', 'M', 'M', 'M', 'M', 'M', 'F', 'F', 'F', 'F', 'F', 'F'];
 
   T.POS_NAMES = { B: 'Back', M: 'Midfield', F: 'Forward' };

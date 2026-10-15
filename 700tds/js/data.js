@@ -8,6 +8,9 @@
 
   // The 9 in draft order (the owner, 15 Oct 2026: offence only): a quarterback, two running backs, three receivers, a
   // tight end and two FLEX spots (a running back, receiver or tight end)
+  // The over/under mode is a separate game on CAST Games (its own page); this home shows no card for it
+  T.OU_SEPARATE = true;
+
   T.SLOTS = ['QB', 'RB', 'RB', 'WR', 'WR', 'WR', 'TE', 'FLEX', 'FLEX'];
 
   T.POS_NAMES = { QB: 'Quarterback', RB: 'Running Back', WR: 'Wide Receiver', TE: 'Tight End', FLEX: 'Flex' };

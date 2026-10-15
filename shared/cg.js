@@ -45,6 +45,15 @@
     // G1 WINNER SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
     { id: 'g1winner', sport: 'racing', name: 'G1 WINNER SPINNER', path: 'g1winner/', logo: 'assets/logos/g1winner.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
       line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s' },
+    // The newer games' over/unders (16 Oct 2026, the owner: separate games, not modes inside the draft games)
+    { id: 'free-hit', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
+      line: 'Over or under? Call BBL runs and wickets before the clock runs out.', short: 'BBL over or under, vs the clock' },
+    { id: 'follow-on', sport: 'cricket', name: 'Follow On', path: 'follow-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
+      line: 'Over or under? Call Test runs and wickets before the clock runs out.', short: 'Test over or under, vs the clock' },
+    { id: 'two-point', sport: 'nfl', name: 'Two Point', path: 'two-point/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
+      line: 'Over or under? Call NFL career touchdowns before the clock runs out.', short: 'NFL over or under, vs the clock' },
+    { id: 'photo-finish', sport: 'racing', name: 'Photo Finish', path: 'photo-finish/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
+      line: 'Over or under? Call jockeys, big races and horses before the clock runs out.', short: 'Racing over or under, vs the clock' },
     // Play On (15 Oct 2026): 4000 GOALS's Six Again, its own page like Six Again's
     { id: 'play-on', sport: 'afl', name: 'Play On', path: 'play-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#5a1a1a', c2: '#1c0b10', status: 'live', launch: 'po', badge: 'New',
       line: 'Over or under? Call AFL players before the clock runs out.', short: 'Over or under, vs the clock' }

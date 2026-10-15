@@ -178,7 +178,10 @@ def main():
                 fit_page(os.path.join(dst, f), folder, gid, hide, play)
         print('built', folder)
     # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
-    for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On')):
+    for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On'),
+                                         # the newer games' over/unders, their own games too (16 Oct 2026, the owner)
+                                         ('free-hit', '25000runs', 'free-hit', 'ou', 'Free Hit'), ('follow-on', '60000runs', 'follow-on', 'ou', 'Follow On'),
+                                         ('two-point', '700tds', 'two-point', 'ou', 'Two Point'), ('photo-finish', 'g1winner', 'photo-finish', 'ou', 'Photo Finish')):
         out = os.path.join(HERE, page)
         os.makedirs(out, exist_ok=True)
         src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()

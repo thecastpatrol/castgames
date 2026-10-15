@@ -6,6 +6,9 @@
   T.TARGET = 25000; // set by the real-engine simulation before launch
 
   // The XI in draft order: 6 batters, a keeper, 4 bowlers (the owner, 15 Oct 2026: "Real XI")
+  // The over/under mode is a separate game on CAST Games (its own page); this home shows no card for it
+  T.OU_SEPARATE = true;
+
   T.SLOTS = ['B', 'B', 'B', 'B', 'B', 'B', 'K', 'W', 'W', 'W', 'W'];
 
   T.POS_NAMES = { B: 'Batter', K: 'Keeper', W: 'Bowler' };
