@@ -1853,3 +1853,41 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @media (hover: hover) { .footer-links a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
 .footer-legal a { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); color: #c9c9d8; font-weight: 700; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .footer-legal, .nf-sub { text-wrap: balance; } /* no word alone on the last line at 390px (audit T9) */
+
+/* The formation offer (17 Oct 2026): three cards, each its name, a few words and a little pitch of its spots */
+.fm-intro { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; text-wrap: pretty; }
+.fm-cards { display: grid; gap: 10px; }
+.fm-card {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 172px); align-items: stretch; gap: 10px; width: 100%;
+  padding: 10px; border-radius: 14px; border: 2px solid rgba(var(--acc-rgb), .45); background: var(--card2); color: var(--text);
+  font: inherit; text-align: left; cursor: pointer; animation: dealIn .35s ease both; transition: transform .12s, box-shadow .15s;
+}
+@media (hover: hover) { .fm-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .45), 0 0 0 2px var(--gold); } }
+.fm-side { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; padding-left: 4px; }
+.fm-name { font-size: 24px; font-weight: 900; letter-spacing: -.5px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fm-note { font-size: 12px; font-weight: 700; color: var(--muted); line-height: 1.3; text-wrap: balance; }
+.fm-cta { margin-top: 6px; font-size: 12px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); }
+.fm-pitch {
+  display: flex; flex-direction: column; justify-content: space-around; gap: 4px; padding: 8px 4px; border-radius: 6px; min-height: 118px;
+  background: linear-gradient(180deg, transparent calc(50% - 1px), rgba(255, 255, 255, .22) calc(50% - 1px), rgba(255, 255, 255, .22) calc(50% + 1px), transparent calc(50% + 1px)),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .04) 0 14px, transparent 14px 28px), linear-gradient(180deg, #145a2e, #0e4423);
+  border: 1.5px solid rgba(255, 255, 255, .3);
+}
+.fm-row { display: flex; justify-content: space-around; }
+.fm-dot { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0; flex: 0 1 36px; }
+.fm-dot i { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .7); }
+.fm-dot b { font-size: 9px; font-weight: 900; letter-spacing: .3px; color: rgba(255, 255, 255, .9); line-height: 1; }
+@media (max-width: 380px) { .fm-card { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } .fm-name { font-size: 21px; } }
+/* Before a formation is chosen the pitch waits for it */
+.pitch-wait { display: grid; place-items: center; gap: 4px; min-height: 260px; text-align: center; }
+.pitch-wait b { font-size: 16px; font-weight: 900; color: #fff; }
+.pitch-wait span { font-size: 12px; color: rgba(255, 255, 255, .7); }
+/* Rows of four or five spots use the whole width; shorter rows sit in a little (17 Oct 2026) */
+.pitch-row:first-child, .pitch-row:nth-child(2) { padding: 0; }
+.pitch-row.is-n1, .pitch-row.is-n2, .pitch-row.is-n3 { padding: 0 6%; }
+.pitch-row.is-n5 { gap: 4px; }
+.pitch-row.is-n5 .slot-name { font-size: 10.5px; }
+/* An empty spot's full name (Left Wing Back) only where it fits on one line; a narrow spot shows its code alone (17 Oct 2026) */
+.pitch .slot { container: slot / inline-size; }
+.pitch .slot.is-empty .slot-pos { white-space: nowrap; }
+@container slot (max-width: 100px) { .slot.is-empty .slot-pos { display: none; } }

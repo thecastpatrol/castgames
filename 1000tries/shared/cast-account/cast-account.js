@@ -2635,9 +2635,9 @@
   ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
   ['ep_record', '&#x1F451;', 'Record Breaker', 'Alan Shearer and his 260 goals in your XI'],
   ['ep_100', '&#x1F4AF;', '100 Club', 'A player with 100+ Premier League goals'],
-  ['ep_front', '&#x1F525;', 'Front Three', 'All 3 forwards on 100+ goals'],
-  ['ep_mid', '&#x1F3AF;', 'Goals From Midfield', 'Your midfield three on 150+ goals between them'],
-  ['ep_back', '&#x1F9F1;', 'Goals From the Back', 'Your back four on 60+ goals between them'],
+  ['ep_front', '&#x1F525;', 'Front Three', '3 forwards on 100+ goals each'],
+  ['ep_mid', '&#x1F3AF;', 'Goals From Midfield', 'Your midfield on 150+ goals between them'],
+  ['ep_back', '&#x1F9F1;', 'Goals From the Back', 'Your defence on 60+ goals between them'],
   ['ep_tour', '&#x1F5FA;&#xFE0F;', 'Tour of England', 'Players from 10 different clubs'],
   ['ep_core', '&#x1F3E0;', 'One-Club Core', '6 or more who played for one club'],
   ['ep_invincibles', '&#x1F6E1;&#xFE0F;', 'Invincibles', '4 who played for Arsenal in 2003-04'],
@@ -3134,9 +3134,9 @@
     'epl:settled': 'You beat a mate\u2019s score on their challenge.',
     'epl:ep_record': 'Alan Shearer and his 260 goals were in your XI.',
     'epl:ep_100': 'Your XI had a player with 100 or more Premier League goals.',
-    'epl:ep_front': 'All 3 of your forwards had 100 or more goals.',
-    'epl:ep_mid': 'Your midfield three scored 150 or more goals between them.',
-    'epl:ep_back': 'Your back four scored 60 or more goals between them.',
+    'epl:ep_front': '3 of your forwards had 100 or more goals each.',
+    'epl:ep_mid': 'Your midfield scored 150 or more goals between them.',
+    'epl:ep_back': 'Your defence scored 60 or more goals between them.',
     'epl:ep_tour': 'Your XI had players from 10 different clubs.',
     'epl:ep_core': '6 or more of your XI played for one club.',
     'epl:ep_invincibles': 'Your XI had 4 players from Arsenal\u2019s 2003-04 Invincibles season.',
@@ -5892,8 +5892,26 @@
   // the midfield three, the back four (saved defenders first, as the game's T.SLOTS)
   var POS10E = ['DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'FWD'];
   var FIELD10E = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
-  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? POS11 : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? POS10E : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
-  function fieldRows(x) { return x && x.game === '4000goals' ? FIELD18 : x && (x.game === 'bigbash' || x.game === 'tests') ? FIELD11 : x && x.game === 'nfl' ? (nfl9(x) ? FIELD9 : FIELD10) : x && x.game === 'racing' ? FIELD8 : x && x.game === 'epl' ? FIELD10E : FIELD; }
+  /* Since 17 Oct 2026 a 500 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
+     the back, each left to right) and drawn in its real spots. A game from before keeps the 4-3-3 of lines above. The
+     game's js/data.js T.FORMATIONS and the server's lib/checkepl.js FORMATIONS hold the same ten */
+  var FM10E = {
+    '4-3-3': [['LB', 'CB', 'CB', 'RB'], ['CM', 'CM', 'CM'], ['LW', 'ST', 'RW']],
+    '4-4-2': [['LB', 'CB', 'CB', 'RB'], ['LM', 'CM', 'CM', 'RM'], ['ST', 'ST']],
+    '4-2-3-1': [['LB', 'CB', 'CB', 'RB'], ['DM', 'DM'], ['LW', 'AM', 'RW'], ['ST']],
+    '3-5-2': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['AM'], ['ST', 'ST']],
+    '3-4-3': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['LW', 'ST', 'RW']],
+    '5-3-2': [['LWB', 'CB', 'CB', 'CB', 'RWB'], ['CM', 'CM', 'CM'], ['ST', 'ST']],
+    '4-1-4-1': [['LB', 'CB', 'CB', 'RB'], ['DM'], ['LM', 'CM', 'CM', 'RM'], ['ST']],
+    '4-5-1': [['LB', 'CB', 'CB', 'RB'], ['LM', 'CM', 'CM', 'CM', 'RM'], ['ST']],
+    '3-4-2-1': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['AM', 'AM'], ['ST']],
+    '4-3-1-2': [['LB', 'CB', 'CB', 'RB'], ['CM', 'DM', 'CM'], ['AM'], ['ST', 'ST']]
+  };
+  function eplFm(x) { var f = x && x.game === 'epl' && x.d && x.d.fm; return f && Object.prototype.hasOwnProperty.call(FM10E, f) ? FM10E[f] : null; }
+  function fmPos(rows) { return [].concat.apply([], rows); }
+  function fmField(rows) { var i = 0; return rows.map(function (r) { return r.map(function () { return i++; }); }).reverse(); }
+  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? POS11 : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
+  function fieldRows(x) { return x && x.game === '4000goals' ? FIELD18 : x && (x.game === 'bigbash' || x.game === 'tests') ? FIELD11 : x && x.game === 'nfl' ? (nfl9(x) ? FIELD9 : FIELD10) : x && x.game === 'racing' ? FIELD8 : x && x.game === 'epl' ? (eplFm(x) ? fmField(eplFm(x)) : FIELD10E) : FIELD; }
   var sheet = null, sheets = {}, sheetMode = lsGet('cast_sheet_view') === 'list' ? 'list' : 'field';
   // Saved names can carry a tag: namesakes ("Ben Jones (Raiders)") and 1000TRIES greats ("Ken Irvine (Legend)")
   function pickName(raw) {
@@ -6016,7 +6034,7 @@
   }
   function sheetField(x, ps) {
     var POS = posList(x), rows = fieldRows(x).map(function (r) {
-      return '<div class="ca-pitch-row">' + r.map(function (i) {
+      return '<div class="ca-pitch-row' + (r.length >= 5 ? ' is-five' : '') + '">' + r.map(function (i) {
         var p = ps[i];
         if (!p) return '<div class="ca-spot is-empty"><span class="ca-spot-pos">' + POS[i] + '</span></div>';
         return '<div class="ca-spot' + (p.tier ? ' is-' + p.tier : '') + srcCls(p) + '"' + (p.club ? ' style="--t1:' + esc(p.club.bg) + ';--t2:' + esc(p.club.fg) + '"' : '') + ' title="' + esc(p.name + (p.src ? ', ' + PICK_SRC[p.src][2].replace(/&#x[0-9A-F]+;/gi, '') : '')) + '">' +

@@ -430,7 +430,7 @@
     $('pitch').innerHTML = R.pitch(S, flashIdx);
     fitNames();
     $('pitch').classList.toggle('is-tweaking', !!S.tweakMode);
-    $('pickCount').textContent = T.filledCount() + ' of ' + T.SLOTS.length;
+    $('pickCount').textContent = S.fm ? S.fm + ' \u00B7 ' + T.filledCount() + ' of ' + T.SLOTS.length : 'Formation First';
   }
 
   // Long surnames shrink to fit the slot on one line instead of being cut off
@@ -538,7 +538,8 @@
     renderChrome(flashIdx);
     var panel = $('offerPanel');
     if (S.awaitingLock && !S.tweakMode && !S.lockHold) startLockTimer(S); else stopLockTimer();
-    if (S.awaitingLock) panel.innerHTML = R.decision(S);
+    if (!S.fm) panel.innerHTML = R.formationOffer(S);
+    else if (S.awaitingLock) panel.innerHTML = R.decision(S);
     else if (S.mode.source === 'spin' && !S.offer && !S.spinPos && !S.tweakMode) panel.innerHTML = R.pickPosition(S);
     else if (S.offer && S.offer.kind === 'spin') panel.innerHTML = R.offerSpin(S);
     else if (S.offer) panel.innerHTML = R.offerRoll(S);
@@ -622,7 +623,7 @@
     });
     var hint = $('pickCount');
     if (placingId) hint.innerHTML = '<span class="place-hint">Click a glowing spot</span>';
-    else if (S) hint.textContent = T.filledCount() + ' of ' + T.SLOTS.length;
+    else if (S) hint.textContent = S.fm ? S.fm + ' \u00B7 ' + T.filledCount() + ' of ' + T.SLOTS.length : 'Formation First';
   }
 
   document.addEventListener('mouseover', function (e) {
@@ -713,6 +714,7 @@
   function nextOffer() {
     var S = T.state();
     if (S.finished) return;
+    if (!S.fm) { renderDraft(); return; } // the formation comes first (R.formationOffer)
     if (T.filledCount() === S.slots.length) { settle(); return; }
     if (S.mode.source === 'spin') {
       if (S.spinPos) spin();
@@ -723,6 +725,16 @@
       if (offer && offer.il) { T.track('ileg_natural_shown', { mode: S.mode.name }); ilReveal([T.byId[offer.il]], false, renderDraft); }
       else if (offer && offer.special) packIntro(offer.special, renderDraft, offer.lifeline); else renderDraft();
     }
+  }
+
+  /* The formation (17 Oct 2026, the owner): three offered, one tapped (or keyed 1, 2 or 3), then the draft fills its spots.
+     Every mode, the Daily too: the offer is seeded, so a Daily or a friend's challenge offers everyone the same three */
+  function chooseFormation(id) {
+    var S = T.state();
+    if (!S || S.finished || S.fm || busy || (S.fmOffer || []).indexOf(id) < 0 || !T.setFormation(id)) return;
+    if (!S.qd) T.track('formation_pick', { mode: S.mode.name, formation: id });
+    sfx.pick();
+    nextOffer();
   }
 
   /* Legends Pick / Legend Pick: a short pack-opening moment before the three greats appear.
@@ -789,7 +801,7 @@
     busy = true;
     try {
       CI.reveal({
-        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.positionsOf(p).map(T.posLabel).join('/') : T.positionsOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), // three: short, so they line up
+        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: T.positionsOf(p).map(T.posLabel).join('/') }; }), // the spot codes (LB/CB), short so they line up (17 Oct 2026)
         kicker: paid ? 'World Legend Pick' : 'World Legend', title: paid ? 'Your World Legends' : '',
         done: function () { busy = false; done(); }
       });
@@ -1147,14 +1159,16 @@
      pictures go in the shared trophy list (js/cast-account.js TROPHIES.epl; ~/cast-dev/epl/tools/trophies_epl.js) */
   var LONDON = ['arsenal', 'chelsea', 'spurs', 'westham', 'palace', 'fulham', 'brentford', 'charlton', 'qpr', 'wimbledon'];
   function footballTrophies(S, out, players, ids, hit) {
-    var line = function (code) { return S.slots.filter(function (s) { return s.code === code && s.player; }).map(function (s) { return s.player.tries_1998_plus || 0; }); };
+    // The lines of the formation's spots (17 Oct 2026): the defence, the midfield, the forwards
+    var LINE_OF = { LB: 'D', CB: 'D', RB: 'D', LWB: 'D', RWB: 'D', DM: 'M', CM: 'M', AM: 'M', LM: 'M', RM: 'M', LW: 'F', ST: 'F', RW: 'F', D: 'D', M: 'M', F: 'F' };
+    var line = function (code) { return S.slots.filter(function (s) { return LINE_OF[s.code] === code && s.player; }).map(function (s) { return s.player.tries_1998_plus || 0; }); };
     var sum = function (a) { return a.reduce(function (t, x) { return t + x; }, 0); };
     var D = line('D'), M = line('M'), F = line('F');
     if (players.some(function (p) { return (p.record_name || p.name).indexOf('Alan Shearer') === 0; })) ids.push('ep_record'); // Record Breaker: Shearer's 260
     if (players.some(function (p) { return p.tries_1998_plus >= 100; })) ids.push('ep_100'); // 100 Club
-    if (F.length === 3 && F.every(function (g) { return g >= 100; })) ids.push('ep_front'); // Front Three: all on 100+
-    if (M.length === 3 && sum(M) >= 150) ids.push('ep_mid'); // Goals From Midfield
-    if (D.length === 4 && sum(D) >= 60) ids.push('ep_back'); // Goals From the Back
+    if (F.filter(function (g) { return g >= 100; }).length >= 3) ids.push('ep_front'); // Front Three: 3 forwards on 100+
+    if (M.length && sum(M) >= 150) ids.push('ep_mid'); // Goals From Midfield
+    if (D.length && sum(D) >= 60) ids.push('ep_back'); // Goals From the Back
     var clubsOf = function (p) { return (p.club_years || []).map(function (c) { return c.club; }); };
     var last = {}; players.forEach(function (p) { last[T.lastClub(p)] = 1; });
     if (Object.keys(last).length >= 10) ids.push('ep_tour'); // Tour of England: ten clubs
@@ -1296,6 +1310,8 @@
           // seed: the draft, so this game can be sent to a friend as a challenge; key: boosted with a Vault key (CAST Pass)
           S.seed ? { seed: S.seed } : {}, S.keyUsed ? { key: S.keyUsed } : {}, S.keysUsed ? { lks: S.keysUsed } : {}, S.qd ? { qd: 1 } : {}, S.goatUsed ? { goat: 1 } : {}, S.immUsed ? { imm: S.immUsed } : {}, S.ilegUsed ? { ileg: S.ilegUsed } : {},
           S.daily ? { daily: S.daily.n, date: S.daily.date, go: S.daily.go } : {},
+          // fm: the formation (17 Oct 2026); the picks are in its order, and the server checks each one's spot
+          S.fm ? { fm: S.fm } : {},
           // World Cup 200+: how many World Cup games the pack had (the board adds the total up at that tally)
           S.mode.id === 'wc' ? { wv: T.DATASETS.wc.wv || 0 } : {},
           // the women's pack slot: how many matches since the pack was built it had (never on here)
@@ -1355,7 +1371,7 @@
         var c = club(T.slotClub(s));
         return { pos: T.posLabel(s.code), name: T.surname(s.player.name), val: T.fmt(s.player.tries_1998_plus || 0), vc: '#fff', abbr: c.abbr, bg: c.bg, fg: c.fg };
       }),
-      rows: R.ROWS, teamLabel: 'Your XI', // the pitch: the front three up top, the midfield, the back four
+      rows: R.rows(S), teamLabel: 'Your XI', // the pitch: the formation's front row up top (17 Oct 2026)
       stats: [{ label: 'Biggest Pick', value: Math.max.apply(null, goals) }, { label: 'Smallest Pick', value: Math.min.apply(null, goals) }, { label: 'Clubs', value: clubs }]
         .concat(wc != null ? [{ label: 'Wildcards', value: wc }] : []),
       star: last ? { label: 'The Last Pick', value: last.s.player.name, extra: '+' + T.fmt(last.s.player.tries_1998_plus || 0) } : null,
@@ -1465,7 +1481,7 @@
     }
     // .mode-card only: the body carries data-mode during the draft and results (the mode skin), and a tap anywhere
     // there must never start a new game
-    var t = e.target.closest('.mode-card[data-mode],.mode-mini[data-mode],[data-pick],[data-place],[data-wildcard],[data-slot],[data-action],[data-track]');
+    var t = e.target.closest('.mode-card[data-mode],.mode-mini[data-mode],[data-fm],[data-pick],[data-place],[data-wildcard],[data-slot],[data-action],[data-track]');
     if (!t) return;
 
     if (t.hasAttribute('data-track')) {
@@ -1481,6 +1497,7 @@
       if (T.players.length) newGame(selectedMode); else { startWhenReady = selectedMode; $('startBtn').hidden = false; }
       return;
     }
+    if (t.hasAttribute('data-fm')) { chooseFormation(t.getAttribute('data-fm')); return; }
     if (t.hasAttribute('data-pick')) { onPick(t.getAttribute('data-pick')); return; }
     if (t.hasAttribute('data-place')) { place($('sheetBody').getAttribute('data-player'), t.getAttribute('data-place')); return; }
     if (t.hasAttribute('data-gh') && T.state()) T.track('go_higher_remove', { mode: T.state().mode.name, total: T.total(), how: goHigherHow(T.state()) }); // Go Higher's Remove
@@ -1664,7 +1681,7 @@
     var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
     if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
         $('sheet').hidden && !document.documentElement.classList.contains('ca-open')) {
-      var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.offer-cards [data-pick]:not([disabled]), .srow[data-pick]:not([disabled])');
+      var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.fm-cards [data-fm], .offer-cards [data-pick]:not([disabled]), .srow[data-pick]:not([disabled])');
       var keyHit = Array.prototype.filter.call(keyList, function (x) { return x.offsetParent !== null; })[+e.key - 1];
       if (keyHit) { e.preventDefault(); keyHit.click(); return; }
     }
@@ -1769,7 +1786,7 @@
       S2.spinPos = code; S2.spinSlot = null;
       var o = T.spinOffer();
       if (!o) return;
-      o.players.filter(function (p) { return !S2.used[p.id] && T.positionsOf(p).indexOf(code) !== -1; })
+      o.players.filter(function (p) { return !S2.used[p.id] && T.canFill(p, code); })
         .sort(function (a, b) { return b.tries_1998_plus - a.tries_1998_plus; }).slice(0, per || 1)
         .forEach(function (p) { out.push({ id: p.id, code: code, t: p.tries_1998_plus }); });
     });
@@ -1852,6 +1869,15 @@
       if (S.mode.wildcards && !S.mode.paidOnly && tierW !== null) setTierWildcards(S, tierW);
       busy = true; // no taps while it drafts
       var spin = S.mode.source === 'spin', exact = S.mode.rule === 'exact';
+      // The formation (17 Oct 2026): the one of the three offered whose quick greedy draft goes furthest
+      var root0 = T.snapshot(), bestFm = S.fmOffer[0], bestT = -1;
+      S.fmOffer.forEach(function (fm) {
+        T.restore(root0); S.fm = null; T.setFormation(fm);
+        if (!spin) T.rollOffer();
+        var r = qdRollout(T.snapshot(), spin, exact), t = r ? (exact && r.total > T.TARGET ? -1 : r.total) : -1;
+        if (t > bestT) { bestT = t; bestFm = fm; }
+      });
+      T.restore(root0); S.fm = null; T.setFormation(bestFm);
       if (!spin) T.rollOffer(); // the first offer, as the game deals it
       return qdSearch(spin, exact, spin ? 2 : 4).then(function (best) {
         if (!best) throw new Error('Quick Draft could not find a team for this draft. It is still waiting.');

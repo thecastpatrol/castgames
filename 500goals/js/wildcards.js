@@ -53,8 +53,8 @@
   T.subTargets = function (idx) {
     var S = T.state(), s = S && S.slots[idx];
     if (!s || !s.player) return [];
-    var codes = T.positionsOf(s.player), out = [];
-    S.slots.forEach(function (x, i) { if (i !== idx && !x.player && x.code !== s.code && codes.indexOf(x.code) !== -1) out.push(i); });
+    var out = [];
+    S.slots.forEach(function (x, i) { if (i !== idx && !x.player && x.code !== s.code && T.canFill(s.player, x.code)) out.push(i); });
     return out;
   };
   T.subMovable = function () {

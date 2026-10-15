@@ -211,8 +211,9 @@
       ctx.fillStyle = p && T.isGoat(p) ? 'rgba(241,192,115,.18)' : 'rgba(' + M.rgb + ',.07)'; ctx.fill();
       if (p === best) { ctx.strokeStyle = ACC; ctx.lineWidth = 3; ctx.stroke(); }
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round(22 * k) + 'px ' + F;
-      ctx.fillText(T.posLabel ? T.posLabel(sl.code) : sl.code, x0 + 18, ry + rowH / 2 + 8 * k);
+      var pl = T.posLabel ? T.posLabel(sl.code) : sl.code; // the spot (LWB, RWB: a size smaller so they fit, 17 Oct 2026)
+      ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round((pl.length > 2 ? 17 : 22) * k) + 'px ' + F;
+      ctx.fillText(pl, x0 + 18, ry + rowH / 2 + 8 * k);
       if (!p) { ctx.fillStyle = '#5c5c72'; ctx.font = '700 ' + Math.round(24 * k) + 'px ' + F; ctx.fillText('Not picked', x0 + 170 * k, ry + rowH / 2 + 8 * k); return; }
       var club = T.club(T.slotClub(sl));
       var cx = x0 + 70 * k, cwid = 80 * k;

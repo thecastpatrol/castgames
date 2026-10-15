@@ -3892,5 +3892,11 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-pitch.is-pitch::after { bottom: 0; border-bottom: 0; }
 .ca-pitch.is-pitch .ca-spot { flex-basis: 30%; }
 .ca-pitch.is-pitch .ca-pitch-row:last-child .ca-spot { flex-basis: 24%; }
+/* 500 GOALS formations (17 Oct 2026): a row of five (a back five, a five-man midfield) shares the width, never cut */
+.ca-pitch.is-pitch .ca-pitch-row.is-five { gap: 3px; }
+.ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot { flex-basis: 20%; padding-left: 3px; padding-right: 3px; }
+.ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name { font-size: 11px; letter-spacing: -.2px; overflow-wrap: normal; }
+.ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name.is-long { font-size: 9.5px; letter-spacing: -.3px; }
+.ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name.is-xlong { font-size: 9px; letter-spacing: -.3px; overflow-wrap: anywhere; hyphens: auto; }
 /* One Shop for every CAST game (16 Oct 2026): a special item's "Only in" tag, quiet and never gold */
 .ca-shop-where.is-only { display: inline-block; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #e5e7eb; }

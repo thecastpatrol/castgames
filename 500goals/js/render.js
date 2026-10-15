@@ -211,12 +211,31 @@
     return { color: '#3b5b8a', glow: 'rgba(59,91,138,.3)', stage: 'cold' };
   };
 
-  // The pitch from above, attacking upwards (17 Oct 2026): the front three, the midfield three, the back four
-  var ROWS = R.ROWS = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
+  // The pitch from above, attacking upwards: the game's formation, its front row at the top (17 Oct 2026)
+  R.rows = function (S) { return T.formationRows(S && S.fm).slice().reverse(); };
+
+  /* The formation offer (17 Oct 2026): three cards, each its name and a little pitch of dots in its shape, tapped or keyed */
+  R.miniPitch = function (id) {
+    return '<span class="fm-pitch" aria-hidden="true">' + (T.FORMATIONS[id] || []).slice().reverse().map(function (row) {
+      return '<span class="fm-row">' + row.map(function (c) { return '<span class="fm-dot"><i></i><b>' + esc(c) + '</b></span>'; }).join('') + '</span>';
+    }).join('') + '</span>';
+  };
+  R.formationOffer = function (S) {
+    return '<div class="panel-head"><span class="panel-title">Pick Your Formation</span><span class="panel-meta">Then draft its spots</span></div>' +
+      '<p class="fm-intro">Choose 1 of these 3. Your draft fills its real spots, from left back to striker.</p>' +
+      '<div class="fm-cards">' + (S.fmOffer || []).map(function (id, n) {
+        var spots = T.formationSlots(id);
+        return '<button type="button" class="fm-card" data-fm="' + esc(id) + '" style="animation-delay:' + (n * 70) + 'ms" aria-label="' + esc(id) + ': ' + esc(spots.join(' ')) + '">' +
+          '<span class="fm-side"><span class="fm-name">' + esc(id) + '</span><span class="fm-note">' + esc((T.FORMATION_NOTES || {})[id] || '') + '</span>' +
+          '<span class="fm-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' + R.miniPitch(id) +
+          '</button>';
+      }).join('') + '</div>';
+  };
 
   R.pitch = function (S, flashIdx) {
-    return ROWS.map(function (row) {
-      return '<div class="pitch-row">' + row.map(function (i) {
+    if (!S.fm) return '<div class="pitch-wait"><b>Pick Your Formation</b><span>Your XI lines up here</span></div>';
+    return R.rows(S).map(function (row) {
+      return '<div class="pitch-row is-n' + row.length + '">' + row.map(function (i) {
         var s = S.slots[i];
         var p = s.player;
         var tweakable = S.tweakMode && p;
@@ -462,7 +481,7 @@
 
   // Squad sort for Team Spin (squads can run to 30+ players)
   T.spinSort = T.spinSort || { key: 'pos', dir: 1 };
-  var POS_ORDER = ['D', 'M', 'F'];
+  var POS_ORDER = T.SPOT_ORDER; // the back to the front (js/data.js)
 
   // Group under the player's main listed position that is still open in your XI
   function groupPos(p) {
@@ -489,10 +508,10 @@
     var btn = function (key, label, arrowUp, arrowDown) {
       var on = srt.key === key;
       return '<button type="button" class="sort-btn' + (on ? ' is-on' : '') + '" data-action="spin-sort" data-sort="' + key + '" aria-pressed="' + on + '">' +
-        '<span>' + label + '</span><span class="sort-dir">' + (on ? (srt.dir === 1 ? arrowUp : arrowDown) : (key === 'pos' ? 'FB first' : 'A to Z')) + '</span></button>';
+        '<span>' + label + '</span><span class="sort-dir">' + (on ? (srt.dir === 1 ? arrowUp : arrowDown) : (key === 'pos' ? 'Backs First' : 'A to Z')) + '</span></button>';
     };
     return '<div class="sort-toggle" role="group" aria-label="Sort squad">' +
-      btn('pos', 'Position', 'FB first &uarr;', 'LK first &darr;') +
+      btn('pos', 'Position', 'Backs First &uarr;', 'Strikers First &darr;') +
       btn('name', 'Surname', 'A to Z &uarr;', 'Z to A &darr;') +
       '</div>';
   }
@@ -764,7 +783,7 @@
       '</div>' +
       '<div data-cast-results></div>' +
       '<div class="panel">' +
-        '<div class="panel-head is-stack"><span class="panel-title">Your Selected XI</span><span class="panel-meta">' + (T.totalLabel(S) === T.ERA_LABEL ? T.DATASETS[T.DATASET].only : 'Legends: whole careers') + '</span></div>' +
+        '<div class="panel-head is-stack"><span class="panel-title">' + (S.fm ? 'Your ' + esc(S.fm) + ' XI' : 'Your Selected XI') + '</span><span class="panel-meta">' + (T.totalLabel(S) === T.ERA_LABEL ? T.DATASETS[T.DATASET].only : 'Legends: whole careers') + '</span></div>' +
         '<ol class="rlist">' + rows + '</ol>' +
         '<div class="rsum"><span>Total</span><strong>' + T.fmt(out.total) + '</strong></div>' +
       '</div>' +

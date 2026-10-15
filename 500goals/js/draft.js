@@ -62,7 +62,7 @@
      goalscorer, kept at the normal setting. */
   /* 500 GOALS (17 Oct 2026): career Premier League goals run on the same scale as NRL tries, so 1000TRIES' own settings
      carry across unchanged (set with the real-engine simulator in ~/cast-dev/private-notes/epl) */
-  T.HARD = { weight: 110, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
+  T.HARD = { weight: 32, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 }; // weight retuned for the formations (17 Oct 2026)
   /* One Legend per team from the game's own rolls (12 Oct 2026, the owner's call: stacked Legends bought the target
      too easily): once the team has one, no free Legends Pick is dealt. Legend Keys are not limited (16 Oct 2026, the
      owner: "If people pay they have a right to use"), and the GOAT is not one of the Legends */
@@ -85,7 +85,7 @@
   T.snapshot = function () { return copyState(S); };
   T.restore = function (x) { var c = copyState(x); Object.keys(S).forEach(function (k) { delete S[k]; }); Object.assign(S, c); };
   // A draft brought back from this phone (js/app.js, Save the draft in progress) becomes the game in play
-  T.adopt = function (x) { S = x; return S; };
+  T.adopt = function (x) { S = x; T.SLOTS = x && x.fm ? T.formationSlots(x.fm) : T.formationSlots(T.FORMATION_DEFAULT); return S; };
 
   /* Seeded draws: every game is dealt from a seed (S.seed), so a friend can be challenged to the same draft. Each draw
      has its own stream (the first offer, the Legends Pick, each spin), and offers are chosen by weighted random keys per
@@ -119,7 +119,8 @@
     var mode = T.MODES[modeId] || T.MODES.plus;
     S = {
       mode: mode,
-      slots: T.SLOTS.map(function (code) { return { code: code, player: null }; }),
+      slots: [],         // the formation's spots (T.setFormation); none until one is chosen
+      fm: null,          // the formation chosen (js/data.js T.FORMATIONS)
       used: {},          // id -> true for players in the XI
       offer: null,       // { kind: 'roll', players: [] } or { kind: 'spin', year, club, players: [] }
       revealed: {},      // id -> true when Reveal Goals showed the goals
@@ -161,9 +162,29 @@
       // the first game's is promised (T.ilFirstSeen), never in a friend's challenge, which deals what the friend had
       if (ig() < T.IL_NATURAL || (!S.challenge && !T.ilFirstSeen())) S.il = { at: 2 + Math.floor(ig() * 8), shown: null };
     }
+    /* The formation offer (17 Oct 2026, the owner): three of the ten, seeded with the draft (a friend's challenge and
+       everyone's Daily are offered the same three). opts.fm: play that one straight away (the simulator) */
+    T.SLOTS = T.formationSlots(T.FORMATION_DEFAULT);
+    S.fmOffer = T.formationOffer();
+    if (opts && opts.fm && T.FORMATIONS[opts.fm]) T.setFormation(opts.fm);
     // The target is set per game: the pack's own (4000, WBBL 750), or a themed Daily's (js/daily.js, e.g. 850)
     T.TARGET = (S.daily && S.daily.target) || (T.DATASETS[T.DATASET] || {}).target || T.TARGET;
     return S;
+  };
+
+  T.FORMATION_OFFER = 3;
+  T.formationOffer = function () {
+    var r = T.stream('formation'), ids = T.FORMATION_IDS.slice();
+    for (var i = ids.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = ids[i]; ids[i] = ids[j]; ids[j] = t; }
+    return ids.slice(0, T.FORMATION_OFFER);
+  };
+  // Choose the game's formation: its spots become the XI to fill. Once only
+  T.setFormation = function (id) {
+    if (!S || S.fm || !T.FORMATIONS[id]) return false;
+    S.fm = id;
+    S.slots = T.formationSlots(id).map(function (code) { return { code: code, player: null }; });
+    T.SLOTS = T.formationSlots(id);
+    return true;
   };
 
   /* A themed Daily's club (js/daily.js, e.g. Knights Day): the XI needs at least one player who has played for that
@@ -223,17 +244,15 @@
 
   T.fitsEmpty = function (p) {
     var empty = T.emptyCodes();
-    return T.positionsOf(p).some(function (c) { return empty[c]; });
+    return Object.keys(empty).some(function (c) { return T.canFill(p, c); });
   };
 
-  // Distinct empty slot codes this player can go into
+  // Distinct empty slot codes this player can go into: his own spots first, then the same flank role (js/data.js T.canFill)
   T.openCodesFor = function (p) {
-    var empty = T.emptyCodes();
-    var seen = {};
-    var codes = T.positionsOf(p).filter(function (c) {
-      if (!empty[c] || seen[c]) return false;
-      seen[c] = true;
-      return true;
+    var empty = T.emptyCodes(), own = T.positionsOf(p);
+    var codes = Object.keys(empty).filter(function (c) { return T.canFill(p, c); }).sort(function (a, b) {
+      var ia = own.indexOf(a), ib = own.indexOf(b);
+      return (ia < 0 ? 9 + own.indexOf(T.SAME_SPOT[a]) : ia) - (ib < 0 ? 9 + own.indexOf(T.SAME_SPOT[b]) : ib);
     });
     // A spot running out of players (25000 RUNS, 15 Oct 2026: a club day can run short of one line, and a player who
     // fits two lines could take the other and leave this one with nobody): when the players left who can fill it are no more
@@ -247,7 +266,7 @@
   };
   // How many unpicked players in today's pool (this one included) could still fill an open spot of this code
   T.supplyFor = function (code, me) {
-    return T.players.filter(function (q) { return (q === me || !S.used[q.id]) && T.inDailyPool(q) && T.positionsOf(q).indexOf(code) !== -1; }).length;
+    return T.players.filter(function (q) { return (q === me || !S.used[q.id]) && T.inDailyPool(q) && T.canFill(q, code); }).length;
   };
 
   T.eligible = function () {
@@ -636,6 +655,7 @@
 
   // null while undecided; { win, total, target, diff, reason } once decided
   T.outcome = function (force) {
+    if (!S.fm || !S.slots.length) return null; // no formation chosen yet
     var total = T.total();
     var full = T.filledCount() === S.slots.length;
     var mode = S.mode;

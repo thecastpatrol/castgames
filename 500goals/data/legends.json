@@ -26,6 +26,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -61,6 +64,10 @@
 }
 ],
 "positions_played": [
+"ST",
+"AM"
+],
+"lines": [
 "M",
 "F"
 ],
@@ -117,6 +124,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -142,6 +152,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -177,6 +190,10 @@
 }
 ],
 "positions_played": [
+"AM",
+"CM"
+],
+"lines": [
 "M",
 "F"
 ],
@@ -208,6 +225,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -253,6 +273,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -298,6 +321,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -338,6 +364,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -388,6 +417,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -438,6 +470,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "M",
 "F"
 ],
@@ -469,6 +504,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -509,6 +547,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -559,6 +600,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "M",
 "F"
 ],
@@ -610,6 +654,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "F"
 ],
 "draft_role": "F",
@@ -655,6 +702,9 @@
 }
 ],
 "positions_played": [
+"ST"
+],
+"lines": [
 "M",
 "F"
 ],
@@ -681,6 +731,10 @@
 }
 ],
 "positions_played": [
+"CM",
+"AM"
+],
+"lines": [
 "M"
 ],
 "draft_role": "M",

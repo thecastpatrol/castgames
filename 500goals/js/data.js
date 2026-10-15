@@ -8,13 +8,54 @@
   // The over/under mode is a separate game on CAST Games (its own page); this home shows no card for it
   T.OU_SEPARATE = true;
 
-  // The XI in draft order: a 4-3-3 with no keeper (the owner, 16 Oct 2026): four defenders, three midfielders, three forwards
-  T.SLOTS = ['D', 'D', 'D', 'D', 'M', 'M', 'M', 'F', 'F', 'F'];
+  /* Formations (17 Oct 2026, the owner): the first step of a draft is a formation, three of these ten offered, then the
+     draft fills its real spots. Ten outfield spots each (no keeper), rows from the back four up to the front, each row
+     left to right. The server keeps the same list (1000TRIES firebase/functions/lib/checkepl.js FORMATIONS) */
+  T.FORMATIONS = {
+    '4-3-3': [['LB', 'CB', 'CB', 'RB'], ['CM', 'CM', 'CM'], ['LW', 'ST', 'RW']],
+    '4-4-2': [['LB', 'CB', 'CB', 'RB'], ['LM', 'CM', 'CM', 'RM'], ['ST', 'ST']],
+    '4-2-3-1': [['LB', 'CB', 'CB', 'RB'], ['DM', 'DM'], ['LW', 'AM', 'RW'], ['ST']],
+    '3-5-2': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['AM'], ['ST', 'ST']],
+    '3-4-3': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['LW', 'ST', 'RW']],
+    '5-3-2': [['LWB', 'CB', 'CB', 'CB', 'RWB'], ['CM', 'CM', 'CM'], ['ST', 'ST']],
+    '4-1-4-1': [['LB', 'CB', 'CB', 'RB'], ['DM'], ['LM', 'CM', 'CM', 'RM'], ['ST']],
+    '4-5-1': [['LB', 'CB', 'CB', 'RB'], ['LM', 'CM', 'CM', 'CM', 'RM'], ['ST']],
+    '3-4-2-1': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['AM', 'AM'], ['ST']],
+    '4-3-1-2': [['LB', 'CB', 'CB', 'RB'], ['CM', 'DM', 'CM'], ['AM'], ['ST', 'ST']]
+  };
+  T.FORMATION_IDS = Object.keys(T.FORMATIONS);
+  // A few words on each offer card
+  T.FORMATION_NOTES = {
+    '4-3-3': 'Front Three', '4-4-2': 'Two Up Top', '4-2-3-1': 'Two Holding Mids', '3-5-2': 'Wing Backs and Two Up Top',
+    '3-4-3': 'Back Three, Front Three', '5-3-2': 'Back Five', '4-1-4-1': 'One Holding Mid', '4-5-1': 'Five Across the Middle',
+    '3-4-2-1': 'Two Behind the Striker', '4-3-1-2': 'The Diamond'
+  };
+  T.FORMATION_DEFAULT = '4-3-3';
+  // Its spots in draft order (the back row first, as the games save their picks) and each row's slot numbers
+  T.formationSlots = function (id) { return [].concat.apply([], T.FORMATIONS[id] || T.FORMATIONS[T.FORMATION_DEFAULT]); };
+  T.formationRows = function (id) {
+    var i = 0;
+    return (T.FORMATIONS[id] || T.FORMATIONS[T.FORMATION_DEFAULT]).map(function (r) { return r.map(function () { return i++; }); });
+  };
 
-  T.POS_NAMES = { D: 'Defender', M: 'Midfielder', F: 'Forward' };
-  // What the spots and chips show. The codes underneath (D, M, F) are what the games save and the server checks
+  // The XI in draft order: the game's formation (T.setFormation in js/draft.js); the 4-3-3 until one is chosen
+  T.SLOTS = T.formationSlots(T.FORMATION_DEFAULT);
+
+  T.POS_NAMES = {
+    LB: 'Left Back', CB: 'Centre Back', RB: 'Right Back', LWB: 'Left Wing Back', RWB: 'Right Wing Back',
+    DM: 'Defensive Mid', CM: 'Central Mid', AM: 'Attacking Mid', LM: 'Left Mid', RM: 'Right Mid',
+    LW: 'Left Wing', RW: 'Right Wing', ST: 'Striker',
+    D: 'Defender', M: 'Midfielder', F: 'Forward' // the lines of the games before the formations
+  };
+  // What the spots and chips show: the real spot names. The old lines (D, M, F) read DEF, MID, FWD
   T.POS_SHORT = { D: 'DEF', M: 'MID', F: 'FWD' };
   T.posLabel = function (code) { return T.POS_SHORT[code] || code; };
+  // The spots from the back to the front (Team Spin's squad order)
+  T.SPOT_ORDER = ['LB', 'LWB', 'CB', 'RB', 'RWB', 'DM', 'CM', 'LM', 'RM', 'AM', 'LW', 'RW', 'ST'];
+  /* Each player has up to 2 spots (positions_played). The same flank role at another height counts as his too (the
+     owner: a wing-back spot can take a full-back on that side; a winger plays wide midfield the same): the server
+     has the same pairs (checkepl.js SAME) */
+  T.SAME_SPOT = { LB: 'LWB', LWB: 'LB', RB: 'RWB', RWB: 'RB', LW: 'LM', LM: 'LW', RW: 'RM', RM: 'RW' };
 
   /* Every club that has played in the Premier League with its spells in the league (first and last season of each run;
      seasons are named by the year they start: 1992 is 1992-93), so Team Spin only lands on a club in a season it was in
@@ -159,7 +200,8 @@
   };
 
   T.canFill = function (p, code) {
-    return T.positionsOf(p).indexOf(code) !== -1;
+    var own = T.positionsOf(p);
+    return own.indexOf(code) !== -1 || (!!T.SAME_SPOT[code] && own.indexOf(T.SAME_SPOT[code]) !== -1);
   };
 
   // Played for club in that season (Team Spin), or in any season when there is no year (a themed Daily's club)
