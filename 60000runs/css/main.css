@@ -386,7 +386,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 }
 .slot.is-filled .slot-code { position: absolute; top: 5px; left: 6px; font-size: 9px; font-weight: 900; opacity: .75; }
 .slot-abbr { position: absolute; top: 5px; right: 6px; font-size: 9px; font-weight: 900; color: var(--club-accent); }
-.slot-name { font-size: 12px; font-weight: 900; line-height: 1.1; margin-top: 10px; max-width: 100%; overflow: hidden; text-overflow: clip; white-space: nowrap; }
+.slot-name { font-size: 12px; font-weight: 900; line-height: 1.25; margin-top: 10px; max-width: 100%; overflow-x: clip; overflow-y: visible; white-space: nowrap; } /* line-height and clip only sideways: a g, y or p keeps its tail (16 Oct 2026, the owner) */
 .slot-tries { font-size: 18px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .slot.is-flash { animation: flash 1s ease; }
 @keyframes flash { 0% { transform: scale(.6); opacity: 0; } 40% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }

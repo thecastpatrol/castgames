@@ -368,7 +368,11 @@
      returning visitors see it straight away; ?castlaunch=1 previews the launched page (only for that visit). */
   var LAUNCH = CFG.launch || '', LS_LAUNCH = 'cast_launch_v1', LAUNCH_TTL = 600000;
   var BASE_ENABLED = ENABLED, BASE_HIDE = HIDE.slice(), launched = false, launchAt = 0;
-  var launchPreview = /[?&]castlaunch=1(&|$)/.test(location.search);
+  // ?castlaunch=1 previews the launched game on this device until ?castlaunch=0 (16 Oct 2026, the owner: test every new
+  // game signed in, Vault and all, before its Launch); it sticks per device so the whole game can be played through
+  if (/[?&]castlaunch=1(&|$)/.test(location.search)) lsSet('cast_launch_preview', '1');
+  if (/[?&]castlaunch=0(&|$)/.test(location.search)) lsSet('cast_launch_preview', null);
+  var launchPreview = lsGet('cast_launch_preview') === '1';
   function launchCache() { try { return JSON.parse(lsGet(LS_LAUNCH) || 'null') || {}; } catch (e) { return {}; } }
   function setLaunched(on) {
     launched = !!on;
