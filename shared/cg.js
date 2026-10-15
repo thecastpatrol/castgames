@@ -20,7 +20,7 @@
   var SPORTS = [
     { id: 'nrl', name: 'NRL', long: 'Rugby League', c: '34,197,94', status: 'live', path: 'nrl/' }, // path: its See All page
     { id: 'afl', name: 'AFL', long: 'Aussie Rules', c: '239,68,68', status: 'live', path: 'afl/' },
-    { id: 'cricket', name: 'Cricket', long: 'The Big Bash and more', c: '255,122,46', status: 'live', path: 'cricket/' },
+    { id: 'cricket', name: 'Cricket', long: 'The Big Bash and Tests', c: '255,122,46', status: 'live', path: 'cricket/' },
     { id: 'nfl', name: 'NFL', long: 'American Football', c: '129,140,248', status: 'soon' },
     { id: 'racing', name: 'Horse Racing', long: 'The Races', c: '250,204,21', status: 'soon' }
   ];
@@ -36,6 +36,9 @@
     // 25000 RUNS (15 Oct 2026): the Big Bash game, a BBL XI to 25,000 career runs
     { id: '25000runs', sport: 'cricket', name: '25000 RUNS', path: '25000runs/', logo: 'assets/logos/25000runs.png', c1: '#1a2148', c2: '#0b1022', status: 'live', badge: 'New',
       line: 'Draft a Big Bash XI and reach 25,000 career BBL runs.', short: 'Draft a BBL XI to 25,000 runs' },
+    // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60,000 career Test runs
+    { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
+      line: 'Draft a Test XI from every Test since 1877 and reach 60,000 career Test runs.', short: 'Draft a Test XI to 60,000 runs' },
     // Play On (15 Oct 2026): 4000 GOALS's Six Again, its own page like Six Again's
     { id: 'play-on', sport: 'afl', name: 'Play On', path: 'play-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#5a1a1a', c2: '#1c0b10', status: 'live', launch: 'po', badge: 'New',
       line: 'Over or under? Call AFL players before the clock runs out.', short: 'Over or under, vs the clock' }

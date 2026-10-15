@@ -49,6 +49,9 @@ GAMES = [
     # 25000 RUNS (15 Oct 2026, the Big Bash game): developed in ~/cast-dev/bigbash/game, copied to CAST Games/25000 RUNS Game
     ('25000runs', '25000 RUNS Game', '25000runs', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
+    # 60000 RUNS (16 Oct 2026, the Test cricket game): developed in ~/cast-dev/tests/game, copied to CAST Games/60000 RUNS Game
+    ('60000runs', '60000 RUNS Game', '60000runs', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
 ]
@@ -103,7 +106,7 @@ def fit_code(dst, folder):
             p = os.path.join(root, f)
             s = open(p, encoding='utf-8').read()
             t = rewrite_links(s, True) if f.endswith('.js') else s
-            if folder in ('4000goals', '25000runs') and f.endswith('.js'):
+            if folder in ('4000goals', '25000runs', '60000runs') and f.endswith('.js'):
                 t = t.replace("'1000tries_", "'" + folder + "_")  # its own saved data here (sound, draft, played...)
                 t = t.replace("'1000_daily_'", "'" + folder + "_daily_'")  # and its own Daily goes (1000TRIES keeps '1000_daily_')
             if t != s:
@@ -113,7 +116,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png']
 
 
 def clear_byline(path):

@@ -1,0 +1,890 @@
+{
+"source": "ESPNcricinfo Statsguru Test career records (read 16 Oct 2026); names from Wikidata.",
+"odds": {
+"legends": 0.33,
+"immortal": 0
+},
+"players": [
+{
+"id": "legend-sachin-tendulkar",
+"name": "Sachin Tendulkar",
+"tries_1998_plus": 15921,
+"primary_club": "ind",
+"club_years": [
+{
+"club": "ind",
+"from": 1989,
+"to": 2013
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1989-2013",
+"matches": 200,
+"wkts": 46,
+"ci": "35320",
+"tier": "legend",
+"record_name": "Sachin Tendulkar (Legend)"
+},
+{
+"id": "legend-ricky-ponting",
+"name": "Ricky Ponting",
+"tries_1998_plus": 13378,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 1995,
+"to": 2012
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1995-2012",
+"matches": 168,
+"wkts": 5,
+"ci": "7133",
+"tier": "legend",
+"record_name": "Ricky Ponting (Legend)"
+},
+{
+"id": "legend-jacques-kallis",
+"name": "Jacques Kallis",
+"tries_1998_plus": 13289,
+"primary_club": "sa",
+"club_years": [
+{
+"club": "sa",
+"from": 1995,
+"to": 2013
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1995-2013",
+"matches": 166,
+"wkts": 292,
+"ci": "45789",
+"tier": "legend",
+"record_name": "Jacques Kallis (Legend)"
+},
+{
+"id": "legend-rahul-dravid",
+"name": "Rahul Dravid",
+"tries_1998_plus": 13288,
+"primary_club": "ind",
+"club_years": [
+{
+"club": "ind",
+"from": 1996,
+"to": 2012
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1996-2012",
+"matches": 164,
+"wkts": 1,
+"ci": "28114",
+"tier": "legend",
+"record_name": "Rahul Dravid (Legend)"
+},
+{
+"id": "legend-alastair-cook",
+"name": "Alastair Cook",
+"tries_1998_plus": 12472,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 2006,
+"to": 2018
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2006-2018",
+"matches": 161,
+"wkts": 1,
+"ci": "11728",
+"tier": "legend",
+"record_name": "Alastair Cook (Legend)"
+},
+{
+"id": "legend-kumar-sangakkara",
+"name": "Kumar Sangakkara",
+"tries_1998_plus": 12400,
+"primary_club": "sl",
+"club_years": [
+{
+"club": "sl",
+"from": 2000,
+"to": 2015
+}
+],
+"positions_played": [
+"B",
+"K"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2000-2015",
+"matches": 134,
+"wkts": 0,
+"ci": "50710",
+"tier": "legend",
+"record_name": "Kumar Sangakkara (Legend)"
+},
+{
+"id": "legend-brian-lara",
+"name": "Brian Lara",
+"tries_1998_plus": 11953,
+"primary_club": "wi",
+"club_years": [
+{
+"club": "wi",
+"from": 1990,
+"to": 2006
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1990-2006",
+"matches": 131,
+"wkts": 0,
+"ci": "52337",
+"tier": "legend",
+"record_name": "Brian Lara (Legend)"
+},
+{
+"id": "legend-shivnarine-chanderpaul",
+"name": "Shivnarine Chanderpaul",
+"tries_1998_plus": 11867,
+"primary_club": "wi",
+"club_years": [
+{
+"club": "wi",
+"from": 1994,
+"to": 2015
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1994-2015",
+"matches": 164,
+"wkts": 9,
+"ci": "51469",
+"tier": "legend",
+"record_name": "Shivnarine Chanderpaul (Legend)"
+},
+{
+"id": "legend-mahela-jayawardene",
+"name": "Mahela Jayawardene",
+"tries_1998_plus": 11814,
+"primary_club": "sl",
+"club_years": [
+{
+"club": "sl",
+"from": 1997,
+"to": 2014
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1997-2014",
+"matches": 149,
+"wkts": 6,
+"ci": "49289",
+"tier": "legend",
+"record_name": "Mahela Jayawardene (Legend)"
+},
+{
+"id": "legend-allan-border",
+"name": "Allan Border",
+"tries_1998_plus": 11174,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 1978,
+"to": 1994
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1978-1994",
+"matches": 156,
+"wkts": 39,
+"ci": "4174",
+"tier": "legend",
+"record_name": "Allan Border (Legend)"
+},
+{
+"id": "legend-steve-waugh",
+"name": "Steve Waugh",
+"tries_1998_plus": 10927,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 1985,
+"to": 2004
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1985-2004",
+"matches": 168,
+"wkts": 92,
+"ci": "8192",
+"tier": "legend",
+"record_name": "Steve Waugh (Legend)"
+},
+{
+"id": "legend-sunil-gavaskar",
+"name": "Sunil Gavaskar",
+"tries_1998_plus": 10122,
+"primary_club": "ind",
+"club_years": [
+{
+"club": "ind",
+"from": 1971,
+"to": 1987
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1971-1987",
+"matches": 125,
+"wkts": 1,
+"ci": "28794",
+"tier": "legend",
+"record_name": "Sunil Gavaskar (Legend)"
+},
+{
+"id": "legend-younus-khan",
+"name": "Younus Khan",
+"tries_1998_plus": 10099,
+"primary_club": "pak",
+"club_years": [
+{
+"club": "pak",
+"from": 2000,
+"to": 2017
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2000-2017",
+"matches": 118,
+"wkts": 9,
+"ci": "43652",
+"tier": "legend",
+"record_name": "Younus Khan (Legend)"
+},
+{
+"id": "legend-hashim-amla",
+"name": "Hashim Amla",
+"tries_1998_plus": 9282,
+"primary_club": "sa",
+"club_years": [
+{
+"club": "sa",
+"from": 2004,
+"to": 2019
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2004-2019",
+"matches": 124,
+"wkts": 0,
+"ci": "43906",
+"tier": "legend",
+"record_name": "Hashim Amla (Legend)"
+},
+{
+"id": "legend-graeme-smith",
+"name": "Graeme Smith",
+"tries_1998_plus": 9265,
+"primary_club": "sa",
+"club_years": [
+{
+"club": "sa",
+"from": 2002,
+"to": 2014
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2002-2014",
+"matches": 117,
+"wkts": 8,
+"ci": "47270",
+"tier": "legend",
+"record_name": "Graeme Smith (Legend)"
+},
+{
+"id": "legend-graham-gooch",
+"name": "Graham Gooch",
+"tries_1998_plus": 8900,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 1975,
+"to": 1995
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1975-1995",
+"matches": 118,
+"wkts": 23,
+"ci": "13399",
+"tier": "legend",
+"record_name": "Graham Gooch (Legend)"
+},
+{
+"id": "legend-javed-miandad",
+"name": "Javed Miandad",
+"tries_1998_plus": 8832,
+"primary_club": "pak",
+"club_years": [
+{
+"club": "pak",
+"from": 1976,
+"to": 1993
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1976-1993",
+"matches": 124,
+"wkts": 17,
+"ci": "40879",
+"tier": "legend",
+"record_name": "Javed Miandad (Legend)"
+},
+{
+"id": "legend-inzamam-ul-haq",
+"name": "Inzamam-ul-Haq",
+"tries_1998_plus": 8830,
+"primary_club": "pak",
+"club_years": [
+{
+"club": "pak",
+"from": 1992,
+"to": 2007
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1992-2007",
+"matches": 120,
+"wkts": 0,
+"ci": "40570",
+"tier": "legend",
+"record_name": "Inzamam-ul-Haq (Legend)"
+},
+{
+"id": "legend-david-warner",
+"name": "David Warner",
+"tries_1998_plus": 8786,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 2011,
+"to": 2024
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2011-2024",
+"matches": 112,
+"wkts": 4,
+"ci": "219889",
+"tier": "legend",
+"record_name": "David Warner (Legend)"
+},
+{
+"id": "legend-vvs-laxman",
+"name": "VVS Laxman",
+"tries_1998_plus": 8781,
+"primary_club": "ind",
+"club_years": [
+{
+"club": "ind",
+"from": 1996,
+"to": 2012
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1996-2012",
+"matches": 134,
+"wkts": 2,
+"ci": "30750",
+"tier": "legend",
+"record_name": "VVS Laxman (Legend)"
+},
+{
+"id": "legend-ab-de-villiers",
+"name": "AB de Villiers",
+"tries_1998_plus": 8765,
+"primary_club": "sa",
+"club_years": [
+{
+"club": "sa",
+"from": 2004,
+"to": 2018
+}
+],
+"positions_played": [
+"B",
+"K"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2004-2018",
+"matches": 114,
+"wkts": 2,
+"ci": "44936",
+"tier": "legend",
+"record_name": "AB de Villiers (Legend)"
+},
+{
+"id": "legend-michael-clarke",
+"name": "Michael Clarke",
+"tries_1998_plus": 8643,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 2004,
+"to": 2015
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2004-2015",
+"matches": 115,
+"wkts": 31,
+"ci": "4578",
+"tier": "legend",
+"record_name": "Michael Clarke (Legend)"
+},
+{
+"id": "legend-matthew-hayden",
+"name": "Matthew Hayden",
+"tries_1998_plus": 8625,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 1994,
+"to": 2009
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1994-2009",
+"matches": 103,
+"wkts": 0,
+"ci": "5616",
+"tier": "legend",
+"record_name": "Matthew Hayden (Legend)"
+},
+{
+"id": "legend-virender-sehwag",
+"name": "Virender Sehwag",
+"tries_1998_plus": 8586,
+"primary_club": "ind",
+"club_years": [
+{
+"club": "ind",
+"from": 2001,
+"to": 2013
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2001-2013",
+"matches": 104,
+"wkts": 40,
+"ci": "35263",
+"tier": "legend",
+"record_name": "Virender Sehwag (Legend)"
+},
+{
+"id": "legend-viv-richards",
+"name": "Viv Richards",
+"tries_1998_plus": 8540,
+"primary_club": "wi",
+"club_years": [
+{
+"club": "wi",
+"from": 1974,
+"to": 1991
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1974-1991",
+"matches": 121,
+"wkts": 32,
+"ci": "52812",
+"tier": "legend",
+"record_name": "Viv Richards (Legend)"
+},
+{
+"id": "legend-alec-stewart",
+"name": "Alec Stewart",
+"tries_1998_plus": 8463,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 1990,
+"to": 2003
+}
+],
+"positions_played": [
+"B",
+"K"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1990-2003",
+"matches": 133,
+"wkts": 0,
+"ci": "20372",
+"tier": "legend",
+"record_name": "Alec Stewart (Legend)"
+},
+{
+"id": "legend-david-gower",
+"name": "David Gower",
+"tries_1998_plus": 8231,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 1978,
+"to": 1992
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1978-1992",
+"matches": 117,
+"wkts": 1,
+"ci": "13418",
+"tier": "legend",
+"record_name": "David Gower (Legend)"
+},
+{
+"id": "legend-kevin-pietersen",
+"name": "Kevin Pietersen",
+"tries_1998_plus": 8181,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 2005,
+"to": 2014
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "2005-2014",
+"matches": 104,
+"wkts": 10,
+"ci": "19296",
+"tier": "legend",
+"record_name": "Kevin Pietersen (Legend)"
+},
+{
+"id": "legend-geoffrey-boycott",
+"name": "Geoffrey Boycott",
+"tries_1998_plus": 8114,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 1964,
+"to": 1982
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1964-1982",
+"matches": 108,
+"wkts": 7,
+"ci": "9187",
+"tier": "legend",
+"record_name": "Geoffrey Boycott (Legend)"
+},
+{
+"id": "legend-garfield-sobers",
+"name": "Garfield Sobers",
+"tries_1998_plus": 8032,
+"primary_club": "wi",
+"club_years": [
+{
+"club": "wi",
+"from": 1954,
+"to": 1974
+}
+],
+"positions_played": [
+"B",
+"W"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1954-1974",
+"matches": 93,
+"wkts": 235,
+"ci": "52946",
+"tier": "legend",
+"record_name": "Garfield Sobers (Legend)"
+},
+{
+"id": "legend-mark-waugh",
+"name": "Mark Waugh",
+"tries_1998_plus": 8029,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 1991,
+"to": 2002
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1991-2002",
+"matches": 128,
+"wkts": 59,
+"ci": "8189",
+"tier": "legend",
+"record_name": "Mark Waugh (Legend)"
+},
+{
+"id": "legend-don-bradman",
+"name": "Don Bradman",
+"tries_1998_plus": 6996,
+"primary_club": "aus",
+"club_years": [
+{
+"club": "aus",
+"from": 1928,
+"to": 1948
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1928-1948",
+"matches": 52,
+"wkts": 2,
+"ci": "4188",
+"tier": "legend",
+"record_name": "Don Bradman (Legend)"
+},
+{
+"id": "legend-herbert-sutcliffe",
+"name": "Herbert Sutcliffe",
+"tries_1998_plus": 4555,
+"primary_club": "eng",
+"club_years": [
+{
+"club": "eng",
+"from": 1924,
+"to": 1935
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1924-1935",
+"matches": 54,
+"wkts": 0,
+"ci": "20413",
+"tier": "legend",
+"record_name": "Herbert Sutcliffe (Legend)"
+},
+{
+"id": "legend-graeme-pollock",
+"name": "Graeme Pollock",
+"tries_1998_plus": 2256,
+"primary_club": "sa",
+"club_years": [
+{
+"club": "sa",
+"from": 1963,
+"to": 1970
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1963-1970",
+"matches": 23,
+"wkts": 4,
+"ci": "46772",
+"tier": "legend",
+"record_name": "Graeme Pollock (Legend)"
+},
+{
+"id": "legend-george-headley",
+"name": "George Headley",
+"tries_1998_plus": 2190,
+"primary_club": "wi",
+"club_years": [
+{
+"club": "wi",
+"from": 1930,
+"to": 1954
+}
+],
+"positions_played": [
+"B"
+],
+"draft_role": "B",
+"position": "B",
+"active": false,
+"career_span": "1930-1954",
+"matches": 22,
+"wkts": 0,
+"ci": "52050",
+"tier": "legend",
+"record_name": "George Headley (Legend)"
+}
+],
+"replaces": []
+}
