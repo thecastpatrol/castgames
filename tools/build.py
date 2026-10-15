@@ -27,6 +27,8 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # this repo
 GAMES_DIR = os.path.dirname(HERE)  # CAST Games
 LIVE = '--live' in sys.argv
 SITE = 'https://castgames.com.au/'
+# Testers only until the switch-over (16 Oct 2026, the owner): shared/cg-gate.js hides every page until the tester password
+GATE = '' if LIVE else '<script src="/shared/cg-gate.js"></script><!-- CG_GATE -->\n'
 
 
 def _ver(rel):
@@ -80,7 +82,7 @@ def fit_page(path, folder, gid, hide_css, play_js, base=None):
     s = rewrite_links(s, False)
     # Another game is on this site now: open it in the same tab (the point of one address)
     s = re.sub(r'(href="' + re.escape(SITE) + r'[^"]*")\s+target="_blank"(\s+rel="noopener")?', r'\1', s)
-    head = ''
+    head = GATE
     if base:
         head += '<base href="%s">\n' % base
     if not LIVE:
@@ -186,6 +188,9 @@ def main():
     idx = os.path.join(HERE, 'index.html')
     s = open(idx, encoding='utf-8').read()
     has = '<meta name="robots" content="noindex"><!-- CG_HIDDEN' in s
+    s = re.sub(r'<script src="/shared/cg-gate\.js"></script><!-- CG_GATE -->\n?', '', s)
+    if GATE:
+        s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + GATE.rstrip('\n'), s, count=1)
     if LIVE and has:
         s = re.sub(r'<meta name="robots" content="noindex"><!-- CG_HIDDEN[^>]*-->\n?', '', s)
     open(idx, 'w', encoding='utf-8').write(s)
