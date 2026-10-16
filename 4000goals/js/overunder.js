@@ -39,6 +39,8 @@
     var code = p[2] || '';
     return NICK[code] || (T.CLUBS && T.CLUBS[code] && T.CLUBS[code].name) || '';
   }
+  // A namesake's tag ("Ben Jones (Raiders)") stays off the card: the plate above already names the club (17 Oct 2026, the owner)
+  function shown(n) { return String(n || '').replace(/\s*\([^)]*\)\s*$/, ''); }
   function years(p) { var y = String(p[3] || '').split('-'); return !y[0] ? '' : !y[1] || y[1] === y[0] ? y[0] : y[0] + ' to ' + y[1]; }
   function unit(n) { var c = E.CATS[st.cat]; return n === 1 ? c.one : c.unit; }
 
@@ -277,7 +279,7 @@
     var num = known ? '<b>' + T.fmt(p[1]) + '</b><small>' + esc(unit(p[1])) + '</small>' : '<b class="is-q">?</b><small>' + esc(E.CATS[st.cat].unit) + '</small>';
     return '<div class="ou-card ' + cls + (mark ? ' ' + mark : '') + '" style="' + (T.render && T.render.clubVars ? T.render.clubVars(code) : '') + '">' +
       '<span class="ou-plate">' + (lk || '<span class="ou-abbr"' + abbrInk(code) + '>' + esc(c.abbr) + '</span>') + '<span class="ou-club">' + esc(where(p) || c.name) + '</span></span>' +
-      '<span class="ou-body"><span class="ou-name">' + esc(p[0]) + '</span>' + (y ? '<span class="ou-years">' + esc(y) + '</span>' : '') + '</span>' +
+      '<span class="ou-body"><span class="ou-name">' + esc(shown(p[0])) + '</span>' + (y ? '<span class="ou-years">' + esc(y) + '</span>' : '') + '</span>' +
       '<span class="ou-num">' + num + '</span></div>';
   }
   function topBar() {
@@ -289,7 +291,7 @@
     var h = topBar() + (st.free ? '<div class="ou-clock is-free"><span>&#x23EA; No Clock This Call</span></div>' : '<div class="ou-clock' + (rv ? ' is-stop' : '') + '"><i style="animation-duration:' + st.secs + 's"></i></div>');
     h += '<div class="ou-pair">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' +
       card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? (st.rerolled ? ' is-new is-rerolled' : ' is-new') : '')) + '</div>';
-    h += '<p class="ou-q">Is <b>' + esc(b[0]) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
+    h += '<p class="ou-q">Is <b>' + esc(shown(b[0])) + '</b> over or under <b>' + T.fmt(a[1]) + '</b>?</p>';
     h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&uarr;</kbd></button>' +
       '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&darr;</kbd></button></div>';
     // The Reroll: the drafts' own wildcard button (the owner, 15 Oct 2026: "native, like the other games")
@@ -302,7 +304,7 @@
     var L = D[st.cat], a = L[st.run.left], b = L[st.view === 'rewind' && st.missed != null ? st.missed : st.run.right], why = st.reveal && st.reveal.timeout;
     return '<div class="ou-out"><div class="ou-out-h">' + (why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Wrong Call') + '</div>' +
       '<div class="ou-pair is-small">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' + card(b, true, 'is-right', 'is-bad') + '</div>' +
-      '<p class="ou-out-why">' + esc(b[0]) + ' was ' + (b[1] > a[1] ? 'over' : 'under') + ', with ' + T.fmt(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +
+      '<p class="ou-out-why">' + esc(shown(b[0])) + ' was ' + (b[1] > a[1] ? 'over' : 'under') + ', with ' + T.fmt(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +
       '<div class="panel ou-decide"><div class="panel-head"><span class="panel-title">Run It Back?</span><span class="panel-meta">' + esc(E.CATS[st.cat].name) + '</span></div>' +
         '<div class="decision is-over"><p class="decision-big">' + st.streak + ' <small>in a row</small></p>' +
         '<p>Keep your streak and play on with a new player.</p>' +
@@ -349,7 +351,7 @@
       '<button type="button" class="btn btn-res btn-res-mode btn-block" data-ou="home"><span aria-hidden="true">&#x1F3AE;</span> Change Mode</button></div>';
     // Your Run: the first player, then each one they called, in order (a Reroll's swapped player isn't shown)
     var rows = '', n = 0, prev = L[st.first];
-    rows += '<li class="ou-step is-start"><span class="ou-step-i">&#x25B6;</span>' + chip(prev) + '<span class="ou-step-p"><b>' + esc(prev[0]) + '</b><small>' + esc(years(prev)) + '</small></span>' +
+    rows += '<li class="ou-step is-start"><span class="ou-step-i">&#x25B6;</span>' + chip(prev) + '<span class="ou-step-p"><b>' + esc(shown(prev[0])) + '</b><small>' + esc(years(prev)) + '</small></span>' +
       '<span class="ou-step-v">' + T.fmt(prev[1]) + '</span><span class="ou-tag is-start">Start</span></li>';
     log.forEach(function (x) {
       if (x.rib) { rows += '<li class="ou-step-note">&#x23EA; Ran It Back</li>'; return; }
@@ -358,7 +360,7 @@
       var tag = x.ok ? '<span class="ou-tag is-' + (dir === 'O' ? 'o' : 'u') + '">' + (dir === 'O' ? '&#x25B2; Over' : '&#x25BC; Under') + '</span>'
         : '<span class="ou-tag is-x">' + (x.c === 'T' ? '&#x23F0; No Call' : '&#x2715; ' + (x.c === 'O' ? 'Over' : 'Under')) + '</span>';
       rows += '<li class="ou-step ' + (x.ok ? 'is-good' : 'is-bad') + '"><span class="ou-step-i">' + (x.ok ? ++n : '&#x2715;') + '</span>' + chip(p) +
-        '<span class="ou-step-p"><b>' + esc(p[0]) + '</b><small>' + (x.ok ? esc(years(p)) : 'It was ' + (dir === 'O' ? 'over' : 'under')) + '</small></span><span class="ou-step-v">' + T.fmt(p[1]) + '</span>' + tag + '</li>';
+        '<span class="ou-step-p"><b>' + esc(shown(p[0])) + '</b><small>' + (x.ok ? esc(years(p)) : 'It was ' + (dir === 'O' ? 'over' : 'under')) + '</small></span><span class="ou-step-v">' + T.fmt(p[1]) + '</span>' + tag + '</li>';
       if (x.ok) prev = p;
     });
     h += '<div class="panel ou-run"><div class="panel-head"><span class="panel-title">Your Run</span><span class="panel-meta">' + esc(E.CATS[st.cat].unit) + '</span></div><ol class="ou-ladder">' + rows + '</ol></div>';

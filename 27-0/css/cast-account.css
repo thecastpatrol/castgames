@@ -1317,7 +1317,7 @@ html.ca-open, html.ca-open body { overflow: hidden; }
 .ca-lb-n.is-tight .ca-ps .ca-vf { width: 16px; height: 16px; }
 .ca-lb-n.is-tighter em { display: none; }
 .ca-lb-n.is-tightest .ca-lb-nm { font-size: 12.5px; letter-spacing: -.1px; }
-.ca-lb-n.is-squeezed .ca-lb-nm { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ca-lb-n.is-squeezed .ca-lb-nm { font-size: 11px; letter-spacing: -.2px; } /* smaller, never cut with "..." (17 Oct 2026) */
 .ca-lb-n > .ca-vf, .ca-lb-n > .ca-ps, .ca-lb-n > .ca-flair, .ca-lb-n > em { flex: none; }
 .ca-lb-n > .ca-vf { margin-left: 4px; }
 .ca-lb-n > em { margin-left: 5px; }

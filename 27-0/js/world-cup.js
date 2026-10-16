@@ -1044,7 +1044,11 @@
     if (!again) track('season_result', { event_category: 'game', play_mode: 'world_cup', wins: r.wins, losses: r.losses, stage: result, is_8_0: perfect ? 1 : 0, squad_rating: T.rating });
     // The picture is made now, so a tap on Share sends it straight away (a phone's share sheet needs the tap)
     var mine = T;
-    setTimeout(function () { if (T === mine) makeRunShare().then(function (x) { if (mine.shares && mine.shares.run) mine.shares.run.ready = x; }, function () { /* made at the tap */ }); }, 400);
+    setTimeout(function () {
+      if (T !== mine) return;
+      makeRunShare().then(function (x) { if (mine.shares && mine.shares.run) mine.shares.run.ready = x; }, function () { /* made at the tap */ });
+      makeRunShare(true).then(function (x) { if (mine.shares && mine.shares.runStory) mine.shares.runStory.ready = x; }, function () { /* made at the tap */ });
+    }, 400);
   }
   // The Champions moment: World Cup blue and white (never gold), then the result
   function champions() {
@@ -1123,14 +1127,32 @@
   window.wcShare = function () {
     if (!T) return;
     var text = shareLine() + '\nThink you can go 8-0? https://castgames.com.au/27-0/';
-    track('share_click', { mode: 'world_cup' });
     var asText = function () {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { /* closed */ }); return; }
       try { navigator.clipboard.writeText(text).then(function () { alert270('Copied. Paste it anywhere.'); }); } catch (e) { alert270(text); }
     };
-    var made = T.shares && T.shares.run && T.shares.run.ready;
-    if (made) { shareBlob(made.blob, made.name, text); return; }
-    makeRunShare().then(function (x) { shareBlob(x.blob, x.name, text); }, asText);
+    // Post or Story (17 Oct 2026, the owner: a Story size to share to Stories). The choice is the tap the share sheet needs
+    var go = function (story) {
+      var key = story ? 'runStory' : 'run', made = T.shares && T.shares[key] && T.shares[key].ready;
+      track('share_click', { mode: 'world_cup', size: story ? 'story' : 'post' });
+      if (made) { shareBlob(made.blob, made.name, text); return; }
+      makeRunShare(story).then(function (x) { shareBlob(x.blob, x.name, text); }, asText);
+    };
+    var old = document.querySelector('.wc-share-pick');
+    if (old) old.remove();
+    var d = document.createElement('div');
+    d.className = 'wc-share-pick'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Share your World Cup');
+    d.innerHTML = '<div class="wc-sp-box"><b>Share Your World Cup</b>' +
+      '<button type="button" data-sz="post"><span aria-hidden="true">&#x1F5BC;&#xFE0F;</span> Post <small>4:5</small></button>' +
+      '<button type="button" data-sz="story"><span aria-hidden="true">&#x1F4F1;</span> Story <small>9:16</small></button>' +
+      '<button type="button" class="wc-sp-x" data-sz="x">Cancel</button></div>';
+    d.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-sz]');
+      if (!b && e.target !== d) return;
+      d.remove();
+      if (b && b.getAttribute('data-sz') !== 'x') go(b.getAttribute('data-sz') === 'story');
+    });
+    document.body.appendChild(d);
   };
   // A big win as a picture (a knockout win, or beating Australia or New Zealand): 1080x1350, shared or saved
   function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -1213,16 +1235,19 @@
   // The whole World Cup as a picture (Share on the results page, 5 Oct 2026): the record, how far they went, the team, the
   // eight results (knockouts never reached greyed) and "Can you go 8-0?" (no Golden Boot since 10 Oct 2026, the owner: it
   // looks confusing). 1080x1350, made once
-  function makeRunShare() {
+  // story: the same picture on a 1080x1920 Story, the layout centred (17 Oct 2026)
+  function makeRunShare(story) {
     T.shares = T.shares || {};
-    if (T.shares.run) return T.shares.run;
-    var r = T.run, W = 1080, H = 1350, cv = document.createElement('canvas'), x = cv.getContext && cv.getContext('2d');
+    var key = story ? 'runStory' : 'run';
+    if (T.shares[key]) return T.shares[key];
+    var r = T.run, W = 1080, H = story ? 1920 : 1350, cv = document.createElement('canvas'), x = cv.getContext && cv.getContext('2d');
     if (!x) return Promise.reject(new Error('no canvas'));
     cv.width = W; cv.height = H;
-    var name = '27-0 World Cup ' + r.wins + '-' + r.losses + '.png';
-    var made = T.shares.run = new Promise(function (done, fail) {
+    var name = '27-0 World Cup ' + r.wins + '-' + r.losses + (story ? ' Story' : '') + '.png';
+    var made = T.shares[key] = new Promise(function (done, fail) {
       var draw = function () {
         backdrop(x, W, H);
+        if (story) x.translate(0, (1920 - 1350) / 2);
         var center = function (t, y, font, col) { x.font = font; x.fillStyle = col; x.textAlign = 'center'; x.fillText(t, W / 2, y); };
         center('RUGBY LEAGUE WORLD CUP 2026', 200, '900 38px Inter, sans-serif', '#7dd3fc');
         center(r.wins + '-' + r.losses, 410, '900 230px Inter, sans-serif', '#ffffff');
@@ -1256,7 +1281,7 @@
       };
       (document.fonts && document.fonts.load ? document.fonts.load('900 40px Inter') : Promise.resolve()).then(draw, draw);
     });
-    made.catch(function () { if (T && T.shares && T.shares.run === made) T.shares.run = null; }); // tried again at the next tap
+    made.catch(function () { if (T && T.shares && T.shares[key] === made) T.shares[key] = null; }); // tried again at the next tap
     return made;
   }
 
