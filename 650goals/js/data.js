@@ -200,8 +200,7 @@
   };
 
   /* A back three (three centre backs: 3-4-3, 3-5-2, 3-4-2-1, 5-3-2) has loose wide spots (17 Oct 2026, the owner): any wide
-     player fills them; wingers and wide midfielders either side (a left winger on the right, two right wingers for more attack),
-     full-backs and wing-backs only their own side. A back four keeps the
+     player on that side fills them (a left back, left wing back, left mid or left winger on the left), never the other side. A back four keeps the
      side rules above. The server does the same (checkepl.js WIDE) */
   T.WIDE = { LB: 1, RB: 1, LWB: 1, RWB: 1, LM: 1, RM: 1, LW: 1, RW: 1 };
   T.WIDE_SPOT = { LWB: 1, RWB: 1, LM: 1, RM: 1 };
@@ -210,9 +209,8 @@
   T.canFill = function (p, code) {
     var own = T.positionsOf(p);
     if (own.indexOf(code) !== -1 || (!!T.SAME_SPOT[code] && own.indexOf(T.SAME_SPOT[code]) !== -1)) return true;
-    // wide midfielders and wingers go either side; full-backs and wing-backs stay on their own side (17 Oct 2026, the
-    // owner: Trent Alexander-Arnold is a right back, never a left wing back)
-    return !!T.WIDE_SPOT[code] && T.backThree() && own.some(function (c) { return !!T.WIDE_ATT[c] || (!!T.WIDE[c] && c.charAt(0) === code.charAt(0)); });
+    // own side only, for everyone (17 Oct 2026, the owner: Trent is never a left wing back, Ronaldo never a left mid)
+    return !!T.WIDE_SPOT[code] && T.backThree() && own.some(function (c) { return !!T.WIDE[c] && c.charAt(0) === code.charAt(0); });
   };
 
   // Played for club in that season (Team Spin), or in any season when there is no year (a themed Daily's club)
