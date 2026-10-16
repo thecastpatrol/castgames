@@ -754,7 +754,7 @@
         var K = window.CastKits, fb = { base: c.primary, accent: c.accent || c.secondary };
         sides[k] = { name: nm, short: nm.length <= 15 ? nm : last,
           code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: c.primary, pattern: 'plain', colors: [c.accent || c.secondary],
-          draw: K && K.drawFill ? function (w, h) { return K.drawFill('nfl', k, { w: w, h: h, number: true, fallback: fb }); } : null, fill: true }; // its numbers in their colours: a plain shirt alone does not say which club
+          draw: K && K.drawFill ? function (w, h) { return K.drawFill('nfl', k, { w: w, h: h, fallback: fb }); } : null, fill: true }; // the jersey's own design, no number (17 Oct 2026, the owner: every card said 10)
       };
       var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
       pool.forEach(side);
