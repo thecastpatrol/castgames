@@ -1901,3 +1901,6 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch .slot { container: slot / inline-size; }
 .pitch .slot.is-empty .slot-pos { white-space: nowrap; }
 @container slot (max-width: 100px) { .slot.is-empty .slot-pos { display: none; } }
+
+/* 3-5-2: the wide mids a touch higher than the centre mids (17 Oct 2026) */
+.pitch-row.is-wings-up > :first-child, .pitch-row.is-wings-up > :last-child { transform: translateY(-26%); }

@@ -16,7 +16,7 @@
     '4-4-2': [['LB', 'CB', 'CB', 'RB'], ['LM', 'CM', 'CM', 'RM'], ['ST', 'ST']],
     '4-2-3-1': [['LB', 'CB', 'CB', 'RB'], ['DM', 'DM'], ['LW', 'AM', 'RW'], ['ST']],
     '3-5-2': [['CB', 'CB', 'CB'], ['LM', 'CM', 'CM', 'RM'], ['AM'], ['ST', 'ST']], // wide mids, not wing backs (17 Oct 2026)
-    '3-4-3': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['LW', 'ST', 'RW']],
+    '3-4-3': [['CB', 'CB', 'CB'], ['LM', 'CM', 'CM', 'RM'], ['LW', 'ST', 'RW']], // wide mids (17 Oct 2026, the owner)
     '5-3-2': [['LWB', 'CB', 'CB', 'CB', 'RWB'], ['CM', 'CM', 'CM'], ['ST', 'ST']],
     '4-1-4-1': [['LB', 'CB', 'CB', 'RB'], ['DM'], ['LM', 'CM', 'CM', 'RM'], ['ST']],
     '4-5-1': [['LB', 'CB', 'CB', 'RB'], ['LM', 'CM', 'CM', 'CM', 'RM'], ['ST']],

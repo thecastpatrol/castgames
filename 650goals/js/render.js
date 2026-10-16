@@ -237,7 +237,9 @@
   R.pitch = function (S, flashIdx) {
     if (!S.fm) return '<div class="pitch-wait"><b>Pick Your Formation</b><span>Your XI lines up here</span></div>';
     return R.rows(S).map(function (row) {
-      return '<div class="pitch-row is-n' + row.length + '">' + row.map(function (i) {
+      // 3-5-2's wide mids sit a touch higher than its centre mids (17 Oct 2026, the owner)
+      var up = S.fm === '3-5-2' && row.length === 4 && S.slots[row[0]].code === 'LM';
+      return '<div class="pitch-row is-n' + row.length + (up ? ' is-wings-up' : '') + '">' + row.map(function (i) {
         var s = S.slots[i];
         var p = s.player;
         var tweakable = S.tweakMode && p;
