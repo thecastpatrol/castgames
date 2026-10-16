@@ -60,8 +60,9 @@ GAMES = [
     # Its cg.js id stays '700tds' (js/home.js reads it); the old /700tds/ address is a redirect (OLD_PATHS)
     ('777tds', '777 TDS Game', '700tds', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
-    # 500 GOALS (17 Oct 2026, the Premier League game): developed in ~/cast-dev/epl/game, copied to CAST Games/500 GOALS Game
-    ('500goals', '500 GOALS Game', '500goals', '.site-header',
+    # 650 GOALS (17 Oct 2026, the Premier League game; 500 GOALS until the same day): developed in ~/cast-dev/epl/game,
+    # copied to CAST Games/650 GOALS Game. Its cg.js id stays '500goals'; the old /500goals/ address is a redirect (OLD_PATHS)
+    ('650goals', '650 GOALS Game', '500goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false;"),
@@ -100,7 +101,7 @@ EXPLAIN = {
     '25000runs': 'Draft a Big Bash XI with their BBL runs hidden. Can you reach <strong>25000 BBL runs</strong>?',
     '60000runs': 'Draft a Test XI from every Test since 1877 with their runs hidden. Can you reach <strong>60000 Test runs</strong>?',
     '777tds': 'Draft an NFL offence with their touchdowns hidden. Can you reach <strong>777 career touchdowns</strong>?',
-    '500goals': 'Draft a Premier League XI with their goals hidden. Can you reach <strong>500 Premier League goals</strong>?',
+    '650goals': 'Draft a Premier League XI with their goals hidden. Can you reach <strong>650 Premier League goals</strong>?',
     'g1winner': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
 }
 
@@ -108,7 +109,7 @@ EXPLAIN = {
 # Every title in one pattern on CAST Games, "<GAME> | <short line> | CAST Games" (audit B8, 16 Oct 2026); the games' own
 # sites keep theirs. A game whose home title runs long gets a shorter line here
 NAMES = {'27-0': '27-0', '1000tries': '1000TRIES', '4000goals': '4000 GOALS', '25000runs': '25000 RUNS', '60000runs': '60000 RUNS',
-         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '500goals': '500 GOALS'}
+         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '650goals': '650 GOALS'}
 HOME_LINE = {'27-0': 'Build an NRL 13 and Go Undefeated'}
 # The games' old homes, written out in their copy (the privacy pages' "available at", 27-0's install steps): their folder
 # here instead (audit T4, 16 Oct 2026)
@@ -175,9 +176,10 @@ def fit_code(dst, folder):
             p = os.path.join(root, f)
             s = open(p, encoding='utf-8').read()
             t = rewrite_links(s, True) if f.endswith('.js') else s
-            if folder in ('4000goals', '25000runs', '60000runs', '500goals') and f.endswith('.js'):
-                t = t.replace("'1000tries_", "'" + folder + "_")  # its own saved data here (sound, draft, played...)
-                t = t.replace("'1000_daily_'", "'" + folder + "_daily_'")  # and its own Daily goes (1000TRIES keeps '1000_daily_')
+            if folder in ('4000goals', '25000runs', '60000runs', '650goals') and f.endswith('.js'):
+                key = KEEP_KEY.get(folder, folder)  # 650 GOALS keeps 500 GOALS' saved data (17 Oct 2026)
+                t = t.replace("'1000tries_", "'" + key + "_")  # its own saved data here (sound, draft, played...)
+                t = t.replace("'1000_daily_'", "'" + key + "_daily_'")  # and its own Daily goes (1000TRIES keeps '1000_daily_')
             if t != s:
                 open(p, 'w', encoding='utf-8').write(t)
 
@@ -185,7 +187,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/500goals.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/650goals.png']
 
 
 def clear_byline(path):
@@ -277,17 +279,19 @@ def soon(src, page, title):
 
 # Old game addresses (17 Oct 2026: 700 TDS became 777 TDS): a tiny page that sends any old link on to the new folder,
 # keeping its query (?play=, a challenge) and its hash
-OLD_PATHS = {'700tds': '777tds'}
+# (and 500 GOALS became 650 GOALS the same day): old folder -> (new folder, name, button colour, button text colour)
+OLD_PATHS = {'700tds': ('777tds', '777 TDS', '#36e27e', '#04120a'), '500goals': ('650goals', '650 GOALS', '#ff2d7a', '#ffffff')}
+KEEP_KEY = {'650goals': '500goals'}  # a renamed game keeps its saved data's old key
 REDIRECT = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-            '<meta name="robots" content="noindex"><title>777 TDS | CAST Games</title><link rel="canonical" href="%s%s/%s">'
+            '<meta name="robots" content="noindex"><title>%s | CAST Games</title><link rel="canonical" href="%s%s/%s">'
             '<script>location.replace("../%s/%s" + location.search + location.hash);</script></head>'
             '<body style="margin:0;background:#0a0a0f;color:#fff;font-family:Inter,system-ui,sans-serif;text-align:center;padding:40px 16px">'
-            '<p><a style="display:inline-block;padding:12px 20px;border-radius:999px;background:#36e27e;color:#04120a;font-weight:800;text-decoration:none" href="../%s/%s">Play 777 TDS</a></p>'
+            '<p><a style="display:inline-block;padding:12px 20px;border-radius:999px;background:%s;color:%s;font-weight:800;text-decoration:none" href="../%s/%s">Play %s</a></p>'
             '</body></html>\n')
 
 
 def old_paths():
-    for old, new in OLD_PATHS.items():
+    for old, (new, name, bg, ink) in OLD_PATHS.items():
         out = os.path.join(HERE, old)
         if os.path.isdir(out):
             shutil.rmtree(out)
@@ -296,7 +300,7 @@ def old_paths():
         for f in sorted(os.listdir(os.path.join(HERE, new))):
             if f.endswith('.html') and f != '404.html':
                 page = '' if f == 'index.html' else f[:-5]
-                open(os.path.join(out, f), 'w', encoding='utf-8').write(REDIRECT % (SITE, new, page, new, page, new, page))
+                open(os.path.join(out, f), 'w', encoding='utf-8').write(REDIRECT % (name, SITE, new, page, new, page, bg, ink, new, page, name))
         print('built', old, '->', new)
 
 
@@ -315,13 +319,13 @@ def main():
             if f.endswith('.html'):
                 fit_page(os.path.join(dst, f), folder, gid, hide, play)
         print('built', folder)
-    old_paths()  # 17 Oct 2026: /700tds/ sends old links on to /777tds/
+    old_paths()  # 17 Oct 2026: /700tds/ sends old links on to /777tds/, /500goals/ on to /650goals/
     # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
     for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On'),
                                          # the newer games' over/unders, their own games too (16 Oct 2026, the owner)
                                          ('free-hit', '25000runs', 'free-hit', 'ou', 'Free Hit'), ('follow-on', '60000runs', 'follow-on', 'ou', 'Follow On'),
                                          ('two-point', '777tds', 'two-point', 'ou', 'Two Point'), ('photo-finish', 'g1winner', 'photo-finish', 'ou', 'Photo Finish'),
-                                         ('extra-time', '500goals', 'extra-time', 'ou', 'Extra Time')):
+                                         ('extra-time', '650goals', 'extra-time', 'ou', 'Extra Time')):
         out = os.path.join(HERE, page)
         os.makedirs(out, exist_ok=True)
         src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
@@ -345,7 +349,7 @@ def main():
     # contents, so a change reaches everyone at once instead of an old copy kept by the browser (15 Oct 2026)
     idx = os.path.join(HERE, 'index.html')
     hs = open(idx, encoding='utf-8').read()
-    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|500goals)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
     if hs2 != hs:
         open(idx, 'w', encoding='utf-8').write(hs2)
     # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only

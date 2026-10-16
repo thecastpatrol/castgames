@@ -49,9 +49,10 @@
     // G1 WINNER SPINNER (16 Oct 2026): the racing game, 8 jockeys to 550 Group 1 wins since 1983
     { id: 'g1winner', sport: 'racing', name: 'G1 WINNER SPINNER', path: 'g1winner/', logo: 'assets/logos/g1winner.png', c1: '#14306b', c2: '#08132e', status: 'live', badge: 'New',
       line: 'Draft 8 jockeys and reach 550 Group 1 wins since 1983.', short: 'Draft 8 jockeys to 550 Group 1s', daily: true },
-    // 500 GOALS (17 Oct 2026): the Premier League game, a 4-3-3 XI to 500 career Premier League goals
-    { id: '500goals', sport: 'epl', name: '500 GOALS', path: '500goals/', logo: 'assets/logos/500goals.png', c1: '#3a0f2c', c2: '#12061a', status: 'live', badge: 'New',
-      line: 'Draft a Premier League XI and reach 500 career goals.', short: 'Draft an XI to 500 goals', daily: true },
+    // 650 GOALS (17 Oct 2026; 500 GOALS until the same day): the Premier League game, an XI to 650 career Premier League
+    // goals. Its id stays '500goals' (js/home.js and the game pages' CG_GAME use it); /500goals/ redirects to /650goals/
+    { id: '500goals', sport: 'epl', name: '650 GOALS', path: '650goals/', logo: 'assets/logos/650goals.png', c1: '#3a0f2c', c2: '#12061a', status: 'live', badge: 'New',
+      line: 'Draft a Premier League XI and reach 650 career goals.', short: 'Draft an XI to 650 goals', daily: true },
     // The newer games' over/unders (16 Oct 2026, the owner: separate games, not modes inside the draft games)
     { id: 'free-hit', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
       line: 'Over or under? Call BBL runs and wickets before the clock runs out.', short: 'BBL over or under, vs the clock' },

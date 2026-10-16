@@ -34,7 +34,7 @@
     jockeyg1: { name: 'Jockey Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 40, step: 12, game: 'racing' },
     bigrace: { name: 'Big Race Wins', unit: 'big race wins', one: 'big race win', base: 30, step: 8, game: 'racing' },
     horseg1: { name: 'Horses\u2019 Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 45, step: 14, game: 'racing' },
-    // Extra Time (17 Oct 2026): 500 GOALS' version, career Premier League goals, assists and appearances since 1992-93
+    // Extra Time (17 Oct 2026): 650 GOALS' version, career Premier League goals, assists and appearances since 1992-93
     plgoals: { name: 'Premier League Goals', unit: 'PL goals', one: 'PL goal', base: 150, step: 45, game: 'epl' },
     plassists: { name: 'Premier League Assists', unit: 'PL assists', one: 'PL assist', base: 150, step: 45, game: 'epl' },
     plapps: { name: 'Premier League Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' }

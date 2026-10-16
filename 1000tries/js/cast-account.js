@@ -206,17 +206,17 @@
       labels: { plays: 'Runs', best: 'Best Streak', wins: null, top: null },
       unit: 'in a row'
     },
-    // 500 GOALS (17 Oct 2026): the Premier League game, a 4-3-3 XI (no keeper) to 500 Premier League goals. gated like
+    // 650 GOALS (17 Oct 2026): the Premier League game, a 4-3-3 XI (no keeper) to 650 Premier League goals. gated like
     // 777 TDS (config/launch 'epl')
     epl: {
-      name: '500 GOALS', url: 'https://castgames.com.au/500goals/', gated: true,
-      modes: { plus: '500+', exact: 'Exactly 500', spin: 'Team Spin', daily: 'Daily' },
-      results: { hit: '500+', exact: 'Exactly 500', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
+      name: '650 GOALS', url: 'https://castgames.com.au/650goals/', gated: true,
+      modes: { plus: '650+', exact: 'Exactly 650', spin: 'Team Spin', daily: 'Daily' },
+      results: { hit: '650+', exact: 'Exactly 650', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
       wins: ['hit', 'exact', 'won'],
-      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 500s' },
+      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 650s' },
       unit: 'goals'
     },
-    // Extra Time (17 Oct 2026): 500 GOALS' over/under, its own page and its own stats (shown with 500 GOALS)
+    // Extra Time (17 Oct 2026): 650 GOALS' over/under, its own page and its own stats (shown with 650 GOALS)
     'epl-et': {
       name: 'Extra Time', tile: 'Extra Time', site: 'epl', url: 'https://castgames.com.au/extra-time/',
       modes: { ou: 'Extra Time' },
@@ -353,7 +353,7 @@
     { id: 'cricket', name: 'Cricket', long: 'Tests and the Big Bash', ico: '&#x1F3CF;', c: '255,122,46', games: ['bigbash', 'tests'], club: 'Nation', none: 'No Nation' },
     { id: 'nfl', name: 'NFL', long: 'American Football', ico: '&#x1F3C8;', c: '139,92,246', games: ['nfl'], club: 'NFL Team' },
     { id: 'racing', name: 'Racing', long: 'Horse Racing', ico: '&#x1F3C7;', c: '59,130,246', games: ['racing'] },
-    { id: 'epl', name: 'Premier League', long: 'English Football', ico: '&#x26BD;', c: '233,0,82', games: ['epl'] } // the 500 GOALS colour on CAST Games
+    { id: 'epl', name: 'Premier League', long: 'English Football', ico: '&#x26BD;', c: '233,0,82', games: ['epl'] } // the 650 GOALS colour on CAST Games
   ];
   var SPORT = {};
   SPORTS.forEach(function (s) { SPORT[s.id] = s; });
@@ -399,7 +399,7 @@
       ['seahawks', 'Seahawks', 'Seattle Seahawks', 'SEA', '#002244', '#69BE28'], ['buccaneers', 'Buccaneers', 'Tampa Bay Buccaneers', 'TB', '#A71930', '#B1BABF'],
       ['titans', 'Titans', 'Tennessee Titans', 'TEN', '#4495D2', '#0C2340'], ['commanders', 'Commanders', 'Washington Commanders', 'WAS', '#5A1414', '#FFB612']
     ],
-    // 500 GOALS (17 Oct 2026): every club in the Premier League in the last ten seasons, from its game's js/data.js
+    // 650 GOALS (17 Oct 2026): every club in the Premier League in the last ten seasons, from its game's js/data.js
     epl: [
       ['arsenal', 'Arsenal', 'Arsenal', 'ARS', '#EF0107', '#FFFFFF'], ['villa', 'Villa', 'Aston Villa', 'AVL', '#670E36', '#95BFE5'],
       ['bournemouth', 'Cherries', 'AFC Bournemouth', 'BOU', '#DA291C', '#000000'], ['brentford', 'Bees', 'Brentford', 'BRE', '#E30613', '#FFFFFF'],
@@ -2006,7 +2006,7 @@
     tests: [['tsplus', 'all', '60000+'], ['tsexact', 'all', 'Exactly 60000'], ['tsou', 'all', 'Follow On'], ['tsdaily', 'today', 'Daily']],
     nfl: [['nflplus', 'all', '777+'], ['nflexact', 'all', 'Exactly 777'], ['nflou', 'all', 'Two Point'], ['nfldaily', 'today', 'Daily']],
     racing: [['rcplus', 'all', '550+'], ['rcexact', 'all', 'Exactly 550'], ['rcou', 'all', 'Photo Finish'], ['rcdaily', 'today', 'Daily']],
-    epl: [['eplplus', 'all', '500+'], ['eplexact', 'all', 'Exactly 500'], ['eplou', 'all', 'Extra Time'], ['epldaily', 'today', 'Daily']]
+    epl: [['eplplus', 'all', '650+'], ['eplexact', 'all', 'Exactly 650'], ['eplou', 'all', 'Extra Time'], ['epldaily', 'today', 'Daily']]
   };
   function rankTile(r) {
     var id = boardId(r[0], r[1], '');
@@ -2600,29 +2600,29 @@
   ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in Photo Finish, every call under 3 seconds'],
   ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in Photo Finish with no Run It Back or Reroll']
     ],
-    // 500 GOALS (17 Oct 2026): 700 TDS' set in Premier League terms at the same distance from the target (500+, +10%, +20%,
+    // 650 GOALS (17 Oct 2026): 700 TDS' set in Premier League terms at the same distance from the target (650+, +10%, +20%,
     // the last 1% under, a photo finish within 4), its own football ones (ep_, the game's js/app.js footballTrophies) and
     // Extra Time's (from ~/cast-dev/epl/tools/trophies_epl.js)
     epl: [
-  ['hit1000', '&#x1F4AF;', '500+', 'Reach 500 Premier League goals'],
-  ['hit1100', '&#x1F525;', '550 Club', 'Reach 550 Premier League goals'],
-  ['hit1200', '&#x1F680;', 'Goal Machine', 'Reach 600 Premier League goals'],
-  ['exact', '&#x1F3AF;', 'Exactly 500', 'Land on 500 exactly'],
-  ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 500 to 504 in 500+'],
-  ['soclose', '&#x1F629;', 'So Close', 'Finish on 495 to 499'],
-  ['nowild', '&#x1F9CA;', 'No Wildcards', '500+ with no wildcards'],
-  ['spin', '&#x1F3B0;', 'Spin Doctor', '500+ in Team Spin'],
+  ['hit1000', '&#x1F4AF;', '650+', 'Reach 650 Premier League goals'],
+  ['hit1100', '&#x1F525;', '715 Club', 'Reach 715 Premier League goals'],
+  ['hit1200', '&#x1F680;', 'Goal Machine', 'Reach 780 Premier League goals'],
+  ['exact', '&#x1F3AF;', 'Exactly 650', 'Land on 650 exactly'],
+  ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 650 to 656 in 650+'],
+  ['soclose', '&#x1F629;', 'So Close', 'Finish on 644 to 649'],
+  ['nowild', '&#x1F9CA;', 'No Wildcards', '650+ with no wildcards'],
+  ['spin', '&#x1F3B0;', 'Spin Doctor', '650+ in Team Spin'],
   ['goats', '&#x1F51D;', 'Top Ten', '3 of the 10 biggest scorers outside the Legends'],
-  ['bench', '&#x1F6D1;', 'Park the Bus', 'Finish under 250 goals'],
+  ['bench', '&#x1F6D1;', 'Park the Bus', 'Finish under 325 goals'],
   ['plays10', '&#x26BD;', 'Regular', 'Play 10 games'],
   ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
   ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
   ['legend', '&#x1F396;&#xFE0F;', 'Legend', 'Pick a Legend'],
   ['legs11', '&#x1F3B0;', 'All Fives', 'Finish on exactly 555 goals'],
   ['read', '&#x1F52E;', 'Perfect Read', 'Top scorer in every offer'],
-  ['odds', '&#x1F3B2;', 'Against the Odds', '500+ with Luck at -15% or worse'],
+  ['odds', '&#x1F3B2;', 'Against the Odds', '650+ with Luck at -15% or worse'],
   ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
-  ['zero', '&#x1F9F1;', 'Zero Hero', '500+ with a player on 0 goals'],
+  ['zero', '&#x1F9F1;', 'Zero Hero', '650+ with a player on 0 goals'],
   ['clubleg', '&#x1F6E1;&#xFE0F;', 'One Club', 'All 10 played for one club'],
   ['colours', '&#x1F3BD;', 'True Colours', '5 who played for your club'],
   ['namesakes', '&#x1FA9E;', 'Namesakes', 'Two players with the same surname'],
@@ -2647,9 +2647,9 @@
   ['ep_mersey', '&#x2693;', 'Merseyside', 'All 10 played for Liverpool or Everton'],
   ['ep_manchester', '&#x1F41D;', 'Manchester', 'All 10 played for Man United or Man City'],
   ['ep_northlondon', '&#x1F3DF;&#xFE0F;', 'North London', 'All 10 played for Arsenal or Spurs'],
-  ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 500 with a Legend in your XI'],
-  ['pure', '&#x1F48E;', 'Pure 500', 'Reach 500 in 500+ without a Legend'],
-  ['dailywin', '&#x1F4C5;', 'Daily Winner', 'Win a 500 GOALS Daily Challenge'],
+  ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 650 with a Legend in your XI'],
+  ['pure', '&#x1F48E;', 'Pure 650', 'Reach 650 in 650+ without a Legend'],
+  ['dailywin', '&#x1F4C5;', 'Daily Winner', 'Win a 650 GOALS Daily Challenge'],
   ['ou10', '&#x1F3AF;', 'Ten in a Row', 'Call 10 in a row in Extra Time'],
   ['ou20', '&#x1F525;', 'On a Roll', 'Call 20 in a row in Extra Time'],
   ['ou30', '&#x1F9E0;', 'Mastermind', 'Call 30 in a row in Extra Time'],
@@ -3104,25 +3104,25 @@
     'racing:ouice': 'You called 8 in a row in Photo Finish, every call under 3 seconds.',
     'racing:ouclean': 'You called 15 in a row in Photo Finish with no Run It Back or Reroll.',
     'epl:potw': 'You were named CAST Player of the Week.',
-    'epl:hit1000': 'Your XI reached 500 Premier League goals.',
-    'epl:hit1100': 'Your XI reached 550 Premier League goals.',
-    'epl:hit1200': 'Your XI reached 600 Premier League goals. A real goal machine.',
-    'epl:exact': 'You landed on exactly 500 Premier League goals. Not one goal over.',
-    'epl:photo': 'You finished between 500 and 504 in 500+. Only just over the line.',
-    'epl:soclose': 'You finished between 495 and 499. That close to 500.',
-    'epl:nowild': 'You reached 500 without using a single wildcard.',
-    'epl:spin': 'You reached 500 in Team Spin.',
+    'epl:hit1000': 'Your XI reached 650 Premier League goals.',
+    'epl:hit1100': 'Your XI reached 715 Premier League goals.',
+    'epl:hit1200': 'Your XI reached 780 Premier League goals. A real goal machine.',
+    'epl:exact': 'You landed on exactly 650 Premier League goals. Not one goal over.',
+    'epl:photo': 'You finished between 650 and 656 in 650+. Only just over the line.',
+    'epl:soclose': 'You finished between 644 and 649. That close to 650.',
+    'epl:nowild': 'You reached 650 without using a single wildcard.',
+    'epl:spin': 'You reached 650 in Team Spin.',
     'epl:goats': 'Your XI had 3 of the 10 biggest scorers outside the Legends.',
-    'epl:bench': 'Your XI finished under 250 goals. Time to park the bus.',
+    'epl:bench': 'Your XI finished under 325 goals. Time to park the bus.',
     'epl:plays10': 'You have played 10 games.',
     'epl:plays50': 'You have played 50 games.',
     'epl:plays100': 'You have played 100 games.',
     'epl:legend': 'You picked a Premier League Legend.',
     'epl:legs11': 'You finished on exactly 555 goals. All fives!',
     'epl:read': 'You picked the top scorer from every offer.',
-    'epl:odds': 'You reached 500 with the luck of the draw against you: Luck at -15% or worse.',
+    'epl:odds': 'You reached 650 with the luck of the draw against you: Luck at -15% or worse.',
     'epl:lucky': 'Your Luck was +30% or better. The cards loved you.',
-    'epl:zero': 'You reached 500 with a player on 0 goals in your XI.',
+    'epl:zero': 'You reached 650 with a player on 0 goals in your XI.',
     'epl:clubleg': 'All 10 of your players played for one club.',
     'epl:colours': '5 or more of your XI played for your club.',
     'epl:namesakes': 'Two players in your XI shared a surname.',
@@ -3146,9 +3146,9 @@
     'epl:ep_mersey': 'All 10 of your players played for Liverpool or Everton.',
     'epl:ep_manchester': 'All 10 of your players played for Man United or Man City.',
     'epl:ep_northlondon': 'All 10 of your players played for Arsenal or Spurs.',
-    'epl:legendary': 'You reached 500 with a Legend in your XI.',
-    'epl:pure': 'You reached 500 in 500+ without a Legend.',
-    'epl:dailywin': 'You won a 500 GOALS Daily Challenge.',
+    'epl:legendary': 'You reached 650 with a Legend in your XI.',
+    'epl:pure': 'You reached 650 in 650+ without a Legend.',
+    'epl:dailywin': 'You won a 650 GOALS Daily Challenge.',
     'epl:ou10': 'You called 10 in a row in Extra Time.',
     'epl:ou20': 'You called 20 in a row in Extra Time.',
     'epl:ou30': 'You called 30 in a row in Extra Time.',
@@ -4174,15 +4174,15 @@
     { id: 'rcoub', label: 'Photo Finish: Big Race Wins', short: 'Big Race Wins', game: 'racing', periods: ['today', 'week', 'all'], sub: 'rcou' },
     { id: 'rcouh', label: 'Photo Finish: Horses\u2019 Group 1 Wins', short: 'Horses\u2019 G1 Wins', game: 'racing', periods: ['today', 'week', 'all'], sub: 'rcou' },
     { id: 'rcdaily', label: 'G1 WINNER SPINNER Daily', short: 'Daily', game: 'racing', periods: ['today', 'yesterday'], unit: 'G1 wins' },
-    // 500 GOALS (17 Oct 2026): 700 TDS' boards for the Premier League, shown once it's launched (or on its own page). Extra
+    // 650 GOALS (17 Oct 2026): 700 TDS' boards for the Premier League, shown once it's launched (or on its own page). Extra
     // Time like Photo Finish: one chip with a category picker
-    { id: 'eplplus', label: '500+', short: '500+', game: 'epl', periods: ['today', 'week', 'all'], unit: 'goals' },
-    { id: 'eplexact', label: 'Exactly 500', short: 'Exactly 500', tiny: 'Exact 500', game: 'epl', periods: ['today', 'week', 'all'], home: 'week' },
+    { id: 'eplplus', label: '650+', short: '650+', game: 'epl', periods: ['today', 'week', 'all'], unit: 'goals' },
+    { id: 'eplexact', label: 'Exactly 650', short: 'Exactly 650', tiny: 'Exact 650', game: 'epl', periods: ['today', 'week', 'all'], home: 'week' },
     { id: 'eplspin', label: 'Team Spin', short: 'Team Spin', game: 'epl', periods: ['today', 'week', 'all'], unit: 'goals' },
     { id: 'eplou', label: 'Extra Time', short: 'Extra Time', tiny: 'Extra Time', game: 'epl', periods: ['today', 'week', 'all'] },
     { id: 'eploua', label: 'Extra Time: Premier League Assists', short: 'PL Assists', game: 'epl', periods: ['today', 'week', 'all'], sub: 'eplou' },
     { id: 'eplouap', label: 'Extra Time: Premier League Appearances', short: 'PL Appearances', game: 'epl', periods: ['today', 'week', 'all'], sub: 'eplou' },
-    { id: 'epldaily', label: '500 GOALS Daily', short: 'Daily', game: 'epl', periods: ['today', 'yesterday'], unit: 'goals' },
+    { id: 'epldaily', label: '650 GOALS Daily', short: 'Daily', game: 'epl', periods: ['today', 'yesterday'], unit: 'goals' },
     { id: 'streak', label: '&#x1F525; Longest Streak', short: '&#x1F525; Streak', periods: ['all'] },
     // Trophies (14 Oct 2026): every trophy unlocked, 27-0 and 1000TRIES together, with each game inside it (sub: no chip
     // of its own, picked under the Trophies board)
@@ -4213,7 +4213,7 @@
     tsplus: 'Play 60000+', tsexact: 'Play Exactly 60000', tsspin: 'Play Team Spin', tsdaily: 'Play today&rsquo;s Daily',
     nflplus: 'Play 777+', nflexact: 'Play Exactly 777', nflspin: 'Play Team Spin', nfldaily: 'Play today&rsquo;s Daily',
     rcplus: 'Play 550+', rcexact: 'Play Exactly 550', rcspin: 'Play Team Spin', rcdaily: 'Play today&rsquo;s Daily',
-    eplplus: 'Play 500+', eplexact: 'Play Exactly 500', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily' };
+    eplplus: 'Play 650+', eplexact: 'Play Exactly 650', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily' };
   var PLAY_MODE = { '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
     '270best': ['27-0', 'classic'], '270pack': ['27-0', 'pack'], '270hard': ['27-0', 'hard'], '270perfect': ['27-0', 'classic'], '270daily': ['27-0', 'daily'],
     '4000plus': ['4000goals', 'plus'], '4000exact': ['4000goals', 'exact'], '4000spin': ['4000goals', 'spin'], aflw: ['4000goals', 'aflw'], '4000daily': ['4000goals', 'daily'],
@@ -4844,7 +4844,7 @@
      or a card of 8), named among the games once each is launched */
   var BB = CFG.game === 'bigbash', BBON = gateOpen('bigbash'), TS = CFG.game === 'tests', TSON = gateOpen('tests'), LEG = AFL || BB || TS;
   var NF = CFG.game === 'nfl', NFON = gateOpen('nfl'), RC = CFG.game === 'racing', RCON = gateOpen('racing');
-  // 500 GOALS (17 Oct 2026): the same in Premier League words (an XI), named among the games once it's launched
+  // 650 GOALS (17 Oct 2026): the same in Premier League words (an XI), named among the games once it's launched
   var EP = CFG.game === 'epl', EPON = gateOpen('epl');
   LEG = LEG || NF || RC || EP;
   function withG4(list, g4) {
@@ -4853,7 +4853,7 @@
     if (TSON && g4) out = out.concat(['60000 RUNS']);
     if (NFON && g4) out = out.concat(['777 TDS']);
     if (RCON && g4) out = out.concat(['G1 WINNER SPINNER']);
-    return EPON && g4 ? out.concat(['500 GOALS']) : out;
+    return EPON && g4 ? out.concat(['650 GOALS']) : out;
   }
   function andList(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
   var TEAM_N = AFL ? '18' : BB || TS || EP ? 'XI' : NF ? 'team' : RC ? 'card' : '13';
@@ -4868,7 +4868,7 @@
     tests: ['Don Bradman', '6996', 'Test runs', 'at 99.94, the GOAT by reputation', '60000 RUNS 60000+ and Exactly 60000'],
     nfl: ['Jerry Rice', '208', 'NFL TDs', 'the most in NFL history', '777 TDS 777+ and Exactly 777'],
     racing: ['Damien Oliver', '129', 'Group 1 wins', '', 'G1 WINNER SPINNER 550+ and Exactly 550'],
-    epl: ['Alan Shearer', '260', 'Premier League goals', 'the most in Premier League history', '500 GOALS 500+ and Exactly 500']
+    epl: ['Alan Shearer', '260', 'Premier League goals', 'the most in Premier League history', '650 GOALS 650+ and Exactly 650']
   };
   var GOAT_HERE = GOATS[CFG.game] || null;
   // "Don Bradman, 6996 Test runs at 99.94, the GOAT by reputation" / "Alex Johnston, 240 NRL tries, the most in NRL history"
@@ -5513,7 +5513,7 @@
     if (b === 'tsplus' || b === 'tsspin' || b === 'tsdaily') return fmt(r.s) + ' <small>runs</small>'; // 60000 RUNS
     if (b === 'nflplus' || b === 'nflspin' || b === 'nfldaily') return fmt(r.s) + ' <small>TDs</small>'; // 777 TDS
     if (b === 'rcplus' || b === 'rcspin' || b === 'rcdaily') return fmt(r.s) + ' <small>G1 wins</small>'; // G1 WINNER SPINNER
-    if (b === 'eplplus' || b === 'eplspin' || b === 'epldaily') return fmt(r.s) + ' <small>goals</small>'; // 500 GOALS
+    if (b === 'eplplus' || b === 'eplspin' || b === 'epldaily') return fmt(r.s) + ' <small>goals</small>'; // 650 GOALS
     if (b === '270wc') { // s = stage x 10 + wins (stage 0 pool, 1 quarter, 2 semi, 3 final, 4 champions); 5 games plus the knockouts played
       var st = Math.floor(r.s / 10), w = r.s % 10, l = Math.max(0, 5 + Math.min(st, 3) - w), perfect = st === 4 && !l;
       // the stage first and the record last, so every record sits on the far right like Classic's (the owner, 11 Oct 2026)
@@ -5530,7 +5530,7 @@
     if (b === 'tsexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 60000</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === 'nflexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 777</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === 'rcexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 550</small>' : fmt(r.t) + ' <small>closest</small>';
-    if (b === 'eplexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 500</small>' : fmt(r.t) + ' <small>closest</small>';
+    if (b === 'eplexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 650</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === '270perfect') { // t: the hardest mode of their 27-0s (the server ranks level players by it)
       var pm = PERFECT_TAG[r.t];
       return (pm ? '<span class="ca-lb-mode is-' + pm.toLowerCase() + '" title="Hardest 27-0: ' + pm + ' Mode">' + pm + '</span>' : '') + r.s + ' <small>&times; 27-0</small>';
@@ -5748,7 +5748,7 @@
       : lb.board === 'tsexact' ? 'Most exact 60000s first. Until you land one, your closest full XI under 60000 counts.'
       : lb.board === 'nflexact' ? 'Most exact 777s first. Until you land one, your closest full team under 777 counts.'
       : lb.board === 'rcexact' ? 'Most exact 550s first. Until you land one, your closest full card under 550 counts.'
-      : lb.board === 'eplexact' ? 'Most exact 500s first. Until you land one, your closest full XI under 500 counts.'
+      : lb.board === 'eplexact' ? 'Most exact 650s first. Until you land one, your closest full XI under 650 counts.'
       : lb.board === '4000exact' ? 'Most exact 4000s first. Until you land one, your closest full 18 under 4000 counts.'
       : lb.board === '270perfect' ? 'Most perfect seasons first. Level players rank by their hardest 27-0: Hard Mode, then Classic, then Pack.'
       : /^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou)/.test(lb.board) ? 'Your longest run of right calls. Level players: fewer Run It Backs first.'
@@ -5888,11 +5888,11 @@
   // the home straight
   var POS8 = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8'];
   var FIELD8 = [[0, 1, 2, 3], [4, 5, 6, 7]];
-  // 500 GOALS (17 Oct 2026): a 4-3-3 with no keeper on a football pitch, attacking up the page: the front three at the top,
+  // 650 GOALS (17 Oct 2026): a 4-3-3 with no keeper on a football pitch, attacking up the page: the front three at the top,
   // the midfield three, the back four (saved defenders first, as the game's T.SLOTS)
   var POS10E = ['DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'FWD'];
   var FIELD10E = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
-  /* Since 17 Oct 2026 a 500 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
+  /* Since 17 Oct 2026 a 650 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
      the back, each left to right) and drawn in its real spots. A game from before keeps the 4-3-3 of lines above. The
      game's js/data.js T.FORMATIONS and the server's lib/checkepl.js FORMATIONS hold the same ten */
   var FM10E = {
@@ -6371,7 +6371,7 @@
     tests: { plus: '60000+', exact: 'Exactly 60000', spin: 'Team Spin', daily: 'the Daily', ou: 'Follow On' },
     nfl: { plus: '777+', exact: 'Exactly 777', spin: 'Team Spin', daily: 'the Daily', ou: 'Two Point' },
     racing: { plus: '550+', exact: 'Exactly 550', spin: 'Team Spin', daily: 'the Daily', ou: 'Photo Finish' },
-    epl: { plus: '500+', exact: 'Exactly 500', spin: 'Team Spin', daily: 'the Daily', ou: 'Extra Time' }
+    epl: { plus: '650+', exact: 'Exactly 650', spin: 'Team Spin', daily: 'the Daily', ou: 'Extra Time' }
   };
   var frSentOpen = false, frFeedAll = false;
   function agoText(t) {
@@ -6418,7 +6418,7 @@
         : e.x === 'exact' ? 'landed Exactly 1000' : e.x === 'exact4000' ? 'landed Exactly 4000'
         : e.x === 'wc200' ? 'reached World Cup 200+ with ' + frScore(e.g, 'wc', e.s) : e.x === 'nrlw250' ? 'reached NRLW 250+ with ' + frScore(e.g, 'nrlw', e.s)
         : e.x === 'aflw750' ? 'reached AFLW 750+ with ' + frScore(e.g, 'aflw', e.s)
-        : 'hit ' + (e.g === '4000goals' ? '4000+' : e.g === 'bigbash' ? '25000+' : e.g === 'tests' ? '60000+' : e.g === 'nfl' ? '777+' : e.g === 'racing' ? '550+' : e.g === 'epl' ? '500+' : '1000+') + ' with ' + frScore(e.g, e.m, e.s);
+        : 'hit ' + (e.g === '4000goals' ? '4000+' : e.g === 'bigbash' ? '25000+' : e.g === 'tests' ? '60000+' : e.g === 'nfl' ? '777+' : e.g === 'racing' ? '550+' : e.g === 'epl' ? '650+' : '1000+') + ' with ' + frScore(e.g, e.m, e.s);
     } else if (e.k === 'pb') {
       ico = '&#x1F4C8;'; txt = 'set a new best' + frModeIn(e.g, e.m) + ': ' + frScore(e.g, e.m, e.s, e.l);
     } else if (e.k === 'daily') {
@@ -7814,7 +7814,7 @@
     tsplus: '60000+', tsexact: 'Exactly 60000', tsspin: '60000 RUNS Team Spin', tsdaily: '60000 RUNS Daily',
     nflplus: '777+', nflexact: 'Exactly 777', nflspin: '777 TDS Team Spin', nfldaily: '777 TDS Daily',
     rcplus: '550+', rcexact: 'Exactly 550', rcspin: 'G1 WINNER SPINNER Team Spin', rcdaily: 'G1 WINNER SPINNER Daily',
-    eplplus: '500+', eplexact: 'Exactly 500', eplspin: '500 GOALS Team Spin', epldaily: '500 GOALS Daily' };
+    eplplus: '650+', eplexact: 'Exactly 650', eplspin: '650 GOALS Team Spin', epldaily: '650 GOALS Daily' };
   function boardName(id) {
     var b = BOARDS.filter(function (x) { return id.indexOf(x.id + '_') === 0 || id === x.id + '_all'; })[0];
     if (id === 'photo') return 'Profile Photo';
@@ -8292,7 +8292,7 @@
   /* 1000TRIES launched on 27 Sep 2026 and its card went; 4000 GOALS' takes its place (12 Oct 2026) until it is launched:
      one tap turns on accounts and leaderboards at 4000goals.com.au and shows 4000 GOALS in the other games' stats, boards
      and Shop. It can be undone. [game, name, site] */
-  var LAUNCH_CARDS = [['1000tries', '1000TRIES', '1000tries.com.au'], ['4000goals', '4000 GOALS', '4000goals.com.au'], ['bigbash', '25000 RUNS', 'castgames.com.au/25000runs'], ['tests', '60000 RUNS', 'castgames.com.au/60000runs'], ['nfl', '777 TDS', 'castgames.com.au/777tds'], ['racing', 'G1 WINNER SPINNER', 'castgames.com.au/g1winner'], ['epl', '500 GOALS', 'castgames.com.au/500goals']];
+  var LAUNCH_CARDS = [['1000tries', '1000TRIES', '1000tries.com.au'], ['4000goals', '4000 GOALS', '4000goals.com.au'], ['bigbash', '25000 RUNS', 'castgames.com.au/25000runs'], ['tests', '60000 RUNS', 'castgames.com.au/60000runs'], ['nfl', '777 TDS', 'castgames.com.au/777tds'], ['racing', 'G1 WINNER SPINNER', 'castgames.com.au/g1winner'], ['epl', '650 GOALS', 'castgames.com.au/650goals']];
   // One card for each game still to launch (15 Oct 2026: 25000 RUNS waits beside 4000 GOALS). mod.launch.g = the card
   // being asked about, so a tap on one card never confirms another
   function launchCard(d) {
@@ -9218,7 +9218,7 @@
   /* Admin > Players: Give Trophy (6 Oct 2026, the owner only). Pick the game, then any of its trophies; the ones they
      have are marked and cannot be picked. adminGiveTrophy puts it in their cabinet and their next visit to that game
      plays the usual unlock pop-up */
-  var TROPHY_GAMES = [['27-0', '27-0'], ['1000tries', '1000TRIES'], ['4000goals', '4000 GOALS'], ['bigbash', '25000 RUNS'], ['tests', '60000 RUNS'], ['nfl', '777 TDS'], ['racing', 'G1 WINNER SPINNER'], ['epl', '500 GOALS']];
+  var TROPHY_GAMES = [['27-0', '27-0'], ['1000tries', '1000TRIES'], ['4000goals', '4000 GOALS'], ['bigbash', '25000 RUNS'], ['tests', '60000 RUNS'], ['nfl', '777 TDS'], ['racing', 'G1 WINNER SPINNER'], ['epl', '650 GOALS']];
   function trophyGiveAdmin(u) {
     var T = mod.trophy;
     if (!u.name || !mod.owner || !T || T.name !== u.name) return '';
@@ -11435,7 +11435,7 @@
     if (e.game === 'tests' && e.mode === 'plus' && e.score >= 54000 && e.score < 60000) return true;
     if (e.game === 'nfl' && e.mode === 'plus' && e.score >= 700 && e.score < 777) return true; // 777 TDS (17 Oct 2026): 90% of the target
     if (e.game === 'racing' && e.mode === 'plus' && e.score >= 495 && e.score < 550) return true;
-    if (e.game === 'epl' && e.mode === 'plus' && e.score >= 450 && e.score < 500) return true;
+    if (e.game === 'epl' && e.mode === 'plus' && e.score >= 585 && e.score < 650) return true; // 650 GOALS: 90% of the target
     return e.game === '27-0' && (e.result === 'finals' || (e.result === 'premiers' && (d.losses || 0) <= 2));
   }
   function pfHook(e, x) {
@@ -11474,11 +11474,11 @@
       if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 550+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
       return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best card in every mode, your lucky charms, and the states and eras you draft from.' };
     }
-    // 500 GOALS (17 Oct 2026): the same pitch in Premier League words
+    // 650 GOALS (17 Oct 2026): the same pitch in Premier League words
     if (CFG.game === 'epl' && hook !== 'photo') {
       if (hook === 'close') return { ico: '&#x1F62C;', kicker: 'So Close', title: fmt(e.score) + ' Goals', text: 'With CAST Pass you get 2 rerolls every game, not 1, and a Legend Key every day to turn any offer into a Legends Pick.' };
       if (hook === 'wild') return { ico: '&#x1F3B4;', kicker: 'CAST Pass', title: 'Double Wildcards', text: '2 Rerolls, 2 Reveal Goals and 2 Remove Players every game, instead of 1 each.' };
-      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 500+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
+      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 650+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
       return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best XI in every mode, your lucky charms, and the clubs and eras you draft from.' };
     }
     if (CFG.game === '4000goals' && hook !== 'photo') {
