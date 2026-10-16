@@ -209,8 +209,10 @@
   T.canFill = function (p, code) {
     var own = T.positionsOf(p);
     if (own.indexOf(code) !== -1 || (!!T.SAME_SPOT[code] && own.indexOf(T.SAME_SPOT[code]) !== -1)) return true;
-    // own side only, for everyone (17 Oct 2026, the owner: Trent is never a left wing back, Ronaldo never a left mid)
-    return !!T.WIDE_SPOT[code] && T.backThree() && own.some(function (c) { return !!T.WIDE[c] && c.charAt(0) === code.charAt(0); });
+    // own side only, for everyone (17 Oct 2026, the owner: Trent is never a left wing back, Ronaldo never a left mid), and a
+    // wing back spot is for full backs and wing backs only: no attacking winger there (Harry Kewell is never a wing back)
+    var wb = code === 'LWB' || code === 'RWB';
+    return !!T.WIDE_SPOT[code] && T.backThree() && own.some(function (c) { return !!T.WIDE[c] && c.charAt(0) === code.charAt(0) && (!wb || c.slice(1, 2) === 'B' || c.slice(1) === 'WB'); });
   };
 
   // Played for club in that season (Team Spin), or in any season when there is no year (a themed Daily's club)
