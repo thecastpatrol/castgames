@@ -50,17 +50,17 @@
 
   /* Targets: [normal, hard (Sundays)], where a thoughtful fan wins about 1 in 4 days and 1 in 10 Sundays, like 1000TRIES'
      Daily (the real engine, ~/cast-dev/epl/tools/strat.js with each theme's pool) */
-  // @targets (tools/daily_targets.sh; rerun for the formations, the recognisable pool and loose back-three wide spots, 17 Oct 2026)
+  // @targets (tools/daily_targets.sh; rerun for the formations, the recognisable pool, loose back-three wide spots and the stricter wide and midfield spots, 17 Oct 2026)
   var TARGETS = {
-    'club:arsenal': [450, 485], 'club:manutd': [610, 665], 'club:liverpool': [585, 630], 'club:mancity': [485, 525],
-    'club:spurs': [500, 550], 'club:chelsea': [565, 615], 'club:palace': [315, 340], 'club:southampton': [410, 445],
-    'club:newcastle': [410, 440], 'club:everton': [445, 475], 'club:villa': [480, 520], 'club:westham': [410, 445],
-    'club:wolves': [270, 290], 'club:boro': [335, 360], 'club:blackburn': [320, 350], 'club:leicester': [395, 430],
-    'club:fulham': [320, 350], 'club:sunderland': [310, 340], 'club:stoke': [305, 340],
-    'club:bournemouth': [260, 280], 'club:brighton': [295, 315], 'club:bolton': [345, 380],
-    'club:westbrom': [340, 370], 'club:leeds': [400, 425], 'city:manchester': [570, 625],
-    'city:northlondon': [495, 560], 'city:tynewear': [385, 420], 'city:merseyside': [545, 605],
-    'era:e90s': [415, 470], 'era:e00s': [435, 480], 'era:e20s': [500, 560], 'era:e10s': [505, 575]
+    'club:arsenal': [455, 495], 'club:manutd': [610, 660], 'club:liverpool': [610, 650], 'club:mancity': [470, 510],
+    'club:spurs': [515, 560], 'club:chelsea': [580, 625], 'club:palace': [315, 340], 'club:southampton': [415, 460],
+    'club:newcastle': [405, 435], 'club:everton': [445, 480], 'club:villa': [475, 520], 'club:westham': [405, 435],
+    'club:wolves': [275, 295], 'club:boro': [340, 360], 'club:blackburn': [315, 340], 'club:leicester': [400, 430],
+    'club:fulham': [335, 365], 'club:sunderland': [310, 340], 'club:stoke': [310, 350],
+    'club:bournemouth': [260, 275], 'club:brighton': [295, 310], 'club:bolton': [355, 385],
+    'club:westbrom': [335, 370], 'club:leeds': [400, 425], 'city:manchester': [575, 630],
+    'city:northlondon': [505, 565], 'city:tynewear': [385, 420], 'city:merseyside': [560, 620],
+    'era:e90s': [415, 470], 'era:e00s': [435, 485], 'era:e20s': [505, 575], 'era:e10s': [500, 570]
   };
   // @end
   function tgt(key, hard) { var t = TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 330 : 300); }
