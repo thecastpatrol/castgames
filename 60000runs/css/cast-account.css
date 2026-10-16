@@ -3877,7 +3877,7 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 @media (max-width: 420px) {
   .ca-pitch.is-track { border-radius: 48% / 26%; padding: 30px 12px; }
 }
-/* 500 GOALS team sheets (17 Oct 2026): a football pitch, the XI attacking up the page. Mown stripes, white touchlines, the
+/* 650 GOALS team sheets (17 Oct 2026): a football pitch, the XI attacking up the page. Mown stripes, white touchlines, the
    halfway line and centre circle behind the midfield, and a penalty box at each end */
 .ca-pitch.is-pitch { position: relative; isolation: isolate; border-radius: 6px; padding: 40px 10px; gap: 18px; border: 2px solid rgba(255, 255, 255, .75);
   background:
@@ -3892,7 +3892,7 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-pitch.is-pitch::after { bottom: 0; border-bottom: 0; }
 .ca-pitch.is-pitch .ca-spot { flex-basis: 30%; }
 .ca-pitch.is-pitch .ca-pitch-row:last-child .ca-spot { flex-basis: 24%; }
-/* 500 GOALS formations (17 Oct 2026): a row of five (a back five, a five-man midfield) shares the width, never cut */
+/* 650 GOALS formations (17 Oct 2026): a row of five (a back five, a five-man midfield) shares the width, never cut */
 .ca-pitch.is-pitch .ca-pitch-row.is-five { gap: 3px; }
 .ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot { flex-basis: 20%; padding-left: 3px; padding-right: 3px; }
 .ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name { font-size: 11px; letter-spacing: -.2px; overflow-wrap: normal; }
