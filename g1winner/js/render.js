@@ -146,7 +146,7 @@
       '<span class="mode-tag">Classic</span>' +
       '<span class="mode-ico" aria-hidden="true">' + c.ico + '</span>' +
       '<span class="mode-name">' + esc(m.name) + '</span>' +
-      '<span class="mode-line">Draft 8 jockeys. ' + esc(c.line) + ' Group 1 wins</span>' +
+      '<span class="mode-line">Draft 8 jockeys. ' + esc(c.line) + ' Group 1 wins (Aus &amp; NZ)</span>' // only Australia and New Zealand count (17 Oct 2026, the owner: Purton's Hong Kong wins don't) +
       '<span class="mode-chips">' + c.chips.map(function (t) { return '<span class="mode-chip">' + esc(t) + '</span>'; }).join('') + '</span>' +
       '<span class="mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>' +
       '</button>';

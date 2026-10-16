@@ -214,14 +214,14 @@
   /* Packs. The main one is 'nrl' (the key the shared code uses everywhere). 'vic' is the Spring Carnival Daily's: the same
      jockeys with their Melbourne Group 1 wins only (Flemington, Caulfield, Moonee Valley, Sandown: every Victorian one). wc and nrlw are never on here (kept so the shared mode code finds them) */
   T.DATASETS = {
-    nrl: { file: 'data/players.json', target: 550, weight: 8, label: 'Group 1 wins', era: 'Group 1 wins since 1983', only: 'Group 1 wins since 1983', who: 'Group 1' },
+    nrl: { file: 'data/players.json', target: 550, weight: 8, label: 'Group 1 wins', era: 'Aus & NZ Group 1 wins since 1983', only: 'Aus & NZ Group 1 wins since 1983', who: 'Group 1' },
     vic: { live: false, file: 'data/vic-players.json', target: 120, weight: 8, label: 'Melbourne Group 1 wins', era: 'Melbourne Group 1 wins since 1983', only: 'Melbourne Group 1 wins only', who: 'Melbourne' },
     wc: { live: false, file: 'data/players.json', target: 200, weight: 4, label: 'wins', era: 'wins', only: 'wins', who: 'Group 1' },
     nrlw: { live: false, file: 'data/players.json', target: 550, weight: 8, label: 'Group 1 wins', era: 'Group 1 wins', only: 'Group 1 wins', who: 'Group 1' }
   };
   T.DATASET = 'nrl';
   T.TRY_LABEL = 'Group 1 wins';
-  T.ERA_LABEL = 'Group 1 wins since 1983';
+  T.ERA_LABEL = 'Aus & NZ Group 1 wins since 1983';
 
   // Only rows with a numeric tries_1998_plus are playable
   T.loadDataset = function (name) {
