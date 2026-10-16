@@ -3856,14 +3856,14 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-pitch.is-gridiron::before { content: 'END ZONE'; position: absolute; top: 9px; left: 0; right: 0; text-align: center; font: 900 10px/1 Inter, sans-serif;
   letter-spacing: 3px; color: rgba(255, 255, 255, .55); pointer-events: none; }
 .ca-pitch.is-gridiron .ca-spot { flex-basis: 30%; }
-/* 777 TDS (17 Oct 2026): five on the line (four receivers and the tight end), a little smaller so whole names fit */
+/* 777 TDS (17 Oct 2026): a spread look, as the game's field: the wide receivers out wide on the line with the tight end
+   a touch lower between them, the slot receivers a step back, the FLEX spots either side of the quarterback, the backs */
 .ca-pitch.is-gridiron.is-ten { padding-left: 8px; padding-right: 8px; }
-.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child { gap: 4px; }
-.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot { flex-basis: 20%; padding-left: 3px; padding-right: 3px; }
-.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot-name { font-size: 11px; letter-spacing: -.2px; overflow-wrap: normal; }
-.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot-name.is-long { font-size: 9.5px; letter-spacing: -.3px; }
-.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot-name.is-xlong { font-size: 9px; letter-spacing: -.3px; overflow-wrap: anywhere; hyphens: auto; } /* Houshmandzadeh: two lines, never cut */
-.ca-pitch.is-gridiron.is-ten .ca-pitch-row:nth-child(2) { justify-content: space-around; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row { align-items: flex-start; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child { justify-content: space-between; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:first-child .ca-spot:nth-child(2), .ca-pitch.is-gridiron.is-ten .ca-pitch-row:nth-child(3) .ca-spot:nth-child(2) { margin-top: 10px; }
+.ca-pitch.is-gridiron.is-ten .ca-pitch-row:nth-child(2) { justify-content: space-around; padding: 0 4%; }
+.ca-pitch.is-gridiron.is-ten .ca-spot-name.is-xlong { overflow-wrap: anywhere; hyphens: auto; } /* Houshmandzadeh: two lines at worst, never cut */
 .ca-pitch.is-gridiron .ca-pitch-row:first-child { position: relative; padding-top: 10px; }
 .ca-pitch.is-gridiron .ca-pitch-row:first-child::before { content: ''; position: absolute; top: 0; left: -4px; right: -4px; height: 3px; border-radius: 2px;
   background: #4da3ff; box-shadow: 0 0 8px rgba(77, 163, 255, .55); pointer-events: none; }

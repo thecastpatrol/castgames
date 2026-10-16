@@ -1361,7 +1361,7 @@
         var c = club(T.slotClub(s));
         return { pos: T.posLabel(s.code), name: T.surname(s.player.name), val: T.fmt(s.player.tries_1998_plus || 0), vc: '#fff', abbr: c.abbr, bg: c.bg, fg: c.fg };
       }),
-      rows: R.ROWS, teamLabel: 'Your Team', // the field: receivers and tight end on the line, the FLEX spots, the quarterback, the backs
+      rows: R.ROWS, teamLabel: 'Your Team', // the field: the spread look (17 Oct 2026), as js/render.js ROWS
       stats: [{ label: 'Biggest Pick', value: Math.max.apply(null, tds) }, { label: 'Smallest Pick', value: Math.min.apply(null, tds) }, { label: 'Teams', value: clubs }]
         .concat(wc != null ? [{ label: 'Wildcards', value: wc }] : []),
       star: last ? { label: 'The Last Pick', value: last.s.player.name, extra: '+' + T.fmt(last.s.player.tries_1998_plus || 0) } : null,

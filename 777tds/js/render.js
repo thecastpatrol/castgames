@@ -209,10 +209,11 @@
     return { color: '#3b5b8a', glow: 'rgba(59,91,138,.3)', stage: 'cold' };
   };
 
-  // The offence lined up from behind (15 Oct 2026; css/main.css draws the field). 777 TDS (17 Oct 2026): the four
-  // receivers and the tight end on the line of scrimmage (two wide each side, the tight end in the middle), the two FLEX
-  // spots off the line, the quarterback, then the two backs. Slot order is T.SLOTS: QB 0, RB 1 2, WR 3 4 5 6, TE 7, FLEX 8 9
-  var ROWS = R.ROWS = [[3, 4, 7, 5, 6], [8, 9], [0], [1, 2]];
+  // The offence lined up from behind (15 Oct 2026; css/main.css draws the field). 17 Oct 2026, a spread look instead of
+  // five in a row: the two wide receivers split out on the line with the tight end, the two slot receivers a step back and
+  // inside, the FLEX spots either side of the quarterback in the shotgun, then the two backs. T.SLOTS: QB 0, RB 1 2,
+  // WR 3 4 5 6, TE 7, FLEX 8 9
+  var ROWS = R.ROWS = [[3, 7, 6], [4, 5], [8, 0, 9], [1, 2]];
   var ROW_CLS = ['r-line', 'r-slot', 'r-qb', 'r-backs'];
 
   R.pitch = function (S, flashIdx) {

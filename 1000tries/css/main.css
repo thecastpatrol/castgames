@@ -129,7 +129,8 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .btn-block { width: 100%; }
 .btn-sm { min-height: 36px; padding: 6px 14px; font-size: 12px; }
 .btn-row { display: flex; gap: 10px; margin: 16px 0 10px; }
-.btn-row .btn { flex: 1; }
+.btn-row .btn { flex: 1; min-width: 0; }
+@media (max-width: 380px) { .btn-row .btn-decide { font-size: 14px; letter-spacing: 0; padding-left: 8px; padding-right: 8px; white-space: normal; } .btn-row .btn-decide-lbl { text-wrap: balance; } } /* Remove Player and Lock In fit side by side at 360px (17 Oct 2026) */
 /* Stand-alone links are small buttons, never underlined text */
 .text-link {
   display: flex; width: max-content; max-width: 100%; align-items: center; justify-content: center; min-height: 36px; margin: 10px auto 0; padding: 8px 16px; box-sizing: border-box;

@@ -132,7 +132,8 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .btn-block { width: 100%; }
 .btn-sm { min-height: 36px; padding: 6px 14px; font-size: 12px; }
 .btn-row { display: flex; gap: 10px; margin: 16px 0 10px; }
-.btn-row .btn { flex: 1; }
+.btn-row .btn { flex: 1; min-width: 0; }
+@media (max-width: 380px) { .btn-row .btn-decide { font-size: 14px; letter-spacing: 0; padding-left: 8px; padding-right: 8px; white-space: normal; } .btn-row .btn-decide-lbl { text-wrap: balance; } } /* Remove Player and Lock In fit side by side at 360px (17 Oct 2026) */
 /* Stand-alone links are small buttons, never underlined text */
 .text-link {
   display: flex; width: max-content; max-width: 100%; align-items: center; justify-content: center; min-height: 36px; margin: 10px auto 0; padding: 8px 16px; box-sizing: border-box;
@@ -1812,8 +1813,8 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 
 /* A football field (777 TDS, 15 Oct 2026): night-game turf seen from behind the offence, a yard line every 10 yards
    (1 yard = 9px), hash marks in two columns and along both sidelines, and the end zone they're driving at across the top in
-   a neutral slate with the game's name in it. The line of scrimmage runs just above the front row (js/render.js ROWS:
-   the receivers and tight end on the line, the slot and FLEX spots off it, the quarterback, then the backs) */
+   a neutral slate with the game's name in it. The line of scrimmage runs just above the front row (js/render.js ROWS,
+   the spread look since 17 Oct 2026) */
 .pitch {
   --ez: 58px; --yd: 9px;
   position: relative; isolation: isolate; overflow: hidden; display: grid; gap: 8px;
@@ -1843,28 +1844,22 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
   content: ''; position: absolute; left: -14px; right: -14px; top: -9px; height: 3px; border-radius: 2px; z-index: -1;
   background: #5fb2ff; box-shadow: 0 0 10px rgba(95, 178, 255, .7);
 }
-.pitch-row.r-line { justify-content: space-between; margin-top: 4px; }
-.pitch-row.r-slot { padding: 0 10%; justify-content: space-between; }
-.pitch-row.r-qb { margin-top: 2px; }
-.pitch-row.r-backs { padding: 0 16%; justify-content: space-between; }
-.pitch-row .slot { max-width: 33%; }
-/* 777 TDS (17 Oct 2026): five on the line of scrimmage (four receivers and the tight end), each a fifth of the row, and the
-   two FLEX spots off the line under the inside receivers. Names shrink to fit (js/app.js fitNames), never cut */
-.pitch-row.r-line { gap: 4px; }
+/* The spread look (17 Oct 2026, the owner: no five in a straight line): the wide receivers split out on the line, the
+   tight end inside them a touch lower, the slot receivers a step back between them, the FLEX spots either side of the
+   quarterback, the two backs behind. Names shrink to fit (js/app.js fitNames), never cut */
 .pitch { grid-template-columns: minmax(0, 1fr); } /* a long name never widens the field (a grid row's minimum is its longest word) */
-.pitch-row.r-line .slot { flex: 1 1 0; max-width: 20%; padding-left: 2px; padding-right: 2px; }
-.pitch-row.r-line .slot.is-filled .slot-code { left: 4px; }
-.pitch-row.r-line .slot-abbr { right: 4px; }
-.pitch-row.r-line .slot.is-empty .slot-pos { font-size: 9px; line-height: 1.2; }
-.pitch-row.r-slot { padding: 0 15%; }
-@media (max-width: 480px) { /* more room across a phone for the five (17 Oct 2026) */
-  .pitch-panel { padding-left: 6px; padding-right: 6px; }
-  .pitch { padding-left: 8px; padding-right: 8px; }
-  .pitch-row.r-line { gap: 3px; }
-  .pitch-row.r-line .slot { padding-left: 1px; padding-right: 1px; }
-}
+.pitch-row { justify-content: space-between; align-items: flex-start; }
+.pitch-row .slot { flex: 0 1 96px; max-width: none; } /* every card the same width, rows shrink them only on a narrow phone */
+.pitch-row.r-line { margin-top: 4px; }
+.pitch-row.r-line .slot:nth-child(2) { margin-top: 12px; }
+.pitch-row.r-slot { padding: 0 12%; margin-top: -4px; }
+.pitch-row.r-qb { justify-content: center; gap: 10px; margin-top: 6px; }
+.pitch-row.r-qb .slot:nth-child(2) { margin-top: 10px; }
+.pitch-row.r-backs { justify-content: center; gap: 18px; margin-top: 2px; }
+@media (max-width: 380px) { .pitch-row.r-qb { gap: 6px; } }
 @media (min-width: 900px) {
   .pitch { --ez: 66px; --yd: 10px; padding-top: calc(var(--ez) + 28px); }
+  .pitch-row .slot { flex-basis: 112px; }
   .field-ez span { font-size: 32px; letter-spacing: 9px; }
 }
 

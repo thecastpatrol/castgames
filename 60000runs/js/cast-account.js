@@ -5877,12 +5877,12 @@
   var POS11 = ['BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'WK', 'BOWL', 'BOWL', 'BOWL', 'BOWL']; // shown as the cricket labels (16 Oct 2026)
   var FIELD11 = [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9, 10]];
   // 777 TDS (16 Oct 2026): the offence lined up from behind, as the game's field (js/render.js ROWS). 10 spots since 17 Oct
-  // 2026: four receivers and the tight end on the line, the two FLEX spots, the quarterback, then the two backs. A 9-spot
-  // game from before (700 TDS: two receivers and the tight end on the line, the third between the FLEX spots) keeps its own
+  // 2026, in a spread look (17 Oct 2026): the wide receivers and the tight end on the line, the slot receivers, the FLEX
+  // spots either side of the quarterback, the two backs. A 9-spot game from before (700 TDS) keeps its own
   var POS9 = ['QB', 'RB', 'RB', 'WR', 'WR', 'WR', 'TE', 'FLEX', 'FLEX'];
   var FIELD9 = [[3, 6, 4], [7, 5, 8], [0], [1, 2]];
   var POS10 = ['QB', 'RB', 'RB', 'WR', 'WR', 'WR', 'WR', 'TE', 'FLEX', 'FLEX'];
-  var FIELD10 = [[3, 4, 7, 5, 6], [8, 9], [0], [1, 2]];
+  var FIELD10 = [[3, 7, 6], [4, 5], [8, 0, 9], [1, 2]];
   function nfl9(x) { return !!(x && Array.isArray(x.picks) && x.picks.length === 9); }
   // G1 WINNER SPINNER (16 Oct 2026): a card of 8 races on a racecourse, Race 1 to Race 4 down the back straight, 5 to 8 up
   // the home straight
