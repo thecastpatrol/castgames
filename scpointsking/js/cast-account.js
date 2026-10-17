@@ -6220,7 +6220,7 @@
   // SC POINTS KING (17 Oct 2026): the 13 in SC positions, saved in the game's slot order (js/data.js T.SLOTS): the fullback,
   // the four centres and wingers, the halves, the front row with the hooker between the props, the back row
   var POS13SC = ['FLB', 'CTW', 'CTW', 'CTW', 'CTW', '5/8', 'HFB', 'HOK', 'FRF', 'FRF', '2RF', '2RF', '2RF'];
-  var FIELD13SC = [[0], [1, 2, 3, 4], [5, 6], [8, 7, 9], [10, 11, 12]];
+  var FIELD13SC = [[7], [8, 9], [10, 11, 12], [6, 5], [1, 2, 3, 4], [0]]; // SC's own team view: the hooker at the top, the fullback at the bottom (the owner, 17 Oct 2026)
   var POS10E = ['DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'FWD'];
   var FIELD10E = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
   /* Since 17 Oct 2026 a 650 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
@@ -6386,6 +6386,8 @@
   }
   function sheetList(x, ps, title) {
     var clubs = ps.some(function (p) { return p.club; }); // older saves have no clubs: drop the column
+    // SC POINTS KING lists its 13 in its field's order too (the hooker first, the fullback last)
+    if (x && x.game === 'sc' && ps.length === 13) ps = [].concat.apply([], FIELD13SC).map(function (i) { return ps[i]; });
     return (title ? '<h3 class="ca-h3">' + title + '</h3>' : '') + '<ol class="ca-sheet-list' + (clubs ? '' : ' no-clubs') + '">' + ps.map(function (p) {
       var sub = [p.club && p.club.name, p.year].filter(Boolean).join(' '), cls = (p.tier ? ' is-' + p.tier : '') + srcCls(p);
       return '<li' + (cls ? ' class="' + cls.slice(1) + '"' : '') + '><span class="ca-sl-pos">' + p.pos + '</span>' + (clubs ? clubChip(p.club) : '') +

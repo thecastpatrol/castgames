@@ -18,7 +18,11 @@
      site's first and second position). The codes are what the games save and the server checks, so they never change;
      5/8 and 2RF keep their SC labels on screen */
   T.SLOTS = ['FLB', 'CTW', 'CTW', 'CTW', 'CTW', 'FE', 'HFB', 'HOK', 'FRF', 'FRF', 'SR', 'SR', 'SR'];
-  T.POS_NAMES = { FLB: 'Fullback', CTW: 'Centre or Wing', FE: 'Five-Eighth', HFB: 'Halfback', HOK: 'Hooker', FRF: 'Front Row', SR: 'Second Row' };
+  /* The GOAT moment's headline (js/cast-celebrate.js), by the GOAT's player id (the owner, 17 Oct 2026: "IT'S TURBO TIME"
+     for Tom Trbojevic). A new #1 season by someone else gets the plain moment until his own line is added here */
+  T.GOAT_HEADLINES = { 'tom-trbojevic': 'IT\u2019S TURBO TIME' };
+  T.goatHeadline = function (p) { return (p && T.GOAT_HEADLINES[p.pid]) || ''; };
+  T.POS_NAMES = { FLB: 'Fullback', CTW: 'Centre / Wing', FE: 'Five-Eighth', HFB: 'Halfback', HOK: 'Hooker', FRF: 'Front Row', SR: 'Second Row' };
   T.POS_SHORT = { FLB: 'FLB', CTW: 'CTW', FE: '5/8', HFB: 'HFB', HOK: 'HOK', FRF: 'FRF', SR: '2RF' };
   T.POS_ORDER = ['FLB', 'CTW', 'FE', 'HFB', 'HOK', 'FRF', 'SR'];
   T.posLabel = function (code) { return T.POS_SHORT[code] || code; };

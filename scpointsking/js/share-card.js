@@ -204,7 +204,9 @@
     var avail = footerTop - y;
     // Rows fill the space down to the footer (up to rowMax), so there is no dead space either way
     rowH = Math.min(L.rowMax, Math.floor(avail / S.slots.length) - gap); k = rowH / 50;
-    S.slots.forEach(function (sl, i) {
+    // in the field's order (js/render.js T.FIELD_ORDER: the hooker first, the fullback last), the Captain doubled
+    (T.FIELD_ORDER || S.slots.map(function (x, n) { return n; })).forEach(function (si, i) {
+      var sl = S.slots[si], cap = S.captain === si;
       var ry = y + i * (rowH + gap);
       var p = sl.player;
       roundRect(ctx, x0, ry, rowW, rowH, 10 * k);
@@ -212,8 +214,8 @@
       ctx.fillStyle = p && T.isGoat(p) ? 'rgba(255,255,255,.14)' : 'rgba(' + M.rgb + ',.07)'; ctx.fill();
       if (p === best) { ctx.strokeStyle = ACC; ctx.lineWidth = 3; ctx.stroke(); }
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round(22 * k) + 'px ' + F;
-      ctx.fillText(T.posLabel ? T.posLabel(sl.code) : sl.code, x0 + 18, ry + rowH / 2 + 8 * k);
+      ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round(20 * k) + 'px ' + F; // CTW clear of the club chip
+      ctx.fillText(T.posLabel ? T.posLabel(sl.code) : sl.code, x0 + 14, ry + rowH / 2 + 8 * k);
       if (!p) { ctx.fillStyle = '#5c5c72'; ctx.font = '700 ' + Math.round(24 * k) + 'px ' + F; ctx.fillText('Not picked', x0 + 170 * k, ry + rowH / 2 + 8 * k); return; }
       var club = T.club(T.slotClub(sl));
       var cx = x0 + 70 * k, cwid = 80 * k;
@@ -226,7 +228,7 @@
       ctx.textAlign = 'left';
       var nameFont = '800 ' + Math.round(27 * k) + 'px ' + F;
       ctx.fillStyle = T.isGoat(p) ? GOLD : '#f0f0f0'; ctx.font = nameFont;
-      var nm = p.name + ' ' + p.year + (T.isGoat(p) ? ' 🐐' : '');
+      var nm = p.name + ' ' + p.year + (cap ? ' (C)' : '') + (T.isGoat(p) ? ' 🐐' : '');
       var nameX = cx + cwid + 22, nameMax = x0 + rowW - 130 * k - nameX;
       var tag = 'TOP SEASON', tagW = 0, tagH = 30 * k, tagFont = '900 ' + Math.round(17 * k) + 'px ' + F;
       if (p === best) { ctx.font = tagFont; tagW = ctx.measureText(tag).width + 22; nameMax -= tagW + 30; ctx.font = nameFont; }
@@ -249,7 +251,7 @@
       }
       ctx.textAlign = 'right';
       ctx.fillStyle = p === best ? ACC : '#ffffff'; ctx.font = '900 ' + Math.round(30 * k) + 'px ' + F;
-      ctx.fillText(T.fmt(p.tries_1998_plus), x0 + rowW - 20, ry + rowH / 2 + 11 * k);
+      ctx.fillText(T.fmt(p.tries_1998_plus * (cap ? 2 : 1)), x0 + rowW - 20, ry + rowH / 2 + 11 * k);
     });
 
     // Footer

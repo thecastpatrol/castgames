@@ -1,16 +1,16 @@
-/* SC wildcards: Reroll (a fresh spin), Reveal (one season's SC points on the offer, internally 'scout'), Remove Player
+/* SC wildcards: Reroll (a fresh spin), Reveal (every season's SC points on the spin, internally 'scout'), Remove Player
    (internally 'tweak'), and Substitute (CAST Pass). Reroll and Remove Player: one of each a game (two with CAST Pass);
    more from the Vault or the Shop. */
 (function (T) {
   'use strict';
 
-  // Reveal is paid (the owner, 17 Oct 2026: SC points hidden until the end, "Reveal shows one, paid"): no free one a
-  // game, only from the Vault or bought on the spot
+  // Reveal is paid: no free one a game, only from the Vault or bought on the spot. One Reveal shows all three seasons on
+  // the spin, as 1000TRIES's does (the owner, 17 Oct 2026); a new spin (a Reroll too) starts hidden again
   T.FREE_REVEALS = 0;
 
   T.WILDCARDS = {
     reroll: { label: 'Reroll', desc: 'Spin again: three new seasons.' },
-    scout:  { label: 'Reveal', desc: 'Tap one season on this spin to see his SC points.' },
+    scout:  { label: 'Reveal', desc: 'Show the SC points for all three seasons on this spin.' },
     tweak:  { label: 'Remove Player', desc: 'Take one player out of your 13 and spin for his spot.' }
   };
 
@@ -40,21 +40,17 @@
 
   // Reveal is two steps: arm it, then tap a season on the offer (his SC points show, nothing is picked). Cancelling
   // does not spend it
-  T.armScout = function (on) {
+  // One Reveal: every season on the current spin shows his SC points (nothing is picked)
+  T.useScout = function () {
     var S = T.state();
-    if (on && !T.canUse('scout')) return false;
-    S.scoutMode = !!on;
-    if (on) S.tweakMode = false;
-    return S.scoutMode;
-  };
-  T.useScout = function (id) {
-    var S = T.state();
-    if (!S || !S.scoutMode || !T.canUse('scout') || !S.offer.players.some(function (p) { return p.id === id; }) || S.revealed[id]) return false;
+    if (!S || !T.canUse('scout')) return false;
     S.wildcards.scout--;
-    S.revealed[id] = true;
+    S.offer.players.forEach(function (p) { S.revealed[p.id] = true; });
     S.scoutMode = false;
     return true;
   };
+  // Older callers: arming is gone, a Reveal is used at once
+  T.armScout = function (on) { return on ? T.useScout() : false; };
 
   // Remove Player is two steps: arm it, then tap a filled slot. Cancelling does not spend it.
   T.armTweak = function (on) {

@@ -101,7 +101,7 @@
     return t;
   }
 
-  var ITEM_USE = { legend: 'Use it in Classic to swap a spin for a Legends Pick.', reveals: 'Use it in your next draft to see one season’s SC points.',
+  var ITEM_USE = { legend: 'Use it in Classic to swap a spin for a Legends Pick.', reveals: 'Use it in your next draft to see the SC points for a whole spin.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh spin.', removes: 'Use it to take a player out of your 13.' };
   function useText(items) {
     var k = Object.keys(items || {})[0], n = 0;

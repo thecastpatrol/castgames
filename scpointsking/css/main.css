@@ -1620,7 +1620,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
    the halves, the front row with the hooker, and the second rowers (js/render.js ROWS) */
 .pitch {
   position: relative; isolation: isolate; overflow: hidden; display: grid; gap: 9px; grid-template-columns: minmax(0, 1fr);
-  padding: 30px 8px 16px; border-radius: 12px;
+  padding: 16px 8px 30px; border-radius: 12px; /* the posts are at the bottom, behind the fullback */
   background:
     repeating-linear-gradient(180deg, rgba(255, 255, 255, .035) 0 9%, transparent 9% 18%),
     radial-gradient(120% 70% at 50% 0%, rgba(210, 255, 225, .14), transparent 60%),
@@ -1636,7 +1636,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pitch-row.r-half { gap: 14%; }
 .pitch-row.r-front, .pitch-row.r-back { gap: 6px; }
 @media (min-width: 900px) {
-  .pitch { padding-top: 40px; gap: 12px; }
+  .pitch { padding-bottom: 40px; gap: 12px; }
   .pitch-row .slot { flex-basis: 112px; }
   .pitch-row.r-ctw .slot { flex-basis: 108px; }
 }
@@ -1838,3 +1838,31 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 /* The Legend Key's line under the offer ("Not these? Swap for a Legends Pick"), in the key's violet */
 .key-swap { border-color: rgba(167, 139, 250, .6); background: rgba(167, 139, 250, .08); color: #c4b5fd; }
 @media (hover: hover) { .key-swap:hover { background: rgba(167, 139, 250, .16); } }
+/* The GOAT's card (17 Oct 2026, the owner: shiny and premium, as the other games' GOAT card): a gold foil edge with a
+   sheen that moves and a light sweep across the card, the GOAT badge in foil, and the club's band kept readable (light
+   words on a dark backing over the kit) */
+.pcard.is-goat { position: relative; border: 2px solid transparent; background: linear-gradient(var(--card2), var(--card2)) padding-box, var(--goat) border-box;
+  background-size: 100% 100%, 200% 100%; animation: dealIn .35s ease both, goatShine 3s linear infinite; box-shadow: 0 0 0 1px rgba(255, 241, 196, .45), 0 0 26px rgba(241, 192, 115, .45); }
+.pcard.is-goat::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(110deg, transparent 38%, rgba(255, 246, 214, .42) 50%, transparent 62%); transform: translateX(-130%); animation: goatSweep 3.2s ease-in-out infinite; }
+.offer-cards.is-spun .pcard.is-goat { animation: spunIn .4s cubic-bezier(.2, .9, .3, 1.2) both, goatShine 3s linear infinite; }
+@keyframes goatSweep { 0%, 45% { transform: translateX(-130%); } 85%, 100% { transform: translateX(130%); } }
+.pcard.is-goat .pcard-plate { background: #0b0b12; color: #fff; animation: none; text-shadow: 0 1px 3px rgba(0, 0, 0, .8); }
+.pcard.is-goat .pcard-club, .pcard.is-goat .pcard-yr { background: rgba(8, 10, 18, .78); color: #fff; padding: 2px 8px; border-radius: 6px; }
+.pcard.is-goat .pcard-club { flex: 0 1 auto; margin-right: auto; }
+.pcard.is-goat .pcard-tier { background: linear-gradient(135deg, #a77a26, #ffe2a8 35%, #fff6d8 50%, #ffe2a8 65%, #a77a26); background-size: 200% 100%; color: #1a1204;
+  text-shadow: none; box-shadow: 0 0 0 1px #fff1c4, 0 0 12px rgba(241, 192, 115, .7); animation: goatShine 2.4s linear infinite; }
+.pcard.is-goat .pcard-name { color: #ffe2a8; }
+.pcard.is-goat .tries-badge.is-revealed strong { color: #ffd76a; }
+@media (prefers-reduced-motion: reduce) { .pcard.is-goat, .pcard.is-goat .pcard-tier { animation: none; } .pcard.is-goat::after { display: none; } }
+/* His pick landing (R.reveal): the kit behind, light words on a dark backing, a gold foil edge and the sweep */
+.reveal.is-goat { color: #fff; border: 2px solid transparent; background: linear-gradient(#0b0b12, #0b0b12) padding-box, var(--goat) border-box; background-size: 100% 100%, 200% 100%;
+  box-shadow: 0 0 0 1px rgba(255, 241, 196, .45), 0 0 26px rgba(241, 192, 115, .45); text-shadow: 0 1px 3px rgba(0, 0, 0, .85); }
+.reveal.is-goat::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(110deg, transparent 38%, rgba(255, 246, 214, .42) 50%, transparent 62%);
+  transform: translateX(-130%); animation: goatSweep 3.2s ease-in-out infinite; }
+.reveal.is-goat .reveal-name, .reveal.is-goat .reveal-yr, .reveal.is-goat .reveal-lbl { background: rgba(8, 10, 18, .74); padding: 2px 10px; border-radius: 8px; color: #fff; }
+.reveal.is-goat .reveal-num { color: #ffd76a; text-shadow: 0 2px 0 rgba(0, 0, 0, .55), 0 0 18px rgba(241, 192, 115, .7); }
+@media (prefers-reduced-motion: reduce) { .reveal.is-goat::after { display: none; } }
+/* An empty spot's position name on one line (the four CTW spots at 360 too) */
+.slot.is-empty .slot-pos { white-space: nowrap; }
+@media (max-width: 380px) { .pitch-row.r-ctw .slot.is-empty .slot-pos { font-size: 9px; letter-spacing: -.1px; } }

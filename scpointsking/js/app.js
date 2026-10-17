@@ -425,17 +425,17 @@
     place(id, codes[0]);
   }
 
-  // Reveal armed: the tapped season shows his SC points (nothing is picked)
-  function onScout(id) {
+  // Reveal: every season on the spin shows his SC points at once, each number counting up (nothing is picked)
+  function onScout() {
     var S = T.state();
-    if (busy || !S || !S.scoutMode) return;
-    if (!T.useScout(id)) return;
+    if (busy || !S) return;
+    if (!T.useScout()) return;
     sfx.wild();
     T.track('wildcard_used', { wildcard: 'scout', mode: S.mode.name });
+    wildcardBurst('scout', 'scout');
     renderDraft();
     markUsed('scout');
-    var badge = document.querySelector('#offerPanel .pcard[data-pick="' + id + '"] .tries-badge');
-    if (badge) countBadge(badge);
+    Array.prototype.forEach.call(document.querySelectorAll('#offerPanel .tries-badge.is-revealed'), function (badge) { countBadge(badge); });
   }
 
   function place(id, code, slotIdx) {
@@ -451,11 +451,25 @@
     busy = true;
     $('offerPanel').innerHTML = R.reveal(p, T.slotClub(S.slots[idx]));
     renderChrome(idx);
-    setTimeout(function () {
-      if (T.state() !== S) return;
-      busy = false;
-      settle();
-    }, reduceMotion ? 300 : 900);
+    var go = function () {
+      setTimeout(function () {
+        if (T.state() !== S) return;
+        busy = false;
+        settle();
+      }, reduceMotion ? 300 : 900);
+    };
+    /* The GOAT picked (free deal or the GOAT item): the big GOAT moment every CAST draft game shares (js/cast-celebrate.js),
+       with this game's own headline for him (T.goatHeadline), then the gold ring on his spot; the game carries on after */
+    var CC = window.CastCelebrate;
+    if (T.isGoat(p) && CC && CC.goat) {
+      T.track('goat_moment', { mode: S.mode.name });
+      CC.goat({ player: p, head: T.goatHeadline(p), unit: 'SC points', tone: tone, done: function () {
+        if (CC.goatLand) CC.goatLand(document.querySelector('#pitch .slot[data-slot="' + idx + '"]'), { tone: tone });
+        go();
+      } });
+      return;
+    }
+    go();
   }
 
   // Team Full with no Remove Player left: a saved one, or one to buy (15+), can still swap a player out, so the lock-in
@@ -538,7 +552,7 @@
   /* Wildcard theatre */
   var WC_FX = {
     reroll: { ico: '🔄', title: 'Reroll!', sub: 'Back on the spinner' },
-    scout:  { ico: '👀', title: 'Reveal', sub: 'Tap one season to see his SC points' },
+    scout:  { ico: '👀', title: 'Revealed', sub: 'All three seasons\u2019 SC points' },
     tweak:  { ico: '❌', title: 'Remove Player', sub: 'Tap a player in your 13' },
     removed:{ ico: '❌', title: 'Removed!', sub: '' },
     captain:{ ico: '\uD83C\uDF96\uFE0F', title: 'Captain!', sub: '' }
@@ -593,12 +607,7 @@
       if (!S.wildcards.reroll && window.CastAccount && CastAccount.nudgeBonus && S.mode.wildcards) setTimeout(function () { CastAccount.nudgeBonus(grantBonus(S)); }, 1600);
       return;
     }
-    if (key === 'scout') {
-      if (S.scoutMode) T.armScout(false);
-      else if (T.armScout(true)) { sfx.wild(); if (!wildcardBurst('scout', 'scout')) toast('Tap one season to see his SC points'); }
-      renderDraft();
-      return;
-    }
+    if (key === 'scout') { onScout(); return; }
     if (key === 'tweak') {
       if (S.tweakMode) T.armTweak(false);
       else if (T.armTweak(true)) { sfx.wild(); if (!wildcardBurst('tweak', 'tweak')) toast('Tap a player in your 13 to remove him'); }
@@ -937,7 +946,7 @@
           if (T.state() !== vs) return;
           vs.wildcards.scout += 1; vs.boughtScouts = (vs.boughtScouts || 0) + 1;
           onWildcard('scout');
-        }, { title: 'See One Season First', line: 'Tap one season on this spin to see his SC points, then pick.' });
+        }, { title: 'See Their SC Points First', line: 'Show the SC points for all three seasons on this spin, then pick.' });
         break;
       }
       case 'goat': if (T.goatFits()) { openSheet(R.goatSheet()); $('sheet').classList.add('is-confirm'); } break;

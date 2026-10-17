@@ -98,14 +98,16 @@
   };
   R.barLook = function () { return { color: 'var(--gold)', glow: 'rgba(var(--acc-rgb),.5)', stage: 'mid' }; };
 
-  /* The 13 on a rugby league field, by SC position, from the back: the fullback, the four centres and wingers, the
-     halves, the front row with the hooker, and the three second rowers. T.SLOTS: FLB 0, CTW 1-4, 5/8 5, HFB 6, HOK 7,
-     FRF 8-9, 2RF 10-12 */
-  var ROWS = R.ROWS = [[0], [1, 2, 3, 4], [5, 6], [8, 7, 9], [10, 11, 12]];
-  var ROW_CLS = ['r-flb', 'r-ctw', 'r-half', 'r-front', 'r-back'];
-  // The field's lines: the try line and dead ball line at the top, posts, and the 10 metre lines down the field
+  /* The 13 laid out like SC's own team view (the owner, 17 Oct 2026), top to bottom: the hooker, the two front rowers, the
+     three second rowers, the halfback and five-eighth side by side, the four centres and wingers, and the fullback at the
+     bottom. T.SLOTS: FLB 0, CTW 1-4, 5/8 5, HFB 6, HOK 7, FRF 8-9, 2RF 10-12. The results and the share card list the
+     13 in the same order (T.FIELD_ORDER) */
+  var ROWS = R.ROWS = T.FIELD_ROWS = [[7], [8, 9], [10, 11, 12], [6, 5], [1, 2, 3, 4], [0]];
+  T.FIELD_ORDER = [].concat.apply([], ROWS);
+  var ROW_CLS = ['r-hok', 'r-front', 'r-back', 'r-half', 'r-ctw', 'r-flb'];
+  // The field's lines: the try line and dead ball line at the bottom behind the fullback, posts, and the 10 metre lines
   var FIELD = '<svg class="field-lines" viewBox="0 0 500 560" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
-    '<g fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2">' +
+    '<g fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" transform="matrix(1 0 0 -1 0 556)">' +
     '<line x1="0" y1="10" x2="500" y2="10"/><line x1="0" y1="46" x2="500" y2="46" stroke-width="3"/>' +
     '<line x1="0" y1="146" x2="500" y2="146"/><line x1="0" y1="246" x2="500" y2="246" stroke-dasharray="10 10"/>' +
     '<line x1="0" y1="346" x2="500" y2="346"/><line x1="0" y1="446" x2="500" y2="446" stroke-dasharray="10 10"/>' +
@@ -265,7 +267,7 @@
   };
 
   /* A Pick you used (a Legend Key's Legends Pick, the GOAT) shows its numbers straight away (the owner, 16 Oct 2026).
-     A free spin stays hidden until a Reveal shows one season */
+     A free spin stays hidden until a Reveal shows all three */
   function usedOffer(S, p) { return !!(S.offer && (S.offer.paid || S.offer.key || S.offer.goat) && S.offer.players.indexOf(p) >= 0); }
   R.triesShown = function (S, p) { return !!S.revealed[p.id] || usedOffer(S, p); };
   function triesBadge(S, p) {
@@ -306,7 +308,7 @@
     if (S.tweakMode) return R.removeMode(S);
     var players = S.offer ? S.offer.players : [], special = S.offer && S.offer.special;
     return '<div class="panel-head' + (special ? ' is-' + special : '') + '">' +
-        '<span class="panel-title">' + (S.offer && S.offer.goat ? '&#x1F410; The GOAT' : special ? '&#x2B50; Legends Pick' : S.scoutMode ? '&#x1F440; Reveal One' : 'Pick 1') + '</span>' +
+        '<span class="panel-title">' + (S.offer && S.offer.goat ? '&#x1F410; The GOAT' : special ? '&#x2B50; Legends Pick' : 'Pick 1') + '</span>' +
         '<span class="panel-meta">' + (special ? 'Pick 1 of 3 Legend seasons &middot; SC points shown' : S.offer && S.offer.goat ? 'SC points shown' : S.scoutMode ? 'Tap the season to see' : 'SC points hidden until you pick') + '</span>' +
       '</div>' +
       R.wildcardBar(S) +
@@ -481,8 +483,8 @@
   R.results = function (S, out) {
     var h = R.headline(S, out), best = null;
     S.slots.forEach(function (s) { if (s.player && (!best || s.player.tries_1998_plus > best.tries_1998_plus)) best = s.player; });
-    var rows = S.slots.map(function (s, i) {
-      var p = s.player;
+    var rows = T.FIELD_ORDER.map(function (i) {
+      var s = S.slots[i], p = s.player;
       if (!p) return '<li class="rrow is-empty"><span class="rrow-code">' + esc(T.posLabel(s.code)) + '</span><span class="rrow-name">Not picked</span><span class="rrow-tries">&nbsp;</span></li>';
       var club = T.slotClub(s), c = T.club(club);
       return '<li class="rrow' + goatCls(p) + (p === best ? ' is-best' : '') + '" style="' + clubVars(club) + '">' +

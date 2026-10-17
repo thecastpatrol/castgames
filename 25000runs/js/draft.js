@@ -82,6 +82,7 @@
      changes part way through the day, and a draft dealt before it (brought back on this phone) keeps its own deal */
   T.GOAT_FREE = 0.011;
   T.GOAT_FREE_DAILY = T.GOAT_FREE; // the Daily's (the same, the owner: rare, never impossibly rare)
+  T.GOAT_FREE_SPIN = T.GOAT_FREE; // Team Spin's
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === (T.GOAT_SRC || T.GOAT_ID); };
 
@@ -154,7 +155,7 @@
     S.special = null; S.specialAt = 0; S.specialDone = false; S.lifelineRoll = null; S.lifelineUsed = false;
     S.luckExp = 0; S.luckGot = 0; // the luck of the draw, see noteLuck()
     S.hard = T.isHard(mode); // 4000+ only (T.HARD)
-    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < (S.daily ? T.GOAT_FREE_DAILY : T.GOAT_FREE)); // T.goatOut
+    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < (S.daily ? T.GOAT_FREE_DAILY : mode.source === 'spin' ? T.GOAT_FREE_SPIN : T.GOAT_FREE)); // T.goatOut
     // Promos (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): 4000+, Exactly 4000 and WBBL 750+ games dealt
     // during one (the seed carries its mark, so a friend's challenge deals the same after it ends). Never the Daily, the
     // same for everyone. S.promoDef: the promo the seed was dealt in
