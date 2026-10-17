@@ -1,157 +1,159 @@
-/* CAST Games home (js/home.js). One set of sizes for every card: even rows on phones and desktop (the owner's call) */
-:root { --bg: #0a0a0f; --card: #141420; --line: rgba(255, 255, 255, .08); --muted: #a2a2b8; --sky: #7dd3fc; }
+/* CAST Games home and sport pages (js/home.js), the owner's "box of games" design (17 Oct 2026, phone first at 390).
+   Every card wears its sport's colour (--c1 hex, --sc r,g,b, --ink the text on it: cricket is yellow with dark text) */
+:root { --bg: #0a0a0f; --card: #141420; --line: rgba(255, 255, 255, .08); --muted: #a2a2b8; --gut: 16px; --cw: clamp(136px, calc((100vw - 78px) / 2), 158px); }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: #f0f0f0; font-family: Inter, -apple-system, system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
+html { text-wrap-style: pretty; }
 a { color: inherit; }
-.wrap { max-width: var(--cg-max, 1080px); margin: 0 auto; padding: 14px 16px 28px; } /* the bar's width too (shared/cg.css), audit L10 16 Oct 2026 */
-.cg-sec { margin-top: 24px; }
-.cg-sec h2 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 10px; font: 900 13px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: var(--muted); }
-.cg-sec h2 small { font: 800 11.5px/1 Inter, sans-serif; letter-spacing: .2px; text-transform: none; color: var(--sky); }
-/* Featured: a rotating banner (16 Oct 2026): every slide the same size, its own colours, text left and art right */
-.cg-hero { position: relative; }
-.cg-hero-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 18px; }
-.cg-hero-track::-webkit-scrollbar { display: none; }
-.cg-promo { flex: 0 0 100%; scroll-snap-align: start; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) 96px; grid-template-rows: auto auto 1fr auto; column-gap: 12px; row-gap: 6px;
-  height: 200px; padding: 16px; border-radius: 18px; text-decoration: none; text-align: left; color: #fff; font: inherit; cursor: pointer;
-  background: radial-gradient(120% 90% at 0% 0%, rgba(var(--ac, 56, 189, 248), .3), transparent 60%), linear-gradient(135deg, var(--c1, #0c2747), var(--c2, #081322)); border: 1.5px solid rgba(var(--ac, 56, 189, 248), .85); }
-.cg-promo > :not(.cg-promo-art) { grid-column: 1; min-width: 0; }
-.cg-k { font: 900 11px/1.2 Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: rgb(var(--ac, 56, 189, 248)); }
-.cg-promo b { font: 900 22px/1.15 Inter, sans-serif; text-wrap: balance; }
-.cg-promo p { margin: 0; font: 600 13.5px/1.4 Inter, sans-serif; color: rgba(255, 255, 255, .8); text-wrap: pretty; }
-.cg-promo .cg-btn { align-self: end; justify-self: start; background: rgb(var(--ac, 56, 189, 248)); }
-.cg-promo-art { grid-column: 2; grid-row: 1 / -1; align-self: center; width: 96px; height: auto; max-height: 120px; object-fit: contain; }
-.cg-dots { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-.cg-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .25); cursor: pointer; transition: width .2s ease, background .2s ease; }
-.cg-dot.is-on { width: 22px; background: #fff; }
-.cg-btn { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border-radius: 999px; background: var(--sky); color: #04121f; font: 900 13.5px/1 Inter, sans-serif; }
-.cg-btn.is-white { background: #fff; color: #0a0a0f; width: 100%; margin-top: auto; }
-/* Small cards: Continue and Daily (three in a row, all the same size) */
-.cg-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.cg-card { display: grid; grid-template-rows: 62px auto 1fr; height: 176px; padding: 10px; border-radius: 16px; text-decoration: none; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); }
-.cg-art { width: 100%; height: 100%; object-fit: contain; }
-.cg-mark { display: grid; place-items: center; font: 900 28px/1 Inter, sans-serif; color: #fff; }
-.cg-card-t { margin-top: 6px; min-width: 0; }
-.cg-card-t b, .cg-card-t small { display: block; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
-.cg-card-t b { font: 900 13.5px/1.2 Inter, sans-serif; letter-spacing: -.1px; }
-.cg-card-t small { font: 700 11.5px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .72); }
-.cg-cta { align-self: end; justify-self: start; padding: 6px 12px; border-radius: 999px; background: #fff; color: #000; font: 900 11.5px/1 Inter, sans-serif; }
-.cg-cta.is-done { background: rgba(74, 222, 128, .2); color: #86efac; }
-/* Sport buttons (3 or more sports) */
-.cg-chips { display: flex; gap: 8px; margin-top: 24px; overflow-x: auto; scrollbar-width: none; }
-.cg-chip { flex: none; height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: var(--card); color: var(--muted); font: 900 13px/1 Inter, sans-serif; cursor: pointer; }
-.cg-chip.is-on { background: #fff; color: #000; border-color: #fff; }
-/* Each sport */
-.cg-sports { display: grid; gap: 16px; margin-top: 24px; }
-.cg-sport { padding: 14px; border-radius: 22px; background: linear-gradient(180deg, rgba(var(--sc), .2), rgba(20, 20, 32, .6) 75%); border: 1px solid rgba(var(--sc), .45); }
-.cg-sport-h { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.cg-sport-ico { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(var(--sc), .45); font-size: 24px; line-height: 1; }
-.cg-sport-link .cg-sport-ico { font-size: 28px; }
-.cg-sh-t { min-width: 0; }
-.cg-nw { white-space: nowrap; }
-.cg-sport-h b { display: block; font: 900 20px/1.1 Inter, sans-serif; }
-.cg-sport-h small { font: 700 12px/1 Inter, sans-serif; color: rgba(255, 255, 255, .65); }
-.cg-count { flex: none; white-space: nowrap; margin-left: auto; padding: 5px 9px; border-radius: 999px; background: rgba(0, 0, 0, .35); font: 900 11px/1 Inter, sans-serif; }
-.cg-games { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.cg-game-t { position: relative; display: grid; grid-template-rows: 84px auto auto 1fr; height: 240px; padding: 12px; border-radius: 16px; text-decoration: none; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); }
-.cg-game-t b { margin-top: 8px; font: 900 16px/1.2 Inter, sans-serif; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
-.cg-game-t small { margin-top: 3px; font: 600 12px/1.35 Inter, sans-serif; color: rgba(255, 255, 255, .72); display: block; text-wrap: balance; }
-.cg-game-t b.is-long { font-size: 13px; letter-spacing: -.1px; white-space: nowrap; }
-.cg-game-t .cg-btn { align-self: end; }
-.cg-new { position: absolute; top: 10px; right: 10px; z-index: 1; padding: 4px 9px; border-radius: 999px; background: var(--sky); color: #04121f; font: 900 10.5px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; }
-.cg-game-t.is-soon { display: grid; place-content: center; text-align: center; border: 1.5px dashed rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .03); }
-.cg-game-t.is-soon b { color: var(--muted); } .cg-game-t.is-soon small { color: #7a7a92; }
-@media (max-width: 899px) {
-  .cg-games.n3 .cg-game-t:first-child { grid-column: span 2; height: 150px; grid-template-columns: 140px minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 12px; }
-  .cg-games.n3 .cg-game-t:first-child .cg-art { grid-row: 1 / span 3; }
-  .cg-games.n3 .cg-game-t:first-child b { margin-top: 2px; }
-}
-/* Daily Challenge cards: today's challenge in small text, then its reward. Rows on phones (room for the words), three
-   across on desktop */
-.cg-dcard { height: auto; min-height: 176px; grid-template-rows: 62px auto 1fr; }
-.cg-dcard .cg-dhead { white-space: normal; display: block; text-wrap: pretty; color: rgba(255, 255, 255, .85); margin-top: 2px; }
-.cg-dcard .cg-dreward { margin-top: 4px; color: #a7f3d0; }
-.cg-dcard .cg-cta { margin-top: 8px; }
-@media (max-width: 899px) {
-  .cg-cards:has(.cg-dcard) { grid-template-columns: 1fr; }
-  .cg-dcard { grid-template-columns: 96px minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; column-gap: 12px; min-height: 0; height: auto; padding: 12px; }
-  .cg-dcard .cg-art { height: 56px; }
-  .cg-dcard .cg-card-t { margin: 0; }
-  .cg-dcard .cg-cta { margin: 0; align-self: center; }
-}
-/* Most Popular (15 Oct 2026): two by two on phones, four across on desktop */
-.cg-top.n4 .cg-game-t, .cg-top.n2 .cg-game-t { height: 240px; }
-/* All Games: one See All button per sport, in its colour */
-.cg-sport-links { display: grid; gap: 10px; }
-.cg-sport-link { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 84px; padding: 14px; border-radius: 18px; text-decoration: none;
-  background: linear-gradient(135deg, rgba(var(--sc), .28), rgba(20, 20, 32, .7) 80%); border: 1px solid rgba(var(--sc), .5); }
-.cg-sport-link .cg-sport-ico { width: 52px; height: 52px; }
-.cg-sl-t { min-width: 0; } .cg-sl-t b { display: block; font: 900 18px/1.15 Inter, sans-serif; }
-.cg-sl-t small { display: block; margin-top: 4px; font: 700 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .7); white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
-.cg-sl-go { padding: 9px 14px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 13px/1 Inter, sans-serif; white-space: nowrap; }
-.cg-sl-go i { font-style: normal; }
-/* A sport's own page */
-.cg-sport.is-page { margin-top: 8px; }
-/* Coming soon sports */
-.cg-soon-row { display: flex; flex-wrap: wrap; gap: 8px; }
-.cg-soon-s { padding: 8px 14px; border-radius: 999px; border: 1px dashed rgba(var(--sc), .6); color: rgba(var(--sc), 1); font: 900 12.5px/1 Inter, sans-serif; }
-/* Boards and Pass */
-.cg-two { display: grid; gap: 0 20px; }
-.cg-wide { text-decoration: none; display: grid; grid-template-columns: 40px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; width: 100%; min-height: 76px; margin-bottom: 10px; padding: 12px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); color: #fff; text-align: left; cursor: pointer; }
-.cg-wide span { grid-row: span 2; font-size: 26px; }
-.cg-wide b { font: 900 16px/1.2 Inter, sans-serif; } .cg-wide small { font: 600 12.5px/1.35 Inter, sans-serif; color: var(--muted); }
-.cg-wide.is-pass { border: 1.5px solid #f1c073; background: linear-gradient(135deg, #2a2418, #14110a); } .cg-wide.is-pass b { color: #f1c073; }
+.wrap { max-width: var(--cg-max, 1080px); margin: 0 auto; padding: 14px var(--gut) 28px; } /* the bar's width too (shared/cg.css) */
+.cg-sec { margin-top: 26px; }
+.cg-sec[hidden], .cg-hero[hidden] { display: none; }
+
+/* Section heads: Inter Tight italic, as the design */
+.cg-h { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; }
+.cg-h h2 { margin: 0; font: italic 900 24px/1.05 'Inter Tight', Inter, sans-serif; letter-spacing: -.2px; color: #fff; text-wrap: balance; }
+.cg-h h2.is-big { font-size: 26px; }
+.cg-h small { font: 700 12px/1 Inter, sans-serif; color: var(--muted); white-space: nowrap; }
+.cg-arw { display: none; margin-left: auto; gap: 6px; }
+.cg-arw button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #2a2a38; background: #17171f; color: #fff; font: 900 18px/1 Inter, sans-serif; cursor: pointer; }
+@media (hover: hover) { .cg-arw button:hover { border-color: rgba(255, 255, 255, .4); } }
+
+/* Sideways strips (phones): full width, the next card peeking, snapping card by card */
+.cg-strip { display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding: 0 var(--gut); scrollbar-width: none;
+  margin: 0 calc(-1 * var(--gut)); padding: 0 var(--gut) 2px; -webkit-overflow-scrolling: touch; }
+.cg-strip::-webkit-scrollbar { display: none; }
+.cg-strip::after { content: ''; flex: 0 0 calc(var(--gut) - 10px); } /* the last card's right-hand gutter (Safari leaves out the padding) */
+.cg-strip > * { scroll-snap-align: start; }
+
+/* ---------- Hero: 110px, the next slide peeking, dots under it ---------- */
+.cg-hero { margin-top: 0; }
+.cg-hero-track { gap: 8px; }
+.cg-slide { flex: 0 0 calc(100% - 18px); height: 110px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(var(--ac), .55);
+  background: linear-gradient(120deg, var(--s1), var(--s2) 70%), #0d0d16; color: #fff; text-decoration: none; text-align: left; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.cg-slide-t { flex: 1 1 auto; min-width: 0; }
+.cg-k { display: block; font: 900 10.5px/1.15 Inter, sans-serif; letter-spacing: 1.4px; text-transform: uppercase; color: var(--ak, rgb(var(--ac))); } /* a new game's kicker: its sport colour, lightened to read on it */
+.cg-slide b { display: block; margin-top: 6px; font: italic 900 clamp(18px, 5.4vw, 21px)/1.08 'Inter Tight', Inter, sans-serif; text-wrap: balance; }
+.cg-slide-btn { flex: none; padding: 10px 14px; border-radius: 999px; background: rgb(var(--ac)); color: var(--ai, #0a0a0f); font: 900 12.5px/1 Inter, sans-serif; white-space: nowrap; }
+.cg-dots { display: flex; justify-content: center; gap: 6px; min-height: 6px; padding-top: 9px; }
+.cg-dot { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: #3a3a4c; cursor: pointer; transition: width .2s ease, background .2s ease; }
+.cg-dot.is-on { width: 18px; background: #fff; }
+@media (prefers-reduced-motion: reduce) { .cg-dot { transition: none; } }
+
+/* ---------- All Games: a row per sport ---------- */
+.cg-games { margin-top: 22px; }
+.cg-rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.cg-row { min-width: 0; }
+.cg-row-h { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; min-height: 30px; }
+.cg-row-h i { flex: none; width: 6px; height: 22px; border-radius: 3px; background: var(--c1); box-shadow: 0 0 0 1px rgba(var(--sc), .5), 0 0 10px rgba(var(--sc), .35); }
+.cg-row-h h3 { margin: 0; font: 900 17px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }
+.cg-row-h small { font: 700 12px/1 Inter, sans-serif; color: var(--muted); white-space: nowrap; }
+.cg-pill { margin-left: auto; flex: none; display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; background: #17171f; border: 1px solid #2a2a38; color: #fff; text-decoration: none; font: 800 12px/1 Inter, sans-serif; white-space: nowrap; }
+@media (hover: hover) { .cg-pill:hover { border-color: rgba(255, 255, 255, .4); } }
+
+/* A game card: 158 x 150 on phones, the sport's colour, the logo, one line */
+.cg-c { position: relative; flex: 0 0 var(--cw); height: 150px; display: flex; flex-direction: column; gap: 5px; padding: 10px; border-radius: 16px; text-decoration: none; color: var(--ink);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c1) 90%, #fff), color-mix(in srgb, var(--c1) 74%, #000)); border: 1px solid rgba(255, 255, 255, .1); -webkit-tap-highlight-color: transparent; }
+.cg-art { position: relative; flex: 1 1 0; min-height: 0; display: grid; place-items: center; }
+.cg-art img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; } /* always inside its box: a chip under it never covers the logo */
+.cg-art.is-mark { font: 900 32px/1 Inter, sans-serif; letter-spacing: -2px; }
+.cg-nm { flex: none; font: 900 12.5px/1.15 Inter, sans-serif; letter-spacing: -.2px; white-space: nowrap; }
+.cg-tags { flex: none; display: flex; flex-wrap: wrap; gap: 4px; }
+.cg-tag { padding: 3px 7px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 16%, transparent); color: var(--ink); font: 800 10.5px/1.2 Inter, sans-serif; white-space: nowrap; }
+.cg-ln { flex: none; display: block; font: 700 11px/1.3 Inter, sans-serif; color: color-mix(in srgb, var(--ink) 86%, transparent); text-wrap: balance; }
+.cg-ln.is-cont { font-weight: 900; color: var(--ink); }
+.cg-ln.is-cont::before { content: '\25B6\FE0E\00A0'; font-size: 9px; vertical-align: 1px; }
+@media (hover: hover) { a.cg-c:hover { border-color: rgba(255, 255, 255, .55); } }
+/* Coming Soon: dashed in the sport's colour, no link */
+.cg-c.is-soon { color: #fff; background: color-mix(in srgb, var(--c1) 15%, #0c0c12); border: 1.5px dashed color-mix(in srgb, var(--c1) 75%, transparent); }
+.cg-c.is-soon .cg-ln { color: var(--muted); }
+.cg-c.is-soon .cg-tag { background: rgba(255, 255, 255, .1); color: #fff; }
+.cg-c.is-soon img { opacity: .75; }
+.cg-soon-chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: var(--c1); color: var(--ink); font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; }
+
+/* ---------- Leaderboards: this week's #1 on each game ---------- */
+.cg-lb { flex: 0 0 230px; display: flex; flex-direction: column; padding: 12px; border-radius: 16px; color: #fff;
+  background: color-mix(in srgb, var(--c1) 18%, #0c0c12); border: 1px solid color-mix(in srgb, var(--c1) 62%, transparent); }
+.cg-lb-top { display: flex; flex-direction: column; padding: 0; border: 0; background: none; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.cg-lb-h { display: flex; align-items: center; height: 30px; }
+.cg-lb-h img, .cg-lb-h .cg-mk { flex: none; width: 56px; height: 30px; object-fit: contain; object-position: left center; }
+.cg-mk { display: grid; place-items: center; font: 900 18px/1 Inter, sans-serif; letter-spacing: -1px; }
+/* the game's name under its logo, the full width of the card, so a long name breaks into even halves */
+.cg-lb-g { margin-top: 8px; min-height: 30px; font: 900 13px/1.15 Inter, sans-serif; text-wrap: balance; }
+.cg-lb-k { margin-top: 6px; font: 700 11px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.cg-lb-1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; min-height: 26px; margin-top: 5px; }
+.cg-lb-n { min-width: 0; font: 900 15px/1.2 Inter, sans-serif; overflow-wrap: anywhere; }
+.cg-lb-s { flex: none; font: 900 22px/1 Inter, sans-serif; color: color-mix(in srgb, var(--c1) 55%, #fff); white-space: nowrap; }
+.cg-lb-s small { font: 800 11px/1 Inter, sans-serif; color: var(--muted); }
+.cg-lb-1.is-none { align-items: center; font: 700 12.5px/1.3 Inter, sans-serif; color: #cfcfdc; }
+.cg-lb-1.is-wait { align-items: center; }
+.cg-lb-1.is-wait i { display: block; height: 14px; border-radius: 7px; background: linear-gradient(90deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .16), rgba(255, 255, 255, .06)); background-size: 200% 100%; animation: cg-shine 1.4s linear infinite; }
+.cg-lb-1.is-wait i:first-child { width: 58%; } .cg-lb-1.is-wait i:last-child { width: 24%; height: 20px; }
+@keyframes cg-shine { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .cg-lb-1.is-wait i { animation: none; } }
+.cg-lb-top, .cg-lb-me { margin-bottom: 10px; }
+.cg-lb-me { margin-top: -2px; font: 700 12px/1.25 Inter, sans-serif; color: #cfcfdc; }
+/* Beat It sits at the foot of every card, so the cards line up whatever is above it */
+.cg-lb-go { margin-top: auto; display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14);
+  background: var(--c1); color: var(--ink); text-decoration: none; font: 900 12.5px/1 Inter, sans-serif; cursor: pointer; }
+/* The sign-in card for guests (first in the strip): white, never gold (gold is for CAST Pass) */
+.cg-lb.is-in { background: #141420; border-color: rgba(255, 255, 255, .22); gap: 6px; }
+.cg-lb-ico { font-size: 24px; line-height: 1; }
+.cg-lb.is-in b { font: 900 15px/1.2 Inter, sans-serif; text-wrap: balance; }
+.cg-lb.is-in small { font: 600 12px/1.35 Inter, sans-serif; color: var(--muted); text-wrap: pretty; }
+.cg-lb.is-in .cg-lb-go { margin-top: auto; background: #fff; color: #0a0a0f; border-color: #fff; }
+.cg-strip.is-lb { align-items: stretch; }
+
+/* ---------- Daily Challenges ---------- */
+.cg-d { flex: 0 0 236px; height: 150px; display: grid; grid-template-rows: 40px auto 1fr auto; row-gap: 4px; padding: 12px; border-radius: 16px; text-decoration: none; color: #fff;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--c1) 55%, #0a1a10), #0b0b12 92%); border: 1px solid color-mix(in srgb, var(--c1) 60%, transparent); }
+.cg-d-logo { height: 40px; width: auto; max-width: 120px; object-fit: contain; justify-self: start; }
+.cg-d .cg-mk { width: 56px; height: 40px; font-size: 22px; }
+.cg-d b { font: 900 14px/1.2 Inter, sans-serif; }
+.cg-d-h { font: 700 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .85); text-wrap: balance; }
+.cg-d-f { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.cg-d-r { min-width: 0; font: 700 11.5px/1.2 Inter, sans-serif; color: #a7f3d0; text-wrap: balance; }
+.cg-d-go { flex: none; padding: 7px 14px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 12px/1 Inter, sans-serif; }
+@media (hover: hover) { .cg-d:hover, .cg-lb:hover { border-color: color-mix(in srgb, var(--c1) 40%, #fff); } }
+
+/* ---------- A sport's own page: its cards in a grid ---------- */
+.cg-sport-page { margin-top: 8px; }
+.cg-row-h.is-page { gap: 12px; margin-bottom: 14px; }
+.cg-row-h.is-page i { height: 44px; }
+.cg-sp-t { min-width: 0; }
+.cg-sp-t h1 { margin: 0; font: italic 900 28px/1.05 'Inter Tight', Inter, sans-serif; color: #fff; }
+.cg-sp-t small { display: block; margin-top: 4px; font: 700 12.5px/1.2 Inter, sans-serif; color: var(--muted); }
+.cg-count { margin-left: auto; flex: none; padding: 6px 10px; border-radius: 999px; background: rgba(var(--sc), .22); border: 1px solid rgba(var(--sc), .55); color: #fff; font: 900 11.5px/1 Inter, sans-serif; white-space: nowrap; }
+.cg-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.cg-grid .cg-c { height: 150px; }
+.cg-two { display: grid; gap: 10px; margin-top: 24px; }
+.cg-wide { text-decoration: none; display: grid; grid-template-columns: 40px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; width: 100%; min-height: 76px; padding: 12px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); color: #fff; text-align: left; font: inherit; cursor: pointer; }
+.cg-wide span { grid-row: span 2; font-size: 26px; line-height: 1; }
+.cg-wide b { font: 900 16px/1.2 Inter, sans-serif; } .cg-wide small { font: 600 12.5px/1.35 Inter, sans-serif; color: var(--muted); text-wrap: balance; }
+@media (hover: hover) { .cg-wide:hover { border-color: rgba(255, 255, 255, .35); } }
+
 /* One footer pattern on the home page and in every game (audit L4/L5, 16 Oct 2026): pill links, then the copyright */
 .cg-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 20px 16px 40px; border-top: 1px solid var(--line); }
 .cg-foot a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); color: #d6d6e4; font: 800 12.5px/1 Inter, sans-serif; text-decoration: none; }
 @media (hover: hover) { .cg-foot a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
 .cg-foot small { flex-basis: 100%; margin-top: 6px; text-align: center; color: #78788e; font: 700 12px/1.4 Inter, sans-serif; }
+
+/* ---------- Desktop: the same order, wider. Rows and Most Popular show every card (seven across, wrapping when a
+   sport has more); the hero shows three slides; Leaderboards stay a strip with arrows; Dailies five across ---------- */
 @media (min-width: 900px) {
-  .wrap { padding: 24px 16px 40px; }
-  .cg-promo { height: 240px; grid-template-columns: minmax(0, 1fr) 300px; padding: 26px 30px; column-gap: 32px; } .cg-promo b { font-size: 30px; } .cg-promo p { font-size: 15px; max-width: 560px; }
-  .cg-promo-art { width: 300px; max-height: 170px; }
-  /* Four or more Dailies: the full width, in even rows (7 = 4 + 3, 5 and 6 = rows of 3) */
-  .cg-two:has(.cg-daily-all) { grid-template-columns: 1fr; }
-  .cg-cards.n4, .cg-cards.n7, .cg-cards.n8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .cg-cards.n5, .cg-cards.n6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wrap { padding: 24px var(--gut) 44px; }
+  .cg-sec { margin-top: 34px; }
+  .cg-strip { margin: 0; padding: 0 0 2px; scroll-padding: 0; }
+  .cg-strip::after { display: none; }
+  .cg-hero-track { gap: 12px; }
+  .cg-slide { flex: 0 0 calc((100% - 24px) / 3); height: 120px; }
+  .cg-hero-track.cg-n1 .cg-slide, .cg-hero-track.cg-n2 .cg-slide, .cg-hero-track.cg-n3 .cg-slide { flex: 1 1 0; }
+  .cg-slide b { font-size: 21px; }
+  .cg-strip.is-cards { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
+  .cg-strip.is-cards .cg-c, .cg-grid .cg-c { height: 156px; }
+  .cg-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .cg-strip.is-daily { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
+  .cg-d { height: 156px; }
+  .cg-arw { display: inline-flex; align-self: center; }
+  .cg-h h2 { font-size: 28px; } .cg-h h2.is-big { font-size: 30px; }
   .cg-two { grid-template-columns: 1fr 1fr; }
-  .cg-sports { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
-  .cg-games.n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .cg-top.n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .cg-sport-links { grid-template-columns: 1fr 1fr; }
-  .cg-sport.is-page .cg-games.n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .cg-game-t { height: 250px; }
 }
-.cg-two > :only-child { grid-column: 1 / -1; }
-
-/* No text is ever cut off with "..." (16 Oct 2026, the owner): names and lines wrap instead */
-
-/* The Dailies (16 Oct 2026): one row of small cards to swipe, and View All for a compact grid of every one */
-.cg-daily h2 { align-items: center; }
-.cg-view { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .22); background: rgba(255, 255, 255, .06); color: #fff; font: 800 12px/1 Inter, sans-serif; letter-spacing: 0; text-transform: none; cursor: pointer; white-space: nowrap; }
-.cg-drow { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 4px; scroll-padding: 0 16px; }
-.cg-drow::-webkit-scrollbar { display: none; }
-.cg-dmini { flex: 0 0 236px; scroll-snap-align: start; box-sizing: border-box; display: grid; grid-template-rows: 40px auto 1fr auto; row-gap: 4px; height: 168px; padding: 12px; border-radius: 16px; text-decoration: none; color: #fff;
-  background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); }
-.cg-dlogo { height: 40px; width: auto; max-width: 120px; object-fit: contain; justify-self: start; }
-.cg-dmini b { font: 900 14px/1.2 Inter, sans-serif; }
-.cg-dmini .cg-dhead { font: 700 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .85); text-wrap: balance; }
-.cg-dfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
-.cg-dfoot .cg-dreward { min-width: 0; font: 700 11.5px/1.2 Inter, sans-serif; color: #a7f3d0; white-space: nowrap; }
-.cg-dfoot .cg-cta { flex: none; }
-.cg-dgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.cg-dtile { display: grid; grid-template-rows: 30px auto 1fr; row-gap: 3px; min-height: 104px; box-sizing: border-box; padding: 10px; border-radius: 14px; text-decoration: none; color: #fff;
-  background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); }
-.cg-dtile .cg-dlogo { height: 30px; max-width: 96px; }
-.cg-dtile b { font: 900 12.5px/1.2 Inter, sans-serif; }
-.cg-dtile small { font: 700 11px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .78); text-wrap: balance; }
-@media (min-width: 900px) {
-  .cg-drow { margin: 0; padding: 0 0 4px; }
-  .cg-dmini { flex-basis: 260px; }
-  .cg-dgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
-/* The competition above a cricket game's name (17 Oct 2026): Big Bash or Test Cricket at a glance */
-.cg-comp { display: block; width: fit-content; margin: 0 0 5px; padding: 3px 7px; border-radius: 6px; background: var(--cc); color: var(--ci); font: 900 10px/1.1 Inter, sans-serif; letter-spacing: .7px; text-transform: uppercase; white-space: nowrap; }
-/* a labelled tile gives its logo a little less height, so the label never pushes Play off the card */
-.cg-game-t:has(.cg-comp) { grid-template-rows: 60px auto auto 1fr; }
-.cg-game-t:has(.cg-comp) b { margin-top: 6px; }
