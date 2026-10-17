@@ -328,6 +328,7 @@
     if (!best) return;
     var th = themeFor(date);
     var text = '60000 RUNS Daily Challenge · ' + prettyDate(date) + (th.name ? ' · ' + th.name : '') + '\n🏏 ' + fmt(best.total) + ' Test runs' + (best.win ? ' ✅' : '') + ' (best of ' + rec.goes.filter(function (g) { return g.done; }).length + ')\ncastgames.com.au/60000runs';
+    if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); // Invite a Mate v2: their invite code
     track('daily_share', { daily: dayNo(date) });
     if (navigator.share) { navigator.share({ text: text }).catch(function () { /* closed */ }); return; }
     try { navigator.clipboard.writeText(text); } catch (e) { /* no clipboard */ }

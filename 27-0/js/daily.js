@@ -563,6 +563,7 @@
   }
   function share(n, best) {
     var text = shareText(n, best, themeFor(today()));
+    if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); // Invite a Mate v2: their invite code
     track('daily_share', { game: '27-0', daily: n });
     if (navigator.share) { navigator.share({ text: text }).catch(function () {}); return; }
     try { navigator.clipboard.writeText(text).then(function () { flash('Copied. Paste it anywhere.'); }); } catch (e) { flash(text); }

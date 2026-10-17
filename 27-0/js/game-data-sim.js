@@ -2032,9 +2032,12 @@ function smShareText(){
   const fw=f.myTeamInFinals?f.myJourney.filter(j=>j.won).length:0;
   const fl=f.myTeamInFinals?f.myJourney.filter(j=>!j.won).length:0;
   const tw=s.wins+fw,tl=s.losses+fl;
-  if(tw===27&&tl===0)return'I just went 27-0 with my ultimate NRL era team. Undefeated. Can you do the same? Play at 27-0.app';
-  return`I just went ${tw}-${tl} with my ultimate NRL era team. Think you can go 27-0? Play at 27-0.app`;
+  const t=tw===27&&tl===0?'I just went 27-0 with my ultimate NRL era team. Undefeated. Can you do the same? Play at 27-0.app':`I just went ${tw}-${tl} with my ultimate NRL era team. Think you can go 27-0? Play at 27-0.app`;
+  return smInvText(t);
 }
+// Invite a Mate v2 (17 Oct 2026): a signed-in player's share carries their invite code (?r=), as on 1000TRIES
+function smInvText(t){const CA=window.CastAccount;return CA&&CA.inviteText?CA.inviteText(t):t;}
+function smInvLink(u){const CA=window.CastAccount;return CA&&CA.inviteLink?CA.inviteLink(u):u;}
 function smShareImage(){
   if(!_shareCanvas)return;
   _shareCanvas.toBlob(async blob=>{
@@ -2051,7 +2054,7 @@ function smShareImage(){
   });
 }
 function smSocial(p){
-  const t=smShareText(),u='https://castgames.com.au/27-0/',et=encodeURIComponent(t+' '+u),eu=encodeURIComponent(u);
+  const t=smShareText(),u=smInvLink('https://castgames.com.au/27-0/'),et=encodeURIComponent(t+' '+u),eu=encodeURIComponent(u);
   if(p==='instagram'){smShareImage();return;}
   const links={x:`https://twitter.com/intent/tweet?text=${et}`,whatsapp:`https://wa.me/?text=${et}`,facebook:`https://www.facebook.com/sharer/sharer.php?u=${eu}&quote=${encodeURIComponent(t)}`};
   if(links[p])window.open(links[p],'_blank');
@@ -2064,7 +2067,7 @@ function smSaveImage(){
   a.click();
 }
 function smCopyLink(){
-  const txt=smShareText()+' https://castgames.com.au/27-0/';
+  const txt=smShareText()+' '+smInvLink('https://castgames.com.au/27-0/');
   const btn=document.getElementById('sm-copy-btn');
   const orig=btn.innerHTML;
   function done(){btn.innerHTML='&#x2705; Copied!';setTimeout(()=>btn.innerHTML=orig,2200);}

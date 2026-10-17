@@ -1127,6 +1127,7 @@
   window.wcShare = function () {
     if (!T) return;
     var text = shareLine() + '\nThink you can go 8-0? https://castgames.com.au/27-0/';
+    if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); // Invite a Mate v2: their invite code
     var asText = function () {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { /* closed */ }); return; }
       try { navigator.clipboard.writeText(text).then(function () { alert270('Copied. Paste it anywhere.'); }); } catch (e) { alert270(text); }

@@ -1330,7 +1330,8 @@
     var S = T.state();
     var out = T.outcome(true);
     if (!S || !out) return '';
-    var url = 'https://castgames.com.au/1000tries/';
+    var url = 'https://castgames.com.au/1000tries/', CA = window.CastAccount;
+    if (CA && CA.inviteLink) url = CA.inviteLink(url); // Invite a Mate v2: a signed-in player's share carries their invite code
     var score = out.reason === 'exact'
       ? 'I just hit exactly 1000 NRL tries on 1000TRIES \uD83C\uDFAF'
       : 'I just scored ' + T.fmt(out.total) + ' ' + T.TRY_LABEL + ' on 1000TRIES (' + S.mode.name + ') \uD83C\uDFC9';

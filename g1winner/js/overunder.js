@@ -252,6 +252,7 @@
     if (marks.length > 30) marks = marks.slice(0, 29).concat(['\u2026', marks[marks.length - 1]]);
     var txt = 'Photo Finish \u00B7 ' + c.name + '\n\uD83D\uDD25 ' + st.streak + ' in a row\n' + marks.join('') + '\nCan you beat it?';
     var url = 'https://castgames.com.au/' + T.GAME_SLUG + '/?play=ou';
+    if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
     T.track('ou_share', { category: st.cat, streak: st.streak });
     if (navigator.share) { navigator.share({ text: txt, url: url }).catch(function () {}); return; }
     try { navigator.clipboard.writeText(txt + ' ' + url); flash('Copied. Paste it anywhere.'); } catch (e) { /* no clipboard */ }

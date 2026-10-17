@@ -1442,6 +1442,7 @@
     var out = T.outcome(true);
     if (!S || !out) return '';
     var url = 'https://castgames.com.au/650goals';
+    if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
     var score = out.reason === 'exact'
       ? 'I just hit exactly ' + T.fmt(T.TARGET) + ' Premier League goals on 650 GOALS \uD83C\uDFAF'
       : 'I just scored ' + T.fmt(out.total) + ' ' + T.TRY_LABEL + ' on 650 GOALS (' + S.mode.name + ') \u26BD';

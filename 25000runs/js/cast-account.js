@@ -703,6 +703,8 @@
     if (s === 'guest' && passReturn) { passReturn = null; }
     if (s === 'signed-in' && handedOff) handoffNote();
     if (s === 'signed-in' || s === 'guest') setTimeout(mailGiftCheck, 1200); // a gift link waiting (the World Cup email)
+    // Invite a Mate v2: a share or creator link waiting, and the invite code for share cards (fetched once per phone)
+    if (s === 'signed-in') setTimeout(function () { refClaim(); if (named() && !inviteCode()) loadInvite(false); }, 2500);
   }
 
   function onAuth(u) {
@@ -2110,7 +2112,7 @@
     if (inviteReward()) {
       loadSocial(false); // the invite link, ready for Share
       h += '<div class="ca-inv-card"><span class="ca-inv-ico" aria-hidden="true">&#x1F381;</span><span class="ca-inv-txt"><b>Got Mates Who Love Their Footy?</b>' +
-        '<small>Invite them. When they sign up with your link and play their first game, you both get 3 free Rerolls.</small></span>' +
+        '<small>Invite them. They get 3 free Rerolls after their first game, and once they&rsquo;ve played 3 games you get 3 too, with bigger rewards as more mates join.</small></span>' +
         '<button type="button" class="ca-inv-go" data-ca="inv-share" data-v="welcome">' + (navigator.share ? 'Share' : 'Copy Link') + '</button></div>';
     }
     if (passOpen() && !hasPass()) h += '<button type="button" class="ca-wel-pass" data-ca="pass-info" data-from="welcome"><span class="ca-ps"><span class="ca-ps-t">CAST Pass</span>' + PASS_SVG + '</span>' +
@@ -2328,6 +2330,7 @@
       ['marathon', '&#x1F3C3;', 'Marathon', 'Play 10 games in one day'],
       ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate’s challenge score'],
       ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
+      ['recruiter', '&#x1F4E3;', 'Recruiter', 'Bring 10 mates to CAST Games'], // Invite a Mate v2 (17 Oct 2026): given at 10 mates
       ['toty', '&#x1F3C5;', 'Team of the Year', 'Find a 2026 Dally M Team of the Year player', 'dallym26'],
       ['prem26', '&#x1F3C6;', '2026 Premiers', 'Find a 2026 premiers player', 'premiers26'],
       // Six Again (14 Oct 2026): shown once it's launched (or previewed), like the World Cup ones
@@ -2711,6 +2714,7 @@
       ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 seasons'],
       ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 seasons'],
       ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
+      ['recruiter', '&#x1F4E3;', 'Recruiter', 'Bring 10 mates to CAST Games'], // Invite a Mate v2 (17 Oct 2026): given at 10 mates
       ['toty', '&#x1F3C5;', 'Team of the Year', 'Find a 2026 Dally M Team of the Year player', 'dallym26'],
       ['prem26', '&#x1F3C6;', '2026 Premiers', 'Find a 2026 premiers player', 'premiers26'],
       // World Champions (15 Oct 2026): a champion in your 13 while it runs, from a spin or a Pick
@@ -4533,8 +4537,9 @@
     var uid = user && user.uid, seq = rrSeq, first = rrSavedFor !== uid; // the page's first read for this account
     rrSavedFor = uid; rrAt = Date.now();
     var kept = mayReuse || first ? rrCacheGet(uid) : null;
-    // gifts: 1 says this page shows the owner's gifts properly (the server holds them from older pages, 11 Oct 2026)
-    return (kept ? Promise.resolve(kept) : callFn('rerollShop', { act: 'balance', gifts: 1 })).then(function (r) {
+    // gifts: 1 says this page shows the owner's gifts properly (the server holds them from older pages, 11 Oct 2026); inv: 1
+    // Invite a Mate v2's notes, rf: 1 the refund and dispute notes (17 Oct 2026)
+    return (kept ? Promise.resolve(kept) : callFn('rerollShop', { act: 'balance', gifts: 1, inv: 1, rf: 1 })).then(function (r) {
       if (seq === rrSeq && uid === (user && user.uid)) {
         rrSaved = r.left || 0; rrBought = r.rerollsBought || 0;
         Object.keys(ITM).forEach(function (k) { itHave[k] = r[ITM[k].field] || 0; });
@@ -4593,6 +4598,7 @@
       : n.src === 'toty' ? (n.n === 1 ? (n.free ? 'Your free' : 'Your') + ' Team of the Year Pick' : 'Your ' + n.n + ' Team of the Year Picks') + ' became ' + items + '. They’re in your Vault, ready in 27-0 Classic and Pack.'
       : n.src === 'prem' ? (n.n === 1 ? (n.free ? 'Your free' : 'Your') + ' Premiers Pick' : 'Your ' + n.n + ' Premiers Picks') + ' became ' + items + '. They’re in your Vault, ready in 27-0 Classic and Pack.'
       : 'You completed ' + (n.name || 'the Daily Challenge') + ' in ' + gname + '. ' + (lasts(n.items) > 1 ? 'They’re in your Vault for the next 24 hours.' : lasts(n.items) ? 'It’s in your Vault for the next 24 hours.' : 'It’s in your Vault, ready for your next game.');
+    if (n.src === 'invite') { var ivt = invNoteText(n, items); ico = ivt[0]; kicker = ivt[1]; title = ivt[2]; line = ivt[3]; } // Invite a Mate v2
     if (!rwEl) {
       rwEl = document.createElement('div');
       rwEl.className = 'ca ca-tp ca-rwp';
@@ -6503,7 +6509,7 @@
   function frInviteBox(d) {
     var link = inviteUrl('friend', d.code), rw = inviteReward(), jl = canBuyReroll() ? joinedLine() : '';
     return '<div class="ca-soc-invite' + (rw ? ' is-reward' : '') + '"><div>' + (rw
-        ? '<b class="ca-inv-h">&#x1F381; Invite a Mate: You Both Get 3 Free Rerolls</b><small>When a new player signs up with your link and plays their first game, you both get 3 free Rerolls (up to 10 mates a month). They become your friend straight away.'
+        ? '<b class="ca-inv-h">&#x1F381; Invite a Mate: Rewards That Grow</b><small>A new player who signs up with your link gets 3 free Rerolls after their first game. Once they&rsquo;ve played 3 games of any CAST game, they count for you: 3 free Rerolls each (up to 10 mates a month), and bigger rewards as more mates count. They become your friend straight away.'
         : '<b>Your Invite Link</b><small>Anyone who opens it and signs in becomes your friend straight away.') +
       (jl ? ' <b class="ca-ref-line">' + jl + '.</b>' : '') + '</small><code>' + esc(link.replace(/^https?:\/\//, '')) + '</code></div>' +
       '<div class="ca-row"><button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="fr-share">' + (navigator.share ? 'Share Invite' : 'Copy Invite Link') + '</button>' +
@@ -6746,7 +6752,7 @@
     }).join('') + '</ul>';
   }
   function frAdd(d) {
-    var h = frInviteBox(d);
+    var h = frInviteBox(d) + invLadder(); // Invite a Mate v2's ladder and mates (17 Oct 2026)
     h += '<h3 class="ca-h3">Search</h3><div class="ca-soc-search"><input class="ca-field" id="caFriendQ" type="search" maxlength="18" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search a leaderboard name" value="' + esc(fsearch.q) + '" aria-label="Search for a player by leaderboard name">' +
       '<button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="fr-search"' + (fsearch.loading ? ' disabled' : '') + '>' + (fsearch.loading ? 'Searching&hellip;' : 'Search') + '</button></div>';
     if (fsearch.err) h += '<p class="ca-lb-err" role="alert">' + esc(fsearch.err) + '</p>';
@@ -6805,7 +6811,7 @@
       function (err) { fsearch.loading = false; fsearch.err = fnError(err); render(); });
   }
   function friendAdd(name, code) {
-    socialAct(code ? 'invite' : 'a' + name, 'friendAdd', code ? { code: code } : { name: name }, function (r) {
+    socialAct(code ? 'invite' : 'a' + name, 'friendAdd', code ? { code: code, game: CFG.game } : { name: name }, function (r) { // game: Invite a Mate v2's New Game Boost
       var n = (r.friend && r.friend.n) || name || 'your friend';
       socMsg = r.status === 'friends' ? 'You and ' + n + ' are friends now.' : 'Friend request sent to ' + n + '.';
       track(r.status === 'friends' ? 'friend_added' : 'friend_request', { game: CFG.game, via: code ? 'invite' : view === 'team' ? 'sheet' : 'search' });
@@ -6825,12 +6831,12 @@
   function refsThisMonth() { var r = profile && profile.refMonth; return r && r.m === sydneyDate(Date.now()).slice(0, 7) ? r.n || 0 : 0; }
   // The free Rerolls are on offer: 15 and over (as with bought Rerolls), and fewer than 10 mates this month
   function inviteReward() { return canBuyReroll() && refsThisMonth() < 10; }
-  function joinedLine() { var n = refsThisMonth(); return n ? n + (n === 1 ? ' mate' : ' mates') + ' joined this month, ' + n * 3 + ' free Rerolls earned' : ''; }
+  function joinedLine() { var n = refsThisMonth(); return n ? n + (n === 1 ? ' mate' : ' mates') + ' counted this month, ' + n * 3 + ' free Rerolls earned' : ''; } // counted: 3 games (v2)
   function shareInvite(copyOnly, where) {
     var code = inviteCode();
     if (!code) { openFriends('add'); return; } // no link on this device yet: Friends fetches it, with its own Share
     var link = inviteUrl('friend', code), reward = canBuyReroll();
-    var text = reward ? 'Join me on CAST Games (27-0 and 1000TRIES). Play your first game with my link and we both get 3 free Rerolls \uD83C\uDF81'
+    var text = reward ? 'Join me on CAST Games (27-0 and 1000TRIES). Sign up with my link and you get 3 free Rerolls after your first game \uD83C\uDF81'
       : 'Add me on CAST Games (27-0 and 1000TRIES) and see if you can beat my scores:';
     track('friend_invite_share', { game: CFG.game, how: copyOnly || !navigator.share ? 'copy' : 'share', where: where || 'friends' });
     if (!copyOnly && navigator.share) { navigator.share({ title: reward ? 'Free Rerolls on CAST Games' : 'Add me on CAST Games', text: text, url: link }).catch(function () {}); return; }
@@ -6851,12 +6857,128 @@
         box.addEventListener('click', function (e) { if (e.target.closest('[data-inv]')) shareInvite(false, 'home'); });
       }
       var html = on ? '<div class="ca-inv-spot" data-inv="share"><span class="ca-inv-ico" aria-hidden="true">&#x1F381;</span>' +
-        '<span class="ca-inv-txt"><em>Invite a Mate</em><b>You Both Get 3 Free Rerolls</b><small>' + esc(jl || 'When they sign up with your link and play their first game') + '</small></span>' +
+        '<span class="ca-inv-txt"><em>Invite a Mate</em><b>You Both Get 3 Free Rerolls</b><small>' + esc(jl || 'Then a Legend Key at 3 mates and 3 Legend Keys at 5') + '</small></span>' +
         '<button type="button" class="ca-inv-go">' + (navigator.share ? 'Share' : 'Copy Link') + '</button></div>' : '';
       if (box.innerHTML !== html) box.innerHTML = html;
       box.hidden = !html;
     });
   }
+
+  /* ---------------- Invite a Mate v2: rewards that grow (17 Oct 2026, the owner's BUILD IT) ----------------
+     A mate who joins with your link still gets 3 free Rerolls after their first game. They count for you once they've
+     played 3 games of any CAST game, and the ladder pays: 3 free Rerolls a mate, a Legend Key at 3, 3 Legend Keys at 5
+     (never a CAST Pass: the owner, 17 Oct 2026), The GOAT and the Recruiter trophy at 10. The server keeps it all
+     (inviteView, inviteQualify); this shows the ladder and your mates on Friends > Add Friends. Share cards carry your
+     code (?r=, inviteLink and inviteText for the games' own shares), and a creator's link (?c=) is kept for 30 days
+     (first one wins) and counted for the owner's Creator Links. Never near the Shop or paid Rerolls. */
+  var invv = { data: null, loading: false, at: 0, err: '' };
+  function loadInvite(force) {
+    if (!named() || invv.loading || (!force && invv.data && Date.now() - invv.at < 60000)) return;
+    if (!force && invv.failAt && Date.now() - invv.failAt < 30000) return;
+    invv.loading = true;
+    callFn('inviteView', {}).then(function (d) {
+      invv = { data: d, loading: false, at: Date.now(), err: '' };
+      if (d && d.code && user) lsSet(LS_INV + user.uid, d.code); // the same code as the Friends invite link
+      render();
+    }, function (err) { invv.loading = false; invv.err = fnError(err); invv.failAt = Date.now(); render(); });
+  }
+  // The ladder: [mates, icon, reward, small line, id]
+  var INV_RUNGS = [[1, '&#x1F504;', '3 Free Rerolls', 'For every mate who counts', ''], [3, '&#x2B50;', 'A Legend Key', '', 'invite_3'],
+    [5, '&#x2B50;', '3 Legend Keys', '', 'invite_5'], [10, '&#x1F410;', 'The GOAT', 'And the Recruiter trophy', 'invite_10']];
+  var INV_NEXT = { invite_3: 'a Legend Key', invite_5: '3 Legend Keys', invite_10: 'The GOAT' };
+  function invLadder() {
+    if (!canBuyReroll()) return '';
+    loadInvite(false);
+    var d = invv.data;
+    if (!d) return invv.err ? '<p class="ca-muted ca-center">Your invite rewards did not load. <button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="inv-retry">Try Again</button></p>' : '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
+    var n = d.n || 0, need = d.need || 3, given = d.given || [], nx = d.next;
+    var pct = nx ? Math.round(n / nx.at * 100) : 100;
+    var h = '<div class="ca-inv-lad"><div class="ca-inv-lad-h"><h3 class="ca-h3">Your Invite Rewards</h3><span class="ca-inv-cnt"><b>' + fmt(n) + '</b> ' + (n === 1 ? 'Mate' : 'Mates') + ' Counted</span></div>' +
+      '<p class="ca-small">Mates count once they&rsquo;ve played ' + need + ' games of any CAST game. One link works for every game.</p>' +
+      '<div class="ca-inv-bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + (nx ? nx.at : n) + '" aria-valuenow="' + n + '"><span style="width:' + pct + '%"></span></div>' +
+      '<p class="ca-inv-pl">' + (nx ? '<b>' + fmt(n) + ' of ' + fmt(nx.at) + ' mates</b> to ' + (INV_NEXT[nx.id] || 'your next reward') : '<b>Every reward unlocked.</b> Each mate who counts still earns you 3 free Rerolls.') + '</p>' +
+      '<ol class="ca-inv-rungs">' + INV_RUNGS.map(function (r) {
+        var done = r[4] ? given.indexOf(r[4]) !== -1 || n >= r[0] : n >= 1, isNext = nx && r[4] === nx.id;
+        return '<li class="' + (done ? 'is-done' : isNext ? 'is-next' : '') + (r[0] === 5 ? ' is-pass' : '') + '"><span class="ca-inv-ri" aria-hidden="true">' + r[1] + '</span>' +
+          '<span class="ca-inv-rt"><em>' + (r[0] === 1 ? 'Each Mate' : r[0] + ' Mates') + '</em><b>' + r[2] + '</b>' + (r[3] ? '<small>' + r[3] + '</small>' : '') + '</span>' +
+          (done ? '<span class="ca-inv-rs" aria-label="Unlocked">&#x2705;</span>' : '') + '</li>';
+      }).join('') + '</ol>';
+    (d.boosts || []).forEach(function (b) {
+      h += '<div class="ca-inv-boost"><span aria-hidden="true">&#x1F680;</span><span><b>New Game Boost: ' + esc(b.name) + '</b><small>Mates who join ' + esc(b.name) + ' by ' + esc(passDate(b.until)) +
+        ' earn you a bonus of ' + esc(window.CAST_DAILY ? window.CAST_DAILY.itemsText(b.items) : '3 Rerolls') + ' once they count.</small></span></div>';
+    });
+    var ms = d.mates || [];
+    h += '<h3 class="ca-h3">Your Invited Mates' + (ms.length ? ' <span class="ca-soc-count is-quiet">' + ms.length + '</span>' : '') + '</h3>';
+    h += ms.length ? '<ul class="ca-soc-list ca-inv-mates">' + ms.map(function (m) {
+      return '<li class="ca-soc-row"><span class="ca-soc-n"><span class="ca-lb-n ca-soc-nl"><b class="ca-lb-nm">' + esc(m.n || 'New Player') + '</b></span></span>' +
+        (m.counted ? '<span class="ca-soc-tag is-ok">Counted &#x2705;</span>' : '<span class="ca-soc-tag">Played ' + fmt(m.played || 0) + ' of ' + need + ' Games</span>') + '</li>';
+    }).join('') + '</ul>' : '<p class="ca-muted">No mates yet. Share your link and they&rsquo;ll show up here once they sign up.</p>';
+    return h + '</div>';
+  }
+  // Invite a Mate's reward pop-ups (rewards/{uid} notes, src 'invite'): [icon, kicker, title, line]
+  function invNoteText(n, items) {
+    var they = Object.keys(n.items || {}).reduce(function (t, k) { return t + (+n.items[k] || 0); }, 0) > 1 ? 'They’re' : 'It’s', who = n.mate || 'Your mate';
+    if (n.boost) return ['&#x1F680;', 'New Game Boost', items + ' Added', who + ' joined ' + ((GAMES[n.boost] || {}).name || n.boost) + ' in its first 14 days. ' + they + ' in your Vault.'];
+    if (n.tier === 5) return ['&#x2B50;', 'Invite a Mate', items + ' Added', '5 mates count for you now. ' + items + ' are in your Vault. Next: The GOAT at 10 mates.'];
+    if (n.tier === 3) return ['&#x2B50;', 'Invite a Mate', items + ' Added', '3 mates count for you now. Your Legend Key is in your Vault. Next: 3 Legend Keys at 5 mates.'];
+    if (n.tier === 10) return ['&#x1F410;', 'Invite a Mate', 'The GOAT Added', '10 mates count for you now. The GOAT is in your Vault, and the Recruiter trophy is in your 27-0 and 1000TRIES cabinets.'];
+    return ['&#x1F381;', 'Invite a Mate', items + ' Added', who + ' has played 3 games, so they count for you. ' + they + ' in your Vault.'];
+  }
+  // Share links that carry the player's invite code: a mate who signs up from one counts as their invite
+  var INV_HOSTS = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:1000tries\.com\.au|27-0\.app|27-0\.thecastpatrol\.com\.au|castgames\.com\.au|4000goals\.com\.au)(\/[^\s?#]*)?)(\?[^\s#]*)?/i;
+  function myInvCode() { return status === 'signed-in' && named() ? inviteCode() : null; }
+  function inviteLink(url) {
+    var code = myInvCode();
+    if (!code || !url) return url;
+    try { var u = new URL(url, location.href); if (u.searchParams.has('r') || u.searchParams.has('friend')) return url; u.searchParams.set('r', code); return u.href; } catch (e) { return url; }
+  }
+  function inviteText(text) {
+    var code = myInvCode();
+    if (!code || typeof text !== 'string') return text;
+    return text.replace(INV_HOSTS, function (m, base, path, q) {
+      if (q && /[?&](r|friend)=/.test(q)) return m;
+      return base + (path ? '' : '/') + (q ? q + '&' : '?') + 'r=' + code;
+    });
+  }
+  // A share link (?r=CODE) or a creator's link (?c=CODE) opened: kept on this phone for 30 days, the first one wins
+  var LS_REF = 'cast_ref', LS_CRT = 'cast_crt', LS_REF_DONE = 'cast_ref_done_', REF_DAYS = 30;
+  (function () {
+    var r = /[?&]r=([A-Za-z0-9]{6,8})(?=&|#|$)/.exec(location.search), c = /[?&]c=([A-Za-z0-9]{3,12})(?=&|#|$)/.exec(location.search);
+    if (!r && !c) return;
+    try { var u = new URL(location.href); if (r) u.searchParams.delete('r'); if (c) u.searchParams.delete('c'); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (e) { /* keep the address */ }
+    var keep = function (key, code) {
+      var had = null;
+      try { had = JSON.parse(lsGet(key) || 'null'); } catch (e) { had = null; }
+      if (had && had.code && Date.now() - (had.at || 0) < REF_DAYS * 864e5) return false;
+      lsSet(key, JSON.stringify({ code: code, at: Date.now() }));
+      return true;
+    };
+    if (r) keep(LS_REF, r[1].toUpperCase());
+    if (c && keep(LS_CRT, c[1].toUpperCase())) {
+      track('creator_link_open', { game: CFG.game, code: c[1].toUpperCase() });
+      setTimeout(function () { callFn('creatorHit', { c: c[1].toUpperCase() }).catch(function () { /* one visit less */ }); }, 2500);
+    }
+  })();
+  // Signed in with a link waiting: a new account (2 days or younger) claims it once, then it's forgotten
+  function refClaim() {
+    if (status !== 'signed-in' || !user || !profile) return;
+    var ca = profile.createdAt, made = ca && ca.toMillis ? ca.toMillis() : ca instanceof Date ? ca.getTime() : 0;
+    var fresh = !made || Date.now() - made < 2 * 864e5, uid = user.uid;
+    [[LS_REF, 'r'], [LS_CRT, 'c']].forEach(function (k) {
+      var x = null;
+      try { x = JSON.parse(lsGet(k[0]) || 'null'); } catch (e) { x = null; }
+      if (!x || !x.code || lsGet(LS_REF_DONE + k[1] + '_' + uid) === x.code) return;
+      if (!fresh || Date.now() - (x.at || 0) > REF_DAYS * 864e5) { lsSet(LS_REF_DONE + k[1] + '_' + uid, x.code); return; } // an older account: never counts
+      if (k[1] === 'r' && x.code === inviteCode()) return; // their own link
+      var data = { game: CFG.game }; data[k[1]] = x.code;
+      callFn('inviteClaim', data).then(function (res) {
+        if (res && res.why === 'wait') return; // the profile isn't saved yet: next time
+        lsSet(LS_REF_DONE + k[1] + '_' + uid, x.code);
+        if (res && res.ok) track(k[1] === 'c' ? 'creator_signup' : 'invite_joined', { game: CFG.game, via: k[1] === 'c' ? 'creator' : 'share' });
+      }, function () { /* next sign-in */ });
+    });
+  }
+  /* ---------------- end of Invite a Mate v2 ---------------- */
 
   /* A friend's profile: totals, best rankings, recent games (tap for the team) and your head to head */
   function loadFriendView(uid) {
@@ -6938,7 +7060,7 @@
     var fr = invite.kind === 'friend', ch = invite.kind === 'challenge';
     var h = '<div class="ca-center"><div class="ca-badge" aria-hidden="true">' + (ch ? '&#x2694;&#xFE0F;' : fr ? '&#x1F465;' : '&#x1F3DF;&#xFE0F;') + '</div><div class="ca-kicker">' + (ch ? 'Challenge' : fr ? 'Friend Invite' : 'League Invite') + '</div>' +
       '<h2 class="ca-title">' + (ch ? 'You&rsquo;ve Been Challenged' : fr ? 'Your Mate Wants to Be Friends' : 'You&rsquo;re Invited to a League') + '</h2>' +
-      '<p class="ca-text">' + (ch ? 'Play the exact same draft as your friend, and see who comes out on top.' : fr ? 'Add them to see each other&rsquo;s stats, compare on every leaderboard and go head to head.' + (status !== 'signed-in' || canBuyReroll() ? ' New here? Play your first game and you both get 3 free Rerolls. &#x1F381;' : '') : 'Join to play for weekly wins and the season table against your group.') + '</p></div>';
+      '<p class="ca-text">' + (ch ? 'Play the exact same draft as your friend, and see who comes out on top.' : fr ? 'Add them to see each other&rsquo;s stats, compare on every leaderboard and go head to head.' + (status !== 'signed-in' || canBuyReroll() ? ' New here? Sign up and play your first game for 3 free Rerolls. &#x1F381;' : '') : 'Join to play for weekly wins and the season table against your group.') + '</p></div>';
     if (socMsg) h += '<p class="ca-soc-msg" role="status">' + esc(socMsg) + '</p>';
     if (status !== 'signed-in') return h + signInCard([fr ? 'Sign In to Add Your Friend' : 'Sign In to Join', 'It&rsquo;s free with a CAST Profile. Sign in and you&rsquo;re straight back here.', 'Free CAST Profile']);
     if (!profile || !profile.username) return h + '<p class="ca-text ca-center">Pick your leaderboard name first, so they can see you.</p>' + usernameCard();
@@ -8362,7 +8484,7 @@
     // Launch cards live one tap in (16 Oct 2026, the owner: "don't wanna accidentally launch anything" while using the
     // World Cup tools here): Overview shows a Launches row with how many are waiting, and the tools stay out here
     var waiting = admLaunchCount(d);
-    var tools = totwCard() + wcTriesCard() + (mod.owner ? '<button type="button" class="ca-adm-launches-row" data-ca="adm-launches"><span>&#x1F680;</span><b>Launches</b>' +
+    var tools = invAdmCard() + creatorCard() + totwCard() + wcTriesCard() + (mod.owner ? '<button type="button" class="ca-adm-launches-row" data-ca="adm-launches"><span>&#x1F680;</span><b>Launches</b>' +
       '<small>' + (waiting ? waiting + ' waiting' : 'Nothing waiting') + '</small><i aria-hidden="true">&rsaquo;</i></button>' : '');
     var groupNote = {};
     groups.forEach(function (g) { groupNote[g[0]] = g[2] || ''; });
@@ -8773,6 +8895,69 @@
       return '<button type="button" class="ca-tw-opt" data-ca="adm-tw-set" data-i="' + i + '" data-n="' + esc(p.n) + '"><b>' + esc(p.n) + '</b><span>' + TW_NAT[p.k] + ' &middot; ' + esc(p.pos.join('/')) + ' &middot; ' + p.r + '</span></button>';
     }).join('');
   }
+  /* ---------------- Admin: Invite a Mate and Creator Links (Invite a Mate v2, 17 Oct 2026) ----------------
+     Invite a Mate (admins): invites, counted mates, rewards given by rung and the top recruiters (names only); the owner
+     also has Count Old Invites (adminInvites backfill, safe to press again). Creator Links (the owner only): a code per
+     creator (castgames.com.au/?c=CODE) with its visits, sign-ups, players with 3 or more games and their spend */
+  function invAdmRows(rows) {
+    return '<div class="ca-ov-list">' + rows.map(function (r) { return '<div class="ca-ov-row"><span>' + r[0] + '</span><b>' + (typeof r[1] === 'string' ? r[1] : admNum(r[1])) + '</b></div>'; }).join('') + '</div>';
+  }
+  function invAdmCard() {
+    var I = mod.inv || (mod.inv = {});
+    var head = '<button type="button" class="ca-adm-fold-h" data-ca="adm-inv-fold" aria-expanded="' + !!I.open + '"><span aria-hidden="true">&#x1F381;</span><b>Invite a Mate</b><span class="ca-fav-chev" aria-hidden="true"></span></button>';
+    if (!I.open) return '<div class="ca-adm-launch is-folded">' + head + '</div>';
+    admFetch('invs', 'adminInvites');
+    var x = mod.invs, d = x && x.data;
+    if (!d) return '<div class="ca-adm-launch"><div class="ca-adm-launch-txt">' + head + admWait(x) + '</div></div>';
+    var T = d.tiers || {}, top = d.top || [];
+    var h = '<div class="ca-ov-glance is-3">' + [['Invites', d.invites, '45,212,191'], ['Counted', d.qualified, '74,222,128'], ['Waiting', d.waiting, '96,165,250']].map(function (t) {
+      return '<div class="ca-ov-big" style="--oc:' + t[2] + '"><small>' + t[0] + '</small><b>' + admNum(t[1]) + '</b><em>All time</em></div>';
+    }).join('') + '</div>' +
+      invAdmRows([['Inviters', d.inviters], ['From Before the Ladder', d.old], ['Refused', d.refused]]) +
+      '<h4 class="ca-inv-h4">Rewards Given</h4>' + invAdmRows([['3 Rerolls a Mate', d.mateRerolls], ['Legend Key (3 Mates)', T.invite_3 || 0], ['3 Legend Keys (5 Mates)', T.invite_5 || 0], ['The GOAT and Trophy (10 Mates)', T.invite_10 || 0]]) +
+      '<h4 class="ca-inv-h4">Top Recruiters</h4>' + (top.length ? '<ol class="ca-inv-top">' + top.map(function (t) { return '<li><b>' + esc(t.n) + '</b><span>' + fmt(t.c) + (t.c === 1 ? ' mate' : ' mates') + '</span></li>'; }).join('') + '</ol>'
+        : '<p class="ca-muted">Nobody has a counted mate yet.</p>') +
+      '<p class="ca-ov-note">Mates count once they&rsquo;ve played 3 games of any CAST game (Quick Draft aside). Waiting: joined with a link, fewer than 3 games so far. From Before the Ladder: older invites still waiting on games.</p>';
+    if (mod.owner) h += '<div class="ca-row"><button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="adm-inv-backfill"' + (I.busy ? ' disabled' : '') + '>' + (I.busy ? 'Counting&hellip;' : 'Count Old Invites') + '</button></div>' +
+      (I.msg ? '<p class="ca-soc-msg" role="status">' + esc(I.msg) + '</p>' : '');
+    return '<div class="ca-adm-launch"><div class="ca-adm-launch-txt">' + head + h + '</div></div>';
+  }
+  function creatorCard() {
+    if (!mod.owner) return '';
+    var C = mod.crt || (mod.crt = {});
+    var head = '<button type="button" class="ca-adm-fold-h" data-ca="adm-cr-fold" aria-expanded="' + !!C.open + '"><span aria-hidden="true">&#x1F517;</span><b>Creator Links</b><span class="ca-fav-chev" aria-hidden="true"></span></button>';
+    if (!C.open) return '<div class="ca-adm-launch is-folded">' + head + '</div>';
+    admFetch('crts', 'adminCreators', { act: 'list' });
+    var x = mod.crts, d = x && x.data;
+    var h = '<small>Make a link for a creator. Sign-ups from it in the next 30 days are theirs (the first link someone opens wins), so you can pay them a share by hand.</small>' +
+      '<label class="ca-tw-f">Creator&rsquo;s Name<input type="text" id="caCrName" maxlength="40" autocomplete="off" value="' + esc(C.name || '') + '" placeholder="Deano"></label>' +
+      '<label class="ca-tw-f">Code<input type="text" id="caCrCode" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" value="' + esc(C.code || '') + '" placeholder="DEANO"></label>' +
+      '<div class="ca-row"><button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-cr-save"' + (C.busy ? ' disabled' : '') + '>' + (C.busy ? 'Saving&hellip;' : 'Make Link') + '</button></div>' +
+      (C.err ? '<p class="ca-lb-err" role="alert">' + esc(C.err) + '</p>' : '');
+    if (!d) return '<div class="ca-adm-launch"><div class="ca-adm-launch-txt">' + head + h + admWait(x) + '</div></div>';
+    var codes = d.codes || [];
+    h += codes.length ? codes.map(function (c) {
+      var link = 'castgames.com.au/?c=' + c.code;
+      return '<div class="ca-cr-code' + (c.off ? ' is-off' : '') + '"><div class="ca-cr-top"><b>' + esc(c.name) + '</b>' + (c.off ? '<span class="ca-mod-tag">Off</span>' : '<span class="ca-mod-tag is-ok">On</span>') + '</div>' +
+        '<code>' + esc(link) + '</code>' +
+        invAdmRows([['Visits', c.visits], ['Sign-Ups', c.signups], ['Played 3 or More Games', c.played3], ['CAST Pass Buyers', c.passBuyers],
+          ['CAST Pass Spend', c.spendOk ? money(c.passCents / 100) : null], ['Item Spend', c.spendOk ? money(c.itemCents / 100) : null]]) +
+        '<div class="ca-row"><button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="adm-cr-copy" data-v="' + esc(c.code) + '">Copy Link</button>' +
+        '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-cr-off" data-v="' + esc(c.code) + '" data-off="' + (c.off ? '0' : '1') + '">' + (c.off ? 'Turn On' : 'Turn Off') + '</button></div></div>';
+    }).join('') : '<p class="ca-muted">No creator links yet.</p>';
+    h += '<p class="ca-ov-note">Spend is what their sign-ups have paid, after refunds and before Stripe fees, from the sales copy. Visits count each phone once.</p>';
+    return '<div class="ca-adm-launch"><div class="ca-adm-launch-txt">' + head + h + '</div></div>';
+  }
+  function creatorSave() {
+    var C = mod.crt || (mod.crt = {}), ni = document.getElementById('caCrName'), ci = document.getElementById('caCrCode');
+    C.name = ni ? ni.value.trim() : ''; C.code = ci ? ci.value.trim().toUpperCase() : '';
+    if (!/^[A-Z0-9]{3,12}$/.test(C.code)) { C.err = 'A code is 3 to 12 letters or numbers, like DEANO.'; render(); return; }
+    if (C.name.length < 2) { C.err = 'Type the creator’s name.'; render(); return; }
+    C.busy = true; C.err = ''; render();
+    callFn('adminCreators', { act: 'save', code: C.code, name: C.name }).then(function (r) { C.busy = false; C.name = ''; C.code = ''; mod.crts = { data: r, at: Date.now() }; render(); },
+      function (err) { C.busy = false; C.err = fnError(err); render(); });
+  }
+  /* ---------------- end of Admin: Invite a Mate and Creator Links ---------------- */
   function totwCard() {
     var T = mod.tw || (mod.tw = {}), c = totwRaw && totwRaw.cur, live = totwNow();
     var tag = live ? '<span class="ca-mod-tag is-ok">Live</span>' : c && c.until <= Date.now() ? '<span class="ca-mod-tag">Ended</span>' : '<span class="ca-mod-tag">Not Set</span>';
@@ -10714,6 +10899,7 @@
       case 'fr-search': friendSearch(); break;
       case 'fr-share': shareInvite(false, 'friends'); break;
       case 'fr-copy': shareInvite(true, 'friends'); break;
+      case 'inv-retry': loadInvite(true); render(); break;
       case 'inv-share': shareInvite(false, t.getAttribute('data-v') || 'friends'); break;
       case 'fr-open': openFriend(t.getAttribute('data-u')); break;
       case 'cr-open': crtUid = t.getAttribute('data-u'); view = 'creator'; render(); break;
@@ -10885,6 +11071,25 @@
       case 'adm-wch-end': admWchEnd(); break;
       case 'adm-wch-gfx': admWchGfx(t.getAttribute('data-v')); break;
       case 'adm-wch-preview': (function () { var E = mod.wch.edit, w = E ? wchOf(E) : wchAny(); if (!w || !w.nation) { mod.wch.err = 'Pick the winner first.'; render(); return; } if (window.CastWch && window.CastWch.open) window.CastWch.open('preview', w); })(); break;
+      case 'adm-inv-fold': mod.inv = mod.inv || {}; mod.inv.open = !mod.inv.open; render(); break;
+      case 'adm-inv-backfill': {
+        var IV = mod.inv || (mod.inv = {});
+        IV.busy = true; IV.msg = ''; render();
+        callFn('adminInvites', { act: 'backfill' }).then(function (r) {
+          IV.busy = false; IV.msg = 'Checked ' + fmt(r.checked || 0) + ' older invites: ' + fmt(r.counted || 0) + ' counted now.' + (r.left ? ' Press again to finish the rest.' : '');
+          admFetch('invs', 'adminInvites', {}, true); render();
+        }, function (err) { IV.busy = false; IV.msg = fnError(err); render(); });
+        break;
+      }
+      case 'adm-cr-fold': mod.crt = mod.crt || {}; mod.crt.open = !mod.crt.open; render(); break;
+      case 'adm-cr-save': creatorSave(); break;
+      case 'adm-cr-copy': copyText('https://castgames.com.au/?c=' + t.getAttribute('data-v'), 'Link copied.'); break;
+      case 'adm-cr-off': {
+        var CR = mod.crt || (mod.crt = {});
+        callFn('adminCreators', { act: 'off', code: t.getAttribute('data-v'), off: t.getAttribute('data-off') === '1' }).then(function (r) { mod.crts = { data: r, at: Date.now() }; render(); },
+          function (err) { CR.err = fnError(err); render(); });
+        break;
+      }
       case 'adm-tw-fold': mod.tw = mod.tw || {}; if (mod.tw.edit) twRead(); mod.tw.open = !mod.tw.open; render(); break;
       case 'adm-tw-edit': mod.tw = { open: true, edit: twDraft() }; render(); break;
       case 'adm-tw-close': twRead(); mod.tw = { open: true }; render(); break;
@@ -13227,6 +13432,8 @@
     openBoards: openBoards,
     dailyRank: dailyRank,
     unlock: function (ids) { return unlock(ids); },
+    // Invite a Mate v2 (17 Oct 2026): a share's link or message with the signed-in player's invite code (?r=) added
+    inviteLink: function (url) { return inviteLink(url); }, inviteText: function (text) { return inviteText(text); },
     trophies: function () { return allTrophies(); },
     // For the games' own trophy checks: Family Business and Namesakes from a 13's names, the profile's club (True
     // Colours) and the club a forerunner grew into

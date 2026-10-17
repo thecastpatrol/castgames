@@ -1266,6 +1266,7 @@
     var out = T.outcome(true);
     if (!S || !out) return '';
     var url = 'https://castgames.com.au/' + T.GAME_SLUG;
+    if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
     var score = out.reason === 'exact'
       ? 'I just hit exactly ' + T.fmt(T.TARGET) + ' Group 1 wins on ' + T.GAME_NAME + ' \uD83C\uDFAF'
       : 'I just drafted ' + T.fmt(out.total) + ' ' + T.TRY_LABEL + ' on ' + T.GAME_NAME + ' (' + S.mode.name + ') \uD83C\uDFC7';

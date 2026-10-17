@@ -1367,6 +1367,7 @@
     var out = T.outcome(true);
     if (!S || !out) return '';
     var url = 'https://castgames.com.au/25000runs';
+    if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
     var score = out.reason === 'exact'
       ? 'I just hit exactly 4000 BBL runs on 25000 RUNS \uD83C\uDFAF'
       : 'I just scored ' + T.fmt(out.total) + ' ' + T.TRY_LABEL + ' on 25000 RUNS (' + S.mode.name + ') \uD83C\uDFC9';
