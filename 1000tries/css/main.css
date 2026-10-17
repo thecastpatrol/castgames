@@ -590,7 +590,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   border-left: 8px solid var(--club-accent);
 }
 .pcard-abbr { font-size: 13px; font-weight: 900; letter-spacing: 1px; padding: 2px 7px; border-radius: 5px; background: var(--club-accent); color: var(--club); }
-.pcard-club { font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pcard-club { font-size: 13px; font-weight: 800; line-height: 1.15; min-width: 0; text-wrap: balance; } /* wraps, never cut short ("Manly Warringah Sea Eagles" on an Immortal card at 390px, 17 Oct 2026) */
 .pcard-body { display: grid; gap: 6px; padding: 12px 14px 4px; }
 .pcard-name { font-size: 20px; font-weight: 900; line-height: 1.15; }
 .pcard-meta, .srow-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }

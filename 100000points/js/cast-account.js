@@ -4570,9 +4570,13 @@
     { id: 'trophies1000', label: '1000TRIES Trophies', short: '1000TRIES', periods: ['all'], sub: 'trophies' }
   ];
   // The boards this site shows: its own game's first, then any other launched game's, then the streak
+  // CAST Games (castgames.com.au) has no EXACTLY modes (17 Oct 2026, the owner), so no Exactly board chips there either
+  // (the bug hunt the same night: every game's Leaderboards still offered "Exactly 1000" and the rest, with no way to play
+  // them). Past Exactly scores stay in a player's stats
+  var NO_EXACT = !!window.CG || /(^|\.)castgames\.com\.au$/.test(location.hostname);
   function visibleBoards() {
     var rank = function (b) { return !b.game ? 2 : b.game === CFG.game ? 0 : 1; };
-    return ALL_BOARDS.filter(function (b) { return (!b.game || shown(b.game)) && (!b.wc || wcOn()) && (!b.ou || ouOn()) && (!b.po || poOn()) && (!b.bingo || bingoOn()) && (b.id !== '1000daily' || sydneyDate(Date.now()) >= '2026-09-28'); })
+    return ALL_BOARDS.filter(function (b) { return (!b.game || shown(b.game)) && (!b.wc || wcOn()) && (!b.ou || ouOn()) && (!b.po || poOn()) && (!b.bingo || bingoOn()) && (b.id !== '1000daily' || sydneyDate(Date.now()) >= '2026-09-28') && !(NO_EXACT && /exact$/.test(b.id)); })
       .map(function (b, i) { return [rank(b), i, b]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
   }
   var BOARDS = visibleBoards();
@@ -6509,7 +6513,7 @@
       pills.push(pill(esc(G.modes[x.mode] || x.mode), 'is-mode', '', mc));
       if (d.pack) pills.push(pill((d.pack === 'immortal' ? '&#x1F410; Immortal Pick' : '&#x2B50; Legends Pick'), d.pack === 'immortal' ? 'is-immortal' : 'is-legend'));
       // The luck of the draw: tries on offer against an average game (worked out by the game, js/draft.js), and wildcards used
-      if (typeof d.lk === 'number') pills.push(pill((d.lk >= 0 ? '&#x1F340; Luck <b>+' : '&#x1F327;&#xFE0F; Luck <b>&minus;') + Math.abs(d.lk) + '%</b>', d.lk >= 15 ? 'is-luck is-lucky' : d.lk <= -15 ? 'is-luck is-unlucky' : 'is-luck', '', ' title="The ' + esc(G.unit || 'tries') + ' on offer, against an average game"'));
+      if (typeof d.lk === 'number') pills.push(pill((d.lk >= 0 ? '&#x1F340; Luck <b>+' : '&#x1F327;&#xFE0F; Luck <b>-') + Math.abs(d.lk) + '%</b>', d.lk >= 15 ? 'is-luck is-lucky' : d.lk <= -15 ? 'is-luck is-unlucky' : 'is-luck', '', ' title="The ' + esc(G.unit || 'tries') + ' on offer, against an average game"'));
     }
     // Wildcards used, in both games (27-0 from 7 Oct 2026). An older 27-0 Classic or Hard game shows what its seed replays
     // (d.wcm, from the server's wildBackfill): the exact count when d.wce, otherwise the fewest it could have used ("4+").
@@ -8296,7 +8300,7 @@
   /* ---------------- The Shop, design A2 (17 Oct 2026, the owner's pick and BUILD IT) ----------------
      One scrolling list in four groups (Wildcards, Picks, Specials, Streak) under sticky headings, with a jump bar on top
      that follows the scroll. One compact row per item: emoji, name, one short line, its bundle chips and where it works,
-     the price and − 0 + steppers. Every + goes straight into the Gameday Bag: there is no Buy Now on this page, one
+     the price and - 0 + steppers. Every + goes straight into the Gameday Bag: there is no Buy Now on this page, one
      Checkout pays for it all (the games' own pop-ups stay one tap). Bundle prices apply by themselves as the count rises,
      and a small nudge says when a few cents more (or less) gets a bundle. A free profile sees a CAST Pass card first (gold
      is only ever the Pass), then the Vault strip; the Gameday Bag bar is pinned at the foot with the savings bar in
@@ -8562,7 +8566,7 @@
     var nw = SHOP_NEW[k] && Date.now() < SHOP_NEW[k], pop = k === shopPopular();
     var step = held ? '<span class="ca-sr-ready">&#x2713; Ready</span>' :
       '<div class="ca-step' + (q ? ' is-on' : '') + '" role="group" aria-label="How many ' + esc(it[2]) + '">' +
-      '<button type="button" class="ca-step-b is-dec" data-ca="shop-step" data-k="' + k + '" data-d="-1" aria-label="' + (q === 1 ? 'Take out of the bag' : 'One less') + '"' + (!q || young ? ' disabled' : '') + '>&minus;</button>' +
+      '<button type="button" class="ca-step-b is-dec" data-ca="shop-step" data-k="' + k + '" data-d="-1" aria-label="' + (q === 1 ? 'Take out of the bag' : 'One less') + '"' + (!q || young ? ' disabled' : '') + '>-</button>' +
       '<output>' + q + '</output>' +
       '<button type="button" class="ca-step-b is-inc" data-ca="shop-step" data-k="' + k + '" data-d="1" aria-label="One more"' + (q >= max || young ? ' disabled' : '') + '>+</button></div>';
     return '<div class="ca-sr' + (q ? ' is-in' : '') + (held ? ' is-held' : '') + '" id="caShop-' + k + '">' +
@@ -8782,7 +8786,7 @@
       return '<li class="ca-bag-row is-' + cat + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span>' +
         '<div class="ca-bag-rt"><b class="ca-bag-rn">' + bagName(l) + '</b><small class="ca-bag-rs">' + small + '</small></div>' +
         '<div class="ca-bag-rb"><div class="ca-bag-rp">' + (l.saved ? '<s>' + cents$(l.full) + '</s>' : '') + '<b>' + cents$(l.cents) + '</b></div>' +
-        '<div class="ca-step is-on" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-step-b is-dec" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out of the bag' : 'One less') + '">&minus;</button>' +
+        '<div class="ca-step is-on" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-step-b is-dec" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out of the bag' : 'One less') + '">-</button>' +
         '<output>' + l.q + '</output><button type="button" class="ca-step-b is-inc" data-rr="bag-inc" data-k="' + l.k + '" aria-label="One more"' + (max ? ' disabled' : '') + '>+</button></div></div></li>';
     }).join('') + '</ul>';
     // The savings: the bar, the line, and quick adds to the next saving
@@ -8797,8 +8801,8 @@
     var keys = Q.lines.filter(function (l) { return l.bonus; });
     h += '<div class="ca-bag-sum"><p><span>Subtotal</span><b>' + cents$(Q.sub) + '</b></p>' +
       (Q.bundleSaved ? '<p class="is-note">Bundle prices included, you save ' + cents$(Q.bundleSaved) + '</p>' : '') +
-      (Q.tierOff ? '<p class="is-off"><span>Gameday Bag Saving</span><b>&minus;' + cents$(Q.tierOff) + '</b></p>' : '') +
-      (Q.pass && Q.passOff ? '<p class="is-pass"><span>' + PASS_CHIP + '+ ' + cents$(Q.passOff) + ' extra Pass saving</span><b>&minus;' + cents$(Q.passOff) + '</b></p>' : '') +
+      (Q.tierOff ? '<p class="is-off"><span>Gameday Bag Saving</span><b>-' + cents$(Q.tierOff) + '</b></p>' : '') +
+      (Q.pass && Q.passOff ? '<p class="is-pass"><span>' + PASS_CHIP + '+ ' + cents$(Q.passOff) + ' extra Pass saving</span><b>-' + cents$(Q.passOff) + '</b></p>' : '') +
       (Q.pass ? keys.map(function (l) { return '<p class="is-passnote">' + bagName(l) + ' come with ' + (l.bonus === 1 ? 'a ' + ordinal(l.q + 1) + ': their CAST Pass Bonus Key.' : l.bonus + ' more: their CAST Pass Bonus Keys.') + '</p>'; }).join('') : bagPassLine(Q, 'bag', 'data-rr="pass"')) +
       '<p class="is-total"><span>Total</span><b>' + cents$(Q.total) + '</b></p></div>';
     return h + '<div class="ca-sticky-actions ca-bag-foot"><button type="button" class="ca-bag-go' + (rr.loading ? ' is-loading' : '') + '" data-rr="bag-pay"' + (rr.loading ? ' disabled' : '') + '>' +
@@ -9585,7 +9589,7 @@
           return '<tr' + (r.total ? ' class="is-total"' : '') + '>' + r.map(function (c, i) {
             if (i === 0) return '<th class="is-l">' + c + '</th>';
             if (Array.isArray(c)) return '<td>' + (c[1] ? '<button type="button" class="ca-ov-tap" data-ca="adm-list" data-v="' + c[1] + '" data-l="' + esc(c[2] || '') + '">' + cell(c[0]) + '</button>' : cell(c[0])) + '</td>';
-            return '<td>' + (c === '' ? '<span class="ca-muted">&ndash;</span>' : cell(c)) + '</td>';
+            return '<td>' + (c === '' ? '<span class="ca-muted">-</span>' : cell(c)) + '</td>';
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div>';
     };
@@ -9596,7 +9600,7 @@
     var periods = function (rows) {
       return '<div class="ca-ov-per">' + rows.map(function (r) {
         var one = function (lbl, c) {
-          var v = Array.isArray(c) ? c[0] : c, k = Array.isArray(c) ? c[1] : null, inner = '<small>' + lbl + '</small><b>' + (v === '' ? '&ndash;' : cell(v)) + '</b>';
+          var v = Array.isArray(c) ? c[0] : c, k = Array.isArray(c) ? c[1] : null, inner = '<small>' + lbl + '</small><b>' + (v === '' ? '-' : cell(v)) + '</b>';
           return k ? '<button type="button" class="ca-ov-pv is-tap" data-ca="adm-list" data-v="' + k + '" data-l="' + esc(c[2] || '') + '">' + inner + '</button>' : '<div class="ca-ov-pv">' + inner + '</div>';
         };
         return '<div class="ca-ov-pb' + (r.total ? ' is-total' : '') + '"' + (OV_C[r[0]] ? ' style="--oc:' + OV_C[r[0]] + '"' : '') + '><div class="ca-ov-pn"><b>' + r[0] + '</b>' + (r[4] ? '<small>' + r[4] + '</small>' : '') + '</div>' +
@@ -10936,7 +10940,7 @@
     return '<div class="ca-adm-give"><ul class="ca-give-list">' + GIVE_ITEMS.map(function (x) {
       var n = G.items[x[0]] || 0, has = v[x[0]] || 0;
       return '<li><span class="ca-give-n"><span class="ca-give-ico" aria-hidden="true">' + x[1] + '</span>' + x[2] + 's' + (has ? ' <small>has ' + has + '</small>' : '') + '</span>' +
-        '<span class="ca-give-step"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-step" data-k="' + x[0] + '" data-d="-1" aria-label="One fewer ' + x[2] + '"' + (n ? '' : ' disabled') + '>&minus;</button>' +
+        '<span class="ca-give-step"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-step" data-k="' + x[0] + '" data-d="-1" aria-label="One fewer ' + x[2] + '"' + (n ? '' : ' disabled') + '>-</button>' +
         '<b>' + n + '</b><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-step" data-k="' + x[0] + '" data-d="1" aria-label="One more ' + x[2] + '"' + (n < 20 ? '' : ' disabled') + '>+</button></span></li>';
     }).join('') + '</ul>' +
       (what ? '<p class="ca-give-sum">To give: <b>' + esc(what) + '</b></p>' : '') +
@@ -11493,7 +11497,7 @@
     h += insHead('Last 8 Weeks', 'Last 8 Weeks', 'Monday to Sunday, Sydney time, with this week so far on the right. Players and Games are signed-in players with a saved game that week (Quick Draft never counts); weekly tracking began on 2 Oct 2026, so earlier weeks show a dash. Sign-Ups are new CAST Profiles. Buyers are players who paid for anything that week.') +
       admSeg(INS_TREND, tk, 'adm-ins-trend') + '<div class="ca-ins-chart" role="img" aria-label="' + esc((INS_TREND.filter(function (x) { return x[0] === tk; })[0] || [])[1] + ' each week') + '">' + tr.map(function (w) {
         var v = w[tk], p = v == null || !max ? 0 : Math.max(3, Math.round(v / max * 100)), md = String(w.from || '').split('-');
-        return '<div class="ca-ins-wk' + (w.now ? ' is-now' : '') + '"><b>' + (v == null ? '&ndash;' : fmt(v)) + '</b><span class="ca-ins-bar"><i style="height:' + p + '%"></i></span><small>' + (w.now ? 'Now' : (+md[2]) + '/' + (+md[1])) + '</small></div>';
+        return '<div class="ca-ins-wk' + (w.now ? ' is-now' : '') + '"><b>' + (v == null ? '-' : fmt(v)) + '</b><span class="ca-ins-bar"><i style="height:' + p + '%"></i></span><small>' + (w.now ? 'Now' : (+md[2]) + '/' + (+md[1])) + '</small></div>';
       }).join('') + '</div>';
     return h + insTools();
   }

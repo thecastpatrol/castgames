@@ -252,7 +252,7 @@
       // The best is the big number on the right (the owner picked design A, in colour, 14 Oct 2026)
       return '<button type="button" role="tab" aria-selected="' + on + '" class="ou-tile ou-c-' + k + (on ? ' is-on' : '') + '" data-ou="cat" data-v="' + k + '" aria-label="' + esc(E.CATS[k].name) + (b[k] ? ', best ' + b[k] + ' in a row' : ', not played yet') + '">' +
         '<span class="ou-tile-l"><span class="ou-tile-ico" aria-hidden="true">' + CAT_ICO[k] + '</span><b>' + esc(E.CATS[k].name) + '</b></span>' +
-        '<span class="ou-tile-n' + (b[k] ? '' : ' is-new') + '" aria-hidden="true"><b>' + (b[k] ? b[k] : '&ndash;') + '</b><small>' + (b[k] ? 'Best' : 'New') + '</small></span></button>';
+        '<span class="ou-tile-n' + (b[k] ? '' : ' is-new') + '" aria-hidden="true">' + (b[k] ? '<b>' + b[k] + '</b><small>Best</small>' : '<b>New</b>') + '</span></button>'; // never a dash for no best yet (17 Oct 2026)
     }).join('') + '</div>';
   }
   // A sample pair for the start screen: two famous players in the category's colours, the right one hidden
@@ -347,8 +347,8 @@
         '<span class="ou-hero-n"><i aria-hidden="true">&#x1F525;</i>' + st.streak + '</span>' +
         '<span class="ou-hero-s">in a row' + (st.newBest && st.streak ? '<em class="ou-best">New Best</em>' : b ? '<em class="ou-best is-old">Best ' + b + '</em>' : '') + '</span>' +
         (strip ? '<span class="ou-strip" aria-hidden="true">' + strip + '</span>' : '') + '</div>' +
-      '<div class="ou-stats"><span><b>' + (avg ? secs(avg) : '&ndash;') + '</b><small>Avg Call</small></span>' +
-        '<span><b>' + (fast ? secs(fast) : '&ndash;') + '</b><small>Fastest</small></span>' +
+      '<div class="ou-stats"><span><b>' + (avg ? secs(avg) : '-') + '</b><small>Avg Call</small></span>' +
+        '<span><b>' + (fast ? secs(fast) : '-') + '</b><small>Fastest</small></span>' +
         '<span><b>' + (st.rib || st.rr ? (st.rib ? '&#x23EA; ' + st.rib : '') + (st.rib && st.rr ? ' ' : '') + (st.rr ? '&#x1F504; ' + st.rr : '') : '&#x2714;') + '</b><small>' + (st.rib || st.rr ? 'Wildcards Used' : 'No Wildcards') + '</small></span></div>';
     // Play Again and Share straight under the score (the owner, 15 Oct 2026: under a long run they were too far down)
     // The game's own results buttons (the owner: "native like the rest"): Play Again, then Share and Leaderboard, then Change Mode

@@ -50,7 +50,7 @@
     return '<div class="cp-totw-c' + (big ? ' is-big' : '') + '" aria-label="' + esc(e.n + ', ' + POS[e.s - 1] + (r ? ', ' + r : '') + ', boosted ' + e.b) + '">' +
       '<span class="ct-add" aria-hidden="true">+' + e.b + '</span>' +
       (full ? '<span class="ct-top"><b>' + POS[e.s - 1] + '</b><i style="background:' + n[0] + ';color:' + (light(n[0]) ? '#111' : '#fff') + '">' + n[1] + '</i></span>' : '') +
-      '<span class="ct-r">' + (r == null ? '&ndash;' : r) + '</span>' +
+      '<span class="ct-r">' + (r == null ? '-' : r) + '</span>' +
       '<span class="ct-n">' + esc(surname(e.n)).replace('-', '-<wbr>') + '</span></div>';
   }
   // The five on the card: the best rated now, the best in the middle

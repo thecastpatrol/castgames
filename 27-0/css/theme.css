@@ -1112,7 +1112,7 @@ button.cp-nav-btn { cursor: pointer; font: 900 11px/1 'Inter', sans-serif; lette
 .cp-faq-toggle small { flex: 0 0 auto; font: 700 12px/1 'Inter', sans-serif; letter-spacing: 0; text-transform: none; color: var(--muted); }
 .cp-faq-chev { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; border: 1px solid rgba(241, 192, 115, .5); color: var(--gold); }
 .cp-faq-chev::before { content: "+"; font: 400 20px/1 'Inter', sans-serif; }
-.cp-faq.is-open .cp-faq-chev::before { content: "\2212"; }
+.cp-faq.is-open .cp-faq-chev::before { content: "-"; }
 .cp-faq.is-open #faqList { margin-top: 10px; }
 @media (hover: hover) { .cp-faq-toggle:hover { border-color: rgba(241, 192, 115, .5); } }
 /* On a phone the FAQ title keeps one line, with the question count under it (never "Frequently / Asked Questions") */
