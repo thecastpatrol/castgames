@@ -15441,6 +15441,7 @@
     if (location.hash === '#leaderboards') openBoards(null);
     if (location.hash === '#cast-pass') setTimeout(function () { openPass('link'); }, 300); // the World Cup email's CAST Pass button (9 Oct 2026)
     if (location.hash === '#admin-dailies') admLink = 'dailies';
+    if (location.hash === '#admin-inbox') admLink = 'inbox'; // the Contact Us emails' Admin > Inbox link (17 Oct 2026)
     if (chLink && !invite) invite = { kind: 'challenge', code: chLink };
     if (invite) setTimeout(function () { if (invite && invite.kind === 'challenge' && named()) { var cid = invite.code; invite = null; playChallenge(cid); } else open('invite'); }, 400);
     if (location.hash === '#join' && lsGet(LS_FLAG) !== '1') setTimeout(function () { pitch('link', true); }, 600);
