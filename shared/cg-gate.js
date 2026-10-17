@@ -3,6 +3,12 @@
    casual visitors out, not someone who reads the files. tools/build.py adds it to every page until the --live build.
    To change the password: put the new one's SHA-256 in H (python3 -c "import hashlib;print(hashlib.sha256(b'new').hexdigest())"). */
 (function () {
+  // Opened over plain http (17 Oct 2026, the owner's phone): the browser has no crypto.subtle there, so Come In did
+  // nothing. The live site always moves to https first
+  if (location.protocol === 'http:' && /castgames\.com\.au$/.test(location.hostname)) {
+    location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+    return;
+  }
   var K = 'cg_gate_v1', H = '1ac7d344b66a9785d33317ef45c038f3e42090cdc62c4d412897c92970dcd25b';
   try { if (localStorage.getItem(K) === H) return; } catch (e) { /* storage blocked: ask every time */ }
   var root = document.documentElement;
