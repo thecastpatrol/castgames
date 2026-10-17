@@ -7,7 +7,10 @@
 .cg-game { grid-area: game; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: #141420; color: #fff; font: 900 13px/1 Inter, sans-serif; cursor: pointer; white-space: nowrap; }
 .cg-game i { font-style: normal; font-size: 11px; color: #a2a2b8; }
 .cg-sp { grid-area: sp; }
-.cg-acct { grid-area: acct; display: flex; align-items: center; gap: 8px; }
+/* the right of the bar: New Game (mid-game, always, 17 Oct 2026: it sat inside the account area, which a game with its
+   accounts not launched hides for guests) and the account buttons */
+.cg-right { grid-area: acct; display: flex; align-items: center; gap: 8px; }
+.cg-acct { display: flex; align-items: center; gap: 8px; }
 .cg-tabs { grid-area: tabs; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0 -12px; }
 .cg-tab { display: grid; justify-items: center; align-content: center; gap: 3px; height: 52px; border: 0; border-bottom: 3px solid transparent; background: none; color: #8a8aa2; font: 800 11.5px/1 Inter, sans-serif; cursor: pointer; }
 .cg-tab i { font-style: normal; font-size: 18px; line-height: 1; }
@@ -91,4 +94,12 @@ html.cg-in-game [data-cast-shop]:not(.cg-bar *), html.cg-in-game [data-cast-admi
 .cg-new[hidden] { display: none; }
 .cg-new i { font-style: normal; font-size: 15px; }
 @media (hover: hover) { .cg-new:hover { border-color: rgba(255, 255, 255, .4); } }
-@media (max-width: 420px) { .cg-new { flex-direction: column; gap: 3px; height: auto; padding: 2px 4px; border: 0; background: none; font: 800 10px/1 Inter, sans-serif; color: #d6d6e4; } .cg-new i { font-size: 18px; line-height: 20px; } } /* phones: icon over its label, like 1000TRIES' own */
+@media (max-width: 899px) { .cg-new { flex-direction: column; gap: 3px; height: auto; padding: 2px 4px; border: 0; background: none; font: 800 10px/1 Inter, sans-serif; color: #d6d6e4; } .cg-new i { font-size: 18px; line-height: 20px; } } /* phones: icon over its label, like 1000TRIES' own */
+/* Phones: the game button and gaps a touch tighter, so the longest name (G1 WINNER SPINNER) fits beside New Game and the
+   profile without pushing the logo off (17 Oct 2026) */
+@media (max-width: 430px) {
+  .cg-in { column-gap: 8px; }
+  .cg-game { padding: 0 10px; gap: 5px; font-size: 12px; }
+  .cg-right, .cg-acct { gap: 6px; }
+}
+@media (max-width: 400px) { .cg-logo img { height: 30px; } }
