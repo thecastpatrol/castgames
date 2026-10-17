@@ -2724,7 +2724,9 @@
   ['photo', '&#x1F4F8;', 'Nose in Front', 'Finish on 550 to 555 in 550+'],
   ['soclose', '&#x1F629;', 'So Close', 'Finish on 545 to 549'],
   ['nowild', '&#x1F9CA;', 'No Wildcards', '550+ with no wildcards'],
-  ['spin', '&#x1F3B0;', 'Spin Doctor', '550+ in Team Spin'],
+  // Retired on 16 Oct 2026 (the owner: no Team Spin and no states in G1 WINNER SPINNER), like Underdogs on 5 Oct: this one
+  // and the five state ones below can no longer be won. Shown only to anyone who has it (the fifth field is no promo, so it is never on)
+  ['spin', '&#x1F3B0;', 'Spin Doctor', '550+ in Team Spin', 'retired'],
   ['goats', '&#x1F51D;', 'Top Ten', '3 of the top 10 Group 1 winners in the game'],
   ['bench', '&#x1F327;&#xFE0F;', 'Scratched', 'Finish under 275'],
   ['plays10', '&#x1F3C7;', 'Regular', 'Play 10 games'],
@@ -2735,7 +2737,7 @@
   ['read', '&#x1F52E;', 'Perfect Read', 'Top Group 1 winner in every offer'],
   ['odds', '&#x1F3B2;', 'Against the Odds', '550+ with Luck at -15% or worse'],
   ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
-  ['clubleg', '&#x1F6E1;&#xFE0F;', 'One State', 'All 8 have won a Group 1 in one state'],
+  ['clubleg', '&#x1F6E1;&#xFE0F;', 'One State', 'All 8 have won a Group 1 in one state', 'retired'],
   ['namesakes', '&#x1FA9E;', 'Namesakes', 'Two jockeys with the same surname'],
   ['timetravel', '&#x23F3;', 'Time Traveller', 'A jockey whose first Group 1 came by 1990 and one still riding'],
   ['fresh', '&#x1F331;', 'Fresh Faces', 'All 8 had their first Group 1 in 2015 or later'],
@@ -2745,10 +2747,10 @@
   ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
   ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
   ['rc_biggun', '&#x1F4AA;', 'Big Guns', '3 jockeys on 50+ Group 1 wins'],
-  ['rc_map', '&#x1F5FA;&#xFE0F;', 'Every State', 'Group 1 winners from all 5 states and New Zealand on one card'],
-  ['rc_home', '&#x1F3E0;', 'Home Track', '5 or more from one state'],
-  ['rc_spring', '&#x1F338;', 'Spring Carnival', 'All 8 have won a Group 1 in Victoria'],
-  ['rc_tasman', '&#x1F95D;', 'Across the Ditch', 'All 8 have won a Group 1 in New Zealand'],
+  ['rc_map', '&#x1F5FA;&#xFE0F;', 'Every State', 'Group 1 winners from all 5 states and New Zealand on one card', 'retired'],
+  ['rc_home', '&#x1F3E0;', 'Home Track', '5 or more from one state', 'retired'],
+  ['rc_spring', '&#x1F338;', 'Spring Carnival', 'All 8 have won a Group 1 in Victoria', 'retired'],
+  ['rc_tasman', '&#x1F95D;', 'Across the Ditch', 'All 8 have won a Group 1 in New Zealand', 'retired'],
   ['rc_cup', '&#x1F3C6;', 'Cup Riders', '3 Melbourne Cup winning jockeys'],
   ['rc_cox', '&#x1F947;', 'Plate Riders', '3 Cox Plate winning jockeys'],
   ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 550 with a Legend on your card'],
@@ -3016,8 +3018,10 @@
     game = game || CFG.game;
     var t = localTrophies(), fresh = [];
     (ids || []).forEach(function (id) {
-      var key = game + ':' + id;
-      if (!trophyDef(key) || t[key] || (trophyDoc && trophyDoc[key])) return;
+      var key = game + ':' + id, def = trophyDef(key);
+      // a retired trophy (fifth field 'retired': Underdogs, G1 WINNER SPINNER's state and Team Spin ones) is never won
+      // again, even from a page that still awards it; anyone who has one keeps it
+      if (!def || def[4] === 'retired' || t[key] || (trophyDoc && trophyDoc[key])) return;
       t[key] = Date.now();
       fresh.push(key);
     });
@@ -4577,7 +4581,7 @@
     bbplus: 'Play 25000+', bbexact: 'Play Exactly 25000', bbspin: 'Play Team Spin', bbdaily: 'Play today&rsquo;s Daily',
     tsplus: 'Play 60000+', tsexact: 'Play Exactly 60000', tsspin: 'Play Team Spin', tsdaily: 'Play today&rsquo;s Daily',
     nflplus: 'Play 777+', nflexact: 'Play Exactly 777', nflspin: 'Play Team Spin', nfldaily: 'Play today&rsquo;s Daily',
-    rcplus: 'Play 550+', rcexact: 'Play Exactly 550', rcspin: 'Play Team Spin', rcdaily: 'Play today&rsquo;s Daily',
+    rcplus: 'Play 550+', rcexact: 'Play Exactly 550', rcdaily: 'Play today&rsquo;s Daily',
     eplplus: 'Play 650+', eplexact: 'Play Exactly 650', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily',
     nbaplus: 'Play 100000+', nbaexact: 'Play Exactly 100000', nbaspin: 'Play Team Spin', nbadaily: 'Play today&rsquo;s Daily',
     scplus: 'Play SC POINTS KING', scdaily: 'Play today&rsquo;s Daily' };
@@ -4587,7 +4591,7 @@
     bbplus: ['bigbash', 'plus'], bbexact: ['bigbash', 'exact'], bbspin: ['bigbash', 'spin'], bbdaily: ['bigbash', 'daily'], bbou: ['bigbash', 'ou'], bbouw: ['bigbash', 'ou'],
     tsplus: ['tests', 'plus'], tsexact: ['tests', 'exact'], tsspin: ['tests', 'spin'], tsdaily: ['tests', 'daily'], tsou: ['tests', 'ou'], tsouw: ['tests', 'ou'],
     nflplus: ['nfl', 'plus'], nflexact: ['nfl', 'exact'], nflspin: ['nfl', 'spin'], nfldaily: ['nfl', 'daily'], nflou: ['nfl', 'ou'],
-    rcplus: ['racing', 'plus'], rcexact: ['racing', 'exact'], rcspin: ['racing', 'spin'], rcdaily: ['racing', 'daily'], rcou: ['racing', 'ou'], rcoub: ['racing', 'ou'], rcouh: ['racing', 'ou'],
+    rcplus: ['racing', 'plus'], rcexact: ['racing', 'exact'], rcdaily: ['racing', 'daily'], rcou: ['racing', 'ou'], rcoub: ['racing', 'ou'], rcouh: ['racing', 'ou'],
     eplplus: ['epl', 'plus'], eplexact: ['epl', 'exact'], eplspin: ['epl', 'spin'], epldaily: ['epl', 'daily'], eplou: ['epl', 'ou'], eploua: ['epl', 'ou'], eplouap: ['epl', 'ou'],
     nbaplus: ['nba', 'plus'], nbaexact: ['nba', 'exact'], nbaspin: ['nba', 'spin'], nbadaily: ['nba', 'daily'], nbaou: ['nba', 'ou'], nbaoureb: ['nba', 'ou'], nbaouast: ['nba', 'ou'],
     scplus: ['sc', 'plus'], scdaily: ['sc', 'daily'] };
@@ -4699,7 +4703,7 @@
     if (g.game === 'nfl' && g.mode === 'ou') return ['nflou', 'today'];
     if (g.game === 'nfl') return [g.mode === 'exact' ? 'nflexact' : g.mode === 'spin' ? 'nflspin' : g.mode === 'daily' ? 'nfldaily' : 'nflplus', 'today'];
     if (g.game === 'racing' && g.mode === 'ou') return [{ bigrace: 'rcoub', horseg1: 'rcouh' }[g.d && g.d.cat] || 'rcou', 'today'];
-    if (g.game === 'racing') return [g.mode === 'exact' ? 'rcexact' : g.mode === 'spin' ? 'rcspin' : g.mode === 'daily' ? 'rcdaily' : 'rcplus', 'today'];
+    if (g.game === 'racing') return g.mode === 'spin' ? null : [g.mode === 'exact' ? 'rcexact' : g.mode === 'daily' ? 'rcdaily' : 'rcplus', 'today']; // no Team Spin board (16 Oct 2026)
     if (g.game === 'epl' && g.mode === 'ou') return [{ plassists: 'eploua', plapps: 'eplouap' }[g.d && g.d.cat] || 'eplou', 'today'];
     if (g.game === 'epl') return [g.mode === 'exact' ? 'eplexact' : g.mode === 'spin' ? 'eplspin' : g.mode === 'daily' ? 'epldaily' : 'eplplus', 'today'];
     if (g.game === 'nba' && g.mode === 'ou') return [{ nbareb: 'nbaoureb', nbaast: 'nbaouast' }[g.d && g.d.cat] || 'nbaou', 'today'];
