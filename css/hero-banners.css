@@ -1,0 +1,70 @@
+/* CAST Games hero banners (design 17 Oct 2026): a background art image per slide (phone and desktop crops, 2x WebP,
+   PNG beside each) with the words as live HTML on top, so they stay sharp and readable at 360. Markup:
+     <a class="cgb is-welcome" href="..." style="--art-p:url(<id>/art-phone@2x.webp);--art-d:url(<id>/art-desktop@2x.webp)">
+       <i class="cgb-7"></i>                         the 7 sport colours line along the foot (Welcome, The Sports)
+       <i class="cgb-trim"></i>                      Player of the Week only: the winner's team colours (--t1, --t2)
+       <span class="cgb-t">
+         <span class="cgb-k">CAST Games</span>       kicker: desktop only, unless the slide has .has-kp (Player of the Week)
+         <b class="cgb-h"><span>Welcome to CAST Games</span></b>   (or <span class="cgb-hp"> + <span class="cgb-hd"> for a
+                                                                       phone and a desktop headline)
+         <span class="cgb-l"><span class="cgb-lp">phone line</span><span class="cgb-ld">desktop line</span></span>
+         <span class="cgb-b">Start Playing</span>
+       </span></a>
+   Needs Russo One (add family=Russo+One to the Google Fonts link) and Inter 600/900. Names and numbers in the copy are
+   held together with no-break spaces (slides.json), and <span class="nw"> keeps 8-0 from breaking at its hyphen.
+   Phone: 110px tall, the art right-anchored (any slide width from 310 to 380 crops the art's left edge, never the
+   picture). Desktop (900px and up): one slide at a time, 200px tall, the desktop art right-anchored.
+   Checked at 360, 375, 390, 414, 430, 900, 1080 and 1440 (tools/check.mjs): nothing overflows, no lonely words. */
+.cgb { --ac: 255, 255, 255; --ai: #0a0a0f; --ak: #cfd6e4; --sc0: 5, 7, 13; --bd: 255, 255, 255; --art-p: none; --art-d: none;
+  position: relative; display: block; height: 110px; border-radius: 16px; overflow: hidden; isolation: isolate; color: #fff; text-decoration: none; text-align: left;
+  background: rgb(var(--sc0)) var(--art-p) right center / auto 100% no-repeat; border: 1px solid rgba(var(--bd), .28); -webkit-tap-highlight-color: transparent; font: inherit; padding: 0; cursor: pointer; }
+/* the scrim: the slide's own dark, so the words read on any crop of the art */
+.cgb::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(var(--sc0), .94) 0%, rgba(var(--sc0), .86) 30%, rgba(var(--sc0), .5) 48%, rgba(var(--sc0), .12) 62%, rgba(var(--sc0), 0) 72%); }
+.cgb::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16); }
+.cgb-t { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; width: 58%; height: 100%; padding: 8px 0 8px 14px; }
+/* the 7 sport colours, in sport order, as a 3px line along the foot of the slide (the site's line under the top bar) */
+.cgb-7 { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; height: 3px;
+  background: linear-gradient(90deg, #15803D 0 14.28%, #DC2626 0 28.57%, #FFD500 0 42.85%, #14532D 0 57.14%, #4C1D95 0 71.42%, #2563EB 0 85.71%, #F97316 0); }
+.cgb-k { display: none; margin: 0 0 4px; font: 900 9.5px/1.15 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: var(--ak); white-space: nowrap; }
+.cgb.has-kp .cgb-k { display: block; }
+/* the headline: Russo One like the game logos, upper case, a light metal face and a soft drop shadow */
+.cgb-h { display: block; margin: 0; font: 400 clamp(16.5px, 4.6vw, 18.5px)/1.02 'Russo One', Inter, sans-serif; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance;
+  filter: drop-shadow(0 1.5px 0 rgba(0, 0, 0, .5)) drop-shadow(0 3px 8px rgba(0, 0, 0, .55)); }
+.cgb-h > span { color: #fff; background: linear-gradient(180deg, #ffffff 0%, #f6f8fa 42%, #d3d9e1 52%, #eef1f4 66%, #ffffff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.cgb .nw { white-space: nowrap; } /* 8-0 and 27-0 never break at the hyphen (numbers keep their word with a no-break space in the copy) */
+.cgb-l { display: block; margin-top: 4px; font: 600 clamp(11px, 2.95vw, 12px)/1.24 Inter, sans-serif; color: rgba(255, 255, 255, .88); text-wrap: balance; text-shadow: 0 1px 6px rgba(0, 0, 0, .6); }
+.cgb-ld, .cgb-h > .cgb-hd { display: none; }
+.cgb-b { flex: none; display: inline-flex; align-items: center; height: 24px; margin-top: 7px; padding: 0 12px; border-radius: 999px; white-space: nowrap;
+  background: linear-gradient(180deg, color-mix(in srgb, rgb(var(--ac)) 82%, #fff), rgb(var(--ac)) 55%); color: var(--ai); font: 900 11.5px/1 Inter, sans-serif; letter-spacing: .1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .55); }
+@media (hover: hover) { .cgb:hover { border-color: rgba(var(--bd), .6); } .cgb:hover .cgb-b { filter: brightness(1.06); } }
+
+/* ---------- each slide's colours (--ac button, --ai its ink, --ak kicker, --sc0 the scrim and the base, --bd the edge) ---------- */
+.cgb.is-welcome { --sc0: 6, 8, 16; --ak: #cbd5e1; }
+.cgb.is-sports { --sc0: 6, 8, 16; --ak: #cbd5e1; }
+.cgb.is-new { --sc0: 9, 7, 26; --ak: #67e8f9; --bd: 103, 232, 249; }
+.cgb.is-more { --sc0: 4, 16, 24; --ak: #5eead4; --bd: 94, 234, 212; }
+.cgb.is-pass { --sc0: 13, 10, 4; --ac: 241, 192, 115; --ai: #1a1204; --ak: #ffe2a8; --bd: 241, 192, 115; } /* gold: CAST Pass only */
+.cgb.is-bag { --sc0: 3, 18, 10; --ac: 74, 222, 128; --ai: #052e12; --ak: #86efac; --bd: 74, 222, 128; }
+.cgb.is-worldcup { --sc0: 4, 32, 58; --ac: 255, 255, 255; --ai: #04121f; --ak: #bae6fd; --bd: 125, 211, 252; }
+.cgb.is-potw { --sc0: 7, 8, 15; --ak: #e2e8f0; --bd: 226, 232, 240; --t1: #ffffff; --t2: #94a3b8; }
+/* Player of the Week: the winner's team colours as a jersey trim down the left edge (set --t1 and --t2 from their club) */
+.cgb-trim { position: absolute; left: 0; top: 0; bottom: 0; z-index: 1; width: 8px; background: linear-gradient(90deg, var(--t1) 0 5px, var(--t2) 5px 8px); box-shadow: 2px 0 10px rgba(0, 0, 0, .5); }
+.cgb.is-potw .cgb-t { padding-left: 20px; }
+
+/* ---------- desktop: one slide at a time, 200px tall ---------- */
+@media (min-width: 900px) {
+  .cgb { height: 200px; border-radius: 20px; background-image: var(--art-d); }
+  .cgb::before { background: linear-gradient(90deg, rgba(var(--sc0), .95) 0%, rgba(var(--sc0), .88) 30%, rgba(var(--sc0), .45) 46%, rgba(var(--sc0), .08) 58%, rgba(var(--sc0), 0) 66%); }
+  .cgb-t { width: 54%; padding: 20px 0 20px 34px; }
+  .cgb-7 { height: 4px; }
+  .cgb-k { display: block; margin-bottom: 7px; font-size: 12px; letter-spacing: 1.8px; }
+  .cgb-h { font-size: clamp(27px, 3.05vw, 32px); line-height: 1.04; } /* one line from 900px up */
+  .cgb-l { margin-top: 6px; max-width: 500px; font-size: 15px; line-height: 1.35; }
+  .cgb-lp, .cgb-h > .cgb-hp { display: none; } .cgb-ld, .cgb-h > .cgb-hd { display: inline; }
+  .cgb-b { height: 36px; margin-top: 12px; padding: 0 18px; font-size: 14px; }
+  .cgb-trim { width: 12px; background: linear-gradient(90deg, var(--t1) 0 7px, var(--t2) 7px 12px); }
+  .cgb.is-potw .cgb-t { padding-left: 42px; }
+}

@@ -25,15 +25,13 @@ a { color: inherit; }
 .cg-strip::after { content: ''; flex: 0 0 calc(var(--gut) - 10px); } /* the last card's right-hand gutter (Safari leaves out the padding) */
 .cg-strip > * { scroll-snap-align: start; }
 
-/* ---------- Hero: 110px, the next slide peeking, dots under it ---------- */
+/* ---------- Hero: the banner ads (css/hero-banners.css), 110px on phones with the next slide peeking, dots under it ---------- */
 .cg-hero { margin-top: 0; }
 .cg-hero-track { gap: 8px; }
-.cg-slide { flex: 0 0 calc(100% - 18px); height: 110px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(var(--ac), .55);
-  background: linear-gradient(120deg, var(--s1), var(--s2) 70%), #0d0d16; color: #fff; text-decoration: none; text-align: left; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.cg-slide-t { flex: 1 1 auto; min-width: 0; }
-.cg-k { display: block; font: 900 10.5px/1.15 Inter, sans-serif; letter-spacing: 1.4px; text-transform: uppercase; color: var(--ak, rgb(var(--ac))); } /* a new game's kicker: its sport colour, lightened to read on it */
-.cg-slide b { display: block; margin-top: 6px; font: italic 900 clamp(18px, 5.4vw, 21px)/1.08 'Inter Tight', Inter, sans-serif; text-wrap: balance; }
-.cg-slide-btn { flex: none; padding: 10px 14px; border-radius: 999px; background: rgb(var(--ac)); color: var(--ai, #0a0a0f); font: 900 12.5px/1 Inter, sans-serif; white-space: nowrap; }
+.cg-hero-track > .cgb { flex: 0 0 calc(100% - 18px); }
+.cg-hero-track.cg-n1 > .cgb { flex-basis: 100%; }
+.cgb.is-potw .cgb-h.is-long { font-size: clamp(13px, 3.7vw, 15px); } /* a long username stays on one line */
+.cgb:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .cg-dots { display: flex; justify-content: center; gap: 6px; min-height: 6px; padding-top: 9px; }
 .cg-dot { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: #3a3a4c; cursor: pointer; transition: width .2s ease, background .2s ease; }
 .cg-dot.is-on { width: 18px; background: #fff; }
@@ -68,6 +66,7 @@ a { color: inherit; }
 .cg-c.is-soon .cg-ln { color: var(--muted); }
 .cg-c.is-soon .cg-tag { background: rgba(255, 255, 255, .1); color: #fff; }
 .cg-c.is-soon img { opacity: .75; }
+.cg-new-chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
 .cg-soon-chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: var(--c1); color: var(--ink); font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; }
 
 /* ---------- Leaderboards: this week's #1 on each game ---------- */
@@ -138,16 +137,15 @@ a { color: inherit; }
 .cg-foot small { flex-basis: 100%; margin-top: 6px; text-align: center; color: #78788e; font: 700 12px/1.4 Inter, sans-serif; }
 
 /* ---------- Desktop: the same order, wider. Rows and Most Popular show every card (seven across, wrapping when a
-   sport has more); the hero shows three slides; Leaderboards stay a strip with arrows; Dailies five across ---------- */
+   sport has more); the hero shows one 200px slide at a time; Leaderboards stay a strip with arrows; Dailies five across ---------- */
 @media (min-width: 900px) {
   .wrap { padding: 24px var(--gut) 44px; }
   .cg-sec { margin-top: 34px; }
   .cg-strip { margin: 0; padding: 0 0 2px; scroll-padding: 0; }
   .cg-strip::after { display: none; }
   .cg-hero-track { gap: 12px; }
-  .cg-slide { flex: 0 0 calc((100% - 24px) / 3); height: 120px; }
-  .cg-hero-track.cg-n1 .cg-slide, .cg-hero-track.cg-n2 .cg-slide, .cg-hero-track.cg-n3 .cg-slide { flex: 1 1 0; }
-  .cg-slide b { font-size: 21px; }
+  .cg-hero-track > .cgb { flex: 0 0 100%; } /* one slide at a time, sliding */
+  .cgb.is-potw .cgb-h.is-long { font-size: clamp(22px, 2.6vw, 27px); }
   .cg-strip.is-cards { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
   .cg-strip.is-cards .cg-c, .cg-grid .cg-c { height: 156px; }
   .cg-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }

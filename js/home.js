@@ -1,6 +1,6 @@
 /* The CAST Games home page (the owner's "box of games" design, 17 Oct 2026; phone first, 390 wide). Top to bottom:
-     Hero          a thin 110px banner that turns by itself: CAST Pass (non-members), the Gameday Bag, new games, the
-                   World Cup while it's on, the account's promos (Team of the Week, World Champions), Player of the Week
+     Hero          the banner ads that turn by themselves (110px on phones, one 200px slide at a time on desktop): Welcome,
+                   The Sports, Just Dropped, More, CAST Pass, the Gameday Bag, the World Cup, Player of the Week
      All Games     one row per sport (CG.SPORTS order): every card, most played first, Coming Soon last, See All to the
                    sport's page. A game in progress says "Continue: 7 of 13" on its own card
      Leaderboards  this week's #1 on each live game's main board, and the signed-in player's place
@@ -183,56 +183,107 @@
     var inner = art + (chips ? '<span class="cg-tags">' + chips + '</span>' : '') +
       (c ? '<small class="cg-ln is-cont">' + esc(c.label) + '</small>' : '<small class="cg-ln">' + esc(g.line) + '</small>');
     if (off) return '<div class="cg-c is-soon" ' + vars(g) + ' aria-label="' + esc(g.name) + ', coming soon">' + inner + '<span class="cg-soon-chip">Coming Soon</span></div>';
-    return '<a class="cg-c" href="' + esc(CG.url(g.path)) + '" ' + vars(g) + ' data-tap="' + where + '" data-g="' + esc(g.id) + '"' + (g.logo ? '' : ' aria-label="' + esc(g.name) + '"') + '>' + inner + '</a>';
+    return '<a class="cg-c" href="' + esc(CG.url(g.path)) + '" ' + vars(g) + ' data-tap="' + where + '" data-g="' + esc(g.id) + '"' + (g.logo ? '' : ' aria-label="' + esc(g.name) + '"') + '>' + inner + (isNew(g) ? '<span class="cg-new-chip">New</span>' : '') + '</a>';
   }
 
   /* ---------------- Hero ----------------
-     Money first (the owner's rule): CAST Pass for anyone without it, then the Gameday Bag, then what's new, the World
-     Cup while it's on, the account's promos and the Player of the Week. Each slide is a link or opens the account */
-  var NEW = ['nrl-bingo', '777tds', '650goals']; // the newest games, until a card in shared/cg.js carries its own badge
+     The owner's banner ads (approved 17 Oct 2026, css/hero-banners.css): art behind each slide (a phone crop and a
+     desktop crop, assets/banners/<slide>/), the words live on top. In this order, each only for the players it is for:
+       Welcome         new visitors (no profile and no game on this device yet)
+       The Sports      everyone
+       Just Dropped    everyone, once NRL Bingo, SC POINTS KING and the NBA are all launched
+       More            guests, and profiles new on this device
+       CAST Pass       signed-in free profiles, 15 and over
+       Gameday Bag     signed-in profiles, 15 and over (under-15s never see a buy prompt); its dollars are the bag's rules
+       World Cup       while the World Cup is launched
+       Player of the Week  while one is named
+     Phones: 110px, the next slide peeking. Desktop: one slide at a time, 200px tall, sliding */
+  var NB = ' ';
+  var BN = 'assets/banners/';
+  var ART = {
+    welcome: [BN + 'welcome/art-phone@2x.webp?v=70caf0fc', BN + 'welcome/art-desktop@2x.webp?v=cfd76af6'],
+    sports: [BN + 'sports/art-phone@2x.webp?v=8df9958f', BN + 'sports/art-desktop@2x.webp?v=d57b9ad1'],
+    'new': [BN + 'new/art-phone@2x.webp?v=8217f4df', BN + 'new/art-desktop@2x.webp?v=49facfc3'],
+    more: [BN + 'more/art-phone@2x.webp?v=c5c057d0', BN + 'more/art-desktop@2x.webp?v=660db766'],
+    pass: [BN + 'pass/art-phone@2x.webp?v=a0e213dd', BN + 'pass/art-desktop@2x.webp?v=bac6d81a'],
+    bag: [BN + 'bag/art-phone@2x.webp?v=35251871', BN + 'bag/art-desktop@2x.webp?v=dca57623'],
+    worldcup: [BN + 'worldcup/art-phone@2x.webp?v=58a52eac', BN + 'worldcup/art-desktop@2x.webp?v=bb71ec5f'],
+    potw: [BN + 'potw/art-phone@2x.webp?v=a9a818c2', BN + 'potw/art-desktop@2x.webp?v=1a002a62']
+  };
+  // Has this device played a game yet (any game's finished games, a game in progress, a guest's games today)?
+  function playedHere() {
+    try {
+      var g = JSON.parse(localStorage.getItem('cast_games_v1') || '[]');
+      if (Array.isArray(g) && g.length) return true;
+      for (var i = 0; i < localStorage.length; i++) { if (/_played$|_draft_v1|^cast_guest_games_v1$/.test(localStorage.key(i) || '')) return true; }
+    } catch (e) { return true; } // no storage: not a first visit we can tell
+    return false;
+  }
+  function newVisitor() {
+    if (signedIn()) return false;
+    try { if (localStorage.getItem('cast_signed_in') === '1') return false; } catch (e) { return false; }
+    return !playedHere();
+  }
+  function adult() { return call('canBuyReroll', false) === true; } // signed in, named and 15 or over (the account's buy rule)
+  // The Gameday Bag's biggest saving from the bag's own rules (the account's copy of the server's): "$20" and "$2"
+  function money(c) { return '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100)); }
+  function bagLine(pass) {
+    var a = A(), R = a && a.bagRules;
+    if (!R || !R.TIERS || !R.TIERS.length) return null;
+    var at = R.TIERS[0][0], pct = R.tierOf(at) + (pass ? R.PASS_PCT : 0);
+    return 'Spend' + NB + money(at) + ', Save' + NB + money(Math.round(at * pct / 100));
+  }
+  // The new games the Just Dropped slide sends players to (they wear a New chip while it shows)
+  function justDropped() { return ['bingo', 'sc', 'nba'].every(function (k) { return CG.launched(k); }); }
+  function isNew(g) { return justDropped() && (g.ou || g.id === 'nrl-bingo' || g.id === 'scpointsking' || g.sport === 'nba'); }
   function slides() {
-    var a = A(), out = [], pass = call('hasPass', false) === true;
-    if (!pass) out.push({ k: 'CAST Pass', t: 'More Wildcards, Every Game, Every Day', b: 'Join', open: 'pass', s1: '#3a2a0c', s2: '#1a1206', ac: '241,192,115', ai: '#1a1204', pass: true });
-    // The bag's real discounts (functions lib/bag.js): 5% off from $10, 10% from $20, and a member another 5%
-    out.push({ k: 'Gameday Bag', t: 'Bag It All, Save Up to ' + (pass ? '15%' : '10%'), b: 'Shop', open: 'shop', s1: '#16351f', s2: '#08160f', ac: '74,222,128', ai: '#052e12' });
-    var fresh = CG.liveGames().filter(function (g) { return g.badge && g.badge !== 'World Cup' && live(g); });
-    if (!fresh.length) fresh = NEW.map(CG.game).filter(function (g) { return g && live(g); });
-    fresh.slice(0, 2).forEach(function (g) {
-      var sp = sportOf(g);
-      out.push({ k: 'New Game · ' + g.name, t: tc(g.line), b: 'Play', href: CG.url(g.path), g: g.id, s1: 'rgba(' + sp.c + ',.55)', s2: 'rgba(' + sp.c + ',.12)', ac: sp.c, ai: sp.ink, ak: 'color-mix(in srgb, rgb(' + sp.c + ') 45%, #fff)' });
-    });
-    var WC = { s1: '#0f4c8a', s2: '#081a33', ac: '125,211,252', ai: '#04121f' };
-    if (CG.launched('wc')) {
-      [['world-cup-8-0', 'Spin a Nation, Win All Eight'], ['world-cup-200', 'Draft Test Greats to 200 Tries']].forEach(function (x) {
-        var g = CG.game(x[0]);
-        if (g && live(g)) out.push(Object.assign({ k: g.name, t: x[1], b: 'Play', href: CG.url(g.path), g: g.id }, WC));
-      });
-      var w = call('totw', null), g80 = CG.game('world-cup-8-0');
-      if (w && g80 && live(g80)) out.push(Object.assign({ k: 'Team of the Week', t: '13 Players Boosted in World Cup 8-0', b: 'Play', href: CG.url(g80.path), g: g80.id }, WC));
-    }
-    var ch = call('wch', null);
-    if (ch) {
-      var nat = a && a.teamColours ? a.teamColours(ch.nation) : null;
-      out.push(Object.assign({ k: 'World Champions' + (nat && nat.name ? ' · ' + nat.name : ''), t: 'Pick From the World Champions', b: 'Shop', open: 'shop' }, WC));
-    }
-    // The CAST Player of the Week, once the account says who it is (a public potw() and openPotw(); none yet)
+    var out = [], inn = signedIn(), pass = call('hasPass', false) === true, fresh = !playedHere();
+    var liveN = CG.liveGames().length, sportsN = CG.SPORTS.filter(function (s) { return s.status === 'live'; }).length;
+    if (newVisitor()) out.push({ id: 'welcome', k: 'CAST Games', h: 'Welcome to CAST Games', lp: 'Free sports draft games.',
+      ld: 'Free sports draft games. Pick a sport, draft your side, chase the number.', b: 'Start Playing', open: 'games', bar: true });
+    out.push({ id: 'sports', k: 'One Account', h: sportsN + NB + 'Sports. ' + (liveN >= 10 ? Math.floor(liveN / 10) * 10 + '+' : liveN) + NB + 'Games.', lp: 'One account for all of them.',
+      ld: 'NRL, AFL, Cricket, Horse' + NB + 'Racing, Premier' + NB + 'League, NFL and NBA, all on one free account.', b: 'See All Games', open: 'games', bar: true });
+    if (justDropped()) out.push({ id: 'new', k: 'New on CAST Games', h: 'Just Dropped', lp: 'Higher' + NB + 'or' + NB + 'Lower, NRL' + NB + 'Bingo, SC' + NB + 'POINTS' + NB + 'KING and NBA.',
+      ld: 'Higher' + NB + 'or' + NB + 'Lower in every sport, NRL' + NB + 'Bingo, SC' + NB + 'POINTS' + NB + 'KING and 100000' + NB + 'POINTS for the NBA.', b: 'See What’s New', open: 'games' });
+    if (guest() || (inn && fresh)) out.push({ id: 'more', k: 'More Than a Game', h: 'Climb, Streak and Collect', lp: 'Boards, friends and trophies.',
+      ld: 'Weekly leaderboards, Daily' + NB + 'Challenge streaks, friends, trophies and your own Vault. All free with a CAST' + NB + 'profile.',
+      b: inn ? 'See My Profile' : 'Make a Free Profile', open: inn ? 'profile' : 'join' });
+    if (inn && !pass && adult()) out.push({ id: 'pass', k: 'CAST Pass', h: 'Get Double the Wildcards', lp: '2 of every wildcard, every game.',
+      ld: '2 of every wildcard in every game, plus Past' + NB + 'Dailies.', b: 'Get CAST Pass', open: 'pass' });
+    var bag = inn && adult() ? bagLine(pass) : null;
+    if (bag) out.push({ id: 'bag', k: 'Gameday Bag', h: bag, lp: 'Bag a few things, pay once.',
+      ld: 'Bag a few things, pay once and save. Wildcards, Picks and more, in one checkout.', b: 'Fill Your Bag', open: 'shop' });
+    var g80 = CG.game('world-cup-8-0');
+    if (CG.launched('wc') && g80 && live(g80)) out.push({ id: 'worldcup', k: 'World Cup', h: 'Play the World Cup', lp: 'Go 8-0, or chase 200' + NB + 'tries.',
+      ld: 'Spin a nation and win all eight, or draft Test greats to 200' + NB + 'tries.', b: 'Play Now', href: CG.url(g80.path), g: g80.id });
     var pw = call('potw', null);
-    if (pw && pw.name) out.push({ k: 'CAST Player of the Week', t: String(pw.name), b: 'See', open: 'potw', s1: '#1d1d33', s2: '#0d0d18', ac: '255,255,255', ai: '#0a0a0f' });
+    if (pw && pw.name) {
+      var me = uname() && String(uname()).toLowerCase() === String(pw.name).toLowerCase(), a = A(), tc2 = a && a.teamColours && pw.team ? a.teamColours(pw.team) : null;
+      out.push({ id: 'potw', k: 'CAST Player of the Week', kp: true, h: String(pw.name), lp: me ? 'That’s you! Well played this week.' : 'See their stats and trophies.',
+        ld: me ? 'That’s you! Well played this week.' : 'This week’s CAST Player of' + NB + 'the' + NB + 'Week. See their stats, best scores and trophies.',
+        b: me ? 'See My Stats' : 'See Stats', open: 'potw', trim: tc2 && tc2.c1 ? [tc2.c1, tc2.c2 || tc2.c1] : null });
+    }
     return out;
   }
+  // 8-0 and 27-0 never break at the hyphen
+  function hl(t) { return esc(t).replace(/(\S*\d-\d\S*)/g, '<span class="nw">$1</span>'); }
   function slideHtml(p, i) {
-    var st = ' style="--s1:' + p.s1 + ';--s2:' + p.s2 + ';--ac:' + p.ac + ';--ai:' + p.ai + (p.ak ? ';--ak:' + p.ak : '') + '"', cls = 'cg-slide' + (p.pass ? ' is-pass' : '');
-    var inner = '<span class="cg-slide-t"><span class="cg-k">' + esc(p.k) + '</span><b>' + esc(p.t) + '</b></span><span class="cg-slide-btn" aria-hidden="true">' + esc(p.b) + '</span>';
-    var lab = ' aria-label="' + esc(p.k + ': ' + p.t) + '" data-slide="' + i + '"';
-    return p.open ? '<button type="button" class="' + cls + '" data-open="' + p.open + '"' + lab + st + '>' + inner + '</button>'
-      : '<a class="' + cls + '" href="' + esc(p.href) + '" data-tap="hero" data-g="' + esc(p.g || '') + '"' + lab + st + '>' + inner + '</a>';
+    var art = ART[p.id] || ['', ''];
+    var st = '--art-p:url(\'' + CG.url(art[0]) + '\');--art-d:url(\'' + CG.url(art[1]) + '\')' + (p.trim ? ';--t1:' + p.trim[0] + ';--t2:' + p.trim[1] : '');
+    var hc = p.id === 'potw' && p.h.length > 12 ? ' is-long' : '';
+    var inner = (p.trim ? '<i class="cgb-trim" aria-hidden="true"></i>' : '') + (p.bar ? '<i class="cgb-7" aria-hidden="true"></i>' : '') + '<span class="cgb-t">' +
+      '<span class="cgb-k">' + esc(p.k) + '</span><b class="cgb-h' + hc + '"><span>' + hl(p.h) + '</span></b>' +
+      '<span class="cgb-l"><span class="cgb-lp">' + hl(p.lp) + '</span><span class="cgb-ld">' + hl(p.ld) + '</span></span>' +
+      '<span class="cgb-b" aria-hidden="true">' + esc(p.b) + '</span></span>';
+    var at = ' class="cgb is-' + p.id + (p.kp ? ' has-kp' : '') + '" style="' + esc(st) + '" aria-label="' + esc(p.k + ': ' + p.h + '. ' + p.b) + '" data-slide="' + i + '"';
+    return p.open ? '<button type="button"' + at + ' data-open="' + p.open + '">' + inner + '</button>' : '<a' + at + ' href="' + esc(p.href) + '" data-tap="hero" data-g="' + esc(p.g || p.id) + '">' + inner + '</a>';
   }
   function heroHtml() {
     var ps = slides();
     return '<div class="cg-strip cg-hero-track cg-n' + Math.min(ps.length, 4) + '" data-strip="hero" aria-roledescription="carousel" aria-label="Featured">' + ps.map(slideHtml).join('') + '</div><div class="cg-dots" role="group" aria-label="Featured slides"></div>';
   }
   // Turning: every 6 s, held while a finger, the mouse or the keyboard is on it, never for reduced motion. The dots are
-  // the places the banner can stop (one per slide on phones; fewer on desktop, where three show at once)
+  // the places the banner can stop (one per slide, on phones and on desktop)
   var heroAt = 0, heroTimer = null, heroHeld = 0;
   function heroStops(tr) {
     var kids = tr.children, max = tr.scrollWidth - tr.clientWidth, out = [];
@@ -437,6 +488,13 @@
     if (dot) { heroHeld = Date.now() + 8000; heroGo(+dot.getAttribute('data-dot'), true); return; }
     var arw = e.target.closest('[data-arw]');
     if (arw) { var st = arw.closest('.cg-sec').querySelector('[data-strip]'); if (st) st.scrollBy({ left: (+arw.getAttribute('data-arw')) * Math.max(240, st.clientWidth * 0.8), behavior: still() ? 'auto' : 'smooth' }); return; }
+    var go = e.target.closest('[data-open="games"]');
+    if (go) { // Welcome, The Sports and Just Dropped: down to All Games
+      CG.track('cg_home_tap', { where: 'open', game: 'games' });
+      var gs = document.getElementById('cgGames');
+      if (gs) gs.scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
+      return;
+    }
     var tap = e.target.closest('[data-tap]');
     if (tap) CG.track('cg_home_tap', { where: tap.getAttribute('data-tap'), game: tap.getAttribute('data-g') || '' });
     var a = A(), o = e.target.closest('[data-open]'), bt = e.target.closest('[data-board]');
@@ -449,6 +507,8 @@
     else if (k === 'boards') a.openBoards(null);
     else if (k === 'signin') { if (a.requireSignIn) a.requireSignIn(null, 'boards'); else if (a.openProfile) a.openProfile(); }
     else if (k === 'potw' && a.openPotw) a.openPotw();
+    else if (k === 'profile' && a.openProfile) a.openProfile();
+    else if (k === 'join') { if (a.requireSignIn) a.requireSignIn(null, 'home_hero'); else if (a.openProfile) a.openProfile(); }
   });
   paint();
   heroTurn();
