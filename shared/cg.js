@@ -293,11 +293,37 @@
           '<span aria-hidden="true">' + (s.ico || '') + '</span><b>' + esc(s.chip || s.name) + '</b></button>';
       }).join('') + '</div>' +
       (sp ? '<div class="cg-sp-h" style="--sc:' + sp.c + '"><b>' + esc(sp.name) + '</b><small>' + esc(sp.long) + '</small></div>' : '') +
-      '<div class="cg-sw-list"><div class="cg-sp-list">' + gs.map(function (g) {
-        var c = continueOf(g);
-        return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--ink:' + g.ink + '">' +
-          (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + (c ? esc(c.label) : esc(g.line)) + '</small></span></a>';
+      '<div class="cg-sw-list"><div class="cg-sp-list">' + swGroups(gs).map(function (grp) {
+        return '<div class="cg-sw-grp" style="--sc:' + sp.c + '">' + swRow(grp.main, false) +
+          (grp.kids.length ? '<div class="cg-sw-kids">' + grp.kids.map(function (k) { return swRow(k, grp.main); }).join('') + '</div>' : '') + '</div>';
       }).join('') + '</div></div></div>';
+  }
+  /* The switcher's list, grouped by game (17 Oct 2026, the owner: "overwhelming with the same colours, need to make it easier
+     to read differences"): each game a row on the dark card colour with its logo on a square tile in its colour, and its
+     modes as smaller rows under it. A HIGHER OR LOWER game, NRL Bingo and SC POINTS KING are games of their own */
+  function mainOf(g) {
+    if (!g.folder || g.ou || g.mode === 'bingo' || g.path === g.folder + '/') return null;
+    for (var i = 0; i < GAMES.length; i++) if (GAMES[i].folder === g.folder && GAMES[i].path === g.folder + '/') return GAMES[i];
+    return null;
+  }
+  function swGroups(gs) {
+    var out = [], byId = {};
+    gs.forEach(function (g) { var m = mainOf(g); if (!m || gs.indexOf(m) < 0) { byId[g.id] = { main: g, kids: [] }; out.push(byId[g.id]); } });
+    gs.forEach(function (g) { var m = mainOf(g); if (m && byId[m.id]) byId[m.id].kids.push(g); });
+    return out;
+  }
+  // A mode's own words under its game: "1000TRIES TEAM SPIN" is Team Spin, "27-0 PACK MODE" Pack Mode (NRLW, 250+ and 8-0 kept)
+  function subName(g, main) {
+    var n = String(g.name), full = main ? String(main.name) + ' ' : '', p = main ? String(main.name).split(' ')[0] + ' ' : '';
+    if (full && n.indexOf(full) === 0) n = n.slice(full.length); // 60000 RUNS TEAM SPIN: Team Spin
+    else if (p && n.indexOf(p) === 0) n = n.slice(p.length); // 27-0 PACK MODE under 27-0 CLASSIC: Pack Mode
+    return n.split(' ').map(function (w) { return /\d|^(NRLW|AFLW|NBA|NFL|NRL|AFL|SC)$/.test(w) ? w : w.charAt(0) + w.slice(1).toLowerCase(); }).join(' ');
+  }
+  function swRow(g, main) {
+    var c = continueOf(g);
+    return '<a class="cg-sp-game' + (main ? ' is-kid' : '') + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path) + '" style="--c1:' + g.c1 + ';--ink:' + g.ink + '">' +
+      '<span class="cg-sw-tile" aria-hidden="true">' + (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '</span>' +
+      '<span class="cg-sw-t"><b>' + esc(main ? subName(g, main) : g.name) + '</b><small>' + (c ? esc(c.label) : esc(g.line)) + '</small></span></a>';
   }
   function openSwitcher() {
     if (!sheet) {
