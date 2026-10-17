@@ -78,3 +78,10 @@ html.cg-in-game .screen.active { top: calc(var(--cg-bar-h, 112px) + env(safe-are
 html.cg-in-game [data-cast-shop]:not(.cg-bar *), html.cg-in-game [data-cast-admin]:not(.cg-bar *) { display: none !important; }
 /* On a phone 27-0's draft header has nothing left to show inside CAST Games: no empty strip above Team Strength */
 @media (max-width: 899px) { html.cg-in-game #draft > .header { display: none !important; } }
+
+/* The owner's HDMI monitor flickered round Admin (17 Oct 2026): on a mouse or trackpad screen the pop-up's surround and
+   Admin's panel are solid colours, so there's nothing for the monitor to dither (cast-account.css has the same) */
+@media (hover: hover) and (pointer: fine) {
+  html.cg-on .ca-backdrop, html.cg-on .cp-confirm-backdrop { background: #07070c; }
+  html.cg-on .ca-panel:has(.ca-admin) { background: #121119; }
+}

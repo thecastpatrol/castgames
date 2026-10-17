@@ -352,6 +352,8 @@ def main():
     idx = os.path.join(HERE, 'index.html')
     hs = open(idx, encoding='utf-8').read()
     hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    # and the bar's own files (17 Oct 2026: the home page kept an old cg.css, so a fix never reached it)
+    hs2 = re.sub(r'shared/cg\.(css|js)\?v=[\w]*"', lambda m: 'shared/cg.%s?v=%s"' % (m.group(1), CGV), hs2)
     if hs2 != hs:
         open(idx, 'w', encoding='utf-8').write(hs2)
     # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only
