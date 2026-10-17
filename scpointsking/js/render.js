@@ -495,7 +495,7 @@
     }).join('');
     // The chase: your best on this device, and (once SC POINTS KING is launched) the crown for each board's #1
     var pb = T.bestScore ? T.bestScore() : 0;
-    var pbRow = !S.daily ? '<div class="result-pb' + (S.pb ? ' is-new' : '') + '"><span>' + (S.pb ? 'New Personal Best' : 'Personal Best') + '</span><b>' + T.fmt(Math.max(pb, out.total)) + '</b></div>' +
+    var pbRow = !S.daily ? '<div class="result-pb' + (S.pb ? ' is-new' : '') + '"><span>Your Best</span><b>' + T.fmt(Math.max(pb, out.total)) + '</b></div>' +
       (T.crownOn && T.crownOn() ? '<p class="result-crown">&#x1F451; Each leaderboard&rsquo;s #1 wears the crown as the SC Points King.</p>' : '') : '';
     return '<div class="result-hero ' + (out.win || (S.pb && S.pbBefore) ? 'is-win' : 'is-done') + '">' +
         '<div class="result-kicker">' + esc(S.daily ? 'Daily Challenge' : S.mode.name) + '</div>' +
