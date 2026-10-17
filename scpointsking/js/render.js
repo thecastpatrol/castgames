@@ -456,6 +456,50 @@
       '<span class="reveal-num">' + T.fmt(p.tries_1998_plus) + '</span><span class="reveal-lbl">' + (T.isGoat(p) ? 'SC Points. The GOAT.' : T.isLegend(p) ? 'SC Points. A Legend season.' : 'SC Points') + '</span></div>';
   };
 
+  /* The leaderboard straight after a Classic game (the owner, 17 Oct 2026: no target, so the board says how good it was).
+     v: { period, score, data: { today|week|all: { top, players, me } | { failed } }, own: { period: rank } }. This game's
+     score is placed among the board's top rows (the player's own row aside), so it shows before the server has saved it:
+     the top 3 (the #1 wears the crown), then the rows either side of it, and what it takes to pass the one above */
+  var RB_TABS = [['today', 'Today'], ['week', 'This Week'], ['all', 'All Time']];
+  R.resBoard = function (v) {
+    var b = v.data[v.period], score = v.score, label = RB_TABS.filter(function (t) { return t[0] === v.period; })[0][1];
+    var tabs = '<div class="rb-tabs" role="tablist">' + RB_TABS.map(function (t) {
+      return '<button type="button" role="tab" class="rb-tab' + (t[0] === v.period ? ' is-on' : '') + '" aria-selected="' + (t[0] === v.period) + '" data-action="rb-tab" data-v="' + t[0] + '">' + t[1] + '</button>';
+    }).join('') + '</div>';
+    var head = '<div class="rb-head"><span class="rb-kick">&#x1F451; Leaderboard</span>', body;
+    if (!b) return head + '</div>' + tabs + '<p class="rb-note">Loading the board&hellip;</p>';
+    if (b.failed) return head + '</div>' + tabs + '<p class="rb-note">The board didn&rsquo;t load. <button type="button" class="rb-retry" data-action="rb-retry">Try Again</button></p>';
+    // The board as it is (the player's own best row stays, marked), with this game's score placed in it
+    var myName = b.me && b.me.name, top = b.top || [], rows = top.map(function (r) { return myName && r.n === myName ? { n: r.n + ' (your best)', s: r.s, mine: true } : r; });
+    var ahead = rows.filter(function (r) { return r.s >= score; }).length;
+    var whole = top.length < 100 || (b.players || 0) <= top.length; // the doc holds the whole board
+    var inTop = ahead < rows.length || whole;
+    var you = { n: myName ? myName + ' (this game)' : 'You', s: score, you: true };
+    var list = inTop ? rows.slice(0, ahead).concat([you], rows.slice(ahead)) : rows.concat([you]);
+    var at = inTop ? ahead : list.length - 1, rank = inTop ? ahead + 1 : (v.own && v.own[v.period]) || null;
+    var show = {};
+    [0, 1, 2, at - 1, at, at + 1].forEach(function (i) { if (i >= 0 && i < list.length) show[i] = 1; });
+    var idx = Object.keys(show).map(Number).sort(function (x, y) { return x - y; }), out = [], prev = -1;
+    idx.forEach(function (i) {
+      if (i > prev + 1) out.push('<li class="rb-gap" aria-hidden="true">&middot;&middot;&middot;</li>');
+      var r = list[i], n = !inTop && i === list.length - 1 ? (rank ? '#' + T.fmt(rank) : '100+') : '#' + (i + 1);
+      out.push('<li class="rb-row' + (r.you ? ' is-you' : '') + (r.mine ? ' is-mine' : '') + (i === 0 ? ' is-king' : '') + '"><span class="rb-rank">' + n + '</span><span class="rb-name">' + esc(r.n) +
+        (i === 0 ? ' <span class="rb-crown" role="img" aria-label="SC Points King">&#x1F451;</span>' : '') + '</span><span class="rb-pts">' + T.fmt(r.s) + '</span></li>');
+      prev = i;
+    });
+    // the one to pass: the nearest row above that isn't the player's own best
+    var above = null;
+    for (var k = at - 1; k >= 0; k--) if (!list[k].mine) { above = list[k]; break; }
+    var pass = !above ? (rows.length ? 'Top of the board: the SC Points King &#x1F451;' : 'Nobody on this board yet: the crown is yours &#x1F451;')
+      : !inTop ? '<b>' + T.fmt(above.s - score + 1) + '</b> SC points to reach the top 100'
+      : '<b>' + T.fmt(above.s - score + 1) + '</b> SC points to pass ' + esc(above.n);
+    head += '<b class="rb-where">' + (rank ? '#' + T.fmt(rank) : '#100+') + ' ' + label + '</b></div>';
+    body = '<ol class="rb-list">' + out.join('') + '</ol><p class="rb-pass">' + pass + '</p>';
+    if (!b.me) body += '<p class="rb-note">Your score isn&rsquo;t on the board yet.</p><button type="button" class="btn btn-ghost btn-block rb-signin" data-action="rb-signin">Sign In Free to Save It</button>';
+    else if (b.me.hidden) body += '<p class="rb-note">You&rsquo;ve hidden your name from the leaderboards.</p>';
+    return head + tabs + body;
+  };
+
   R.videos = function () { return ''; };
   R.unibet = function () { return ''; };
 
@@ -506,6 +550,7 @@
         (h.sub ? '<p class="result-sub">' + esc(h.sub) + '</p>' : '') +
         pbRow + luckLine(S) +
       '</div>' +
+      (!S.daily ? '<section class="res-board" id="resBoard" aria-label="Leaderboard" hidden></section>' : '') +
       '<div class="res-acts">' +
         '<button type="button" class="btn btn-res btn-res-again btn-block" data-action="play-again"><span aria-hidden="true">&#x1F504;</span> Play Again</button>' +
         '<div class="res-two">' +

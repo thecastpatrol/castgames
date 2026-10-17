@@ -3960,6 +3960,7 @@
       wc: ['World Cup Mode Is for CAST Profile Players', 'Sign in free to play the World Cup. It starts as soon as you&rsquo;re in.'],
       ouused: ['You&rsquo;ve Had Your ' + GUEST_OU_MAX + ' Free Runs Today', 'Sign in free to play ' + ouName(CFG.game) + ' as much as you like, save your streaks and climb the board.'],
       wcused: ['You&rsquo;ve Had Your Free World Cup Today', 'Sign in free to play as many as you like, save your results and climb the World Cup board.'],
+      leaderboard: ['Get Your Score on the Board', 'Sign in free and your next scores go up on the leaderboards. Climb to the top and wear the crown.'],
       gift: ['Sign In to Claim Your Gift', 'Your free World Legend Pick is waiting. Sign in with the account your CAST Games emails go to.']
     }[wallWhy] || ['Sign In Free', 'Sign in to keep playing.'];
     // What they were trying to do comes first
@@ -4566,6 +4567,34 @@
     else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'nbadaily' || b === 'bgdaily' || b === 'scdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
     else id = b + '_' + (period === 'week' ? sydneyWeek(Date.now()) : period === 'today' ? sydneyDate(Date.now()) : 'all');
     return club ? id + '~' + club : id;
+  }
+  /* A board for a game's results screen (SC POINTS KING, 17 Oct 2026, the owner: a game with no target shows where the
+     score sits straight after the game). The public board doc (its top rows, the copy the Leaderboards page reads) for one
+     period, kept a minute: one small read per period opened, nothing per game. rank(): the signed-in player's own place
+     (myRank: two counts), only asked for when the score falls outside the top rows. -> { id, top, players, me } where me
+     is { name, hidden } for a signed-in player with a leaderboard name, else null */
+  var rbCache = {};
+  function boardDoc(id) {
+    var c = rbCache[id];
+    if (c && Date.now() - c.at < 60000) return c.p;
+    var url = EMU
+      ? 'http://127.0.0.1:8085/v1/projects/demo-cast-games/databases/(default)/documents/boards/' + id
+      : 'https://firestore.googleapis.com/v1/projects/' + FIREBASE.projectId + '/databases/(default)/documents/boards/' + id + '?key=' + FIREBASE.apiKey;
+    var pr = fetch(url).then(function (r) {
+      if (r.status === 404) return {};
+      if (!r.ok) throw new Error('board ' + r.status);
+      return r.json();
+    }).then(function (j) { var f = j.fields || {}; return { top: fsVal(f.top) || [], players: fsVal(f.players) || 0 }; });
+    rbCache[id] = { at: Date.now(), p: pr };
+    pr.catch(function () { delete rbCache[id]; });
+    return pr;
+  }
+  function resultBoard(base, period) {
+    var id = boardId(base, period, '');
+    return boardDoc(id).then(function (b) {
+      var me = status === 'signed-in' && profile && profile.username ? { name: profile.username, hidden: !!profile.lbHidden } : null;
+      return { id: id, top: b.top, players: b.players, me: me, rank: function () { return me ? callFn('myRank', { board: id }) : Promise.resolve(null); } };
+    });
   }
   // The board that matches a finished game (for "See where you rank")
   function boardForGame(g) {
@@ -6220,7 +6249,7 @@
   // SC POINTS KING (17 Oct 2026): the 13 in SC positions, saved in the game's slot order (js/data.js T.SLOTS): the fullback,
   // the four centres and wingers, the halves, the front row with the hooker between the props, the back row
   var POS13SC = ['FLB', 'CTW', 'CTW', 'CTW', 'CTW', '5/8', 'HFB', 'HOK', 'FRF', 'FRF', '2RF', '2RF', '2RF'];
-  var FIELD13SC = [[0], [1, 2, 3, 4], [5, 6], [8, 7, 9], [10, 11, 12]];
+  var FIELD13SC = [[7], [8, 9], [10, 11, 12], [6, 5], [1, 2, 3, 4], [0]]; // SC's own team view: the hooker at the top, the fullback at the bottom (the owner, 17 Oct 2026)
   var POS10E = ['DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'FWD'];
   var FIELD10E = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
   /* Since 17 Oct 2026 a 650 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
@@ -6386,6 +6415,8 @@
   }
   function sheetList(x, ps, title) {
     var clubs = ps.some(function (p) { return p.club; }); // older saves have no clubs: drop the column
+    // SC POINTS KING lists its 13 in its field's order too (the hooker first, the fullback last)
+    if (x && x.game === 'sc' && ps.length === 13) ps = [].concat.apply([], FIELD13SC).map(function (i) { return ps[i]; });
     return (title ? '<h3 class="ca-h3">' + title + '</h3>' : '') + '<ol class="ca-sheet-list' + (clubs ? '' : ' no-clubs') + '">' + ps.map(function (p) {
       var sub = [p.club && p.club.name, p.year].filter(Boolean).join(' '), cls = (p.tier ? ' is-' + p.tier : '') + srcCls(p);
       return '<li' + (cls ? ' class="' + cls.slice(1) + '"' : '') + '><span class="ca-sl-pos">' + p.pos + '</span>' + (clubs ? clubChip(p.club) : '') +
@@ -13914,6 +13945,7 @@
     open: open,
     openBoards: openBoards,
     dailyRank: dailyRank,
+    resultBoard: resultBoard, // the results' leaderboard (SC POINTS KING, 17 Oct 2026)
     unlock: function (ids) { return unlock(ids); },
     // Invite a Mate v2 (17 Oct 2026): a share's link or message with the signed-in player's invite code (?r=) added
     inviteLink: function (url) { return inviteLink(url); }, inviteText: function (text) { return inviteText(text); },
