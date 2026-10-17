@@ -3765,19 +3765,19 @@
      owner's private test link (1000TRIES ?ou=<OU_PREVIEW>, remembered here) */
   var LS_OU = 'cast_ou_preview', OU_PREVIEW = 'ctk7';
   (function () { try { var m = /[?&]ou=([a-z0-9]+)/.exec(location.search); if (m && m[1] === OU_PREVIEW) lsSet(LS_OU, '1'); } catch (e) { /* no storage */ } })();
-  function ouOn() { return launchOn.indexOf('ou') >= 0 || lsGet(LS_OU) === '1'; }
+  function ouOn() { return launchOn.indexOf('ou') >= 0 || lsGet(LS_OU) === '1' || launchPreview; } // launchPreview: the owner's ?castlaunch=1 device sees every game before launch day (17 Oct 2026)
   var ouSeen = null; // the last answer gotLaunch acted on
   /* HIGHER OR LOWER: AFL (15 Oct 2026, on 4000 GOALS): the same, with its own Launch ('po') and private link (4000 GOALS
      ?po=<PO_PREVIEW>) */
   var LS_PO = 'cast_po_preview', PO_PREVIEW = 'gd8m';
   (function () { try { var m = /[?&]po=([a-z0-9]+)/.exec(location.search); if (m && m[1] === PO_PREVIEW) lsSet(LS_PO, '1'); } catch (e) { /* no storage */ } })();
-  function poOn() { return launchOn.indexOf('po') >= 0 || lsGet(LS_PO) === '1'; }
+  function poOn() { return launchOn.indexOf('po') >= 0 || lsGet(LS_PO) === '1' || launchPreview; }
   var poSeen = null;
   /* NRL Bingo (17 Oct 2026): on once the owner presses Launch (config/launch 'bingo'), or on a device that opened the
      owner's private test link (?bingo=<BINGO_PREVIEW> on 1000TRIES or castgames.com.au/nrl-bingo/, remembered here) */
   var LS_BINGO = 'cast_bingo_preview', BINGO_PREVIEW = 'nb4x';
   (function () { try { var m = /[?&]bingo=([a-z0-9]+)/.exec(location.search); if (m && m[1] === BINGO_PREVIEW) lsSet(LS_BINGO, '1'); } catch (e) { /* no storage */ } })();
-  function bingoOn() { return launchOn.indexOf('bingo') >= 0 || lsGet(LS_BINGO) === '1'; }
+  function bingoOn() { return launchOn.indexOf('bingo') >= 0 || lsGet(LS_BINGO) === '1' || launchPreview; }
   var bingoSeen = null;
   // A page that opens with World Cup already on (launched and remembered) tells the game once it has loaded, so its home
   // page draws the World Cup card (the launch answer itself only announces a change; an admin's ?castwc=1 visit tells it
