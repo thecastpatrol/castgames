@@ -3767,14 +3767,32 @@
   // Monthly revenue from paying members, yearly counted as a twelfth (before Stripe fees): the server's own sum at each
   // member's price (passMrr, from 10 Oct 2026), or the old $3.99 and $29.99 from a server before it
   function passMrr(monthly, annual, d) { return d && typeof d.passMrr === 'number' ? d.passMrr : monthly * 3.99 + annual * 29.99 / 12; }
-  /* New members pay $4.99 a month or $39.99 a year (10 Oct 2026, the owner). A member already on $3.99 a month keeps it, and
-     their Yearly Switch is to $29.99: they only ever see their own prices (records from before have no amt: the old price) */
-  function oldPrice() { var p = passDoc || {}; return !(typeof p.amt === 'number' && p.amt > 399); }
-  function switchLine() { return oldPrice() ? ['$29.99', '$2.50', '$47.88'] : ['$39.99', '$3.33', '$59.88']; }
-  /* Keep and win back (10 Oct 2026, the owner's BUILD IT). An early member whose Pass has ended comes back at their old
-     price, and every price they see is that one (the server's own check is lib/pass.js returnsAtOld) */
-  function returningOld() { var p = passDoc; return !!p && !!p.sub && p.comp !== true && p.on !== true && (typeof p.amt === 'number' ? p.amt === 399 || p.amt === 2999 : true); }
-  function PR() { return returningOld() ? { m: '$3.99', y: '$29.99', yM: '$2.50', yW: '58c', mW: '92c', save: '37%' } : { m: '$4.99', y: '$39.99', yM: '$3.33', yW: '77c', mW: '$1.15', save: '33%' }; }
+  /* Three price tiers (lib/pass.js TIERS on the server). New members paid $4.99 a month or $39.99 a year from 10 Oct 2026,
+     and pay $5.99 or $49.99 from 12:00am Sunday 18 Oct 2026 Sydney (PASS_RISE_AT, the same moment as the server's RISE_AT;
+     the owner, 17 Oct 2026). Every member keeps the price they joined at ($3.99 and $29.99 for the first members), their
+     Yearly Switch is to their own tier's yearly price, and they only ever see their own prices (records from before
+     prices were saved have no amt: the first price). The server picks the checkout price, and Stripe's page shows it */
+  var PASS_RISE_AT = Date.parse('2026-10-17T13:00:00Z');
+  var PASS_TIERS = {
+    old: { mc: 399, yc: 2999, m: '$3.99', y: '$29.99', yM: '$2.50', yW: '58c', mW: '92c', save: '37%', x12: '$47.88' },
+    mid: { mc: 499, yc: 3999, m: '$4.99', y: '$39.99', yM: '$3.33', yW: '77c', mW: '$1.15', save: '33%', x12: '$59.88' },
+    'new': { mc: 599, yc: 4999, m: '$5.99', y: '$49.99', yM: '$4.17', yW: '96c', mW: '$1.38', save: '30%', x12: '$71.88' }
+  };
+  function nowTier() { return Date.now() >= PASS_RISE_AT ? 'new' : 'mid'; }
+  function amtTier(a) { for (var t in PASS_TIERS) if (PASS_TIERS[t].mc === a || PASS_TIERS[t].yc === a) return t; return null; }
+  // A member's own tier (no amt saved: the first price; a price we don't know: today's)
+  function myTier() { var p = passDoc || {}; return typeof p.amt === 'number' ? amtTier(p.amt) || nowTier() : 'old'; }
+  function switchLine() { var t = PASS_TIERS[myTier()]; return [t.y, t.yM, t.x12]; }
+  /* Keep and win back (10 Oct 2026, the owner's BUILD IT). A member whose Pass has ended comes back at their own price
+     ($3.99 or $4.99 tiers), and every price they see is that one (the server's own check is lib/pass.js returnTier) */
+  function returnTier() {
+    var p = passDoc;
+    if (!p || !p.sub || p.comp === true || p.on === true) return null;
+    if (typeof p.amt !== 'number') return 'old';
+    var t = amtTier(p.amt);
+    return t === 'old' || t === 'mid' ? t : null;
+  }
+  function PR() { return PASS_TIERS[returnTier() || nowTier()]; }
   // A former paying member (their Pass has ended): the Come Back card and a welcome back on the Pass page
   function formerMember() { var p = passDoc; return !hasPass() && !!p && !!p.sub && p.comp !== true && p.on !== true && p.live !== false; }
   // A monthly Pass on pause (passPause): their own line and Resume Now, never the buy buttons or Pass pitches
@@ -3913,7 +3931,7 @@
   }
   /* The Yearly Switch (7 Oct 2026, the owner's calls): a monthly Pass after its third payment (the server's own check is
      lib/pass.js switchable) sees a card on this page and on home, until No Thanks (kept on the server, so every device
-     stops). Switch to Yearly opens Stripe's own page, which shows what they pay (A$39.99, or A$29.99 on the old $3.99, less the unused days of this
+     stops). Switch to Yearly opens Stripe's own page, which shows what they pay (their own tier's yearly price, switchLine, less the unused days of this
      month, the year starting today) and confirms it. GA: pass_switch_view, pass_switch_tap, pass_switch_no, pass_switch_done */
   var SWITCH_AFTER = 80 * 86400000, switchNoNow = false, switchViewed = {};
   function switchDue() {
