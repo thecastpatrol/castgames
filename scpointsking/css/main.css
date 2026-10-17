@@ -759,7 +759,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .result-total { display: grid; justify-items: center; margin: 4px 0 2px; }
 .rt-num {
   font-size: clamp(56px, 17vw, 112px); font-weight: 900; line-height: .95; letter-spacing: -2px; font-variant-numeric: tabular-nums; 
-  padding: 0 .08em; 
+  padding: 0 .12em; 
   background: linear-gradient(180deg, #d9fff0 0%, var(--gold) 45%, #12a06a 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 40px rgba(var(--acc-rgb), .25);
 }
@@ -1870,3 +1870,5 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .rb-name { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; line-height: 1.2; padding: 4px 0; }
 @media (max-width: 380px) { .rb-name, .rb-pts { font-size: 14px; } .rb-row { grid-template-columns: 42px minmax(0, 1fr) auto; padding: 0 10px; } }
 .rb-row.is-mine .rb-name { color: #c8d3e6; }
+
+@media (max-width: 380px) { .rrow-name { font-size: 13px; } }

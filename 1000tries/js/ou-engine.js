@@ -37,7 +37,7 @@
     
     plgoals: { name: 'Premier League Goals', unit: 'PL goals', one: 'PL goal', base: 150, step: 45, game: 'epl' },
     plassists: { name: 'Premier League Assists', unit: 'PL assists', one: 'PL assist', base: 150, step: 45, game: 'epl' },
-    plapps: { name: 'Premier League Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' },
+    plapps: { name: 'PL Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' },
     
     nbapts: { name: 'NBA Points', unit: 'NBA points', one: 'NBA point', base: 150, step: 45, game: 'nba' },
     nbareb: { name: 'NBA Rebounds', unit: 'NBA rebounds', one: 'NBA rebound', base: 150, step: 45, game: 'nba' },

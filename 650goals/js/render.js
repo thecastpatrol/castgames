@@ -230,7 +230,7 @@
       '<span class="fm-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' + R.miniPitch(id);
   }
   R.formationOffer = function (S, spin) {
-    return '<div class="panel-head"><span class="panel-title">Spin Your Formation</span><span class="panel-meta">Then draft its spots</span></div>' +
+    return '<div class="panel-head is-formation"><span class="panel-title">Spin Your Formation</span><span class="panel-meta">Then draft its spots</span></div>' +
       '<p class="fm-intro">Three formations spin up. Pick 1 and your draft fills its real spots, from left back to striker.</p>' +
       '<div class="fm-cards' + (spin === 'spin' ? ' is-spinning' : spin === 'fade' ? ' is-fade' : '') + '"' + (spin === 'spin' ? ' aria-busy="true"' : '') + '>' + (S.fmOffer || []).map(function (id, n) {
         var spots = T.formationSlots(id);

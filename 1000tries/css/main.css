@@ -758,7 +758,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .result-total { display: grid; justify-items: center; margin: 4px 0 2px; }
 .rt-num {
   font-size: clamp(88px, 30vw, 150px); font-weight: 900; line-height: .95; letter-spacing: -3px; font-variant-numeric: tabular-nums;
-  padding: 0 .08em; 
+  padding: 0 .12em; 
   background: linear-gradient(180deg, #ffe2a8 0%, var(--gold) 45%, #c9953a 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 40px rgba(241, 192, 115, .25);
 }
@@ -1885,3 +1885,5 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 
 .key-swap { border-color: rgba(167, 139, 250, .6); background: rgba(167, 139, 250, .08); color: #c4b5fd; }
 @media (hover: hover) { .key-swap:hover { background: rgba(167, 139, 250, .16); } }
+
+@media (max-width: 380px) { .rrow-name { font-size: 13px; } }

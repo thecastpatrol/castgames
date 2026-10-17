@@ -1390,6 +1390,14 @@
   window.addEventListener('cast:launch', function () { var S = T.state(); if (S && !S.finished && !busy && document.body.getAttribute('data-screen') === 'draft') renderDraft(); });
   window.addEventListener('cast:tier', function (e) {
     var S = T.state(), n = e.detail && e.detail.wildcards;
+    
+
+
+    if (S && !S.finished && S.mode.wildcards && !S.mode.paidOnly && !S.wcStart && typeof n === 'number') {
+      var def = { reroll: 1 + (S.profileRerolls || 0), scout: 1, tweak: 1 };
+      ['reroll', 'scout', 'tweak'].forEach(function (k) { S.wildcards[k] = Math.max(0, n - Math.max(0, def[k] - S.wildcards[k])); });
+      S.wcStart = { reroll: n, scout: n, tweak: n }; S.wcLocked = n === 0; S.profileRerolls = 0;
+    }
     if (!S || S.finished || !S.mode.wildcards || !S.wcStart || typeof n !== 'number') return;
     if (S.mode.paidOnly) { S.wcLocked = n === 0; if (document.body.getAttribute('data-screen') === 'draft') renderDraft(); return; } 
     setTierWildcards(S, n);

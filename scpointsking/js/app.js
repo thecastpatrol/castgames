@@ -776,6 +776,14 @@
   window.addEventListener('cast:launch', function () { if (draftLive()) renderDraft(); });
   window.addEventListener('cast:tier', function (e) {
     var S = T.state(), n = e.detail && e.detail.wildcards;
+    
+
+
+    if (S && !S.finished && S.mode.wildcards && !S.mode.paidOnly && !S.wcStart && typeof n === 'number') {
+      var def = { reroll: 1 + (S.profileRerolls || 0), scout: 1, tweak: 1 };
+      ['reroll', 'scout', 'tweak'].forEach(function (k) { S.wildcards[k] = Math.max(0, n - Math.max(0, def[k] - S.wildcards[k])); });
+      S.wcStart = { reroll: n, scout: n, tweak: n }; S.wcLocked = n === 0; S.profileRerolls = 0;
+    }
     if (!S || S.finished || !S.mode.wildcards || !S.wcStart || typeof n !== 'number') return;
     setTierWildcards(S, n);
     if (e.detail && e.detail.tier === 'pass' && !S.subUsed && !S.subLeft) S.subLeft = 1;
