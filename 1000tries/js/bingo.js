@@ -163,6 +163,7 @@
     st.busy = false; st.hint = null; st.flash = null; st.pop = null; st.wildPick = false; st.nofit = null;
     if (b.won() || b.empty()) { finish(); return; }
     if (b.out) { out(); return; }
+    st.cur = b.card(); // the player on the card until the next one shows (never the next one during a tap's tick)
     st.cardAt = Date.now(); st.fresh = true;
     if (b.noFit()) {
       if (!rerollPossible()) { render(); st.fresh = false; takeLife(); return; }
@@ -211,6 +212,7 @@
     st.nofit = null; st.busy = true;
     keepRun();
     track('bingo_nofit_life', { lives: b.lives });
+    if (b.out) { st.last = { kind: 'nofit', p: p }; out(); return; } // the last life: Game Over
     st.pop = { kind: 'nofit', p: p };
     render();
   }
@@ -228,7 +230,11 @@
     keepRun();
     render();
     // the tile's tick (or shake) first, then the pop-up with his teams
-    setTimeout(function () { if (st.view === 'play' && st.board === b) { st.pop = { kind: r.right ? 'good' : 'bad', p: p, t: t }; render(); } }, r.right ? 380 : 480);
+    setTimeout(function () {
+      if (st.view !== 'play' || st.board !== b) return;
+      if (b.out) { st.last = { kind: 'bad', p: p, t: t }; out(); return; } // the last life: Game Over
+      st.pop = { kind: r.right ? 'good' : 'bad', p: p, t: t }; render();
+    }, r.right ? 380 : 480);
   }
   // Next Player: the pop-up closes and the game carries on (or ends)
   function nextPlayer() {
@@ -330,7 +336,7 @@
     render(); startOffer();
   }
   function paintOffer() {
-    var f = document.querySelector('#bgRoot .bg-out .lock-fill'), n = document.querySelector('#bgRoot .bg-out .lock-secs');
+    var f = document.querySelector('#bgSheetHost .bg-over .lock-fill'), n = document.querySelector('#bgSheetHost .bg-over .lock-secs');
     if (f) f.style.transform = 'scaleX(' + Math.max(st.offer - 1, 0) / OFFER_SECS + ')';
     if (n) n.textContent = st.offer;
   }
@@ -399,6 +405,7 @@
       } catch (e) { /* the board stays on this device */ }
     }
     if (st.quiet) return;
+    try { window.scrollTo(0, 0); } catch (e) { /* old browser */ } // the results from the top (Game Over's pop-up may have left the page scrolled)
     render();
     makeCard();
   }
@@ -422,8 +429,15 @@
     return CA && CA.inviteLink ? CA.inviteLink(u) : u;
   }
   function share() {
-    var txt = shareText(), url = shareUrl();
+    var txt = shareText(), url = shareUrl(), CA = A();
     track('bingo_share', { tiles: st.board.filled, card: shareFile ? 1 : 0 });
+    /* The shared share-picker (the owner, 18 Oct 2026: Portrait or Story on every Share), once the account code has it:
+       the words, the address and a renderer for each size (Promise of a PNG Blob). HOOK: CastAccount.sharePicker */
+    if (CA && typeof CA.sharePicker === 'function') {
+      CA.sharePicker({ game: '1000tries', mode: 'bingo', title: 'NRL Bingo', text: txt, url: url, file: 'nrl-bingo',
+        render: { portrait: function () { return drawShare('portrait'); }, story: function () { return drawShare('story'); } } });
+      return;
+    }
     var desktop = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (shareFile && navigator.canShare && navigator.share && !desktop) {
       var withFile = { files: [shareFile], text: txt + '\n' + url };
@@ -436,55 +450,70 @@
   function flash(msg) { st.toast = msg; render(); setTimeout(function () { st.toast = ''; render(); }, 2200); }
   function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
   // The card's tiles as pictures: each jersey drawn from its SVG, then the grid on a 1080 x 1350 post
+  /* The card as a picture, in either size (the owner, 18 Oct 2026: every Share offers Portrait and Story). Portrait is the
+     1080 x 1350 post; Story is 1080 x 1920, laid out for the tall space with everything that matters between 250 and 1670
+     (clear of the Stories bar at the top and the reply box at the bottom), never the Portrait stretched. Each jersey is
+     drawn from its SVG first. -> Promise of a PNG Blob (null where the browser can't) */
+  var SHARE_SIZE = { portrait: { W: 1080, H: 1350 }, story: { W: 1080, H: 1920 } };
+  function drawShare(size) {
+    var S = SHARE_SIZE[size] || SHARE_SIZE.portrait, b = st.board, P = D.players, W = S.W, H = S.H, story = size === 'story';
+    if (!window.Blob || !document.createElement('canvas').getContext) return Promise.resolve(null);
+    // where things go: Story pushes everything into the safe middle and gives the tiles more height
+    var L = story ? { title: 340, sub: 392, score: 478, gx: 70, gy: 536, tw: 220, th: 150, gap: 13, ask: 1576, url: 1626, glowY: 340 }
+      : { title: 118, sub: 168, score: 252, gx: 70, gy: 290, tw: 220, th: 138, gap: 13, ask: 1258, url: 1306, glowY: 120 };
+    return new Promise(function (resolve) {
+      var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      var ctx = cv.getContext('2d'), imgs = [], left = E.N;
+      var draw = function () {
+        var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#16210d'); g.addColorStop(1, '#07090a');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = 'rgba(163,230,53,.12)'; ctx.beginPath(); ctx.arc(W / 2, L.glowY, 520, 0, Math.PI * 2); ctx.fill();
+        ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff';
+        ctx.font = '900 88px Inter, Arial, sans-serif'; ctx.fillText('NRL BINGO', W / 2, L.title);
+        ctx.font = '800 30px Inter, Arial, sans-serif'; ctx.fillStyle = '#c8f08a';
+        ctx.fillText('FILL ALL ' + E.N + ' TILES', W / 2, L.sub);
+        ctx.fillStyle = '#ffffff'; ctx.font = '900 66px Inter, Arial, sans-serif';
+        ctx.fillText(b.won() ? 'FULL HOUSE · ' + clock(st.ms) : b.filled + ' OF ' + E.N + ' · ' + clock(st.ms), W / 2, L.score);
+        var tw = L.tw, th = L.th, gap = L.gap;
+        for (var t = 0; t < E.N; t++) {
+          var x = L.gx + (t % 4) * (tw + gap), y = L.gy + Math.floor(t / 4) * (th + gap), cell = b.grid[t];
+          ctx.save(); rr(ctx, x, y, tw, th, 18); ctx.clip();
+          if (imgs[t] && imgs[t].ok) ctx.drawImage(imgs[t].img, x, y, tw, th); else { ctx.fillStyle = '#1c1c2e'; ctx.fillRect(x, y, tw, th); }
+          // an open tile dark, a filled one in Bingo's lime, so the card reads right at a glance
+          ctx.fillStyle = cell === -1 ? 'rgba(6,8,12,.62)' : 'rgba(6,8,12,.3)'; ctx.fillRect(x, y, tw, th);
+          if (cell !== -1) { ctx.fillStyle = 'rgba(132,204,22,.42)'; ctx.fillRect(x, y, tw, th); }
+          ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x, y + th - 42, tw, 42);
+          ctx.fillStyle = '#ffffff'; ctx.font = '800 24px Inter, Arial, sans-serif'; ctx.fillText(tileName(t), x + tw / 2, y + th - 13);
+          if (cell !== -1) {
+            var fz = 28, nm = cell === -2 ? 'WILD TILE' : surname(P[cell][0]).toUpperCase(), my = y + (th - 42) / 2 + 6;
+            ctx.fillStyle = '#ffffff'; ctx.font = '900 ' + fz + 'px Inter, Arial, sans-serif';
+            while (ctx.measureText(nm).width > tw - 20 && fz > 16) { fz -= 2; ctx.font = '900 ' + fz + 'px Inter, Arial, sans-serif'; }
+            var nw = ctx.measureText(nm).width;
+            ctx.fillStyle = 'rgba(0,0,0,.62)'; rr(ctx, x + tw / 2 - nw / 2 - 10, my - 4, nw + 20, fz + 12, 8); ctx.fill();
+            ctx.fillStyle = cell === -2 ? '#fbcfe8' : '#ffffff'; ctx.fillText(nm, x + tw / 2, my + 2 + fz * .82);
+            ctx.font = '34px sans-serif'; ctx.fillText(cell === -2 ? '🃏' : '✅', x + tw / 2, my - 10);
+          }
+          ctx.restore();
+          ctx.strokeStyle = cell === -1 ? 'rgba(255,255,255,.12)' : 'rgba(163,230,53,.95)'; ctx.lineWidth = cell === -1 ? 2 : 5; rr(ctx, x, y, tw, th, 18); ctx.stroke();
+        }
+        ctx.fillStyle = '#c8f08a'; ctx.font = '900 34px Inter, Arial, sans-serif'; ctx.fillText('CAN YOU FILL THE CARD?', W / 2, L.ask);
+        ctx.fillStyle = '#ffffff'; ctx.font = '800 30px Inter, Arial, sans-serif'; ctx.fillText('CASTGAMES.COM.AU', W / 2, L.url); // the game's own address
+        try { cv.toBlob(function (bl) { resolve(bl || null); }, 'image/png'); } catch (e) { resolve(null); }
+      };
+      for (var t = 0; t < E.N; t++) (function (t) {
+        var img = new Image(), svg = kitSvg(E.TILES[t][0]).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="' + L.tw + '" height="' + L.th + '" ');
+        imgs[t] = { img: img, ok: false };
+        img.onload = function () { imgs[t].ok = true; if (!--left) draw(); };
+        img.onerror = function () { if (!--left) draw(); };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      })(t);
+    });
+  }
+  // The Portrait picture is made as the results show, so a plain Share has it ready straight away
   function makeCard() {
     shareFile = null;
-    if (!window.Blob || !document.createElement('canvas').getContext) return;
-    var b = st.board, P = D.players, W = 1080, H = 1350, imgs = [], left = E.N;
-    var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-    var ctx = cv.getContext('2d');
-    var draw = function () {
-      var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#16210d'); g.addColorStop(1, '#07090a');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = 'rgba(163,230,53,.12)'; ctx.beginPath(); ctx.arc(W / 2, 120, 520, 0, Math.PI * 2); ctx.fill();
-      ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff';
-      ctx.font = '900 88px Inter, Arial, sans-serif'; ctx.fillText('NRL BINGO', W / 2, 118);
-      ctx.font = '800 30px Inter, Arial, sans-serif'; ctx.fillStyle = '#c8f08a';
-      ctx.fillText('FILL ALL ' + E.N + ' TILES', W / 2, 168);
-      ctx.fillStyle = '#ffffff'; ctx.font = '900 66px Inter, Arial, sans-serif';
-      ctx.fillText(b.won() ? 'FULL HOUSE · ' + clock(st.ms) : b.filled + ' OF ' + E.N + ' · ' + clock(st.ms), W / 2, 252);
-      var gx = 70, gy = 290, tw = 220, th = 138, gap = 13;
-      for (var t = 0; t < E.N; t++) {
-        var x = gx + (t % 4) * (tw + gap), y = gy + Math.floor(t / 4) * (th + gap), cell = b.grid[t];
-        ctx.save(); rr(ctx, x, y, tw, th, 18); ctx.clip();
-        if (imgs[t] && imgs[t].ok) ctx.drawImage(imgs[t].img, x, y, tw, th); else { ctx.fillStyle = '#1c1c2e'; ctx.fillRect(x, y, tw, th); }
-        // an open tile dark, a filled one in Bingo's lime, so the card reads right at a glance
-        ctx.fillStyle = cell === -1 ? 'rgba(6,8,12,.62)' : 'rgba(6,8,12,.3)'; ctx.fillRect(x, y, tw, th);
-        if (cell !== -1) { ctx.fillStyle = 'rgba(132,204,22,.42)'; ctx.fillRect(x, y, tw, th); }
-        ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x, y + th - 42, tw, 42);
-        ctx.fillStyle = '#ffffff'; ctx.font = '800 24px Inter, Arial, sans-serif'; ctx.fillText(tileName(t), x + tw / 2, y + th - 13);
-        if (cell !== -1) {
-          var fz = 28, nm = cell === -2 ? 'WILD TILE' : surname(P[cell][0]).toUpperCase();
-          ctx.fillStyle = '#ffffff'; ctx.font = '900 ' + fz + 'px Inter, Arial, sans-serif';
-          while (ctx.measureText(nm).width > tw - 20 && fz > 16) { fz -= 2; ctx.font = '900 ' + fz + 'px Inter, Arial, sans-serif'; }
-          var nw = ctx.measureText(nm).width;
-          ctx.fillStyle = 'rgba(0,0,0,.62)'; rr(ctx, x + tw / 2 - nw / 2 - 10, y + 50, nw + 20, fz + 12, 8); ctx.fill();
-          ctx.fillStyle = cell === -2 ? '#fbcfe8' : '#ffffff'; ctx.fillText(nm, x + tw / 2, y + 56 + fz * .82);
-          ctx.font = '34px sans-serif'; ctx.fillText(cell === -2 ? '🃏' : '✅', x + tw / 2, y + 40);
-        }
-        ctx.restore();
-        ctx.strokeStyle = cell === -1 ? 'rgba(255,255,255,.12)' : 'rgba(163,230,53,.95)'; ctx.lineWidth = cell === -1 ? 2 : 5; rr(ctx, x, y, tw, th, 18); ctx.stroke();
-      }
-      ctx.fillStyle = '#c8f08a'; ctx.font = '900 34px Inter, Arial, sans-serif'; ctx.fillText('CAN YOU FILL THE CARD?', W / 2, 1258);
-      ctx.fillStyle = '#ffffff'; ctx.font = '800 30px Inter, Arial, sans-serif'; ctx.fillText('CASTGAMES.COM.AU', W / 2, 1306); // the game's own address
-      try { cv.toBlob(function (bl) { if (bl && window.File) shareFile = new File([bl], 'nrl-bingo.png', { type: 'image/png' }); }, 'image/png'); } catch (e) { /* no picture: words only */ }
-    };
-    for (var t = 0; t < E.N; t++) (function (t) {
-      var img = new Image(), svg = kitSvg(E.TILES[t][0]).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="138" ');
-      imgs[t] = { img: img, ok: false };
-      img.onload = function () { imgs[t].ok = true; if (!--left) draw(); };
-      img.onerror = function () { if (!--left) draw(); };
-      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    })(t);
+    var b = st.board;
+    drawShare('portrait').then(function (bl) { if (bl && window.File && st.board === b) shareFile = new File([bl], 'nrl-bingo.png', { type: 'image/png' }); });
   }
 
   /* ---------- The pop-up after each turn: what happened, his teams, Next Player (the owner: "reveal the teams he played
@@ -515,37 +544,78 @@
     });
     return '<ul class="bg-teams" aria-label="Every team he played for">' + h + '</ul>';
   }
-  function livesLine(b) {
-    return '<p class="bg-pop-lives"><span class="bg-lives">' + hearts(b.lives) + '</span><b>' + (b.lives ? b.lives + (b.lives === 1 ? ' life left' : ' lives left') : 'Out of lives') + '</b></p>';
+  /* Icons drawn in code (17 Oct 2026, the owner: "looks cheap"; never emoji hearts): a heart in two halves along a crack,
+     so a lost life breaks; a tick, a cross and a no-entry sign for the pop-up's badge */
+  var HEART_L = 'M12 4.6C10.9 3.4 9.3 2.6 7.6 2.6 4.5 2.6 2 5 2 8.1c0 3.9 3.4 7 8.6 11.7L12 21.1l-1-4.4 2-3.6-2-3.6z';
+  var HEART_R = 'M12 4.6c1.1-1.2 2.7-2 4.4-2 3.1 0 5.6 2.4 5.6 5.5 0 3.9-3.4 7-8.6 11.7L12 21.1l-1-4.4 2-3.6-2-3.6z';
+  var HEART = 'M12 21.1l-1.4-1.3C5.4 15.1 2 12 2 8.1 2 5 4.5 2.6 7.6 2.6c1.7 0 3.3.8 4.4 2 1.1-1.2 2.7-2 4.4-2 3.1 0 5.6 2.4 5.6 5.5 0 3.9-3.4 7-8.6 11.7L12 21.1z';
+  // whole (hf) while it's a life; the two halves once it's lost, so it breaks along the crack
+  function heart(state) { return '<i class="bg-heart is-' + state + '" aria-hidden="true"><svg viewBox="0 0 24 22" focusable="false"><path class="hf" d="' + HEART + '"/><path class="hl" d="' + HEART_L + '"/><path class="hr" d="' + HEART_R + '"/></svg></i>'; }
+  // The lives: full, then empty; lost: the one just lost breaks as it shows
+  function hearts(n, lost) { var h = ''; for (var i = 0; i < E.LIVES; i++) h += heart(i < n ? 'on' : lost && i === n ? 'lost' : 'off'); return h; }
+  var ICON = {
+    good: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    bad: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>',
+    nofit: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8" fill="none" stroke="#fff" stroke-width="3"/><path d="M6.6 17.4L17.4 6.6" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>',
+    over: '<svg viewBox="0 0 24 22" aria-hidden="true" focusable="false"><path class="hl" d="' + HEART_L + '" fill="#fff"/><path class="hr" d="' + HEART_R + '" fill="#fff"/></svg>'
+  };
+  function livesLine(b, lost) {
+    return '<div class="bg-pop-lives"><span class="bg-lives is-big">' + hearts(b.lives, lost) + '</span>' + (b.lives ? '<b>' + b.lives + (b.lives === 1 ? ' Life Left' : ' Lives Left') + '</b>' : '') + '</div>';
+  }
+  /* The pop-up's top: the tile's own colours and kit (the tile he went on, or the one tapped wrongly), the badge, the
+     headline and its chip. key: the tile's team, or none (a plain red band) */
+  function band(kind, key, h, chip) {
+    var c = key ? teamColours(key) : null;
+    return '<div class="bg-pop-band' + (key ? '' : ' is-plain') + '"' + (c ? ' style="--cb:' + c.bg + ';--cf:' + c.fg + '"' : '') + '>' + (key ? kitSvg(key) : '') +
+      '<span class="bg-pop-badge is-' + kind + '">' + ICON[kind] + '</span><h2 class="bg-pop-h" id="bgPopH">' + h + '</h2>' + (chip ? '<span class="bg-pop-chip is-' + kind + '">' + chip + '</span>' : '') + '</div>';
   }
   function popHtml() {
     var b = st.board, x = st.pop, pl = D.players[x.p], name = esc(pl[0]);
-    var head = x.kind === 'good' ? '&#x2705; Correct!' : x.kind === 'bad' ? '&#x274C; Wrong! -1 Life' : '&#x1F6AB; No Open Tile. -1 Life';
+    var top = x.kind === 'good' ? band('good', E.TILES[x.t][0], 'Correct!', esc(tileName(x.t)))
+      : x.kind === 'bad' ? band('bad', E.TILES[x.t][0], 'Wrong', '1 Life Lost') : band('nofit', null, 'No Open Tile', '1 Life Lost');
     var line = x.kind === 'good' ? name + ' played for ' + esc(theName(x.t)) + '.' : x.kind === 'bad' ? name + ' never played for ' + esc(theName(x.t)) + '.'
       : name + ' fits none of your open tiles.';
-    var go = b.won() ? 'See Your Card' : b.out ? 'Continue' : 'Next Player';
-    return '<div class="bg-sheet is-' + x.kind + '" role="dialog" aria-modal="true" aria-labelledby="bgPopH"><div class="bg-sheet-in">' +
-      '<h2 class="bg-pop-h" id="bgPopH">' + head + '</h2>' +
-      '<p class="bg-pop-who"><b>' + name + '</b><small>' + esc(subLine(pl)) + '</small></p>' +
-      '<p class="bg-pop-line">' + line + '</p>' + (x.kind === 'good' ? '' : livesLine(b)) +
-      '<p class="bg-teams-h">His Teams</p>' + teamsHtml(x.p, x.kind === 'good' ? x.t : -1) + '</div>' +
+    var go = b.won() ? 'See Your Card' : 'Next Player';
+    return '<div class="bg-sheet is-' + x.kind + '" role="dialog" aria-modal="true" aria-labelledby="bgPopH"><div class="bg-sheet-in">' + top +
+      '<div class="bg-pop-body"><p class="bg-pop-who"><b>' + name + '</b><small>' + esc(subLine(pl)) + '</small></p>' +
+      '<p class="bg-pop-line">' + line + '</p>' + (x.kind === 'good' ? '' : livesLine(b, true)) +
+      '<p class="bg-teams-h">His Teams</p>' + teamsHtml(x.p, x.kind === 'good' ? x.t : -1) + '</div></div>' +
       '<div class="bg-sheet-foot"><button type="button" class="btn btn-primary bg-next" data-bg="next">' + go + ' <i aria-hidden="true">&#x25B6;</i></button></div></div>';
   }
   // The no open tile pop-up: a Reroll, or the life goes when the bar runs out (the same pinned spot as Next Player)
   function nofitHtml() {
     var b = st.board, p = b.card(), pl = D.players[p], name = esc(pl[0]);
-    return '<div class="bg-sheet is-nofit is-offer" role="dialog" aria-modal="true" aria-labelledby="bgPopH"><div class="bg-sheet-in">' +
-      '<h2 class="bg-pop-h" id="bgPopH">&#x1F6AB; No Open Tile</h2>' +
-      '<p class="bg-pop-who"><b>' + name + '</b><small>' + esc(subLine(pl)) + '</small></p>' +
+    return '<div class="bg-sheet is-nofit is-offer" role="dialog" aria-modal="true" aria-labelledby="bgPopH"><div class="bg-sheet-in">' + band('nofit', null, 'No Open Tile', 'Reroll or Lose a Life') +
+      '<div class="bg-pop-body"><p class="bg-pop-who"><b>' + name + '</b><small>' + esc(subLine(pl)) + '</small></p>' +
       '<p class="bg-pop-line">' + name + ' fits none of your open tiles. Use a Reroll to skip him, or he costs a life.</p>' + livesLine(b) +
-      '<button type="button" class="bg-act is-rr bg-offer-rr" data-bg="skip"' + (st.busy ? ' disabled' : '') + '><span>&#x1F504; Use a Reroll</span><small>' + priceTag('reroll') + '</small></button></div>' +
+      '<button type="button" class="bg-act is-rr bg-offer-rr" data-bg="skip"' + (st.busy ? ' disabled' : '') + '><span>&#x1F504; Use a Reroll</span><small>' + priceTag('reroll') + '</small></button></div></div>' +
       '<div class="bg-sheet-foot"><button type="button" class="btn btn-decide btn-decide-lock bg-next" data-bg="takelife">' +
         '<span class="lock-fill" aria-hidden="true" style="transform:scaleX(' + (st.nofit.hold ? 1 : st.nofit.secs / NOFIT_SECS) + ')"></span>' +
-        '<span class="btn-decide-lbl">&#x1F494; Take the Life' + (st.nofit.hold ? '' : ' <b class="lock-secs">' + st.nofit.secs + '</b>') + '</span></button></div></div>';
+        '<span class="btn-decide-lbl">' + heart('off') + ' Take the Life' + (st.nofit.hold ? '' : ' <b class="lock-secs">' + st.nofit.secs + '</b>') + '</span></button></div></div>';
+  }
+  /* Game Over (the owner, 17 Oct 2026: "a real Game Over moment"): the turn that took the last life, the card's score and
+     time, his teams, then Run It Back (one more life, its bar running down the time to decide) or Play Again. Left alone,
+     the board ends by itself and the results show */
+  function overHtml() {
+    var b = st.board, x = st.last, pl = x ? D.players[x.p] : null, name = pl ? esc(pl[0]) : '', bs = best();
+    var top = band('over', x && x.kind === 'bad' ? E.TILES[x.t][0] : null, 'Game Over', 'Out of Lives');
+    var why = !x ? '' : '<p class="bg-pop-who"><b>' + name + '</b><small>' + esc(subLine(pl)) + '</small></p><p class="bg-pop-line">' +
+      (x.kind === 'bad' ? name + ' never played for ' + esc(theName(x.t)) + '.' : name + ' fits none of your open tiles.') + '</p>';
+    return '<div class="bg-sheet is-over is-bad" role="dialog" aria-modal="true" aria-labelledby="bgPopH"><div class="bg-sheet-in bg-over">' + top +
+      '<div class="bg-pop-body">' + why + livesLine(b, !!x) +
+      '<div class="bg-over-stats"><span><b>' + b.filled + '<small>/' + E.N + '</small></b><em>Tiles</em></span><span><b>' + clock(st.ms) + '</b><em>Time</em></span>' +
+        '<span><b>' + (bs ? bs.f + '<small>/' + E.N + '</small>' : 'New') + '</b><em>Your Best</em></span></div>' +
+      (x ? '<p class="bg-teams-h">His Teams</p>' + teamsHtml(x.p, -1) : '') +
+      '<p class="bg-over-offer">One more life keeps your card going.</p>' +
+      '<button type="button" class="ou-link bg-link bg-over-see" data-bg="end">See Your Card</button></div></div>' +
+      '<div class="bg-sheet-foot bg-over-foot">' +
+        '<button type="button" class="btn btn-decide btn-decide-lock bg-over-rib" data-bg="rib" aria-label="Run It Back' + (st.hold ? '' : ' (the offer ends in ' + OFFER_SECS + ' seconds)') + '">' +
+          '<span class="lock-fill" aria-hidden="true" style="transform:scaleX(' + (st.hold ? 1 : st.offer / OFFER_SECS) + ')"></span>' +
+          '<span class="btn-decide-lbl">&#x23EA; Run It Back' + (st.hold ? '' : ' <b class="lock-secs">' + st.offer + '</b>') + '</span><small>' + priceTag('rib') + '</small></button>' +
+        '<button type="button" class="btn btn-primary bg-next bg-over-again" data-bg="replay">Play Again <i aria-hidden="true">&#x25B6;</i></button></div></div>';
   }
 
   /* ---------- Screens ---------- */
-  function hearts(n) { var h = ''; for (var i = 0; i < E.LIVES; i++) h += '<i class="' + (i < n ? 'is-on' : 'is-off') + '">' + (i < n ? '&#x2764;&#xFE0F;' : '&#x1F5A4;') + '</i>'; return h; }
   function startView() {
     var b = best(), run = savedRun();
     var fresh = run ? '<button type="button" class="ou-link bg-link" data-bg="newcard">&#x1F195; Start a New Card</button>' : '';
@@ -554,7 +624,7 @@
       '<p class="bg-lede">A player comes up. Tap a tile he played for. Fill all <b>' + E.N + ' tiles</b> for a Full House.</p>' +
       '<p class="bg-best">' + (b ? '&#x1F3C6; Your best: ' + (b.f === E.N ? 'Full House' : b.f + ' of ' + E.N) + ' in ' + clock(b.ms) : 'A new order of players every card. Play as often as you like.') + '</p>' +
       '<button type="button" class="btn btn-primary bg-play" data-bg="play">' + (run ? 'Carry On Your Card' : 'Play NRL Bingo') + ' <i aria-hidden="true">&#x25B6;</i></button>' + fresh +
-      '<ul class="bg-rules"><li><i aria-hidden="true">&#x2705;</i>Tap a tile he played for</li><li><i aria-hidden="true">&#x2764;&#xFE0F;</i>A wrong tap costs a life</li><li><i aria-hidden="true">&#x1F6AB;</i>No open tile for him costs a life</li></ul>' +
+      '<ul class="bg-rules"><li><i aria-hidden="true">&#x2705;</i>Tap a tile he played for</li><li>' + heart('on') + 'A wrong tap costs a life</li><li><i aria-hidden="true">&#x1F6AB;</i>No open tile for him costs a life</li></ul>' +
       '<button type="button" class="ou-link bg-link" data-bg="board">&#x1F3C6; NRL Bingo Leaderboard</button></div>';
   }
   // The start screen's small card: a few tiles filled, in their colours
@@ -564,8 +634,9 @@
     return h;
   }
   function pinHtml() {
-    var b = st.board, P = D.players, p = st.pop ? st.pop.p : b.over() ? -1 : b.order[b.pos], pl = p >= 0 ? P[p] : null;
-    var dis = st.busy || st.pop || st.nofit ? ' disabled' : '';
+    // the player whose turn it is: through a tap's tick, its pop-up and Game Over, never the next one (the owner, 17 Oct 2026)
+    var b = st.board, P = D.players, p = st.pop ? st.pop.p : st.cur != null ? st.cur : b.over() ? -1 : b.order[b.pos], pl = p >= 0 ? P[p] : null;
+    var dis = st.busy || st.pop || st.nofit || st.view !== 'play' ? ' disabled' : '';
     var card = pl ? '<div class="bg-card' + (st.fresh ? ' is-new' : '') + (st.flash && !st.flash.ok ? ' is-bad' : st.flash && st.flash.ok && !st.flash.wild ? ' is-good' : '') + '" aria-live="polite">' +
         '<b class="bg-card-name">' + esc(pl[0]) + '</b><small class="bg-card-sub">' + esc(subLine(pl)) + '</small></div>'
       : '<div class="bg-card is-empty"><b class="bg-card-name">&nbsp;</b></div>';
@@ -583,24 +654,12 @@
       '</div></div>';
   }
   function playView() { return pinHtml() + gridHtml(); }
-  function sheetHtml() { return st.view === 'play' && D && st.board ? (st.pop ? popHtml() : st.nofit ? nofitHtml() : '') : ''; }
-  function outView() {
-    var b = st.board;
-    return '<div class="bg-out"><div class="bg-out-h">&#x1F494; Out of Lives</div>' +
-      '<p class="bg-out-why">' + b.filled + ' of ' + E.N + ' tiles filled. One more life keeps your card going.</p>' +
-      gridHtml({ still: true }) +
-      '<div class="panel ou-decide bg-decide"><div class="panel-head"><span class="panel-title">Run It Back?</span><span class="panel-meta">NRL Bingo</span></div>' +
-        '<div class="decision is-over"><p class="decision-big">' + b.filled + ' <small>of ' + E.N + '</small></p><p>Play on with one more life and a new player.</p>' +
-        '<div class="btn-row">' +
-          '<button type="button" class="btn btn-decide btn-decide-remove ou-decide-rib" data-bg="rib"><span class="btn-decide-lbl">&#x23EA; Run It Back</span><small>' + priceTag('rib') + '</small></button>' +
-          '<button type="button" class="btn btn-decide btn-decide-lock" data-bg="end" aria-label="End the board' + (st.hold ? '' : ' (ends by itself in ' + OFFER_SECS + ' seconds)') + '">' +
-            '<span class="lock-fill" aria-hidden="true" style="transform:scaleX(' + (st.hold ? 1 : st.offer / OFFER_SECS) + ')"></span>' +
-            '<span class="btn-decide-lbl">&#x1F3C1; End Board' + (st.hold ? '' : ' <b class="lock-secs">' + st.offer + '</b>') + '</span></button>' +
-        '</div></div></div></div>';
-  }
+  function sheetHtml() { return !D || !st.board ? '' : st.view === 'play' ? (st.pop ? popHtml() : st.nofit ? nofitHtml() : '') : st.view === 'out' ? overHtml() : ''; }
+  // Game Over and its Run It Back: the card as it stands behind the Game Over pop-up (overHtml)
+  function outView() { return pinHtml() + gridHtml({ still: true }); }
   function rewindView() {
     return outView() + '<div class="ou-rewind" role="status"><div class="ou-rw-rays" aria-hidden="true"></div><span class="ou-rw-ico" aria-hidden="true">&#x23EA;</span><b class="ou-rw-t">Run It Back</b>' +
-      '<span class="ou-rw-s"><i aria-hidden="true">&#x2764;&#xFE0F;</i>1 <small>more life</small></span></div>';
+      '<span class="ou-rw-s">' + heart('on') + '1 <small>more life</small></span></div>';
   }
   function doneView() {
     var b = st.board, won = b.won(), help = [], bs = best();
@@ -609,7 +668,7 @@
     if (b.paidSkips()) help.push('&#x1F504; ' + b.paidSkips());
     if (b.ribs) help.push('&#x23EA; ' + b.ribs);
     return '<div class="bg-res">' +
-      '<div class="bg-hero' + (won ? ' is-won' : '') + '"><span class="bg-hero-k">' + (won ? '&#x1F389; Full House' : '&#x1F494; Out of Lives') + '</span>' +
+      '<div class="bg-hero' + (won ? ' is-won' : '') + '"><span class="bg-hero-k">' + (won ? '&#x1F389; Full House' : heart('off') + ' Game Over') + '</span>' +
         '<span class="bg-hero-n">' + b.filled + '<small>/' + E.N + '</small></span>' +
         '<span class="bg-hero-s">tiles in ' + clock(st.ms) + (st.newBest ? '<em class="ou-best">New Best</em>' : bs ? '<em class="ou-best is-old">Best ' + bs.f + ' in ' + clock(bs.ms) + '</em>' : '') + '</span></div>' +
       '<div class="bg-stats"><span><b>' + clock(st.ms) + '</b><small>Time</small></span><span><b>' + b.lives + '</b><small>Lives Left</small></span>' +
@@ -673,6 +732,7 @@
     else if (a === 'wild') wildStart();
     else if (a === 'rib') runItBack();
     else if (a === 'end') { track('bingo_rib_offer_no', {}); finish(); }
+    else if (a === 'replay') { track('bingo_over_again', {}); finish(); st = { view: 'start' }; start(); } // Game Over's Play Again
     else if (a === 'newcard') { abandon(); start(); }
     else if (a === 'play') start(savedRun());
     else if (a === 'again') { st = { view: 'start' }; start(); }
@@ -713,11 +773,15 @@
     },
     on: function () { var CA = A(); return !!(CA && CA.bingoOn && CA.bingoOn()); },
     // a card under way (the page's CAST_ACCOUNT.inGame: pop-ups wait, and a sign-in keeps the card)
-    playing: function () { return (st.view === 'play' || st.view === 'out' || st.view === 'rewind') && !st.done; }
+    playing: function () { return (st.view === 'play' || st.view === 'out' || st.view === 'rewind') && !st.done; },
+    // The share pictures for the shared share-picker (the owner, 18 Oct 2026): 'portrait' (1080 x 1350) or 'story'
+    // (1080 x 1920) of the card on the results screen -> Promise of a PNG Blob, or null with no card to draw
+    shareImage: function (size) { return st.board && D ? drawShare(size) : Promise.resolve(null); }
   };
   // Tests on the preview only (localhost): the share picture, the current card's open tiles, and the state
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
     T.bingo._card = function () { return shareFile; };
+    T.bingo._story = function () { return drawShare('story'); };
     T.bingo._fits = function () { var b = st.board; return b && st.view === 'play' && !st.busy && !st.pop && !st.nofit && !b.over() ? b.openFits(b.order[b.pos]) : null; };
     T.bingo._hint = function () { var b = st.board; if (!b || st.view !== 'play' || st.pop || st.nofit || st.busy) return null; st.hint = b.openFits(b.order[b.pos]); render(); return st.hint; };
     T.bingo._state = function () { var b = st.board; return { view: st.view, pop: st.pop && st.pop.kind, nofit: !!st.nofit, lives: b && b.lives, filled: b && b.filled, moves: b && b.moves }; };
