@@ -1882,3 +1882,14 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .mode-main .mode-ico.is-logo { display: grid; place-items: center; }
 .mode-main .mode-logo { display: block; width: 112px; height: auto; }
 @media (max-width: 420px) { .mode-main .mode-logo { width: 92px; } }
+
+/* Wildcard rims: each tile its own colour (17 Oct 2026, the owner: in 25000 RUNS Reveal, Substitute, Legend Key and the
+   GOAT all read orange). Reroll teal, Reveal yellow, Remove pink, Substitute blue, Legend Key violet, the GOAT gold */
+.wildcards .wc.wc-reroll { border-color: #14b8a6; }
+.wildcards .wc.wc-scout { border-color: #facc15; background: linear-gradient(160deg, rgba(250, 204, 21, .2), rgba(250, 204, 21, .05)); }
+.wildcards .wc.wc-tweak { border-color: #ec4899; }
+.wildcards .wc.wc-sub { border-color: #3b82f6; background: linear-gradient(160deg, rgba(59, 130, 246, .22), rgba(59, 130, 246, .05)); }
+.wildcards .wc.wc-key { border-color: #a78bfa; background: linear-gradient(160deg, rgba(167, 139, 250, .22), rgba(167, 139, 250, .05)); }
+.wildcards .wc.wc-goat { border-color: #f1c073; }
+.wildcards .wc.wc-tweak.is-armed, .wildcards .wc.is-armed { border-color: var(--bad); }
+.wildcards .wc.wc-sub.is-armed { border-color: #93c5fd; box-shadow: 0 0 14px rgba(59, 130, 246, .45); }

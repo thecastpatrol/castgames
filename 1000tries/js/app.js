@@ -894,8 +894,6 @@
     // Show the reveal before moving on
     $('offerPanel').innerHTML = R.reveal(p, T.slotClub(S.slots[idx]));
     renderChrome(idx);
-    // The GOAT item's card lands: a gold ring and a burst of goats on his spot (js/cast-celebrate.js)
-    if (src === 'G' && window.CastCelebrate && CastCelebrate.goatLand) CastCelebrate.goatLand(document.querySelector('.slot[data-slot="' + idx + '"]'), { tone: tone });
     setTimeout(function () {
       if (T.state() !== S) return; // restarted mid-reveal
       busy = false;
@@ -1577,9 +1575,7 @@
           if (T.state() !== gs || !T.useGoat()) return;
           T.track('goat_used', { mode: gs.mode.name });
           renderDraft();
-          // The GOAT moment (js/cast-celebrate.js, 17 Oct 2026): the reel locks on him, then the toast
-          var said = function () { toast('\uD83D\uDC10 The GOAT is in: 240 NRL tries'); };
-          if (window.CastCelebrate && CastCelebrate.goat) CastCelebrate.goat({ tone: tone, done: said }); else said();
+          toast('\uD83D\uDC10 The GOAT is in: 240 NRL tries');
         });
         break;
       }

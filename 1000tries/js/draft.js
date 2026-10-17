@@ -60,22 +60,11 @@
      in the first hour). Rarer Legends and Immortal Picks and lifelines, and offers that favour big tryscorers less.
      The Daily, Team Spin, NRLW and Exactly 1000 keep the normal settings above. firstStar is the first offer's big
      tryscorer, kept at the normal setting. */
-  T.HARD = { weight: 80, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
+  T.HARD = { weight: 110, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
   T.HARD_ON = true; // tools/simulate_engine.js switches it off to compare with the normal settings
   T.isHard = function (mode) { return T.HARD_ON && !!mode && mode.id === 'plus' && T.DATASET === 'nrl'; };
 
   var S = null;
-
-  /* The GOAT in free play (17 Oct 2026, the owner: "Make the GOATs extremely rare to get unless you pay"): the GOAT item is
-     the way to get him. Most games are dealt without him (S.goatOut): no offer, Reroll or Remove Player offer, Team Spin
-     squad or Daily holds him, nor the game's own Legends Pick or lifeline. Now and then (T.GOAT_FREE, seeded with the
-     draft, so a friend's challenge deals the same) a game is dealt with him as before. A Legend Key's Legends Pick, a
-     bought Pick and the GOAT item itself are unchanged. A Daily follows it from T.GOAT_FROM, so a day's Daily never
-     changes part way through the day, and a draft dealt before it (brought back on this phone) keeps its own deal */
-  T.GOAT_FREE = 0.04;
-  T.GOAT_FREE_DAILY = 0.005; // the Daily's (its pools can hold him far more often)
-  T.GOAT_FROM = '2026-10-18';
-  T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === (T.GOAT_SRC || T.GOAT_ID); };
 
   T.state = function () { return S; };
   // Quick Draft (the owner's challenges) searches ahead in the real engine: copy the game, and put a copy back in place
@@ -146,7 +135,6 @@
     S.special = null; S.specialAt = 0; S.specialDone = false; S.lifelineRoll = null; S.lifelineUsed = false;
     S.luckExp = 0; S.luckGot = 0; // the luck of the draw, see noteLuck()
     S.hard = T.isHard(mode); // 1000+ only (T.HARD)
-    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < (S.daily ? T.GOAT_FREE_DAILY : T.GOAT_FREE)); // T.goatOut
     // Promos (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): 1000+, Exactly 1000 and NRLW 250+ games dealt
     // during one (the seed carries its mark, so a friend's challenge deals the same after it ends). Never the Daily, the
     // same for everyone. S.promoDef: the promo the seed was dealt in
@@ -201,11 +189,11 @@
 
   // The three greats offered by a Legends Pick or an Immortal Pick (kind: the game's own, S.special, unless given), if
   // enough fit your open spots
-  function specialOffer(tag, kind, keyed) {
+  function specialOffer(tag, kind) {
     var imm = (kind || S.special) === 'immortal';
     var list = T.LEGENDS.filter(function (p) {
       // Two separate pools: the Legends Pick never deals an Immortal, the Immortal Pick never deals a Legend
-      return (imm ? T.isImmortal(p) : T.isLegend(p)) && !S.used[p.id] && T.fitsEmpty(p) && (keyed || !T.goatOut(p)); // keyed: a Legend Key's pick (T.goatOut)
+      return (imm ? T.isImmortal(p) : T.isLegend(p)) && !S.used[p.id] && T.fitsEmpty(p);
     });
     if (S.seed) return list.map(function (p) { return [p, keyU(tag, p.id)]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, T.OFFER_SIZE).map(function (x) { return x[0]; });
     var out = [];
@@ -246,7 +234,7 @@
   T.eligible = function () {
     // World Cup 200+: World Legends never come in a normal offer (only the free one, or with a Pick)
     var noIL = T.DATASET === 'wc';
-    return T.players.filter(function (p) { return !S.used[p.id] && T.fitsEmpty(p) && T.inDailyPool(p) && !(noIL && p.il) && !T.goatOut(p); });
+    return T.players.filter(function (p) { return !S.used[p.id] && T.fitsEmpty(p) && T.inDailyPool(p) && !(noIL && p.il); });
   };
   /* A themed Daily's own pool (js/cast-daily.js 'only', e.g. Grand Final week): only players who were at one of those clubs
      in one of those seasons ({ roosters: [2002, 2013], knights: [2001] }; an empty list is any season since 1998).
@@ -344,7 +332,7 @@
     // A Legend Key (T.useLegendKey): this offer is its Legends Pick, beside the game's own (which still comes when due)
     if (S.keyPick) {
       S.keyPick = false;
-      var keyed = specialOffer(tag + 'k', 'legends', true);
+      var keyed = specialOffer(tag + 'k', 'legends');
       if (keyed.length) { S.offer = { kind: 'roll', special: 'legends', key: true, players: keyed }; S.revealed = {}; return S.offer; }
     }
     var boost = S.boost; S.boost = null;

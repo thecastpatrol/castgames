@@ -75,12 +75,30 @@ SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', '
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
+def committed_copy(path):
+    """A game whose folder is a git repo is built from what's COMMITTED there, never from edits still in progress
+    (17 Oct 2026: an agent's unfinished draft.js reached castgames because the build copied the folder as it was).
+    Returns a temporary folder holding HEAD, or the folder itself when it isn't a repo."""
+    if not os.path.isdir(os.path.join(path, '.git')):
+        return path, None
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix='cg-build-')
+    arc = subprocess.run(['git', '-C', path, 'archive', '--format=tar', 'HEAD'], check=True, capture_output=True).stdout
+    subprocess.run(['tar', '-x', '-C', tmp], input=arc, check=True)
+    return tmp, tmp
+
+
 def copy_game(folder, src):
     dst = os.path.join(HERE, folder)
     if os.path.isdir(dst):
         shutil.rmtree(dst)
-    args = ['rsync', '-a', '--delete'] + [x for s in SKIP for x in ('--exclude', s)] + [os.path.join(GAMES_DIR, src) + '/', dst + '/']
-    subprocess.run(args, check=True)
+    from_dir, tmp = committed_copy(os.path.join(GAMES_DIR, src))
+    try:
+        args = ['rsync', '-a', '--delete'] + [x for s in SKIP for x in ('--exclude', s)] + [from_dir.rstrip('/') + '/', dst + '/']
+        subprocess.run(args, check=True)
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
     return dst
 
 
