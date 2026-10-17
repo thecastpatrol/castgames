@@ -409,6 +409,7 @@
       ' title="' + (fits ? 'Swap this offer for a Legends Pick' : why) + '">' + lab +
       '<span class="wc-left">' + (fits || room ? keyLeft() : 'No fit') + '</span></button>';
   };
+  // Not shown since 17 Oct 2026 (the owner: an extra CTA under the offer; the Legend Key tile in the bar does the job)
   R.keySwap = function (S) {
     if (keyState(S) !== 'ready' || S.tweakMode || S.subMode || !T.legendKeyFits() || !(S.offer && S.offer.players.length) || S.offer.goat || S.offer.paid) return '';
     return '<button type="button" class="key-swap" data-action="legend-key"><span aria-hidden="true">&#x1F511;</span> Not these? Swap for a Legends Pick</button>';
@@ -481,7 +482,7 @@
           '</span>' +
           '<span class="pcard-foot">' + triesBadge(S, p) + '<span class="pcard-cta"><kbd class="pcard-key" aria-hidden="true">' + (n + 1) + '</kbd>Pick</span></span>' +
           '</button>';
-      }).join('') + '</div>' + R.immBack(S) + R.keySwap(S);
+      }).join('') + '</div>' + R.immBack(S);
   };
 
   R.reel = function (year, club, landed) {

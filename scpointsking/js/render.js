@@ -261,6 +261,7 @@
       ' title="' + (fits ? 'Swap this spin for a Legends Pick' : why) + '">' + lab +
       '<span class="wc-left">' + (fits || room ? keyLeft() : 'No fit') + '</span></button>';
   };
+  // Not shown since 17 Oct 2026 (the owner: an extra CTA under the offer; the Legend Key tile in the bar does the job)
   R.keySwap = function (S) {
     if (keyState(S) !== 'ready' || S.tweakMode || S.subMode || S.scoutMode || !T.legendKeyFits() || !(S.offer && S.offer.players.length) || S.offer.goat || S.offer.paid) return '';
     return '<button type="button" class="key-swap" data-action="legend-key"><span aria-hidden="true">&#x1F511;</span> Not these? Swap for a Legends Pick</button>';
@@ -314,7 +315,7 @@
       R.wildcardBar(S) +
       R.tweakBanner(S) +
       (S.scoutMode ? '<div class="scout-banner"><span>Tap one season to see his SC points. Nothing is picked.</span><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-scout">Cancel</button></div>' : '') +
-      '<div class="offer-cards">' + players.map(function (p, n) { return seasonCard(S, p, n); }).join('') + '</div>' + R.keySwap(S);
+      '<div class="offer-cards">' + players.map(function (p, n) { return seasonCard(S, p, n); }).join('') + '</div>';
   };
 
   /* The spin (js/app.js spinOffer): three reels of club colours and years flashing through, landing one by one on the
