@@ -8,6 +8,21 @@
   var busy = false;          // blocks input during spin and reveal animations
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* This game's own names in the browser's storage (17 Oct 2026). On CAST Games (castgames.com.au) every game shares one
+     address, and this game kept its sound choice and two counts under 1000TRIES's names. Now each is LSP + its name;
+     the values kept under the old names carry over (on CAST Games they stay for 1000TRIES too) */
+  var LSP = '700tds_', OLD_P = '1000tries_';
+  (function moveKeys() {
+    try {
+      var cg = !!window.CG_GAME;
+      ['sound_v2', 'after_game', 'gh'].forEach(function (n) {
+        var v = localStorage.getItem(OLD_P + n);
+        if (v != null && localStorage.getItem(LSP + n) == null) localStorage.setItem(LSP + n, v);
+        if (!cg) localStorage.removeItem(OLD_P + n);
+      });
+    } catch (e) { /* storage blocked */ }
+  })();
+
   /* Screens */
 
   function show(name) {
@@ -156,7 +171,7 @@
 
   var sound = true;
   var ctx = null;
-  try { sound = localStorage.getItem('1000tries_sound_v2') !== 'off'; } catch (e) { /* storage blocked */ }
+  try { sound = localStorage.getItem(LSP + 'sound_v2') !== 'off'; } catch (e) { /* storage blocked */ }
 
   function setSound(on) {
     sound = on;
@@ -166,7 +181,7 @@
     b.classList.toggle('is-on', on);
     var l = b.querySelector('.sound-lbl');
     if (l) l.textContent = on ? 'Sound On' : 'Sound Off';
-    try { localStorage.setItem('1000tries_sound_v2', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
+    try { localStorage.setItem(LSP + 'sound_v2', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
   }
 
   // iPhones only let a page make sound if its audio engine is created or resumed inside a tap.
@@ -686,9 +701,9 @@
   var AD_EVERY = 2;
   function adDue() {
     var n = 0;
-    try { n = parseInt(localStorage.getItem('1000tries_after_game') || '0', 10) || 0; } catch (e) { /* ignore */ }
+    try { n = parseInt(localStorage.getItem(LSP + 'after_game') || '0', 10) || 0; } catch (e) { /* ignore */ }
     n++;
-    try { localStorage.setItem('1000tries_after_game', String(n)); } catch (e) { /* ignore */ }
+    try { localStorage.setItem(LSP + 'after_game', String(n)); } catch (e) { /* ignore */ }
     return n % AD_EVERY === 0;
   }
 
@@ -987,7 +1002,7 @@
     var higher = !!out && goHigher(S, out);
     if (out && !removeStillOnSale(S, out) && !higher) { finish(out); return; }
     if (higher) {
-      if (S.ghCopy == null) { var ghN = 0; try { ghN = +localStorage.getItem('1000tries_gh') || 0; localStorage.setItem('1000tries_gh', String(ghN + 1)); } catch (e) { /* storage blocked */ } S.ghCopy = ghN % 2; }
+      if (S.ghCopy == null) { var ghN = 0; try { ghN = +localStorage.getItem(LSP + 'gh') || 0; localStorage.setItem(LSP + 'gh', String(ghN + 1)); } catch (e) { /* storage blocked */ } S.ghCopy = ghN % 2; }
       T.track('go_higher_view', { mode: S.mode.name, total: out.total, how: goHigherHow(S) });
     }
     if (T.filledCount() === S.slots.length) {

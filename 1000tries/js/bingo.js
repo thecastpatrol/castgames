@@ -138,7 +138,9 @@
   }
   function primeVault() { var CA = A(); if (CA && CA.rerollsSaved) { CA.rerollsSaved(); if (CA.itemSaved) { CA.itemSaved('reveal'); CA.itemSaved('wild'); CA.itemSaved('rib'); } } }
   function saved(item) { var CA = A(); if (!CA) return 0; return item === 'reroll' ? (CA.rerollsSaved ? CA.rerollsSaved() : 0) || 0 : (CA.itemSaved ? CA.itemSaved(item) : 0) || 0; }
-  function priceTag(item) { var n = saved(item); return n ? n + ' saved' : PRICE[item]; }
+  // (as this device shows it, local currency 17 Oct 2026: CastAccount.price, by the item's single pack)
+  var PRICE_PACK = { reroll: 'one', reveal: 'reveal1', wild: 'wild1', rib: 'rib1' };
+  function priceTag(item) { var n = saved(item), CA = window.CastAccount; return n ? n + ' saved' : CA && CA.price ? CA.price(PRICE_PACK[item], PRICE[item]) : PRICE[item]; }
   // A Reroll can be had: one saved, or the player can buy (a guest is asked to sign in, so he can too)
   function rerollPossible() {
     var CA = A();

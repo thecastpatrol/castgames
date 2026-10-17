@@ -225,12 +225,17 @@
     return !playedHere();
   }
   function adult() { return call('canBuyReroll', false) === true; } // signed in, named and 15 or over (the account's buy rule)
-  // The Gameday Bag's biggest saving from the bag's own rules (the account's copy of the server's): "$20" and "$2"
-  function money(c) { return '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100)); }
+  // The Gameday Bag's biggest saving from the bag's own rules (the account's copy of the server's), in the currency the
+  // Shop shows (js/cast-prices.js: "$20" and "$2" here, "NZ$25" and "NZ$2.50" in New Zealand)
+  function money(c) {
+    var P = window.CastPrices;
+    if (P && P.fmt && P.current) { var cur = P.current(); return P.fmt(c, cur, { whole: true, a: cur !== 'aud' || !!(P.audAmbiguous && P.audAmbiguous()) }); }
+    return '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100));
+  }
   function bagLine(pass) {
-    var a = A(), R = a && a.bagRules;
-    if (!R || !R.TIERS || !R.TIERS.length) return null;
-    var at = R.TIERS[0][0], pct = R.tierOf(at) + (pass ? R.PASS_PCT : 0);
+    var a = A(), R = a && a.bagRules, T = R && R.TIERS; // TIERS: the shown currency's own steps
+    if (!T || !T.length) return null;
+    var at = T[0][0], pct = R.tierOf(at) + (pass ? R.PASS_PCT : 0);
     return 'Spend' + NB + money(at) + ', Save' + NB + money(Math.round(at * pct / 100));
   }
   // The new games the Just Dropped slide sends players to (they wear a New chip while it shows)

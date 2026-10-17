@@ -3,6 +3,8 @@
    results, so gameplay is identical with or without this file. */
 (function () {
   'use strict';
+  // A pack's price as this device shows it (local currency, 17 Oct 2026: "NZ$0.99"; CastAccount.price), else the A$ words
+  function px(pack, aud) { return window.CastAccount && CastAccount.price ? CastAccount.price(pack, aud) : aud; }
 
   /* ---------------- Sound (same tones as Cast house) ---------------- */
 
@@ -718,7 +720,7 @@
   }
   function ribLabel() {
     var n = CastAccount.itemSaved('rib'), fresh = !!(n && CastAccount.itemFresh && CastAccount.itemFresh('rib'));
-    return { txt: '&#x23EA; Run It Back &middot; ' + (n ? n + (fresh ? ' ready' : ' saved') : '$0.99'), fresh: fresh };
+    return { txt: '&#x23EA; Run It Back &middot; ' + (n ? n + (fresh ? ' ready' : ' saved') : px('rib1', '$0.99')), fresh: fresh };
   }
   function ribCard(body, s, f) {
     var old = body.querySelector('[data-cast-rib]'), plan = ribPlan(s, f);

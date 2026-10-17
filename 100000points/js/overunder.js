@@ -65,8 +65,8 @@
   }
   // Ask the account for the Vault's counts (it reads them once, then keeps them in step), so the buttons can say how many
   function primeVault() { var CA = A(); if (CA && CA.rerollsSaved) { CA.rerollsSaved(); if (CA.itemSaved) CA.itemSaved('rib'); } }
-  function rrLabel() { var CA = A(), n = CA && CA.rerollsSaved ? CA.rerollsSaved() : 0; return n ? n + ' saved' : 'Buy &middot; $0.99'; }
-  function ribLabel() { var CA = A(), n = CA && CA.itemSaved ? CA.itemSaved('rib') : 0; return n ? n + ' saved' : '$0.99'; }
+  function rrLabel() { var CA = A(), n = CA && CA.rerollsSaved ? CA.rerollsSaved() : 0; return n ? n + ' saved' : 'Buy &middot; ' + (CA && CA.price ? CA.price('one', '$0.99') : '$0.99'); }
+  function ribLabel() { var CA = A(), n = CA && CA.itemSaved ? CA.itemSaved('rib') : 0; return n ? n + ' saved' : CA && CA.price ? CA.price('rib1', '$0.99') : '$0.99'; }
   // The Vault's counts arrived or changed: the labels change in place (a full redraw would restart the clock bar)
   window.addEventListener('cast:rerolls', function () {
     var a = document.querySelector('#ouRoot .ou-rr .wc-left'), b = document.querySelector('#ouRoot .ou-decide-rib small');

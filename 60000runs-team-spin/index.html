@@ -27,7 +27,7 @@
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=0426147b" data-site="tests"></script>
+<script src="js/cast-contact.js?v=be30756c" data-site="tests"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -56,8 +56,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=578dd694">
-<link rel="stylesheet" href="css/cast-account.css?v=f43d4a47">
+<link rel="stylesheet" href="css/main.css?v=07494e5c">
+<link rel="stylesheet" href="css/cast-account.css?v=02882d5b">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
@@ -138,7 +138,7 @@
         <details class="faq-fold">
           <summary class="faq-fold-sum"><h2 class="faq-title" id="faqTitle">Frequently Asked Questions</h2><span class="faq-ico" aria-hidden="true">+</span></summary>
           <details class="faq-item" name="faq"><summary><span>What is 60000 RUNS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>A free cricket game by The Cast Patrol. Draft a Test XI with their Test runs hidden, then add them up. Can your XI reach 60000 runs combined?</p></details>
-          <details class="faq-item" name="faq"><summary><span>How do you play 60000 RUNS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random Test players at a time. Choose one for your XI without seeing their runs. You have 20 seconds to pick, or the first option goes in. Repeat until every spot is filled: six batters, a keeper and four bowlers. Your total is revealed as you go.</p></details>
+          <details class="faq-item" name="faq"><summary><span>How do you play 60000 RUNS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random Test players at a time. Choose one for your XI without seeing their runs. You have 20 seconds to pick, or the first option goes in. Repeat until every spot is filled: five batters, an all-rounder (a player who bats and bowls), a keeper and four bowlers. Your total is revealed as you go.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are the modes?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p><strong>60000+</strong>: reach 60000 runs or more, with one of each wildcard. <strong>Exactly 60000</strong>: land on 60000 on the dot, under or over is a miss, and it&rsquo;s Hard Mode: no free wildcards, only paid ones, one of each a game. <strong>Team Spin</strong>: choose a position, then spin a nation and year and pick from that Test squad. <strong>HIGHER OR LOWER: CRICKET</strong>: its own game on CAST Games, with the Big Bash and Test categories. Is the next player&rsquo;s number higher or lower? Call it before the clock runs out.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are Legends?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>60000+</strong>, one offer is a <strong>Legends Pick</strong>: three of Test cricket&rsquo;s retired greats, like Don Bradman, Sachin Tendulkar and Brian Lara. Their runs are hidden like everyone else&rsquo;s, and they count their whole Test careers. You get one at most per game, and it can turn up late in a game, just when you need it most.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="tests" hidden><summary><span>How do the leaderboards work?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Sign in free with a CAST Profile and pick a username. Your best game in every mode goes up automatically on today&rsquo;s, this week&rsquo;s and the all-time boards. Tap any name to see the XI behind the score, with the luck of their draw. Exactly 60000 ranks the most exact hits, then the closest team.</p></details>
@@ -146,7 +146,7 @@
           <details class="faq-item" name="faq"><summary><span>What does the Luck number mean?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>After each game we compare the runs on every card you were offered with what an average game deals you. <strong>Luck +23%</strong> means you drew 23% more runs than usual; a minus number means a tough draw. Your first offer and any Legends Pick are left out. You see it on your results and on leaderboard team sheets.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are wildcards?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Reroll (Respin in Team Spin) gives you a fresh offer, Reveal Runs shows the runs for everyone on the current offer, and Remove Player takes one player out of your XI so you can draft again. Each can be used once per game.</p></details>
           <details class="faq-item" name="faq"><summary><span>Which runs count?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Runs in Test cricket since the first Test in 1877, for every Test nation (and the ICC World XI&rsquo;s one Test in 2005). One-day, T20 and first-class runs are not included.</p></details>
-          <details class="faq-item" name="faq"><summary><span>Where do the run numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Test records from ESPNcricinfo&rsquo;s Statsguru, names from Wikidata. Every player&rsquo;s runs and wickets are their Test career totals. Each player&rsquo;s role (batter, keeper or bowler) comes from their runs, their catches and stumpings as keeper and how much they bowled. Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
+          <details class="faq-item" name="faq"><summary><span>Where do the run numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Test records from ESPNcricinfo&rsquo;s Statsguru, names from Wikidata. Every player&rsquo;s runs and wickets are their Test career totals. Each player&rsquo;s role (batter, keeper or bowler) comes from their runs, their catches and stumpings as keeper and how much they bowled, and a player who is both a batter and a bowler is an all-rounder. Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
           <details class="faq-item" name="faq"><summary><span>How do I contact you or report a bug?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Use the form: pick what it&rsquo;s about, tell us what happened and we&rsquo;ll reply by email. Every message gets a reference number, so nothing gets lost.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
           <details class="faq-item" name="faq"><summary><span>Is 60000 RUNS free to play?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Completely free. No download needed. Open your browser, draft your XI and play.</p></details>
           <details class="faq-item" name="faq"><summary><span>Who made 60000 RUNS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the team behind CAST Games.</p></details>
@@ -222,20 +222,20 @@
 
 <script src="js/analytics.js?v=412fb2f5"></script>
 <script src="js/cast-promo.js?v=f0525281"></script>
-<script src="js/data.js?v=2cdab75e"></script>
-<script src="js/draft.js?v=5198b9f1"></script>
-<script src="js/team-spin.js?v=facc4585"></script>
+<script src="js/data.js?v=8fb06167"></script>
+<script src="js/draft.js?v=d68f2a43"></script>
+<script src="js/team-spin.js?v=6556ebbe"></script>
 <script src="js/wildcards.js?v=40efe955"></script>
 <script src="js/cast-nations.js?v=46208301"></script>
-<script src="js/cast-intl.js?v=b6194356"></script>
+<script src="js/cast-intl.js?v=e79b8507"></script>
 <script src="js/kits-data.js?v=5f12f670"></script>
 <script src="js/cast-kits.js?v=0ac19225"></script>
-<script src="js/render.js?v=55bac8b5"></script>
+<script src="js/render.js?v=70d4d8ea"></script>
 <script src="js/share-card.js?v=3decceb8"></script>
-<script src="js/cast-celebrate.js?v=155b2d28"></script>
-<script src="js/app.js?v=fdd2cf56"></script>
+<script src="js/cast-celebrate.js?v=a92b0328"></script>
+<script src="js/app.js?v=5616ffec"></script>
 <script src="js/cast-daily.js?v=e7382c3c"></script>
-<script src="js/tests-daily.js?v=67db61ef"></script>
+<script src="js/tests-daily.js?v=cbe75e92"></script>
 <script src="js/daily.js?v=7f729ba4"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
@@ -253,6 +253,7 @@
 <script src="js/cast-picks.js?v=08f42325"></script>
 <script src="js/ou-engine.js?v=1fae24fe"></script>
 <script src="js/overunder.js?v=d865f5f3"></script>
-<script src="js/cast-account.js?v=98f00737"></script>
+<script src="js/cast-prices.js?v=1f44db96"></script>
+<script src="js/cast-account.js?v=aa176e08"></script>
 </body>
 </html>
