@@ -236,6 +236,35 @@
       labels: { plays: 'Runs', best: 'Best Streak', wins: null, top: null },
       unit: 'in a row'
     },
+    // 100000 POINTS (17 Oct 2026): the NBA game, a starting five to 100000 career NBA points. gated like 650 GOALS
+    // (config/launch 'nba')
+    nba: {
+      name: '100000 POINTS', url: 'https://castgames.com.au/100000points/', gated: true,
+      modes: { plus: '100000+', exact: 'Exactly 100000', spin: 'Team Spin', daily: 'Daily' },
+      results: { hit: '100000+', exact: 'Exactly 100000', won: 'Daily Won', over: 'Failed (over)', under: 'Failed' },
+      wins: ['hit', 'exact', 'won'],
+      labels: { plays: 'Games', best: 'Best Total', wins: 'Wins', top: 'Exact 100000s' },
+      unit: 'points'
+    },
+    // 100000 POINTS' over/under (17 Oct 2026): its own page and its own stats (shown with 100000 POINTS)
+    'nba-ou': {
+      name: 'HIGHER OR LOWER: NBA', tile: 'HIGHER OR LOWER: NBA', site: 'nba', url: 'https://castgames.com.au/higher-or-lower-nba/',
+      modes: { ou: 'HIGHER OR LOWER: NBA' },
+      results: { out: 'Out' },
+      wins: [],
+      labels: { plays: 'Runs', best: 'Best Streak', wins: null, top: null },
+      unit: 'in a row'
+    },
+    // SC POINTS KING (17 Oct 2026): the NRL SC spinner, a 13 of player seasons in SC positions, no target (the biggest
+    // total wins; each board's #1 wears the crown). gated like 650 GOALS (config/launch 'sc'); castgames.com.au only
+    sc: {
+      name: 'SC POINTS KING', url: 'https://castgames.com.au/scpointsking/', gated: true,
+      modes: { plus: 'Classic', daily: 'Daily' },
+      results: { done: 'Full Time', won: 'Daily Won', under: 'Missed' },
+      wins: ['won'],
+      labels: { plays: 'Games', best: 'Best Total', wins: 'Daily Wins', top: null },
+      unit: 'SC points'
+    },
     // AFLW mode lives on 4000 GOALS with its own stats, as NRLW on 1000TRIES
     '4000goals-aflw': {
       name: '4000 GOALS AFLW', tile: 'AFLW 750+', site: '4000goals', url: 'https://castgames.com.au/4000goals/',
@@ -354,24 +383,25 @@
   }
   /* Sports (16 Oct 2026, the owner's BUILD IT: "Which Sports Do You Follow?" then one "Who Do You Go For?" per sport).
      users/{uid}: team stays the NRL club (TEAM_LIST above, unchanged); sports is the list followed; teams holds every
-     other sport's pick ({ afl, cricket, nfl }; cricket is the player's nation). A sport is offered once one of its games is
+     other sport's pick ({ afl, cricket, nfl, epl, nba }; cricket is the player's nation). A sport is offered once one of its games is
      launched (config/launch, or the game you're on), so the Premier League appears by itself when 'epl' is launched.
      Racing asks no team. The ids must match firebase/firestore.rules validSports and functions/lib/boards.js SPORT_CLUBS.
      Colours as the CAST Games website's sport chips (shared/cg.js SPORTS) */
   var SPORTS = [
-    { id: 'nrl', name: 'NRL', long: 'Rugby League', ico: '&#x1F3C9;', c: '34,197,94', games: ['1000tries', '27-0'] },
+    { id: 'nrl', name: 'NRL', long: 'Rugby League', ico: '&#x1F3C9;', c: '34,197,94', games: ['1000tries', '27-0', 'sc'] },
     { id: 'afl', name: 'AFL', long: 'Aussie Rules', ico: '&#x1F3C9;', c: '239,68,68', games: ['4000goals'], club: 'AFL Club' },
     { id: 'cricket', name: 'Cricket', long: 'Tests and the Big Bash', ico: '&#x1F3CF;', c: '255,122,46', games: ['bigbash', 'tests'], club: 'Nation', none: 'No Nation' },
     { id: 'nfl', name: 'NFL', long: 'American Football', ico: '&#x1F3C8;', c: '139,92,246', games: ['nfl'], club: 'NFL Team' },
     { id: 'racing', name: 'Racing', long: 'Horse Racing', ico: '&#x1F3C7;', c: '59,130,246', games: ['racing'] },
-    { id: 'epl', name: 'Premier League', long: 'English Football', ico: '&#x26BD;', c: '233,0,82', games: ['epl'] } // the 650 GOALS colour on CAST Games
+    { id: 'epl', name: 'Premier League', long: 'English Football', ico: '&#x26BD;', c: '233,0,82', games: ['epl'], club: 'Club' }, // the 650 GOALS colour on CAST Games
+    { id: 'nba', name: 'NBA', long: 'Basketball', ico: '&#x1F3C0;', c: '249,115,22', games: ['nba'], club: 'NBA Team' } // NBA orange, as CAST Games' sport chip
   ];
   var SPORT = {};
   SPORTS.forEach(function (s) { SPORT[s.id] = s; });
   var SPORT_OF_GAME = {};
   SPORTS.forEach(function (s) { s.games.forEach(function (g) { SPORT_OF_GAME[g] = s.id; }); });
   // Each sport's teams [id, short, name, abbr, colour 1, colour 2], from its game's js/data.js (4000 GOALS's 18 clubs,
-  // 60000 RUNS's Test nations, 700 TDS's 32 teams)
+  // 60000 RUNS's Test nations, 700 TDS's 32 teams, 650 GOALS' clubs, 100000 POINTS' 30 franchises)
   var SPORT_TEAM_LIST = {
     afl: [
       ['ad', 'Crows', 'Adelaide Crows', 'ADE', '#002B5C', '#E21937'], ['bl', 'Lions', 'Brisbane Lions', 'BRI', '#7C003E', '#FDBE57'],
@@ -429,6 +459,24 @@
       ['swansea', 'Swansea', 'Swansea City', 'SWA', '#121212', '#FFFFFF'], ['spurs', 'Spurs', 'Tottenham Hotspur', 'TOT', '#132257', '#FFFFFF'],
       ['watford', 'Watford', 'Watford', 'WAT', '#FBEE23', '#ED2127'], ['westbrom', 'West Brom', 'West Bromwich Albion', 'WBA', '#122F67', '#FFFFFF'],
       ['westham', 'West Ham', 'West Ham United', 'WHU', '#7A263A', '#1BB1E7'], ['wolves', 'Wolves', 'Wolverhampton Wanderers', 'WOL', '#FDB913', '#231F20']
+    ],
+    // 100000 POINTS (17 Oct 2026): the 30 NBA franchises, from its game's js/data.js (names, abbreviations and colours)
+    nba: [
+      ['hawks', 'Hawks', 'Atlanta Hawks', 'ATL', '#C8102E', '#FDB927'], ['celtics', 'Celtics', 'Boston Celtics', 'BOS', '#007A33', '#FFFFFF'],
+      ['nets', 'Nets', 'Brooklyn Nets', 'BKN', '#000000', '#FFFFFF'], ['hornets', 'Hornets', 'Charlotte Hornets', 'CHA', '#1D1160', '#00788C'],
+      ['bulls', 'Bulls', 'Chicago Bulls', 'CHI', '#CE1141', '#000000'], ['cavaliers', 'Cavaliers', 'Cleveland Cavaliers', 'CLE', '#860038', '#FDBB30'],
+      ['mavericks', 'Mavericks', 'Dallas Mavericks', 'DAL', '#00538C', '#B8C4CA'], ['nuggets', 'Nuggets', 'Denver Nuggets', 'DEN', '#0E2240', '#FEC524'],
+      ['pistons', 'Pistons', 'Detroit Pistons', 'DET', '#C8102E', '#1D42BA'], ['warriors', 'Warriors', 'Golden State Warriors', 'GSW', '#1D428A', '#FFC72C'],
+      ['rockets', 'Rockets', 'Houston Rockets', 'HOU', '#CE1141', '#C4CED4'], ['pacers', 'Pacers', 'Indiana Pacers', 'IND', '#002D62', '#FDBB30'],
+      ['clippers', 'Clippers', 'LA Clippers', 'LAC', '#1D428A', '#C8102E'], ['lakers', 'Lakers', 'Los Angeles Lakers', 'LAL', '#552583', '#FDB927'],
+      ['grizzlies', 'Grizzlies', 'Memphis Grizzlies', 'MEM', '#5D76A9', '#12173F'], ['heat', 'Heat', 'Miami Heat', 'MIA', '#98002E', '#F9A01B'],
+      ['bucks', 'Bucks', 'Milwaukee Bucks', 'MIL', '#00471B', '#EEE1C6'], ['timberwolves', 'Timberwolves', 'Minnesota Timberwolves', 'MIN', '#0C2340', '#78BE20'],
+      ['pelicans', 'Pelicans', 'New Orleans Pelicans', 'NOP', '#0C2340', '#C8102E'], ['knicks', 'Knicks', 'New York Knicks', 'NYK', '#006BB6', '#F58426'],
+      ['thunder', 'Thunder', 'Oklahoma City Thunder', 'OKC', '#007AC1', '#EF3B24'], ['magic', 'Magic', 'Orlando Magic', 'ORL', '#0077C0', '#C4CED4'],
+      ['76ers', '76ers', 'Philadelphia 76ers', 'PHI', '#006BB6', '#ED174C'], ['suns', 'Suns', 'Phoenix Suns', 'PHX', '#1D1160', '#E56020'],
+      ['blazers', 'Trail Blazers', 'Portland Trail Blazers', 'POR', '#E03A3E', '#000000'], ['kings', 'Kings', 'Sacramento Kings', 'SAC', '#5A2D81', '#63727A'],
+      ['spurs', 'Spurs', 'San Antonio Spurs', 'SAS', '#000000', '#C4CED4'], ['raptors', 'Raptors', 'Toronto Raptors', 'TOR', '#CE1141', '#A1A1A4'],
+      ['jazz', 'Jazz', 'Utah Jazz', 'UTA', '#3E2680', '#FFFFFF'], ['wizards', 'Wizards', 'Washington Wizards', 'WAS', '#002B5C', '#E31837']
     ]
   };
   var SPORT_TEAMS = {};
@@ -443,7 +491,7 @@
   // sport's own page (castgames.com.au/afl/) has one
   function hereSport() {
     if (CFG.sport && SPORT[CFG.sport]) return CFG.sport;
-    if (CFG.hub) { var m = /\/(nrl|afl|cricket|nfl|racing|epl)\/?(index\.html)?$/.exec(location.pathname); return m ? m[1] : null; }
+    if (CFG.hub) { var m = /\/(nrl|afl|cricket|nfl|racing|epl|nba)\/?(index\.html)?$/.exec(location.pathname); return m ? m[1] : null; }
     return SPORT_OF_GAME[CFG.game] || null;
   }
   // A sport is offered once one of its games is launched (the NRL always is)
@@ -506,6 +554,7 @@
     if (g.game === 'nfl' && g.mode === 'ou') return 'nfl-tp';
     if (g.game === 'racing' && g.mode === 'ou') return 'racing-pf';
     if (g.game === 'epl' && g.mode === 'ou') return 'epl-et';
+    if (g.game === 'nba' && g.mode === 'ou') return 'nba-ou';
     return g.game;
   }
   var THEME_NAMES = { same: 'Same Spins', match: 'Match Day', club: 'One-Club Day', target: 'Target' };
@@ -1103,7 +1152,7 @@
       var tag = many ? '<span class="ca-sport-tag" style="--sc:' + S.c + '"><span aria-hidden="true">' + S.ico + '</span> ' + esc(S.name) + '</span>' : '';
       var text = sp === 'nrl' ? 'Your club gets its own leaderboard, and your CAST Profile wears its colours.'
         : sp === 'cricket' ? 'Your nation gets its own leaderboard in our cricket games, and your profile wears its colours there.'
-        : 'Your ' + S.club.replace(/^(AFL|NFL) /, '').toLowerCase() + ' gets its own leaderboard in our ' + esc(S.name) + ' games, and your profile wears its colours there.';
+        : 'Your ' + S.club.replace(/^(AFL|NFL|NBA) /, '').toLowerCase() + ' gets its own leaderboard in our ' + esc(S.name) + ' games, and your profile wears its colours there.';
       h += head('Who Do You Go For?', text, tag) +
         (sp === 'nrl' ? teamGrid(setup.team, 'setup', setup.country || (profile && profile.country), true) : sportTeamGrid(sp, pickOf(sp), 'setup'));
     } else if (cur === 'place') {
@@ -1486,7 +1535,7 @@
         csvRow(['Date of birth', prof.birth || '']), csvRow(['Leaderboard name', prof.username || '']),
         csvRow(['Favourite team', (TEAMS[prof.team] || {}).name || (prof.team === 'none' ? 'No team' : '')]),
         csvRow(['Sports followed', mySports(prof).map(function (x) { return SPORT[x].name; }).join(', ')])].concat(Object.keys(SPORT_TEAM_LIST).filter(function (x) { return teamOf(x, prof); }).map(function (x) {
-          return csvRow([SPORT[x].name + ' ' + SPORT[x].club.replace(/^(AFL|NFL) /, '').toLowerCase(), (sportTeam(x, teamOf(x, prof)) || {}).name || (SPORT[x].none || 'No team')]);
+          return csvRow([SPORT[x].name + ' ' + SPORT[x].club.replace(/^(AFL|NFL|NBA) /, '').toLowerCase(), (sportTeam(x, teamOf(x, prof)) || {}).name || (SPORT[x].none || 'No team')]);
         }), [csvRow(['Country', label(COUNTRIES, prof.country) || '']), csvRow(['State', prof.state || '']),
         csvRow(['Gender', label(GENDERS, prof.gender) || '']), csvRow(['Listens to The Cast Patrol', label(PODCAST, prof.podcast) || '']),
         csvRow(['Emails (CAST Games news)', yes(prof.optIn)]), csvRow(['Partner offers', yes(prof.partnerOptIn)]),
@@ -2021,7 +2070,9 @@
     tests: [['tsplus', 'all', '60000+'], ['tsexact', 'all', 'Exactly 60000'], ['tsou', 'all', 'Follow On'], ['tsdaily', 'today', 'Daily']],
     nfl: [['nflplus', 'all', '777+'], ['nflexact', 'all', 'Exactly 777'], ['nflou', 'all', 'Two Point'], ['nfldaily', 'today', 'Daily']],
     racing: [['rcplus', 'all', '550+'], ['rcexact', 'all', 'Exactly 550'], ['rcou', 'all', 'Photo Finish'], ['rcdaily', 'today', 'Daily']],
-    epl: [['eplplus', 'all', '650+'], ['eplexact', 'all', 'Exactly 650'], ['eplou', 'all', 'Extra Time'], ['epldaily', 'today', 'Daily']]
+    epl: [['eplplus', 'all', '650+'], ['eplexact', 'all', 'Exactly 650'], ['eplou', 'all', 'Extra Time'], ['epldaily', 'today', 'Daily']],
+    nba: [['nbaplus', 'all', '100000+'], ['nbaexact', 'all', 'Exactly 100000'], ['nbaou', 'all', 'Higher or Lower'], ['nbadaily', 'today', 'Daily']],
+    sc: [['scplus', 'all', 'Classic'], ['scdaily', 'today', 'Daily']]
   };
   function rankTile(r) {
     var id = boardId(r[0], r[1], '');
@@ -2056,7 +2107,7 @@
     }).join('') + '</div>';
   }
   // This site's games first, each in home page order: the main game, Hard (27-0) or NRLW (1000TRIES), then the Daily
-  var GAME_ORDER = ['27-0', '27-0-hard', '27-0-daily', '1000tries', '1000tries-nrlw', '4000goals', '4000goals-aflw', 'bigbash', 'bigbash-fh', 'tests', 'tests-fo', 'nfl', 'nfl-tp', 'racing', 'racing-pf', 'epl', 'epl-et'];
+  var GAME_ORDER = ['27-0', '27-0-hard', '27-0-daily', '1000tries', '1000tries-nrlw', '4000goals', '4000goals-aflw', 'bigbash', 'bigbash-fh', 'tests', 'tests-fo', 'nfl', 'nfl-tp', 'racing', 'racing-pf', 'epl', 'epl-et', 'nba', 'nba-ou', 'sc'];
   function gameOrder(keys) {
     var at = function (k) { return (siteOf(k) === CFG.game ? 0 : 10) + GAME_ORDER.indexOf(k); };
     return keys.slice().sort(function (a, b) { return at(a) - at(b); });
@@ -2207,7 +2258,7 @@
       }).join('') + '</div>';
     sportOrder(d.sports).filter(sportHasTeams).forEach(function (sp) {
       var S = SPORT[sp];
-      h += '<h3 class="ca-h3 ca-sp-h"><span class="ca-sport-tag" style="--sc:' + S.c + '"><span aria-hidden="true">' + S.ico + '</span> ' + esc(S.name) + '</span> ' + (sp === 'nrl' ? 'Your Club' : 'Your ' + S.club.replace(/^(AFL|NFL) /, '')) + '</h3>' +
+      h += '<h3 class="ca-h3 ca-sp-h"><span class="ca-sport-tag" style="--sc:' + S.c + '"><span aria-hidden="true">' + S.ico + '</span> ' + esc(S.name) + '</span> ' + (sp === 'nrl' ? 'Your Club' : 'Your ' + S.club.replace(/^(AFL|NFL|NBA) /, '')) + '</h3>' +
         (sp === 'nrl' ? teamGrid(d.team, 'sp-team', profile && profile.country, true) : sportTeamGrid(sp, d.teams[sp] || null, 'sp-team'));
     });
     return h + '<div class="ca-sticky-actions">' + (d.err ? '<p class="ca-lb-err" role="alert">' + esc(d.err) + '</p>' : '') +
@@ -2628,6 +2679,28 @@
   ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in Photo Finish, every call under 3 seconds'],
   ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in Photo Finish with no Run It Back or Reroll']
     ],
+    // SC POINTS KING (17 Oct 2026): no target, so no target trophies; the game's own (js/app.js trophiesFor) and the
+    // ones every game shares
+    sc: [
+  ['sc_goat', '&#x1F410;', 'The GOAT', 'Tom Trbojevic\u2019s 2021 season in your 13'],
+  ['sc_2000', '&#x1F4A5;', '2000 Club', 'A season of 2000+ SC points in your 13'],
+  ['sc_pb', '&#x1F4C8;', 'New Best', 'Beat your best SC total'],
+  ['sc_legend', '&#x2B50;', 'Legend', 'Pick a Legend season'],
+  ['sc_vintage', '&#x1F4FC;', 'Vintage', '5 or more seasons from 2009 to 2014'],
+  ['sc_fresh', '&#x1F331;', 'Fresh Faces', 'All 13 seasons from 2024 or later'],
+  ['sc_oneclub', '&#x1F6E1;&#xFE0F;', 'Club Loyal', '5 or more seasons from one club'],
+  ['sc_oneyear', '&#x1F4C5;', 'Class Of', '4 or more seasons from one year'],
+  ['read', '&#x1F52E;', 'Perfect Read', 'The biggest season on every spin'],
+  ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
+  ['dailywin', '&#x1F4C6;', 'Daily Winner', 'Win an SC POINTS KING Daily Challenge'],
+  ['plays10', '&#x1F3C9;', 'Regular', 'Play 10 games'],
+  ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
+  ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
+  ['owl', '&#x1F989;', 'Night Owl', 'Finish between midnight and 4am'],
+  ['marathon', '&#x1F3C3;', 'Marathon', 'Play 10 games in one day'],
+  ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
+  ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week']
+    ],
     // 650 GOALS (17 Oct 2026): 700 TDS' set in Premier League terms at the same distance from the target (650+, +10%, +20%,
     // the last 1% under, a photo finish within 4), its own football ones (ep_, the game's js/app.js footballTrophies) and
     // Extra Time's (from ~/cast-dev/epl/tools/trophies_epl.js)
@@ -2685,6 +2758,55 @@
   ['ou100', '&#x1F4AF;', 'Century', 'Call 100 in a row in Extra Time'],
   ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in Extra Time, every call under 3 seconds'],
   ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in Extra Time with no Run It Back or Reroll']
+    ],
+    // 100000 POINTS (17 Oct 2026): 650 GOALS' set in NBA terms at the same distance from the target (100000+, +10%, +20%,
+    // the last 1% under, a photo finish within 0.9%), its own NBA ones (nba_, the game's js/app.js nbaTrophies) and its
+    // over/under's (from ~/cast-dev/nba/tools/trophies_nba.js). No Zero Hero: every player in the pool has 2000+ points
+    nba: [
+  ['hit1000', '&#x1F4AF;', '100000+', 'Reach 100000 career points'],
+  ['hit1100', '&#x1F525;', '110000 Club', 'Reach 110000 career points'],
+  ['hit1200', '&#x1F680;', 'Bucket Machine', 'Reach 120000 career points'],
+  ['exact', '&#x1F3AF;', 'Exactly 100000', 'Land on 100000 exactly'],
+  ['photo', '&#x1F4F8;', 'Photo Finish', 'Finish on 100000 to 100899 in 100000+'],
+  ['soclose', '&#x1F629;', 'So Close', 'Finish on 99000 to 99999'],
+  ['nowild', '&#x1F9CA;', 'No Wildcards', '100000+ with no wildcards'],
+  ['spin', '&#x1F3B0;', 'Spin Doctor', '100000+ in Team Spin'],
+  ['goats', '&#x1F51D;', 'Top Ten', '3 of the 10 biggest scorers outside the Legends'],
+  ['bench', '&#x1F6D1;', 'Air Ball', 'Finish under 50000 points'],
+  ['plays10', '&#x1F3C0;', 'Regular', 'Play 10 games'],
+  ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
+  ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
+  ['legend', '&#x1F396;&#xFE0F;', 'Legend', 'Pick a Legend'],
+  ['legs11', '&#x1F3B0;', 'On the Dot', 'Land on 100000 exactly outside Exactly 100000'],
+  ['read', '&#x1F52E;', 'Perfect Read', 'Top scorer in every offer'],
+  ['odds', '&#x1F3B2;', 'Against the Odds', '100000+ with Luck at -15% or worse'],
+  ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
+  ['clubleg', '&#x1F6E1;&#xFE0F;', 'One Franchise', 'All 5 played for one franchise'],
+  ['namesakes', '&#x1FA9E;', 'Namesakes', 'Two players with the same surname'],
+  ['timetravel', '&#x23F3;', 'Time Traveller', 'A debut before 1970 and a 2025-26 player'],
+  ['fresh', '&#x1F331;', 'Fresh Faces', 'All 5 debuted in 2020 or later'],
+  ['oldschool', '&#x1F4FC;', 'Old School', 'All 5 finished by 2005'],
+  ['owl', '&#x1F989;', 'Night Owl', 'Finish between midnight and 4am'],
+  ['marathon', '&#x1F3C3;', 'Marathon', 'Play 10 games in one day'],
+  ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
+  ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
+  ['nba_king', '&#x1F451;', 'The King', 'LeBron James and his record points in your team'],
+  ['nba_mj', '&#x1F410;', 'His Airness', 'Michael Jordan in your team'],
+  ['nba_30k', '&#x1F4AF;', '30000 Club', 'A player with 30000+ career points in your team'],
+  ['nba_backcourt', '&#x1F3AF;', 'Backcourt Buckets', 'Both guards on 16500+ points'],
+  ['nba_towers', '&#x1F3E2;', 'Twin Towers', 'Your power forward and centre on 16500+ points'],
+  ['nba_active', '&#x26A1;', 'Still Hooping', 'All 5 on an NBA roster today'],
+  ['nba_core', '&#x1F3E0;', 'Franchise Core', '3 or more who played for one franchise'],
+  ['legendary', '&#x1F396;&#xFE0F;', 'Legendary', 'Reach 100000 with a Legend in your team'],
+  ['pure', '&#x1F48E;', 'Pure 100000', 'Reach 100000 in 100000+ without a Legend'],
+  ['dailywin', '&#x1F4C5;', 'Daily Winner', 'Win a 100000 POINTS Daily Challenge'],
+  ['ou10', '&#x1F3AF;', 'Ten in a Row', 'Call 10 in a row in HIGHER OR LOWER: NBA'],
+  ['ou20', '&#x1F525;', 'On a Roll', 'Call 20 in a row in HIGHER OR LOWER: NBA'],
+  ['ou30', '&#x1F9E0;', 'Mastermind', 'Call 30 in a row in HIGHER OR LOWER: NBA'],
+  ['ou50', '&#x1F3C0;', 'Half Century', 'Call 50 in a row in HIGHER OR LOWER: NBA'],
+  ['ou100', '&#x1F4AF;', 'Century', 'Call 100 in a row in HIGHER OR LOWER: NBA'],
+  ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in HIGHER OR LOWER: NBA, every call under 3 seconds'],
+  ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in HIGHER OR LOWER: NBA with no Run It Back or Reroll']
     ],
     '27-0': [
       ['perfect', '&#x1F451;', '27-0', '27 wins, 0 losses'],
@@ -2937,6 +3059,10 @@
       'hit1100', 'ep_mersey', 'ep_manchester', 'ep_northlondon', 'ep_front', 'ep_back', 'photo', 'timetravel', 'nowild', 'spin', 'ep_record', 'legendary', 'ep_mid',
       'ep_core', 'ep_tour', 'goats', 'ep_100', 'colours', 'lucky', 'hit1000', 'dailywin', 'legend', 'settled', 'namesakes', 'marathon', 'owl', 'soclose', 'bench',
       'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10'],
+    nba: ['exact', 'legs11', 'read', 'hit1200', 'nba_mj', 'pure', 'nba_active', 'nba_towers', 'nba_backcourt', 'odds', 'clubleg', 'oldschool', 'fresh',
+      'hit1100', 'photo', 'timetravel', 'nowild', 'spin', 'nba_king', 'legendary', 'nba_core', 'goats', 'nba_30k', 'lucky', 'hit1000', 'dailywin',
+      'legend', 'settled', 'namesakes', 'marathon', 'owl', 'soclose', 'bench', 'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10'],
+    sc: ['sc_goat', 'read', 'sc_2000', 'sc_fresh', 'sc_vintage', 'sc_oneyear', 'sc_oneclub', 'lucky', 'dailywin', 'sc_legend', 'sc_pb', 'settled', 'marathon', 'owl', 'plays100', 'plays50', 'plays10'],
     '4000goals': ['exact', 'legs11', 'read', 'hit1200', 'spear6', 'pure', 'fatherson', 'nineties', 'odds', 'clubleg', 'bigv', 'interstate', 'zero', 'oldschool', 'fresh',
       'hit1100', 'club500', 'photo', 'timetravel', 'nowild', 'spin', 'legendary', 'mids', 'core', 'goats', 'lucky', 'nrlw300', 'aj', 'hit1000', 'dailywin',
       'grounds', 'newkids', 'oldclubs', 'backs', 'legend', 'settled', 'namesakes', 'marathon', 'owl', 'nrlw250', 'soclose'],
@@ -3132,6 +3258,24 @@
     'racing:ou100': 'You called 100 in a row in Photo Finish.',
     'racing:ouice': 'You called 8 in a row in Photo Finish, every call under 3 seconds.',
     'racing:ouclean': 'You called 15 in a row in Photo Finish with no Run It Back or Reroll.',
+    'sc:potw': 'You were named CAST Player of the Week.',
+    'sc:sc_goat': 'Tom Trbojevic\u2019s 2021 season, the biggest SC season of them all, was in your 13.',
+    'sc:sc_2000': 'Your 13 had a season of 2000 or more SC points.',
+    'sc:sc_pb': 'You beat your best SC total.',
+    'sc:sc_legend': 'You picked a Legend season.',
+    'sc:sc_vintage': '5 or more of your 13 were seasons from 2009 to 2014.',
+    'sc:sc_fresh': 'All 13 of your seasons were from 2024 or later.',
+    'sc:sc_oneclub': '5 or more of your 13 were seasons from one club.',
+    'sc:sc_oneyear': '4 or more of your 13 were seasons from one year.',
+    'sc:read': 'You picked the biggest season on every spin.',
+    'sc:lucky': 'Your Luck was +30% or better. The spins loved you.',
+    'sc:dailywin': 'You won an SC POINTS KING Daily Challenge.',
+    'sc:plays10': 'You have played 10 games.',
+    'sc:plays50': 'You have played 50 games.',
+    'sc:plays100': 'You have played 100 games.',
+    'sc:owl': 'You finished a game between midnight and 4am.',
+    'sc:marathon': 'You played 10 games in one day.',
+    'sc:settled': 'You beat a mate\u2019s score on their challenge.',
     'epl:potw': 'You were named CAST Player of the Week.',
     'epl:hit1000': 'Your XI reached 650 Premier League goals.',
     'epl:hit1100': 'Your XI reached 715 Premier League goals.',
@@ -3185,6 +3329,50 @@
     'epl:ou100': 'You called 100 in a row in Extra Time.',
     'epl:ouice': 'You called 8 in a row in Extra Time, every call under 3 seconds.',
     'epl:ouclean': 'You called 15 in a row in Extra Time with no Run It Back or Reroll.',
+    'nba:potw': 'You were named CAST Player of the Week.',
+    'nba:hit1000': 'Your team reached 100000 career points.',
+    'nba:hit1100': 'Your team reached 110000 career points.',
+    'nba:hit1200': 'Your team reached 120000 career points. A real bucket machine.',
+    'nba:exact': 'You landed on exactly 100000 career points. Not one point over.',
+    'nba:photo': 'You finished between 100000 and 100899 in 100000+. Only just over the line.',
+    'nba:soclose': 'You finished between 99000 and 99999. That close to 100000.',
+    'nba:nowild': 'You reached 100000 without using a single wildcard.',
+    'nba:spin': 'You reached 100000 in Team Spin.',
+    'nba:goats': 'Your team had 3 of the 10 biggest scorers outside the Legends.',
+    'nba:bench': 'Your team finished under 50000 points. Air ball.',
+    'nba:plays10': 'You have played 10 games.',
+    'nba:plays50': 'You have played 50 games.',
+    'nba:plays100': 'You have played 100 games.',
+    'nba:legend': 'You picked an NBA Legend.',
+    'nba:legs11': 'You landed on exactly 100000 points without playing Exactly 100000. Right on the dot!',
+    'nba:read': 'You picked the top scorer from every offer.',
+    'nba:odds': 'You reached 100000 with the luck of the draw against you: Luck at -15% or worse.',
+    'nba:lucky': 'Your Luck was +30% or better. The cards loved you.',
+    'nba:clubleg': 'All 5 of your players played for one franchise.',
+    'nba:namesakes': 'Two players in your team shared a surname.',
+    'nba:timetravel': 'Your team had a player who debuted before 1970 and one who played in 2025-26.',
+    'nba:fresh': 'All 5 of your players debuted in 2020 or later.',
+    'nba:oldschool': 'All 5 of your players were finished by 2005.',
+    'nba:owl': 'You finished a game between midnight and 4am.',
+    'nba:marathon': 'You played 10 games in one day.',
+    'nba:settled': 'You beat a mate\u2019s score on their challenge.',
+    'nba:nba_king': 'LeBron James and his record 43440 points were in your team.',
+    'nba:nba_mj': 'Michael Jordan was in your team.',
+    'nba:nba_30k': 'Your team had a player with 30000 or more career points.',
+    'nba:nba_backcourt': 'Both of your guards had 16500 or more career points.',
+    'nba:nba_towers': 'Your power forward and centre both had 16500 or more career points. Twin towers.',
+    'nba:nba_active': 'All 5 of your players are on an NBA roster today.',
+    'nba:nba_core': '3 or more of your team played for one franchise.',
+    'nba:legendary': 'You reached 100000 with a Legend in your team.',
+    'nba:pure': 'You reached 100000 in 100000+ without a Legend.',
+    'nba:dailywin': 'You won a 100000 POINTS Daily Challenge.',
+    'nba:ou10': 'You called 10 in a row in HIGHER OR LOWER: NBA.',
+    'nba:ou20': 'You called 20 in a row in HIGHER OR LOWER: NBA.',
+    'nba:ou30': 'You called 30 in a row in HIGHER OR LOWER: NBA.',
+    'nba:ou50': 'You called 50 in a row in HIGHER OR LOWER: NBA.',
+    'nba:ou100': 'You called 100 in a row in HIGHER OR LOWER: NBA.',
+    'nba:ouice': 'You called 8 in a row in HIGHER OR LOWER: NBA, every call under 3 seconds.',
+    'nba:ouclean': 'You called 15 in a row in HIGHER OR LOWER: NBA with no Run It Back or Reroll.',
     '4000goals:potw': 'You were named CAST Player of the Week.',
     '4000goals:club500': 'Your 18 had 5 players with 500 or more goals.',
     '4000goals:spear6': 'All 6 of your forwards had 300 or more goals.',
@@ -3614,7 +3802,7 @@
     var W = [['&#x1F504;', 'Reroll'], ['&#x1F440;', 'Reveal'], ['&#x274C;', 'Remove']];
     return '<section class="ca-pass-dw" aria-label="Double Wildcards">' +
       '<div class="ca-pass-dw-k">The Big One</div><h3 class="ca-pass-dw-t">Double Wildcards</h3>' +
-      '<p class="ca-pass-dw-s">2 of every wildcard, every game, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC || EPON || EP ? 'every CAST game' : 'both games') + '.</p>' +
+      '<p class="ca-pass-dw-s">2 of every wildcard, every game, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC || EPON || EP || NBON || NB ? 'every CAST game' : 'both games') + '.</p>' +
       '<div class="ca-pass-dw-row" aria-hidden="true">' + W.map(function (w, i) {
         return '<div class="ca-dw" style="--d:' + (i * 0.25) + 's"><div class="ca-dw-cards"><span class="ca-dw-card is-b">' + w[0] + '</span><span class="ca-dw-card is-a">' + w[0] + '</span></div>' +
           '<b class="ca-dw-n"><span class="is-1">&times;1</span><span class="is-2">&times;2</span></b><small>' + w[1] + '</small></div>';
@@ -3761,7 +3949,7 @@
       daily: ['The Daily Is for CAST Profile Players', 'Sign in free to play today&rsquo;s Daily.'],
       wildcards: ['Wildcards Come With a Free Profile', 'Sign in free for wildcards every game. Your game carries on right where you left it.'],
       wc: ['World Cup Mode Is for CAST Profile Players', 'Sign in free to play the World Cup. It starts as soon as you&rsquo;re in.'],
-      ouused: ['You&rsquo;ve Had Your ' + GUEST_OU_MAX + ' Free ' + (CFG.game === '4000goals' ? 'Play On' : CFG.game === 'bigbash' ? 'Free Hit' : CFG.game === 'tests' ? 'Follow On' : CFG.game === 'nfl' ? 'Two Point' : CFG.game === 'racing' ? 'Photo Finish' : CFG.game === 'epl' ? 'Extra Time' : 'Six Again') + ' Runs Today', 'Sign in free to play as many runs as you like, save your streaks and climb the board.'],
+      ouused: ['You&rsquo;ve Had Your ' + GUEST_OU_MAX + ' Free ' + (CFG.game === '4000goals' ? 'Play On' : CFG.game === 'bigbash' ? 'Free Hit' : CFG.game === 'tests' ? 'Follow On' : CFG.game === 'nfl' ? 'Two Point' : CFG.game === 'racing' ? 'Photo Finish' : CFG.game === 'epl' ? 'Extra Time' : CFG.game === 'nba' ? 'HIGHER OR LOWER: NBA' : 'Six Again') + ' Runs Today', 'Sign in free to play as many runs as you like, save your streaks and climb the board.'],
       wcused: ['You&rsquo;ve Had Your Free World Cup Today', 'Sign in free to play as many as you like, save your results and climb the World Cup board.'],
       gift: ['Sign In to Claim Your Gift', 'Your free World Legend Pick is waiting. Sign in with the account your CAST Games emails go to.']
     }[wallWhy] || ['Sign In Free', 'Sign in to keep playing.'];
@@ -4248,6 +4436,18 @@
     { id: 'eploua', label: 'Extra Time: Premier League Assists', short: 'PL Assists', game: 'epl', periods: ['today', 'week', 'all'], sub: 'eplou' },
     { id: 'eplouap', label: 'Extra Time: Premier League Appearances', short: 'PL Appearances', game: 'epl', periods: ['today', 'week', 'all'], sub: 'eplou' },
     { id: 'epldaily', label: '650 GOALS Daily', short: 'Daily', game: 'epl', periods: ['today', 'yesterday'], unit: 'goals' },
+    // 100000 POINTS (17 Oct 2026): 650 GOALS' boards for the NBA, shown once it's launched (or on its own page). Its
+    // over/under like Extra Time: one chip with a category picker (points, rebounds, assists)
+    { id: 'nbaplus', label: '100000+', short: '100000+', game: 'nba', periods: ['today', 'week', 'all'], unit: 'points' },
+    { id: 'nbaexact', label: 'Exactly 100000', short: 'Exactly 100000', tiny: 'Exact 100000', game: 'nba', periods: ['today', 'week', 'all'], home: 'week' },
+    { id: 'nbaspin', label: 'Team Spin', short: 'Team Spin', game: 'nba', periods: ['today', 'week', 'all'], unit: 'points' },
+    { id: 'nbaou', label: 'HIGHER OR LOWER: NBA', short: 'Higher or Lower', tiny: 'Higher or Lower', game: 'nba', periods: ['today', 'week', 'all'] },
+    { id: 'nbaoureb', label: 'HIGHER OR LOWER: NBA \u00B7 Rebounds', short: 'NBA Rebounds', game: 'nba', periods: ['today', 'week', 'all'], sub: 'nbaou' },
+    { id: 'nbaouast', label: 'HIGHER OR LOWER: NBA \u00B7 Assists', short: 'NBA Assists', game: 'nba', periods: ['today', 'week', 'all'], sub: 'nbaou' },
+    { id: 'nbadaily', label: '100000 POINTS Daily', short: 'Daily', game: 'nba', periods: ['today', 'yesterday'], unit: 'points' },
+    // SC POINTS KING (17 Oct 2026): Classic on the biggest total (its #1 wears the crown), and the Daily. Shown once launched
+    { id: 'scplus', label: 'SC POINTS KING', short: 'SC POINTS KING', tiny: 'SC King', game: 'sc', periods: ['today', 'week', 'all'], unit: 'SC points', crown: true },
+    { id: 'scdaily', label: 'SC POINTS KING Daily', short: 'SC Daily', game: 'sc', periods: ['today', 'yesterday'], unit: 'SC points', crown: true },
     { id: 'streak', label: '&#x1F525; Longest Streak', short: '&#x1F525; Streak', periods: ['all'] },
     // Trophies (14 Oct 2026): every trophy unlocked, 27-0 and 1000TRIES together, with each game inside it (sub: no chip
     // of its own, picked under the Trophies board)
@@ -4271,14 +4471,16 @@
   var RECORD_NOTE = { '270best': 'Your best Classic Mode season.', '270pack': 'Your best Pack Mode season.', '270hard': 'Your best Hard Mode season: no ratings, and paid wildcards only.' };
   // Not on a board yet: a red box the same size as "You are #23 of 30", saying what to play to get on it. Tapping it starts
   // that mode: this site's game gets a cast:play event (each game starts its own mode), the other game opens with ?play=.
-  var PLAY_TO_RANK = { bgfree: 'Play NRL Bingo', bgdaily: 'Play today&rsquo;s Daily Bingo', eplou: 'Play Extra Time', eploua: 'Play Extra Time', eplouap: 'Play Extra Time', nflou: 'Play Two Point', rcou: 'Play Photo Finish', rcoub: 'Play Photo Finish', rcouh: 'Play Photo Finish', tsou: 'Play Follow On', tsouw: 'Play Follow On', bbou: 'Play Free Hit', bbouw: 'Play Free Hit', '4000ou': 'Play On', '4000ougames': 'Play On', '4000ouaflw': 'Play On', '1000ou': 'Play Six Again', '1000oucaps': 'Play Six Again', '1000outt': 'Play Six Again', '1000ounrlw': 'Play Six Again', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
+  var PLAY_TO_RANK = { bgfree: 'Play NRL Bingo', bgdaily: 'Play today&rsquo;s Daily Bingo', nbaou: 'Play HIGHER OR LOWER: NBA', nbaoureb: 'Play HIGHER OR LOWER: NBA', nbaouast: 'Play HIGHER OR LOWER: NBA', eplou: 'Play Extra Time', eploua: 'Play Extra Time', eplouap: 'Play Extra Time', nflou: 'Play Two Point', rcou: 'Play Photo Finish', rcoub: 'Play Photo Finish', rcouh: 'Play Photo Finish', tsou: 'Play Follow On', tsouw: 'Play Follow On', bbou: 'Play Free Hit', bbouw: 'Play Free Hit', '4000ou': 'Play On', '4000ougames': 'Play On', '4000ouaflw': 'Play On', '1000ou': 'Play Six Again', '1000oucaps': 'Play Six Again', '1000outt': 'Play Six Again', '1000ounrlw': 'Play Six Again', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
     '270best': 'Play Classic Mode', '270pack': 'Play Pack Mode', '270hard': 'Play Hard Mode', '270perfect': 'Go 27-0 to get on', '270daily': 'Play today&rsquo;s Daily',
     '4000plus': 'Play 4000+', '4000exact': 'Play Exactly 4000', '4000spin': 'Play Team Spin', aflw: 'Play AFLW 750+', '4000daily': 'Play today&rsquo;s Daily',
     bbplus: 'Play 25000+', bbexact: 'Play Exactly 25000', bbspin: 'Play Team Spin', bbdaily: 'Play today&rsquo;s Daily',
     tsplus: 'Play 60000+', tsexact: 'Play Exactly 60000', tsspin: 'Play Team Spin', tsdaily: 'Play today&rsquo;s Daily',
     nflplus: 'Play 777+', nflexact: 'Play Exactly 777', nflspin: 'Play Team Spin', nfldaily: 'Play today&rsquo;s Daily',
     rcplus: 'Play 550+', rcexact: 'Play Exactly 550', rcspin: 'Play Team Spin', rcdaily: 'Play today&rsquo;s Daily',
-    eplplus: 'Play 650+', eplexact: 'Play Exactly 650', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily' };
+    eplplus: 'Play 650+', eplexact: 'Play Exactly 650', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily',
+    nbaplus: 'Play 100000+', nbaexact: 'Play Exactly 100000', nbaspin: 'Play Team Spin', nbadaily: 'Play today&rsquo;s Daily',
+    scplus: 'Play SC POINTS KING', scdaily: 'Play today&rsquo;s Daily' };
   var PLAY_MODE = { bgfree: ['1000tries', 'bingo'], bgdaily: ['1000tries', 'bingod'], '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
     '270best': ['27-0', 'classic'], '270pack': ['27-0', 'pack'], '270hard': ['27-0', 'hard'], '270perfect': ['27-0', 'classic'], '270daily': ['27-0', 'daily'],
     '4000plus': ['4000goals', 'plus'], '4000exact': ['4000goals', 'exact'], '4000spin': ['4000goals', 'spin'], aflw: ['4000goals', 'aflw'], '4000daily': ['4000goals', 'daily'],
@@ -4286,7 +4488,9 @@
     tsplus: ['tests', 'plus'], tsexact: ['tests', 'exact'], tsspin: ['tests', 'spin'], tsdaily: ['tests', 'daily'], tsou: ['tests', 'ou'], tsouw: ['tests', 'ou'],
     nflplus: ['nfl', 'plus'], nflexact: ['nfl', 'exact'], nflspin: ['nfl', 'spin'], nfldaily: ['nfl', 'daily'], nflou: ['nfl', 'ou'],
     rcplus: ['racing', 'plus'], rcexact: ['racing', 'exact'], rcspin: ['racing', 'spin'], rcdaily: ['racing', 'daily'], rcou: ['racing', 'ou'], rcoub: ['racing', 'ou'], rcouh: ['racing', 'ou'],
-    eplplus: ['epl', 'plus'], eplexact: ['epl', 'exact'], eplspin: ['epl', 'spin'], epldaily: ['epl', 'daily'], eplou: ['epl', 'ou'], eploua: ['epl', 'ou'], eplouap: ['epl', 'ou'] };
+    eplplus: ['epl', 'plus'], eplexact: ['epl', 'exact'], eplspin: ['epl', 'spin'], epldaily: ['epl', 'daily'], eplou: ['epl', 'ou'], eploua: ['epl', 'ou'], eplouap: ['epl', 'ou'],
+    nbaplus: ['nba', 'plus'], nbaexact: ['nba', 'exact'], nbaspin: ['nba', 'spin'], nbadaily: ['nba', 'daily'], nbaou: ['nba', 'ou'], nbaoureb: ['nba', 'ou'], nbaouast: ['nba', 'ou'],
+    scplus: ['sc', 'plus'], scdaily: ['sc', 'daily'] };
   // The streak counts any game, so it starts this site's main mode
   function playFor(board) { return PLAY_MODE[board] || (board === 'streak' ? [CFG.game, CFG.game === '27-0' ? 'classic' : 'plus'] : null); }
   function rankBox(rk) {
@@ -4316,7 +4520,7 @@
       if (status !== 'signed-in' || !profile) return { who: 'guest' };
       if (!profile.username) return { who: 'noname' };
       if (profile.lbHidden) return { who: 'hidden' };
-      var id = boardId(base === '1000daily' || base === '4000daily' || base === 'bbdaily' || base === 'tsdaily' || base === 'nfldaily' || base === 'rcdaily' || base === 'epldaily' || base === 'bgdaily' ? base : '270daily', 'today', ''), have = lb.rank[id];
+      var id = boardId(base === '1000daily' || base === '4000daily' || base === 'bbdaily' || base === 'tsdaily' || base === 'nfldaily' || base === 'rcdaily' || base === 'epldaily' || base === 'nbadaily' || base === 'bgdaily' || base === 'scdaily' ? base : '270daily', 'today', ''), have = lb.rank[id];
       if (have && !have.loading && !have.failed && Date.now() - have.at < 30000) return { who: 'player', rank: have.rank || 0, players: have.players || 0 };
       return callFn('myRank', { board: id }).then(function (r) {
         lb.rank[id] = { at: Date.now(), rank: r.rank, players: r.players, s: r.s, t: r.t, g: r.g || null };
@@ -4349,7 +4553,7 @@
   function boardId(b, period, club) {
     var id;
     if (b === 'streak') id = 'streak_all';
-    else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'bgdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
+    else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'nbadaily' || b === 'bgdaily' || b === 'scdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
     else id = b + '_' + (period === 'week' ? sydneyWeek(Date.now()) : period === 'today' ? sydneyDate(Date.now()) : 'all');
     return club ? id + '~' + club : id;
   }
@@ -4370,6 +4574,9 @@
     if (g.game === 'racing') return [g.mode === 'exact' ? 'rcexact' : g.mode === 'spin' ? 'rcspin' : g.mode === 'daily' ? 'rcdaily' : 'rcplus', 'today'];
     if (g.game === 'epl' && g.mode === 'ou') return [{ plassists: 'eploua', plapps: 'eplouap' }[g.d && g.d.cat] || 'eplou', 'today'];
     if (g.game === 'epl') return [g.mode === 'exact' ? 'eplexact' : g.mode === 'spin' ? 'eplspin' : g.mode === 'daily' ? 'epldaily' : 'eplplus', 'today'];
+    if (g.game === 'nba' && g.mode === 'ou') return [{ nbareb: 'nbaoureb', nbaast: 'nbaouast' }[g.d && g.d.cat] || 'nbaou', 'today'];
+    if (g.game === 'nba') return [g.mode === 'exact' ? 'nbaexact' : g.mode === 'spin' ? 'nbaspin' : g.mode === 'daily' ? 'nbadaily' : 'nbaplus', 'today'];
+    if (g.game === 'sc') return [g.mode === 'daily' ? 'scdaily' : 'scplus', 'today']; // SC POINTS KING
     if (g.game === '4000goals') return [g.mode === 'aflw' ? 'aflw' : g.mode === 'exact' ? '4000exact' : g.mode === 'spin' ? '4000spin' : g.mode === 'daily' ? '4000daily' : '4000plus', 'today'];
     // 27-0: a Daily go opens today's Daily board; every other season (27-0s included) today's board for its mode
     if (g.game === '27-0') return [g.mode === 'wc' ? '270wc' : g.mode === 'daily' ? '270daily' : g.mode === 'hard' ? '270hard' : g.mode === 'pack' ? '270pack' : '270best', 'today'];
@@ -4630,7 +4837,7 @@
       : n.src === 'potw' ? 'You\u2019re this week\u2019s CAST Player of the Week. ' + items + ' are in your Vault, ready for your next games.'
       : n.src === 'gift' ? 'A gift for you. ' + (Object.keys(n.items || {}).reduce(function (t, k) { return t + (+n.items[k] || 0); }, 0) > 1 ? 'They\u2019re' : 'It\u2019s') + ' in your Vault, ready for your next game.'
       : n.src === 'optin' ? 'Thanks for joining the CAST Games emails. Your free Reveal is in your Vault, ready for your next draft.'
-      : n.src === 'welcome' ? (CFG.game === '4000goals' ? 'A Legend Key for 4000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'bigbash' ? 'A Legend Key for 25000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'tests' ? 'A Legend Key for 60000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'nfl' ? 'A Legend Key for 777+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'racing' ? 'A Legend Key for 550+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'epl' ? 'A Legend Key for 500+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : 'A Superstar Key for 27-0 and a Legend Key for ' + (G4ON ? '1000TRIES or 4000 GOALS' : '1000TRIES') + ' are in your Vault, ready for your next draft.')
+      : n.src === 'welcome' ? (CFG.game === '4000goals' ? 'A Legend Key for 4000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'bigbash' ? 'A Legend Key for 25000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'tests' ? 'A Legend Key for 60000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'nfl' ? 'A Legend Key for 777+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'racing' ? 'A Legend Key for 550+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'epl' ? 'A Legend Key for 650+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : CFG.game === 'nba' ? 'A Legend Key for 100000+ and a Superstar Key for 27-0 are in your Vault, ready for your next draft.' : 'A Superstar Key for 27-0 and a Legend Key for ' + (G4ON ? '1000TRIES or 4000 GOALS' : '1000TRIES') + ' are in your Vault, ready for your next draft.')
       : n.src === 'toty' ? (n.n === 1 ? (n.free ? 'Your free' : 'Your') + ' Team of the Year Pick' : 'Your ' + n.n + ' Team of the Year Picks') + ' became ' + items + '. They’re in your Vault, ready in 27-0 Classic and Pack.'
       : n.src === 'prem' ? (n.n === 1 ? (n.free ? 'Your free' : 'Your') + ' Premiers Pick' : 'Your ' + n.n + ' Premiers Picks') + ' became ' + items + '. They’re in your Vault, ready in 27-0 Classic and Pack.'
       : 'You completed ' + (n.name || 'the Daily Challenge') + ' in ' + gname + '. ' + (lasts(n.items) > 1 ? 'They’re in your Vault for the next 24 hours.' : lasts(n.items) ? 'It’s in your Vault for the next 24 hours.' : 'It’s in your Vault, ready for your next game.');
@@ -4917,17 +5124,23 @@
   var NF = CFG.game === 'nfl', NFON = gateOpen('nfl'), RC = CFG.game === 'racing', RCON = gateOpen('racing');
   // 650 GOALS (17 Oct 2026): the same in Premier League words (an XI), named among the games once it's launched
   var EP = CFG.game === 'epl', EPON = gateOpen('epl');
-  LEG = LEG || NF || RC || EP;
+  // 100000 POINTS (17 Oct 2026): the same in NBA words (a team), named among the games once it's launched
+  var NB = CFG.game === 'nba', NBON = gateOpen('nba');
+  // SC POINTS KING (17 Oct 2026): NRL SC seasons, a 13, a Legend Key site; named among the games once it's launched
+  var SCK = CFG.game === 'sc', SCON = gateOpen('sc');
+  LEG = LEG || NF || RC || EP || NB || SCK;
   function withG4(list, g4) {
     var out = G4ON && g4 ? list.slice(0, -1).concat([list[list.length - 1], g4]) : list;
     if (BBON && g4) out = out.concat(['25000 RUNS']);
     if (TSON && g4) out = out.concat(['60000 RUNS']);
     if (NFON && g4) out = out.concat(['777 TDS']);
     if (RCON && g4) out = out.concat(['G1 WINNER SPINNER']);
-    return EPON && g4 ? out.concat(['650 GOALS']) : out;
+    if (EPON && g4) out = out.concat(['650 GOALS']);
+    if (SCON && g4) out = out.concat(['SC POINTS KING']);
+    return NBON && g4 ? out.concat(['100000 POINTS']) : out;
   }
   function andList(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
-  var TEAM_N = AFL ? '18' : BB || TS || EP ? 'XI' : NF ? 'team' : RC ? 'card' : '13';
+  var TEAM_N = AFL ? '18' : BB || TS || EP ? 'XI' : NF || NB ? 'team' : RC ? 'card' : '13';
   /* The GOAT (16 Oct 2026, the owner: "THE GOAT IS UNIVERSAL"): one item, one Vault count, used in whichever draft game
      you play and giving that game's GOAT as the next pick in its main mode or Exactly (once a game, never the Daily or a
      friend's challenge). [name, his number, its unit, a short fact (or ''), where] for each game; a page with no GOAT of
@@ -4939,7 +5152,9 @@
     tests: ['Sachin Tendulkar', '15921', 'Test runs', 'the most in Test history', '60000 RUNS 60000+ and Exactly 60000'], // each game's GOAT is its #1 in the stat (17 Oct 2026, the owner)
     nfl: ['Jerry Rice', '208', 'NFL TDs', 'the most in NFL history', '777 TDS 777+ and Exactly 777'],
     racing: ['Damien Oliver', '129', 'Group 1 wins', '', 'G1 WINNER SPINNER 550+ and Exactly 550'],
-    epl: ['Alan Shearer', '260', 'Premier League goals', 'the most in Premier League history', '650 GOALS 650+ and Exactly 650']
+    epl: ['Alan Shearer', '260', 'Premier League goals', 'the most in Premier League history', '650 GOALS 650+ and Exactly 650'],
+    nba: ['LeBron James', '43440', 'NBA points', 'the most in NBA history', '100000 POINTS 100000+ and Exactly 100000'],
+    sc: ['Tom Trbojevic', '2149', 'SC points', 'in 2021, the biggest SC season', 'SC POINTS KING Classic']
   };
   var GOAT_HERE = GOATS[CFG.game] || null;
   // "Sachin Tendulkar, 15921 Test runs, the most in Test history" / "Alex Johnston, 240 NRL tries, the most in NRL history"
@@ -5008,6 +5223,13 @@
       kicker: 'Wild Tile', title: 'Fill Any Tile You Like', line: 'Pick any open tile on your card and it fills, no player needed.', tap: 'Tap Wild Tile to use',
       tags: ['Use It Now'], small: ['Fill one tile, right now'], save: '',
       foot: 'Wild Tiles work in NRL Bingo. A board with one in it counts on the leaderboards with a boost mark. Saved ones stay on your CAST Profile.' },
+    /* The SC Captain (SC POINTS KING, 17 Oct 2026, the owner): A$4.99. Once a Classic 13 is complete the game asks for a
+       Captain (from the Vault, or bought there and then) and his SC points count double. One a game, Classic only, never
+       free with CAST Pass. On sale once SC POINTS KING is launched; one already owned still works */
+    captain: { field: 'caps', ico: '&#x1F396;&#xFE0F;', one: 'SC Captain', many: 'SC Captains', packs: ['cap1'], used: 'SC Captain used',
+      kicker: 'SC Captain', title: 'Make Him Your Captain', line: 'Your Captain\u2019s SC points count double.', tap: 'Tap Captain to use',
+      tags: ['Double His Points'], small: ['Set your Captain, right now'], save: '',
+      foot: 'SC Captains work in SC POINTS KING Classic, one per game once your 13 is complete. A 13 with one counts on the leaderboards with a boost mark. Saved ones stay on your CAST Profile.' },
     rib: { field: 'ribs', ico: '&#x23EA;', one: 'Run It Back', many: 'Run It Backs', packs: ['rib1', 'rib3'], used: 'Run It Back used',
       kicker: 'Run It Back', title: 'One More Win', line: 'Run your season back and your closest loss becomes a win.', tap: 'Tap Run It Back to use',
       tags: ['One More Go', 'Best Value'], small: ['Run this season back now', '<strong>Just 66c each.</strong> For your next near miss'], save: 'Save 33%',
@@ -5070,12 +5292,12 @@
   // A promo Pick ('toty' or 'prem'): on, a CAST Pass holder's free one waiting, what the game's button shows, the payment
   // pop-up, and taking one when a player is chosen (the free one goes first)
   // The 88+ Pick: on sale from the World Cup launch, and for good (the mode stays; the owner, 7 Oct 2026)
-  function wcpOn() { return ENABLED && wcOn() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl'; } // 4000 GOALS has no World Cup mode (12 Oct 2026)
+  function wcpOn() { return ENABLED && wcOn() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl' && CFG.game !== 'nba' && CFG.game !== 'sc'; } // 4000 GOALS has no World Cup mode (12 Oct 2026)
   // The World Legend Pick: the same, in both games (8 Oct 2026)
-  function ilegOn() { return ENABLED && wcOn() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl'; }
+  function ilegOn() { return ENABLED && wcOn() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl' && CFG.game !== 'nba' && CFG.game !== 'sc'; }
   /* The World Champions Pick (27-0 World Cup 8-0, 15 Oct 2026): on sale while World Champions runs (27-0 only sells it;
      the other sites show one already owned in the Vault). Picks paid for just after the end work while the server allows */
-  function wchOn() { return ENABLED && !!wchNow() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl'; }
+  function wchOn() { return ENABLED && !!wchNow() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl' && CFG.game !== 'nba' && CFG.game !== 'sc'; }
   function wchPickOn() { return wchOn() || (ENABLED && (itHave.wch || 0) > 0 && wchLate > Date.now()); }
   function promoPickOn(k) { return k === 'wch' ? wchPickOn() : k === 'prem' ? premOn() : k === 'wcp' ? wcpOn() : k === 'ileg' ? ilegOn() : totyOn(); }
   function promoFreeNow(k) { return promoPickOn(k) && hasPass() && (k === 'wch' ? wchFree && wchOn() : k === 'prem' ? premFree : k === 'wcp' ? wcpFree : k === 'ileg' ? ilegFree : totyFree); }
@@ -5161,7 +5383,7 @@
     rrShop(game, null, 'shop', hook, 'key', kind);
   }
   // item: 'reroll' (the default), one of ITM, 'freeze' or 'key' (key: 'legend' or 'superstar'), for the words and colour
-  var RR_CLASS = { remove: 'is-rm', reveal: 'is-rv', rib: 'is-rib', freeze: 'is-fz', key: 'is-ky', toty: 'is-toty', prem: 'is-prem', imm: 'is-imm', wcp: 'is-wcp', ileg: 'is-ileg', wch: 'is-wch', restore: 'is-rs', bag: 'is-bag' };
+  var RR_CLASS = { remove: 'is-rm', reveal: 'is-rv', rib: 'is-rib', freeze: 'is-fz', key: 'is-ky', toty: 'is-toty', prem: 'is-prem', imm: 'is-imm', wcp: 'is-wcp', ileg: 'is-ileg', wch: 'is-wch', restore: 'is-rs', bag: 'is-bag', captain: 'is-captain' };
   function rrShop(game, done, stage, hook, item, key) {
     rr = { game: game || CFG.game, done: done || null, stage: stage, err: '', pack: null, session: null, co: null, hook: hook && hook.line ? hook : null,
       item: ITM[item] || item === 'freeze' || item === 'key' || item === 'restore' || item === 'bag' ? item : 'reroll', key: key || null };
@@ -5426,7 +5648,7 @@
       var hk = rr.hook || {}, big = rrBought >= 5;
       h = top('&#x1F504;', 'Out of Rerolls', hk.title || 'One More Roll Could Do It', hk.line || 'Out of rerolls, but not out of ideas. The next roll could be the one.') +
         '<div class="ca-rr-packs">' + rrPackBtn('one', 'Quick Fix', 'One more roll, right now', '&#x26A1; Instant', true) +
-        rrPackBtn('five', big ? 'Popular' : 'Best Value', '<strong>Just 60c each.</strong> Use them any time, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC || EPON || EP ? 'any CAST game' : 'either game'), 'Save 40%', false, big) +
+        rrPackBtn('five', big ? 'Popular' : 'Best Value', '<strong>Just 60c each.</strong> Use them any time, in ' + (G4ON || AFL || BBON || BB || TSON || TS || NFON || NF || RCON || RC || EPON || EP || NBON || NB ? 'any CAST game' : 'either game'), 'Save 40%', false, big) +
         (big ? rrPackBtn('twelve', 'Best Value', '<strong>Just 50c each.</strong> For the players who reroll the most', 'Save 50%', false, false, true) : '') + '</div>' +
         '<p class="ca-small ca-center">Your game waits right here while you pay. Saved rerolls stay on your CAST Profile and work in every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
     } else if (rr.stage === 'check' || rr.stage === 'starting' || rr.stage === 'confirm') {
@@ -5599,6 +5821,8 @@
     if (b === 'nflplus' || b === 'nflspin' || b === 'nfldaily') return fmt(r.s) + ' <small>TDs</small>'; // 777 TDS
     if (b === 'rcplus' || b === 'rcspin' || b === 'rcdaily') return fmt(r.s) + ' <small>G1 wins</small>'; // G1 WINNER SPINNER
     if (b === 'eplplus' || b === 'eplspin' || b === 'epldaily') return fmt(r.s) + ' <small>goals</small>'; // 650 GOALS
+    if (b === 'nbaplus' || b === 'nbaspin' || b === 'nbadaily') return fmt(r.s) + ' <small>points</small>'; // 100000 POINTS
+    if (b === 'scplus' || b === 'scdaily') return fmt(r.s) + ' <small>SC pts</small>'; // SC POINTS KING
     if (b === '270wc') { // s = stage x 10 + wins (stage 0 pool, 1 quarter, 2 semi, 3 final, 4 champions); 5 games plus the knockouts played
       var st = Math.floor(r.s / 10), w = r.s % 10, l = Math.max(0, 5 + Math.min(st, 3) - w), perfect = st === 4 && !l;
       // the stage first and the record last, so every record sits on the far right like Classic's (the owner, 11 Oct 2026)
@@ -5616,6 +5840,7 @@
     if (b === 'nflexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 777</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === 'rcexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 550</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === 'eplexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 650</small>' : fmt(r.t) + ' <small>closest</small>';
+    if (b === 'nbaexact') return r.s ? '&#x1F3AF; ' + r.s + ' <small>&times; 100000</small>' : fmt(r.t) + ' <small>closest</small>';
     if (b === '270perfect') { // t: the hardest mode of their 27-0s (the server ranks level players by it)
       var pm = PERFECT_TAG[r.t];
       return (pm ? '<span class="ca-lb-mode is-' + pm.toLowerCase() + '" title="Hardest 27-0: ' + pm + ' Mode">' + pm + '</span>' : '') + r.s + ' <small>&times; 27-0</small>';
@@ -5631,7 +5856,7 @@
     }
     if (b === 'streak') return r.s + ' <small>' + (r.s === 1 ? 'day' : 'days') + '</small>';
     if (/^trophies/.test(b)) return r.s + ' <small>' + (r.s === 1 ? 'trophy' : 'trophies') + '</small>';
-    if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou)/.test(b)) return r.s + ' <small>in a row</small>';
+    if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(b)) return r.s + ' <small>in a row</small>';
     // NRL Bingo: tiles filled, then the time (t: minus tenths of a second, lib/boards.js)
     if (b === 'bgfree' || b === 'bgdaily') { var bs = Math.max(0, Math.round(-(r.t || 0) / 10)); return (r.s === 20 ? '&#x1F389; ' : '') + r.s + ' <small>' + (r.s === 1 ? 'tile' : 'tiles') + ' &middot; ' + Math.floor(bs / 60) + ':' + ('0' + (bs % 60)).slice(-2) + '</small>'; }
     if (kind === 'target') return (r.s === 0 ? '&#x1F3AF; On target' : (-r.s) + ' <small>off</small>') + ' <small>&middot; ' + r.t + ' wins</small>';
@@ -5708,6 +5933,8 @@
   // A row's badge: the creator's logo, or their club
   /* A rank in its column (29 Sep 2026: "1093" ran into the badge). Three characters get a little smaller, longer ones
      ("1093", "12345") smaller again, so every rank fits the same column and the badges and names stay lined up */
+  // SC POINTS KING (17 Oct 2026, the owner): a high score chase, so each of its boards' #1 wears the crown
+  function crownOf(board, rank) { return rank === 1 && /^sc(plus|daily)(_|$)/.test(String(board || '')) ? ' <span class="ca-lb-crown" title="SC Points King" aria-label="SC Points King">&#x1F451;</span>' : ''; }
   function posCell(rank) {
     var t = fmt(rank), n = String(t).length;
     return '<span class="ca-lb-pos' + (n >= 6 ? ' is-5' : n >= 4 ? ' is-4' : n === 3 ? ' is-3' : '') + '">' + t + '</span>';
@@ -5801,7 +6028,7 @@
     var list = boardsFor(lb);
     h += gameSwitch(lb, 'lb') + '<div class="ca-lb-chips' + (list.length >= 5 ? ' is-grid' : '') + '" role="tablist">' + list.map(function (b) {
       var name = b.label.replace(/&#x1F525;\s*/, '');
-      var onB = b.id === lb.board || (b.id === 'trophies' && /^trophies/.test(lb.board)) || (b.id === '1000ou' && /^1000ou/.test(lb.board)) || (b.id === '4000ou' && /^4000ou/.test(lb.board)) || (b.id === 'bbou' && /^bbou/.test(lb.board)) || (b.id === 'tsou' && /^tsou/.test(lb.board)) || (b.id === 'rcou' && /^rcou/.test(lb.board)) || (b.id === 'eplou' && /^eplou/.test(lb.board)) || (b.id === 'bgfree' && /^bg/.test(lb.board));
+      var onB = b.id === lb.board || (b.id === 'trophies' && /^trophies/.test(lb.board)) || (b.id === '1000ou' && /^1000ou/.test(lb.board)) || (b.id === '4000ou' && /^4000ou/.test(lb.board)) || (b.id === 'bbou' && /^bbou/.test(lb.board)) || (b.id === 'tsou' && /^tsou/.test(lb.board)) || (b.id === 'rcou' && /^rcou/.test(lb.board)) || (b.id === 'eplou' && /^eplou/.test(lb.board)) || (b.id === 'nbaou' && /^nbaou/.test(lb.board)) || (b.id === 'bgfree' && /^bg/.test(lb.board));
       return '<button type="button" role="tab" aria-selected="' + onB + '" class="ca-chip' + (onB ? ' is-on' : '') + '" data-ca="lb-board" data-v="' + b.id + '" title="' + esc(name) + '" aria-label="' + esc(name) + '">' + chipName(b) + '</button>';
     }).join('') + '</div>' + troSub();
     if (status === 'loading') return h + (profileErr ? profileErrCard() : '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>');
@@ -5836,9 +6063,10 @@
       : lb.board === 'nflexact' ? 'Most exact 777s first. Until you land one, your closest full team under 777 counts.'
       : lb.board === 'rcexact' ? 'Most exact 550s first. Until you land one, your closest full card under 550 counts.'
       : lb.board === 'eplexact' ? 'Most exact 650s first. Until you land one, your closest full XI under 650 counts.'
+      : lb.board === 'nbaexact' ? 'Most exact 100000s first. Until you land one, your closest full team under 100000 counts.'
       : lb.board === '4000exact' ? 'Most exact 4000s first. Until you land one, your closest full 18 under 4000 counts.'
       : lb.board === '270perfect' ? 'Most perfect seasons first. Level players rank by their hardest 27-0: Hard Mode, then Classic, then Pack.'
-      : /^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou)/.test(lb.board) ? 'Your longest run of right calls. Level players: fewer Run It Backs first.'
+      : /^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(lb.board) ? 'Your longest run of right calls. Level players: fewer Run It Backs first.'
       : lb.board === 'bgdaily' ? 'Your one go at today&rsquo;s Daily Bingo counts. Most tiles first, then the quicker time.'
       : lb.board === 'bgfree' ? 'Most tiles filled first, then the quicker time.'
       : /^trophies/.test(lb.board) ? 'Every trophy you&rsquo;ve unlocked counts' + (lb.board === 'trophies' ? ', 27-0 and 1000TRIES together' : '') + '. Level players rank by who got there first.' : '';
@@ -5863,7 +6091,7 @@
       var tap = r.g ? ' is-tap" role="button" tabindex="0" data-ca="lb-sheet" data-i="' + i + '" data-rank="' + rank + '" aria-label="See ' + esc(r.n) + '&rsquo;s team'
         : troB ? ' is-tap" role="button" tabindex="0" data-ca="lb-tro" data-n="' + esc(r.n) + '" aria-label="See ' + esc(r.n) + '&rsquo;s trophies' : '';
       return '<li class="ca-lb-row' + (goCol ? ' has-go' : '') + (mine ? ' is-me' : '') + rowTone(r) + (rank <= 3 ? ' is-top' + rank : '') + tap + '">' + posCell(rank) + crest(r, bsp) +
-        '<span class="ca-lb-n">' + nameHtml(r) + (mine ? ' <em>you</em>' : '') + '</span><span class="ca-lb-s">' + fmtScore(lb.board, c.kind, r) + '</span>' +
+        '<span class="ca-lb-n">' + nameHtml(r) + crownOf(lb.board, rank) + (mine ? ' <em>you</em>' : '') + '</span><span class="ca-lb-s">' + fmtScore(lb.board, c.kind, r) + '</span>' +
         (goCol ? '<span class="ca-lb-go" aria-hidden="true">' + (r.g || troB ? '&rsaquo;' : '') + '</span>' : '') + '</li>';
     }).join('') + '</ol>';
     // Outside the top list: show your own row underneath
@@ -5979,6 +6207,10 @@
   var FIELD8 = [[0, 1, 2, 3], [4, 5, 6, 7]];
   // 650 GOALS (17 Oct 2026): a 4-3-3 with no keeper on a football pitch, attacking up the page: the front three at the top,
   // the midfield three, the back four (saved defenders first, as the game's T.SLOTS)
+  // SC POINTS KING (17 Oct 2026): the 13 in SC positions, saved in the game's slot order (js/data.js T.SLOTS): the fullback,
+  // the four centres and wingers, the halves, the front row with the hooker between the props, the back row
+  var POS13SC = ['FLB', 'CTW', 'CTW', 'CTW', 'CTW', '5/8', 'HFB', 'HOK', 'FRF', 'FRF', '2RF', '2RF', '2RF'];
+  var FIELD13SC = [[0], [1, 2, 3, 4], [5, 6], [8, 7, 9], [10, 11, 12]];
   var POS10E = ['DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'FWD'];
   var FIELD10E = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
   /* Since 17 Oct 2026 a 650 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
@@ -5996,11 +6228,15 @@
     '3-4-2-1': [['CB', 'CB', 'CB'], ['LWB', 'CM', 'CM', 'RWB'], ['AM', 'AM'], ['ST']],
     '4-3-1-2': [['LB', 'CB', 'CB', 'RB'], ['CM', 'DM', 'CM'], ['AM'], ['ST', 'ST']]
   };
+  // 100000 POINTS (17 Oct 2026): a starting five on a half court, the hoop at the top: the centre under it, the forwards on
+  // the blocks, the guards out on the arc (the game's js/render.js ROWS; picks saved PG, SG, SF, PF, C)
+  var POS5 = ['PG', 'SG', 'SF', 'PF', 'C'];
+  var FIELD5 = [[4], [3, 2], [0, 1]];
   function eplFm(x) { var f = x && x.game === 'epl' && x.d && x.d.fm; return f && Object.prototype.hasOwnProperty.call(FM10E, f) ? FM10E[f] : null; }
   function fmPos(rows) { return [].concat.apply([], rows); }
   function fmField(rows) { var i = 0; return rows.map(function (r) { return r.map(function () { return i++; }); }).reverse(); }
-  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? POS11 : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
-  function fieldRows(x) { return x && x.game === '4000goals' ? FIELD18 : x && (x.game === 'bigbash' || x.game === 'tests') ? FIELD11 : x && x.game === 'nfl' ? (nfl9(x) ? FIELD9 : FIELD10) : x && x.game === 'racing' ? FIELD8 : x && x.game === 'epl' ? (eplFm(x) ? fmField(eplFm(x)) : FIELD10E) : FIELD; }
+  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? POS11 : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : x && x.game === 'nba' ? POS5 : x && x.game === 'sc' ? POS13SC : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
+  function fieldRows(x) { return x && x.game === '4000goals' ? FIELD18 : x && (x.game === 'bigbash' || x.game === 'tests') ? FIELD11 : x && x.game === 'nfl' ? (nfl9(x) ? FIELD9 : FIELD10) : x && x.game === 'racing' ? FIELD8 : x && x.game === 'epl' ? (eplFm(x) ? fmField(eplFm(x)) : FIELD10E) : x && x.game === 'nba' ? FIELD5 : x && x.game === 'sc' ? FIELD13SC : FIELD; }
   var sheet = null, sheets = {}, sheetMode = lsGet('cast_sheet_view') === 'list' ? 'list' : 'field';
   // Saved names can carry a tag: namesakes ("Ben Jones (Raiders)") and 1000TRIES greats ("Ken Irvine (Legend)")
   function pickName(raw) {
@@ -6074,16 +6310,18 @@
       var tier = pn.tier || extra.tier || '';
       return {
         name: pn.name, tier: tier, pos: posList(x)[i] || 'BEN', src: pickSrc(x, raw, bits, tier), flag: !!mark && mark.indexOf(i) >= 0,
+        cap: x.game === 'sc' && d.cap === i, // SC POINTS KING's SC Captain: his SC points counted twice
         club: clubInfo(bits[0] || extra.club), year: bits[1] || '',
         rating: bits[2] ? +bits[2] : extra.rating, tries: x.tr && x.tr[i] != null ? x.tr[i] : extra.tries
       };
     });
   }
-  function srcCls(p) { return (p.src ? ' is-src is-src-' + PICK_SRC[p.src][3] : '') + (p.flag ? ' is-flagged' : ''); }
+  function srcCls(p) { return (p.src ? ' is-src is-src-' + PICK_SRC[p.src][3] : '') + (p.flag ? ' is-flagged' : '') + (p.cap ? ' is-cap' : ''); }
   // Under the field: what each special card's mark means, for the ones in this team
   function srcKey(ps) {
     var seen = {}, out = [];
     ps.forEach(function (p) { if (p.src && !seen[p.src]) { seen[p.src] = 1; out.push('<span class="ca-src-k is-src-' + PICK_SRC[p.src][3] + '">' + PICK_SRC[p.src][0] + ' ' + PICK_SRC[p.src][2] + '</span>'); } });
+    if (ps.some(function (p) { return p.cap; })) out.push('<span class="ca-src-k is-src-cap">&#x1F396;&#xFE0F; SC Captain: his SC points count double</span>');
     return out.length ? '<p class="ca-src-key">' + out.join('') + '</p>' : '';
   }
   // Under the name: the facts as pills (mode, record and result, squad rating or tries), then when it was played
@@ -6108,7 +6346,7 @@
     var wcN = typeof d.wc === 'number' ? d.wc : typeof d.wcm === 'number' ? d.wcm : null, wcPlus = typeof d.wc !== 'number' && !d.wce;
     // Picks, keys, the GOAT and Run It Back count too (11 Oct 2026, the owner: an 8-0 of 13 Picks said "2 Wildcards")
     var cnt = function (v) { return typeof v === 'number' && v > 0 ? Math.floor(v) : 0; };
-    var extra = cnt(d.ileg) + cnt(d.wcp) + cnt(d.imm) + cnt(d.toty) + cnt(d.prem) + cnt(d.wch) + (d.wchf ? 1 : 0) + (d.goat ? 1 : 0) + (cnt(d.lks) || (d.key ? 1 : 0)) + (d.rib ? 1 : 0);
+    var extra = cnt(d.ileg) + cnt(d.wcp) + cnt(d.imm) + cnt(d.toty) + cnt(d.prem) + cnt(d.wch) + (d.wchf ? 1 : 0) + (d.goat ? 1 : 0) + (cnt(d.lks) || (d.key ? 1 : 0)) + (d.rib ? 1 : 0) + (typeof d.cap === 'number' ? 1 : 0);
     if (extra) wcN = (wcN || 0) + extra;
     if (wcN) pills.push(pill('&#x1F3B2; <b>' + wcN + (wcPlus ? '+' : '') + '</b> Wildcard' + (wcN === 1 && !wcPlus ? '' : 's'), 'is-wc'));
     else if (wcN === 0 && (!wcPlus || (x.mode === 'classic' && d.rat !== 0))) pills.push(pill('&#x1F9CA; No Wildcards', 'is-wc is-clean'));
@@ -6129,12 +6367,12 @@
         return '<div class="ca-spot' + (p.tier ? ' is-' + p.tier : '') + srcCls(p) + '"' + (p.club ? ' style="--t1:' + esc(p.club.bg) + ';--t2:' + esc(p.club.fg) + '"' : '') + ' title="' + esc(p.name + (p.src ? ', ' + PICK_SRC[p.src][2].replace(/&#x[0-9A-F]+;/gi, '') : '')) + '">' +
           '<span class="ca-spot-top"><span class="ca-spot-pos">' + POS[i] + '</span>' + (p.club ? '<span class="ca-spot-club">' + esc(p.club.abbr) + '</span>' : '') + '</span>' +
           '<b class="ca-spot-name' + nameSize(shortName(p.name)) + '">' + esc(shortName(p.name)) + '</b>' +
-          '<span class="ca-spot-meta">' + sheetVal(x, p) + (p.year ? '<small>' + esc(p.year) + '</small>' : '') + (p.tier && !p.src ? '<small>' + tierIco(p) + '</small>' : '') + '</span>' +
+          '<span class="ca-spot-meta">' + sheetVal(x, p) + (p.year ? '<small>' + esc(p.year) + '</small>' : '') + (p.tier && !p.src ? '<small>' + tierIco(p) + '</small>' : '') + (p.cap ? '<small class="ca-spot-cap">C &times;2</small>' : '') + '</span>' +
           (p.src ? '<span class="ca-spot-src">' + PICK_SRC[p.src][0] + ' ' + PICK_SRC[p.src][1] + '</span>' : '') + '</div>';
       }).join('') + '</div>';
     }).join('');
     var bench = ps.slice(POS.length);
-    return '<div class="ca-pitch' + (x && x.game === '4000goals' ? ' is-oval' : x && (x.game === 'bigbash' || x.game === 'tests') ? ' is-ground' : x && x.game === 'nfl' ? ' is-gridiron' + (nfl9(x) ? '' : ' is-ten') : x && x.game === 'racing' ? ' is-track' : x && x.game === 'epl' ? ' is-pitch' : '') + '">' + rows + '</div>' + srcKey(ps) + (bench.length ? sheetList(x, bench, 'Bench') : '');
+    return '<div class="ca-pitch' + (x && x.game === '4000goals' ? ' is-oval' : x && (x.game === 'bigbash' || x.game === 'tests') ? ' is-ground' : x && x.game === 'nfl' ? ' is-gridiron' + (nfl9(x) ? '' : ' is-ten') : x && x.game === 'racing' ? ' is-track' : x && x.game === 'epl' ? ' is-pitch' : x && x.game === 'nba' ? ' is-court' : '') + '">' + rows + '</div>' + srcKey(ps) + (bench.length ? sheetList(x, bench, 'Bench') : '');
   }
   function sheetList(x, ps, title) {
     var clubs = ps.some(function (p) { return p.club; }); // older saves have no clubs: drop the column
@@ -6480,7 +6718,9 @@
     tests: { plus: '60000+', exact: 'Exactly 60000', spin: 'Team Spin', daily: 'the Daily', ou: 'Follow On' },
     nfl: { plus: '777+', exact: 'Exactly 777', spin: 'Team Spin', daily: 'the Daily', ou: 'Two Point' },
     racing: { plus: '550+', exact: 'Exactly 550', spin: 'Team Spin', daily: 'the Daily', ou: 'Photo Finish' },
-    epl: { plus: '650+', exact: 'Exactly 650', spin: 'Team Spin', daily: 'the Daily', ou: 'Extra Time' }
+    epl: { plus: '650+', exact: 'Exactly 650', spin: 'Team Spin', daily: 'the Daily', ou: 'Extra Time' },
+    nba: { plus: '100000+', exact: 'Exactly 100000', spin: 'Team Spin', daily: 'the Daily', ou: 'HIGHER OR LOWER: NBA' },
+    sc: { plus: 'SC POINTS KING', daily: 'the SC POINTS KING Daily' }
   };
   var frSentOpen = false, frFeedAll = false;
   function agoText(t) {
@@ -6495,12 +6735,14 @@
   // "25-2", "1084 tries", "205 Test tries", "4120 goals"
   function frScore(g, m, s, l) {
     if (g === '27-0') return l != null ? s + '-' + l : s + (s === 1 ? ' win' : ' wins');
-    if ((g === '1000tries' || g === '4000goals' || g === 'bigbash' || g === 'tests' || g === 'nfl' || g === 'racing' || g === 'epl') && m === 'ou') return s + ' in a row';
+    if ((g === '1000tries' || g === '4000goals' || g === 'bigbash' || g === 'tests' || g === 'nfl' || g === 'racing' || g === 'epl' || g === 'nba') && m === 'ou') return s + ' in a row';
     if (g === '1000tries' && (m === 'bingo' || m === 'bingod')) return s + (s === 1 ? ' tile' : ' tiles');
     if (g === 'bigbash' || g === 'tests') return fmt(s) + ' runs';
     if (g === 'nfl') return fmt(s) + ' TDs';
     if (g === 'racing') return fmt(s) + ' Group 1 wins';
     if (g === 'epl') return fmt(s) + ' goals';
+    if (g === 'nba') return fmt(s) + ' points';
+    if (g === 'sc') return fmt(s) + ' SC points';
     if (g === '1000tries') return fmt(s) + (m === 'wc' ? ' Test tries' : m === 'nrlw' ? ' NRLW tries' : ' tries');
     if (g === '4000goals') return fmt(s) + (m === 'aflw' ? ' AFLW goals' : ' goals');
     return fmt(s);
@@ -6522,14 +6764,14 @@
     if (!who) return '';
     var n = '<b>' + esc(who.n || '') + '</b>', ico = '&#x1F525;', txt = '', act = '';
     if (e.k === 'big') {
-      ico = e.x === 'perfect' || e.x === 'wc80' ? '&#x1F451;' : e.x === 'exact' || e.x === 'exact4000' || e.x === 'exactbb' || e.x === 'exactts' || e.x === 'exactnfl' || e.x === 'exactrc' || e.x === 'exactepl' ? '&#x1F3AF;' : '&#x1F4AF;';
-      if (e.x === 'ou' || e.x === 'po' || e.x === 'fh' || e.x === 'fo' || e.x === 'tp' || e.x === 'pf' || e.x === 'et') ico = '&#x2195;&#xFE0F;';
+      ico = e.x === 'perfect' || e.x === 'wc80' ? '&#x1F451;' : e.x === 'exact' || e.x === 'exact4000' || e.x === 'exactbb' || e.x === 'exactts' || e.x === 'exactnfl' || e.x === 'exactrc' || e.x === 'exactepl' || e.x === 'exactnba' ? '&#x1F3AF;' : '&#x1F4AF;';
+      if (e.x === 'ou' || e.x === 'po' || e.x === 'fh' || e.x === 'fo' || e.x === 'tp' || e.x === 'pf' || e.x === 'et' || e.x === 'hlnba') ico = '&#x2195;&#xFE0F;';
       if (e.x === 'bingo') ico = '&#x1F389;';
-      txt = e.x === 'bingo' ? 'got a Full House in ' + (e.m === 'bingod' ? 'the Daily Bingo' : 'NRL Bingo') : e.x === 'ou' ? 'called ' + e.s + ' in a row in Six Again' : e.x === 'po' ? 'called ' + e.s + ' in a row in Play On' : e.x === 'fh' ? 'called ' + e.s + ' in a row in Free Hit' : e.x === 'fo' ? 'called ' + e.s + ' in a row in Follow On' : e.x === 'tp' ? 'called ' + e.s + ' in a row in Two Point' : e.x === 'pf' ? 'called ' + e.s + ' in a row in Photo Finish' : e.x === 'et' ? 'called ' + e.s + ' in a row in Extra Time' : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 777' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'exactepl' ? 'landed Exactly 500' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
+      txt = e.x === 'bingo' ? 'got a Full House in ' + (e.m === 'bingod' ? 'the Daily Bingo' : 'NRL Bingo') : e.x === 'ou' ? 'called ' + e.s + ' in a row in Six Again' : e.x === 'po' ? 'called ' + e.s + ' in a row in Play On' : e.x === 'fh' ? 'called ' + e.s + ' in a row in Free Hit' : e.x === 'fo' ? 'called ' + e.s + ' in a row in Follow On' : e.x === 'tp' ? 'called ' + e.s + ' in a row in Two Point' : e.x === 'pf' ? 'called ' + e.s + ' in a row in Photo Finish' : e.x === 'et' ? 'called ' + e.s + ' in a row in Extra Time' : e.x === 'hlnba' ? 'called ' + e.s + ' in a row in HIGHER OR LOWER: NBA' : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 777' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'exactepl' ? 'landed Exactly 650' : e.x === 'exactnba' ? 'landed Exactly 100000' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
         : e.x === 'exact' ? 'landed Exactly 1000' : e.x === 'exact4000' ? 'landed Exactly 4000'
         : e.x === 'wc200' ? 'reached World Cup 200+ with ' + frScore(e.g, 'wc', e.s) : e.x === 'nrlw250' ? 'reached NRLW 250+ with ' + frScore(e.g, 'nrlw', e.s)
         : e.x === 'aflw750' ? 'reached AFLW 750+ with ' + frScore(e.g, 'aflw', e.s)
-        : 'hit ' + (e.g === '4000goals' ? '4000+' : e.g === 'bigbash' ? '25000+' : e.g === 'tests' ? '60000+' : e.g === 'nfl' ? '777+' : e.g === 'racing' ? '550+' : e.g === 'epl' ? '650+' : '1000+') + ' with ' + frScore(e.g, e.m, e.s);
+        : 'hit ' + (e.g === '4000goals' ? '4000+' : e.g === 'bigbash' ? '25000+' : e.g === 'tests' ? '60000+' : e.g === 'nfl' ? '777+' : e.g === 'racing' ? '550+' : e.g === 'epl' ? '650+' : e.g === 'nba' ? '100000+' : '1000+') + ' with ' + frScore(e.g, e.m, e.s);
     } else if (e.k === 'pb') {
       ico = '&#x1F4C8;'; txt = 'set a new best' + frModeIn(e.g, e.m) + ': ' + frScore(e.g, e.m, e.s, e.l);
     } else if (e.k === 'daily') {
@@ -7151,7 +7393,7 @@
      results go head to head. A free CAST Profile can have 3 challenges waiting on friends at once; CAST Pass is unlimited,
      with Rematch. The server keeps them (challengeSend, challengeGet, challengeDecline; results land from the game
      itself, tagged d.ch). The host game starts a challenge through CAST_ACCOUNT.startChallenge({ mode, seed, cfg }). */
-  var CH_MODES = { '27-0': ['classic', 'hard'], '1000tries': ['plus', 'spin', 'nrlw', 'exact'], '4000goals': ['plus', 'spin', 'aflw', 'exact'], bigbash: ['plus', 'spin', 'exact'], tests: ['plus', 'spin', 'exact'], nfl: ['plus', 'spin', 'exact'], racing: ['plus', 'spin', 'exact'], epl: ['plus', 'spin', 'exact'] };
+  var CH_MODES = { '27-0': ['classic', 'hard'], '1000tries': ['plus', 'spin', 'nrlw', 'exact'], '4000goals': ['plus', 'spin', 'aflw', 'exact'], bigbash: ['plus', 'spin', 'exact'], tests: ['plus', 'spin', 'exact'], nfl: ['plus', 'spin', 'exact'], racing: ['plus', 'spin', 'exact'], epl: ['plus', 'spin', 'exact'], nba: ['plus', 'spin', 'exact'], sc: ['plus'] };
   var activeCh = null, lastCh = null, chSend = null, rematchTo = null;
   // Play a New Game (from Send a Challenge): who the next finished game goes to, and how sending it went
   var chFresh = null, sentFor = null; // chFresh: who the new game being played goes to (not playFor(board), the leaderboard helper)
@@ -7190,7 +7432,7 @@
   function chKey(game, mode, x) {
     if (!x) return null;
     if (game === '27-0') return [x.s, -(x.l || 0) * 1000 + (typeof x.r === 'number' ? Math.min(999, Math.round(x.r * 10)) : 0)];
-    if (mode === 'exact') return [x.s > (game === '4000goals' ? 4000 : game === 'bigbash' ? 25000 : game === 'tests' ? 60000 : game === 'nfl' ? 777 : game === 'racing' ? 550 : game === 'epl' ? 500 : 1000) ? -1 : x.s, 0];
+    if (mode === 'exact') return [x.s > (game === '4000goals' ? 4000 : game === 'bigbash' ? 25000 : game === 'tests' ? 60000 : game === 'nfl' ? 777 : game === 'racing' ? 550 : game === 'epl' ? 650 : game === 'nba' ? 100000 : 1000) ? -1 : x.s, 0];
     return [x.s, 0];
   }
   function chWinner(game, mode, me, them) {
@@ -7201,7 +7443,7 @@
   }
   function chScore(game, mode, x) {
     if (!x) return '-';
-    var G = GAMES[game === '27-0' ? (mode === 'hard' ? '27-0-hard' : '27-0') : game === '4000goals' ? (mode === 'aflw' ? '4000goals-aflw' : '4000goals') : game === 'bigbash' ? 'bigbash' : game === 'tests' ? 'tests' : game === 'nfl' ? 'nfl' : game === 'racing' ? 'racing' : game === 'epl' ? 'epl' : mode === 'nrlw' ? '1000tries-nrlw' : '1000tries'] || {};
+    var G = GAMES[game === '27-0' ? (mode === 'hard' ? '27-0-hard' : '27-0') : game === '4000goals' ? (mode === 'aflw' ? '4000goals-aflw' : '4000goals') : game === 'bigbash' ? 'bigbash' : game === 'tests' ? 'tests' : game === 'nfl' ? 'nfl' : game === 'racing' ? 'racing' : game === 'epl' ? 'epl' : game === 'nba' ? 'nba' : game === 'sc' ? 'sc' : mode === 'nrlw' ? '1000tries-nrlw' : '1000tries'] || {};
     return G.record ? recordText(G, x.s, x.l || 0) : fmt(x.s) + ' <small>' + esc(G.unit || '') + '</small>';
   }
   function chMode(game, mode) { var G = GAMES[game] || { modes: {} }; return (G.name || game) + ' ' + (G.modes[mode] || mode); }
@@ -7622,6 +7864,8 @@
     rib3: { ico: '&#x23EA;', name: '3 Run It Backs', price: '$1.99', what: 'Just 66c each', kind: 'rib', n: 3, best: true, chip: 'Save 33%' },
     // The Wild Tile (NRL Bingo, 17 Oct 2026): A$2.99, on sale once NRL Bingo is launched
     wild1: { ico: '&#x1F0CF;', name: '1 Wild Tile', price: '$2.99', what: 'Fill any open tile on your NRL Bingo card', kind: 'wild', n: 1, chip: 'Instant', sub: 'Fill any open tile on your NRL Bingo card' },
+    // The SC Captain (SC POINTS KING, 17 Oct 2026): A$4.99, on sale once SC POINTS KING is launched
+    cap1: { ico: '&#x1F396;&#xFE0F;', name: '1 SC Captain', price: '$4.99', what: 'His SC points count double in SC POINTS KING', kind: 'cap', n: 1, chip: 'Instant', sub: 'His SC points count double in SC POINTS KING' },
     // The GOAT (29 Sep 2026; every draft game from 16 Oct 2026): this game's GOAT as your next pick. Shop only
     goat1: { ico: '&#x1F410;', name: 'The GOAT', price: '$9.99', what: 'The #1 of whichever game you use it in', kind: 'goat', n: 1, tag: 'The GOAT',
       sub: GOAT_HERE ? GOAT_HERE[1] + ' ' + GOAT_HERE[2] + (GOAT_HERE[3] ? (/^at /.test(GOAT_HERE[3]) ? ' ' : ', ') + GOAT_HERE[3] : '') : 'The all-time great of whichever game you play' },
@@ -7630,7 +7874,7 @@
     restore: { ico: '&#x1F525;', name: 'Streak Restore', short: 'Restore', price: '$4.99', what: 'Your streak back', kind: 'restore', n: 1, chip: 'One Time Only' }
   };
   // The pack's item: 'reroll', 'remove', 'reveal', 'rib', 'freeze' or 'key'
-  function packItem(id) { return ({ rr: 'reroll', rm: 'remove', rv: 'reveal', rib: 'rib', fz: 'freeze', key: 'key', goat: 'goat', toty: 'toty', prem: 'prem', imm: 'imm', wcp: 'wcp', ileg: 'ileg', wch: 'wch', wild: 'wild', restore: 'restore' })[(PACKS[id] || {}).kind] || 'reroll'; }
+  function packItem(id) { return ({ rr: 'reroll', rm: 'remove', rv: 'reveal', rib: 'rib', fz: 'freeze', key: 'key', goat: 'goat', toty: 'toty', prem: 'prem', imm: 'imm', wcp: 'wcp', ileg: 'ileg', wch: 'wch', wild: 'wild', cap: 'captain', restore: 'restore' })[(PACKS[id] || {}).kind] || 'reroll'; }
   // "3 Legend Keys", or 4 for a CAST Pass holder (n: what the checkout said); a single key is always 1
   function packLabel(id, n) {
     var P = PACKS[id];
@@ -7647,7 +7891,7 @@
   }
   function openShop(from) { shopFresh(from || 'link'); open('shop'); }
   function shopBuy(id) {
-    if (!PACKS[id] || (PACKS[id].kind === 'imm' && !immOn()) || (PACKS[id].kind === 'ileg' && !ilegOn()) || (PACKS[id].kind === 'wch' && !wchOn()) || (PACKS[id].kind === 'wild' && !bingoOn())) return;
+    if (!PACKS[id] || (PACKS[id].kind === 'imm' && !immOn()) || (PACKS[id].kind === 'ileg' && !ilegOn()) || (PACKS[id].kind === 'wch' && !wchOn()) || (PACKS[id].kind === 'wild' && !bingoOn()) || (PACKS[id].kind === 'cap' && !gateOpen('sc'))) return;
     if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
     track('shop_pack_tap', { game: CFG.game, pack: id });
     rrShop(CFG.game, null, 'starting', null, packItem(id), PACKS[id].key); // the pop-up in that item's colour
@@ -7681,6 +7925,7 @@
     ['superstar', '&#x1F31F;', 'Superstar Keys', '27-0\u2019s own key: your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
     ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run a 27-0 season back and your closest loss becomes a win, or keep an over/under streak alive.', '', ['rib3', 'rib1']],
     ['wild', '&#x1F0CF;', 'Wild Tile', 'Fill any one open tile on your NRL Bingo card, your choice. The player on the card stays.', 'NRL Bingo, any time', ['wild1']],
+    ['cap', '&#x1F396;&#xFE0F;', 'SC Captain', 'Once your 13 is complete, make one season your Captain and his SC points count double. One per game.', 'SC POINTS KING Classic, once your 13 is complete', ['cap1']],
     ['fz', '&#x1F9CA;', 'Streak Freeze', 'Miss a day and it is used by itself, so your streak lives on. You can hold one at a time.', '', ['freeze1']]
   ];
   /* One Shop and one Vault for every CAST game (16 Oct 2026, the owner: "you can use the shop as a universal tool to
@@ -7688,7 +7933,7 @@
      game's page, in the same order, and spends from the same count wherever it is used, except the special ones, sold
      only where they work and tagged "Only in". SHOP_ONLY: the games a special item works in. SHOP_WORKS: where a general
      item works, when that is less than every CAST game */
-  var SHOP_ONLY = { wch: ['27-0'], toty: ['27-0'], prem: ['27-0'], wcp: ['27-0'], ileg: ['27-0', '1000tries'], imm: ['27-0', '1000tries'], superstar: ['27-0'], wild: ['1000tries'] };
+  var SHOP_ONLY = { wch: ['27-0'], toty: ['27-0'], prem: ['27-0'], wcp: ['27-0'], ileg: ['27-0', '1000tries'], imm: ['27-0', '1000tries'], superstar: ['27-0'], wild: ['1000tries'], cap: ['sc'] };
   // A special item's "Only in" words when they are not its sites' names (the Wild Tile: NRL Bingo, a 1000TRIES mode)
   var SHOP_ONLY_WORDS = { wild: 'NRL Bingo' };
   var SHOP_WORKS = { legend: 'every CAST draft game', goat: 'every CAST draft game', rib: '27-0 and every over/under game' };
@@ -7702,19 +7947,19 @@
     return '<p class="ca-shop-where">Works in ' + w + '</p>';
   }
   // The Shop's items right now: Streak Freezes once the server has them, the Team of the Year Pick while the promo runs
-  function shopList() { return SHOP_ITEMS.filter(function (it) { return (it[0] !== 'fz' || fzOn) && (it[0] !== 'toty' || totyOn()) && (it[0] !== 'prem' || premOn()) && (it[0] !== 'imm' || immOn()) && (it[0] !== 'wcp' || wcpOn()) && (it[0] !== 'ileg' || ilegOn()) && (it[0] !== 'wch' || wchOn()) && (it[0] !== 'wild' || bingoOn()); }); }
+  function shopList() { return SHOP_ITEMS.filter(function (it) { return (it[0] !== 'fz' || fzOn) && (it[0] !== 'toty' || totyOn()) && (it[0] !== 'prem' || premOn()) && (it[0] !== 'imm' || immOn()) && (it[0] !== 'wcp' || wcpOn()) && (it[0] !== 'ileg' || ilegOn()) && (it[0] !== 'wch' || wchOn()) && (it[0] !== 'wild' || bingoOn()) && (it[0] !== 'cap' || gateOpen('sc')); }); }
   // Where an item works: the Premiers Pick's says until when, and the World Champions Pick when its Picks expire
   function shopWhere(it) {
     if (it[0] === 'wch') return '27-0 World Cup 8-0. Use it by ' + wchEndText() + '. Unused Picks expire when World Champions ends.';
     if (it[0] !== 'prem') return it[4]; var end = premCopy(); return '27-0' + (end ? ' until ' + end : ' while the Premiers promo runs') + '. Any left then become 3 Superstar Keys each.'; }
   // How each item in your Vault gets used (the Vault's labels)
   var VAULT_HOW = { wch: 'Tap World Champions Pick with your wildcards in 27-0 World Cup 8-0 by 11:59pm Sun 22 Nov. Unused Picks expire then', wcp: 'Tap 88+ Pick with your wildcards in 27-0 World Cup 8-0', ileg: 'Tap World Legend Pick with your wildcards in 27-0 World Cup 8-0 or 1000TRIES World Cup 200+', toty: 'Tap Team of the Year Pick with your wildcards in 27-0 before 03 October, 08:00 AM AEST', prem: 'Tap Premiers Pick with your wildcards in 27-0 while the Premiers promo runs', imm: 'Tap Immortal Pick with your wildcards in 27-0 or 1000TRIES', goat: 'Tap The GOAT with your wildcards in any draft game\u2019s main mode or Exactly', rr: 'Used after your free rerolls in a draft', rm: 'Used after your free Remove Player', rv: 'Used after your free Reveal',
-    legend: 'Tap the Legend Key with your wildcards in any draft game\u2019s main mode', superstar: 'Tap the Superstar Key with your wildcards in 27-0', rib: 'Offered after a 27-0 Classic season, or when an over/under streak ends', wild: 'Tap Wild Tile on your NRL Bingo card', fz: 'Applied and ready, just in case you miss a day' };
+    legend: 'Tap the Legend Key with your wildcards in any draft game\u2019s main mode', superstar: 'Tap the Superstar Key with your wildcards in 27-0', rib: 'Offered after a 27-0 Classic season, or when an over/under streak ends', wild: 'Tap Wild Tile on your NRL Bingo card', cap: 'Offered in SC POINTS KING Classic once your 13 is complete', fz: 'Applied and ready, just in case you miss a day' };
   // A count before an item name: in words when the name starts with a number ("Three 88+ Picks", never "3 88+ Picks")
   var NUM_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
   function countName(n, name) { return (/^\d/.test(name) && NUM_WORDS[n] ? NUM_WORDS[n] : n) + ' ' + name; }
   var VAULT_NAME = { wch: ['World Champions Pick', 'World Champions Picks'], wcp: ['88+ Pick', '88+ Picks'], ileg: ['World Legend Pick', 'World Legend Picks'], toty: ['Team of the Year Pick', 'Team of the Year Picks'], prem: ['Premiers Pick', 'Premiers Picks'], imm: ['Immortal Pick', 'Immortal Picks'], goat: ['GOAT', 'GOATs'], rr: ['Reroll', 'Rerolls'], rm: ['Remove Player', 'Remove Players'], rv: ['Reveal', 'Reveals'], legend: ['Legend Key', 'Legend Keys'],
-    superstar: ['Superstar Key', 'Superstar Keys'], rib: ['Run It Back', 'Run It Backs'], wild: ['Wild Tile', 'Wild Tiles'], fz: ['Streak Freeze', 'Streak Freezes'] };
+    superstar: ['Superstar Key', 'Superstar Keys'], rib: ['Run It Back', 'Run It Backs'], wild: ['Wild Tile', 'Wild Tiles'], cap: ['SC Captain', 'SC Captains'], fz: ['Streak Freeze', 'Streak Freezes'] };
   /* Your Vault, labelled: every item you have, how many, and how it gets used. Empty, one line says what it is for.
      A CAST Pass holder also sees today's keys and the month's free Streak Freeze.
      Folded (1 Oct 2026, the owner's call: a full Vault pushed the Shop off the screen): one line of what you have, icon and
@@ -7723,7 +7968,7 @@
   var vlOpen = false;
   function vaultList() {
     var pass = hasPass(), sold = shopList();
-    var count = { wch: itemSaved('wch'), wcp: itemSaved('wcp'), ileg: itemSaved('ileg'), toty: itemSaved('toty'), prem: itemSaved('prem'), imm: itemSaved('imm'), goat: itemSaved('goat'), rr: rerollsSaved(), rm: removesSaved(), rv: itemSaved('reveal'), legend: keysOwned('legend'), superstar: keysOwned('superstar'), rib: itemSaved('rib'), wild: itemSaved('wild'), fz: fzOwned };
+    var count = { wch: itemSaved('wch'), wcp: itemSaved('wcp'), ileg: itemSaved('ileg'), toty: itemSaved('toty'), prem: itemSaved('prem'), imm: itemSaved('imm'), goat: itemSaved('goat'), rr: rerollsSaved(), rm: removesSaved(), rv: itemSaved('reveal'), legend: keysOwned('legend'), superstar: keysOwned('superstar'), rib: itemSaved('rib'), wild: itemSaved('wild'), cap: itemSaved('captain'), fz: fzOwned };
     var items = SHOP_ITEMS.filter(function (it) { return sold.indexOf(it) >= 0 || count[it[0]] > 0; });
     var FREE = { rr: 'left', rm: 'removes', rv: 'reveals', rib: 'ribs', legend: 'legend', superstar: 'superstar' }; // Daily rewards that run out
     var rows = items.filter(function (it) { return count[it[0]] > 0; }).map(function (it) {
@@ -7776,7 +8021,7 @@
     if (status !== 'signed-in') return '';
     var pass = hasPass(), young = !canBuyReroll();
     var have = function (k) {
-      var x = k === 'wch' ? itemSaved('wch') + (wchFreeNow() ? 1 : 0) : k === 'wcp' ? itemSaved('wcp') + (wcpFreeNow() ? 1 : 0) : k === 'ileg' ? itemSaved('ileg') + (ilegFreeNow() ? 1 : 0) : k === 'toty' ? itemSaved('toty') + (totyFreeNow() ? 1 : 0) : k === 'prem' ? itemSaved('prem') + (premFreeNow() ? 1 : 0) : k === 'imm' ? itemSaved('imm') : k === 'goat' ? itemSaved('goat') : k === 'rr' ? rerollsSaved() : k === 'rm' ? removesSaved() : k === 'rv' ? itemSaved('reveal') : k === 'rib' ? itemSaved('rib') : k === 'wild' ? itemSaved('wild') : k === 'fz' ? fzOwned : keysOwned(k);
+      var x = k === 'wch' ? itemSaved('wch') + (wchFreeNow() ? 1 : 0) : k === 'wcp' ? itemSaved('wcp') + (wcpFreeNow() ? 1 : 0) : k === 'ileg' ? itemSaved('ileg') + (ilegFreeNow() ? 1 : 0) : k === 'toty' ? itemSaved('toty') + (totyFreeNow() ? 1 : 0) : k === 'prem' ? itemSaved('prem') + (premFreeNow() ? 1 : 0) : k === 'imm' ? itemSaved('imm') : k === 'goat' ? itemSaved('goat') : k === 'rr' ? rerollsSaved() : k === 'rm' ? removesSaved() : k === 'rv' ? itemSaved('reveal') : k === 'rib' ? itemSaved('rib') : k === 'wild' ? itemSaved('wild') : k === 'cap' ? itemSaved('captain') : k === 'fz' ? fzOwned : keysOwned(k);
       if (k === 'fz') return '<strong class="ca-shop-badge' + (x ? '' : ' is-none') + '">' + (x ? 'Ready' : 'None yet') + '</strong>'; // one at a time: no count
       return '<strong class="ca-shop-badge' + (x ? '' : ' is-none') + '">' + (x ? 'You have ' + x : 'None yet') + '</strong>';
     };
@@ -7841,7 +8086,7 @@
      and 10% off from $20, and a CAST Pass member another 5% once a bag discount applies. The server prices it again from
      the item list at checkout (this page's numbers are only for show). The bag is kept on this device, per account. */
   var LS_BAG = 'cast_bag_v1', BAG_TIERS = [[2000, 10], [1000, 5]], BAG_PASS = 5;
-  var BAG_MAX = { rr: 60, rm: 60, rv: 60, legend: 30, superstar: 30, rib: 30, goat: 5, fz: 1, imm: 12, ileg: 12, wcp: 12, wch: 12, prem: 12, toty: 12, wild: 30 };
+  var BAG_MAX = { rr: 60, rm: 60, rv: 60, legend: 30, superstar: 30, rib: 30, goat: 5, fz: 1, imm: 12, ileg: 12, wcp: 12, wch: 12, prem: 12, toty: 12, wild: 30, cap: 10 };
   function bagGet() {
     var uid = user && user.uid;
     try { var b = JSON.parse(lsGet(LS_BAG) || 'null'); return b && b.uid === uid && b.q && typeof b.q === 'object' ? b.q : {}; } catch (e) { return {}; }
@@ -8037,18 +8282,18 @@
       deep.at = Date.now(); deep.loading = false; render();
     }, function () { deep.loading = false; deep.err = 'Could not load your games. Try again in a moment.'; render(); });
   }
-  function famOf(g) { return g.game === '27-0' ? '27-0' : g.game === '4000goals' ? '4000goals' : g.game === 'bigbash' ? 'bigbash' : g.game === 'tests' ? 'tests' : g.game === 'nfl' ? 'nfl' : g.game === 'racing' ? 'racing' : g.game === 'epl' ? 'epl' : '1000tries'; }
+  function famOf(g) { return g.game === '27-0' ? '27-0' : g.game === '4000goals' ? '4000goals' : g.game === 'bigbash' ? 'bigbash' : g.game === 'tests' ? 'tests' : g.game === 'nfl' ? 'nfl' : g.game === 'racing' ? 'racing' : g.game === 'epl' ? 'epl' : g.game === 'nba' ? 'nba' : g.game === 'sc' ? 'sc' : '1000tries'; }
   function isWin(g) { var G = GAMES[bucketOf(g)] || {}; return (G.wins || []).indexOf(g.result) >= 0; }
   // Higher is better within a mode: 27-0 wins, then fewer losses, then rating; Exactly 1000 closest without going over
   function rankKey(g) {
     if (g.game === '27-0') return g.score * 1000 - (lossesOf(g) || 0) * 10 + (typeof (g.d || {}).rating === 'number' ? g.d.rating / 100 : 0);
-    return g.mode === 'exact' && g.score > (g.game === '4000goals' ? 4000 : g.game === 'bigbash' ? 25000 : g.game === 'tests' ? 60000 : g.game === 'nfl' ? 777 : g.game === 'racing' ? 550 : g.game === 'epl' ? 500 : 1000) ? -1 : g.score;
+    return g.mode === 'exact' && g.score > (g.game === '4000goals' ? 4000 : g.game === 'bigbash' ? 25000 : g.game === 'tests' ? 60000 : g.game === 'nfl' ? 777 : g.game === 'racing' ? 550 : g.game === 'epl' ? 650 : g.game === 'nba' ? 100000 : 1000) ? -1 : g.score;
   }
   function scoreText(g) { var G = GAMES[bucketOf(g)] || {}; return G.record && lossesOf(g) != null ? recordText(G, g.score, lossesOf(g)) : fmt(g.score) + ' <small>' + esc(G.unit || '') + '</small>'; }
   function modeKey(g) { return g.game + ':' + g.mode; }
   function modeLabel(g) { var G = GAMES[bucketOf(g)] || { modes: {} }; return g.mode === 'daily' ? 'Daily' : (G.modes[g.mode] || g.mode); }
   function pct(a, b) { return b ? Math.round(a / b * 100) : 0; }
-  function deepFams() { return ['27-0', '1000tries', '4000goals', 'bigbash', 'tests', 'nfl', 'racing', 'epl'].filter(function (f) { return shown(f) && (deep.games || []).some(function (g) { return famOf(g) === f; }); }); }
+  function deepFams() { return ['27-0', '1000tries', '4000goals', 'bigbash', 'tests', 'nfl', 'racing', 'epl', 'nba', 'sc'].filter(function (f) { return shown(f) && (deep.games || []).some(function (g) { return famOf(g) === f; }); }); }
   function deepSection() {
     if (status !== 'signed-in') return '';
     if (!hasPass()) return deepTeaser();
@@ -8084,7 +8329,7 @@
     var byMode = {};
     gs.forEach(function (g) { (byMode[modeKey(g)] = byMode[modeKey(g)] || []).push(g); });
     var modes = Object.keys(byMode).sort(function (a, b) { return byMode[b].length - byMode[a].length; });
-    var main = byMode[modes[0]].slice().sort(function (a, b) { return a.at - b.at; }), unit = fam === '27-0' ? 'wins' : fam === '4000goals' ? 'goals' : fam === 'bigbash' || fam === 'tests' ? 'runs' : fam === 'nfl' ? 'TDs' : fam === 'racing' ? 'G1 wins' : fam === 'epl' ? 'goals' : 'tries';
+    var main = byMode[modes[0]].slice().sort(function (a, b) { return a.at - b.at; }), unit = fam === '27-0' ? 'wins' : fam === '4000goals' ? 'goals' : fam === 'bigbash' || fam === 'tests' ? 'runs' : fam === 'nfl' ? 'TDs' : fam === 'racing' ? 'G1 wins' : fam === 'epl' ? 'goals' : fam === 'nba' ? 'points' : fam === 'sc' ? 'SC points' : 'tries';
     if (main.length >= 6) {
       var avg = function (l) { return l.reduce(function (t, g) { return t + g.score; }, 0) / l.length; };
       var n5 = Math.min(5, Math.floor(main.length / 2)), now = avg(main.slice(-n5)), before = avg(main.slice(-2 * n5, -n5)), diff = now - before;
@@ -8094,7 +8339,7 @@
     }
     // Every mode
     // 27-0: a "win" is a premiership, while the average counts match wins in a season, so the columns say which is which
-    var cols = fam === '27-0' ? ['Seasons', 'Premiers', 'Avg Wins'] : ['Games', 'Win %', fam === '4000goals' ? 'Avg Goals' : fam === 'bigbash' || fam === 'tests' ? 'Avg Runs' : fam === 'nfl' ? 'Avg TDs' : fam === 'racing' ? 'Avg G1 Wins' : fam === 'epl' ? 'Avg Goals' : 'Avg Tries'];
+    var cols = fam === '27-0' ? ['Seasons', 'Premiers', 'Avg Wins'] : ['Games', 'Win %', fam === '4000goals' ? 'Avg Goals' : fam === 'bigbash' || fam === 'tests' ? 'Avg Runs' : fam === 'nfl' ? 'Avg TDs' : fam === 'racing' ? 'Avg G1 Wins' : fam === 'epl' ? 'Avg Goals' : fam === 'nba' ? 'Avg Points' : fam === 'sc' ? 'Avg SC Points' : 'Avg Tries'];
     h += '<h4 class="ca-deep-t">Every Mode</h4><div class="ca-deep-modes"><div class="ca-deep-mrow is-head"><span>Mode</span><span>' + cols[0] + '</span><span>' + cols[1] + '</span><span>' + cols[2] + '</span></div>' + modes.map(function (k) {
       var l = byMode[k], w = l.filter(isWin).length, a = l.reduce(function (t, g) { return t + g.score; }, 0) / l.length;
       return '<div class="ca-deep-mrow"><span>' + esc(modeLabel(l[0])) + '</span><span>' + fmt(l.length) + '</span><span>' + pct(w, l.length) + '%</span><span>' + (fam === '27-0' ? (Math.round(a * 10) / 10).toFixed(1) : fmt(a)) + '</span></div>';
@@ -8226,7 +8471,9 @@
     tsplus: '60000+', tsexact: 'Exactly 60000', tsspin: '60000 RUNS Team Spin', tsdaily: '60000 RUNS Daily',
     nflplus: '777+', nflexact: 'Exactly 777', nflspin: '777 TDS Team Spin', nfldaily: '777 TDS Daily',
     rcplus: '550+', rcexact: 'Exactly 550', rcspin: 'G1 WINNER SPINNER Team Spin', rcdaily: 'G1 WINNER SPINNER Daily',
-    eplplus: '650+', eplexact: 'Exactly 650', eplspin: '650 GOALS Team Spin', epldaily: '650 GOALS Daily' };
+    eplplus: '650+', eplexact: 'Exactly 650', eplspin: '650 GOALS Team Spin', epldaily: '650 GOALS Daily',
+    nbaplus: '100000+', nbaexact: 'Exactly 100000', nbaspin: '100000 POINTS Team Spin', nbadaily: '100000 POINTS Daily',
+    scplus: 'SC POINTS KING', scdaily: 'SC POINTS KING Daily' };
   function boardName(id) {
     var b = BOARDS.filter(function (x) { return id.indexOf(x.id + '_') === 0 || id === x.id + '_all'; })[0];
     if (id === 'photo') return 'Profile Photo';
@@ -8287,7 +8534,7 @@
      Admin button and Overview's glance row. */
   var IB_TYPES = [['bug', '&#x1F41E;', 'Report a Bug'], ['pay', '&#x1F4B3;', 'Payment or Purchase'], ['account', '&#x1F464;', 'My Account'], ['idea', '&#x1F4A1;', 'Idea or Feedback'], ['other', '&#x1F4AC;', 'Something Else']];
   var IB_ST = [['new', 'New', '248,113,113'], ['prog', 'In Progress', '96,165,250'], ['done', 'Done', '74,222,128']]; // red, blue, green: never gold
-  var IB_SITES = { '1000tries': '1000TRIES', '27-0': '27-0', '4000goals': '4000 GOALS', bigbash: '25000 RUNS', tests: '60000 RUNS', nfl: '777 TDS', racing: 'G1 WINNER SPINNER', epl: '650 GOALS', castgames: 'CAST Games' };
+  var IB_SITES = { '1000tries': '1000TRIES', '27-0': '27-0', '4000goals': '4000 GOALS', bigbash: '25000 RUNS', tests: '60000 RUNS', nfl: '777 TDS', racing: 'G1 WINNER SPINNER', epl: '650 GOALS', nba: '100000 POINTS', sc: 'SC POINTS KING', castgames: 'CAST Games' };
   function ibType(k) { return IB_TYPES.filter(function (t) { return t[0] === k; })[0] || ['other', '&#x1F4AC;', 'Something Else']; }
   function ibSt(k) { return IB_ST.filter(function (t) { return t[0] === k; })[0] || IB_ST[0]; }
   // When: "5 mins ago" for the last hour, then the day and time in Sydney ("Today 4:12pm", "Thu 16 Oct 4:12pm")
@@ -8489,7 +8736,7 @@
     return '<button type="button" class="ca-link ca-back" data-ca="adm-launches-back">&larr; Overview</button>' +
       '<div class="ca-ov-h"><h3 class="ca-h3">Launches</h3></div>' +
       '<p class="ca-ov-note">Each of these goes live for everyone. Every one asks you to confirm first.</p>' +
-      launchCard(d) + ouLaunchCard(d) + ouLaunchCard(d, 'po') + ouLaunchCard(d, 'bingo') + wchCard();
+      launchAllCard(d) + launchCard(d) + ouLaunchCard(d) + ouLaunchCard(d, 'po') + ouLaunchCard(d, 'bingo') + wchCard();
   }
   function admOverview() {
     admOv();
@@ -8545,6 +8792,7 @@
         ['World Champions Pick Sales' + buys(rev && rev.wchBuys), rev ? money(rev.wchs || 0) : null, sk('wchs'), 'World Champions Pick Sales'],
         ['Streak Restore Sales' + buys(rev && rev.restoreBuys), rev ? money(rev.restores || 0) : null, sk('restores'), 'Streak Restore Sales'],
         ['Wild Tile Sales' + buys(rev && rev.wildBuys), rev ? money(rev.wilds || 0) : null, sk('wilds'), 'Wild Tile Sales'],
+        ['SC Captain Sales' + buys(rev && rev.capBuys), rev ? money(rev.caps || 0) : null, sk('caps'), 'SC Captain Sales'],
         ['Total Collected', tot == null ? null : money(tot), sk(''), 'All Sales']],
         (rev ? 'Collected: every payment so far (monthly and yearly passes, rerolls, Remove Players, Reveals, keys, Run It Backs, Streak Freezes, GOATs, Team of the Year Picks, Premiers Picks, Immortal Picks, 88+ Picks, World Legend Picks and Streak Restores), after refunds and before Stripe fees.' + (rev.other ? ' Other Stripe payments: ' + money(rev.other) + '.' : '') +
           (rev.asOf ? ' Sales update every 5 minutes (last: ' + ago(rev.asOf) + '). Refresh brings in the newest.' : '') +
@@ -8656,7 +8904,7 @@
       return [name, money(p.d || 0) + (p.nd ? ' (' + p.nd + ')' : ''), money(p.w || 0) + (p.nw ? ' (' + p.nw + ')' : ''), money(all || 0) + (buysAll ? '<small>' + fmt(buysAll) + ' bought</small>' : ''), sk(k), SALE_HEADS[k]];
     };
     var ITEMS_K = [['rerolls', 'Rerolls', 'rerollBuys'], ['removes', 'Remove Players', 'removeBuys'], ['reveals', 'Reveals', 'revealBuys'], ['keys', 'Keys', 'keyBuys'], ['ribs', 'Run It Backs', 'ribBuys'],
-      ['freezes', 'Streak Freezes', 'freezeBuys'], ['restores', 'Streak Restores', 'restoreBuys'], ['wilds', 'Wild Tiles', 'wildBuys']];
+      ['freezes', 'Streak Freezes', 'freezeBuys'], ['restores', 'Streak Restores', 'restoreBuys'], ['wilds', 'Wild Tiles', 'wildBuys'], ['caps', 'SC Captains', 'capBuys']];
     var PICKS_K = [['goats', 'GOAT', 'goatBuys'], ['totys', 'Team of the Year Picks', 'totyBuys'], ['prems', 'Premiers Picks', 'premBuys'], ['imms', 'Immortal Picks', 'immBuys'], ['wcps', '88+ Picks', 'wcpBuys'], ['ilegs', 'World Legend Picks', 'ilegBuys'], ['wchs', 'World Champions Picks', 'wchBuys']];
     var sumOf = function (ks) { return rev ? ks.reduce(function (t, k) { return t + (rev[k[0]] || 0); }, 0) : null; };
     var itemsTot = sumOf(ITEMS_K), picksTot = sumOf(PICKS_K);
@@ -8687,7 +8935,7 @@
          money is already in each item's line above (each item counts in its own sales), so it is never added twice */
       var bg = rev.bag;
       if (bg) {
-        var BAG_WORD = { rr: 'Rerolls', rm: 'Remove Players', rv: 'Reveals', legend: 'Legend Keys', superstar: 'Superstar Keys', rib: 'Run It Backs', goat: 'The GOAT', fz: 'Streak Freezes', imm: 'Immortal Picks', ileg: 'World Legend Picks', wcp: '88+ Picks', wch: 'World Champions Picks', prem: 'Premiers Picks', toty: 'Team of the Year Picks', wild: 'Wild Tiles' };
+        var BAG_WORD = { rr: 'Rerolls', rm: 'Remove Players', rv: 'Reveals', legend: 'Legend Keys', superstar: 'Superstar Keys', rib: 'Run It Backs', goat: 'The GOAT', fz: 'Streak Freezes', imm: 'Immortal Picks', ileg: 'World Legend Picks', wcp: '88+ Picks', wch: 'World Champions Picks', prem: 'Premiers Picks', toty: 'Team of the Year Picks', wild: 'Wild Tiles', cap: 'SC Captains' };
         var brow = [['&#x1F392; Gameday Bags', money(bg.d) + (bg.nd ? ' (' + bg.nd + ')' : ''), money(bg.w) + (bg.nw ? ' (' + bg.nw + ')' : ''), money(bg.all) + '<small>' + fmt(bg.n) + (bg.n === 1 ? ' bag' : ' bags') + '</small>', sk('bag'), 'Gameday Bag Sales']];
         brow[0].c = '74,222,128';
         h += '<div class="ca-ov-h"><h3 class="ca-h3">Gameday Bag</h3></div>' + moneyList(brow) +
@@ -8735,8 +8983,8 @@
   }
   /* Every sale (the owner's tap on Total Collected, or on one kind of sale): newest first, with who bought it, what, in
      which game and when, and the amount after refunds. Tap a buyer to open them in Players. */
-  var SALE_KINDS = { pass: 'CAST Pass', rerolls: 'Rerolls', removes: 'Remove Players', reveals: 'Reveals', keys: 'Keys', ribs: 'Run It Back', freezes: 'Streak Freezes', goats: 'The GOAT', totys: 'Team of the Year Picks', prems: 'Premiers Picks', imms: 'Immortal Picks', wcps: '88+ Picks', ilegs: 'World Legend Picks', wchs: 'World Champions Picks', wilds: 'Wild Tiles', restores: 'Streak Restores', bag: 'Gameday Bag', other: 'Other' };
-  var SALE_HEADS = { pass: 'CAST Pass Sales', rerolls: 'Reroll Sales', removes: 'Remove Player Sales', reveals: 'Reveal Sales', keys: 'Key Sales', ribs: 'Run It Back Sales', freezes: 'Streak Freeze Sales', goats: 'GOAT Sales', totys: 'Team of the Year Pick Sales', prems: 'Premiers Pick Sales', imms: 'Immortal Pick Sales', wcps: '88+ Pick Sales', ilegs: 'World Legend Pick Sales', wchs: 'World Champions Pick Sales', wilds: 'Wild Tile Sales', restores: 'Streak Restore Sales', bag: 'Gameday Bag Sales', other: 'Other Payments' };
+  var SALE_KINDS = { pass: 'CAST Pass', rerolls: 'Rerolls', removes: 'Remove Players', reveals: 'Reveals', keys: 'Keys', ribs: 'Run It Back', freezes: 'Streak Freezes', goats: 'The GOAT', totys: 'Team of the Year Picks', prems: 'Premiers Picks', imms: 'Immortal Picks', wcps: '88+ Picks', ilegs: 'World Legend Picks', wchs: 'World Champions Picks', wilds: 'Wild Tiles', caps: 'SC Captains', restores: 'Streak Restores', bag: 'Gameday Bag', other: 'Other' };
+  var SALE_HEADS = { pass: 'CAST Pass Sales', rerolls: 'Reroll Sales', removes: 'Remove Player Sales', reveals: 'Reveal Sales', keys: 'Key Sales', ribs: 'Run It Back Sales', freezes: 'Streak Freeze Sales', goats: 'GOAT Sales', totys: 'Team of the Year Pick Sales', prems: 'Premiers Pick Sales', imms: 'Immortal Pick Sales', wcps: '88+ Pick Sales', ilegs: 'World Legend Pick Sales', wchs: 'World Champions Pick Sales', wilds: 'Wild Tile Sales', caps: 'SC Captain Sales', restores: 'Streak Restore Sales', bag: 'Gameday Bag Sales', other: 'Other Payments' };
   function admSalesView() {
     var L = mod.list, only = L.kind.split(':')[1] || '';
     admFetch('sales', 'adminSales', {});
@@ -8844,7 +9092,7 @@
   /* 1000TRIES launched on 27 Sep 2026 and its card went; 4000 GOALS' takes its place (12 Oct 2026) until it is launched:
      one tap turns on accounts and leaderboards at 4000goals.com.au and shows 4000 GOALS in the other games' stats, boards
      and Shop. It can be undone. [game, name, site] */
-  var LAUNCH_CARDS = [['1000tries', '1000TRIES', '1000tries.com.au'], ['4000goals', '4000 GOALS', '4000goals.com.au'], ['bigbash', '25000 RUNS', 'castgames.com.au/25000runs'], ['tests', '60000 RUNS', 'castgames.com.au/60000runs'], ['nfl', '777 TDS', 'castgames.com.au/777tds'], ['racing', 'G1 WINNER SPINNER', 'castgames.com.au/g1winner'], ['epl', '650 GOALS', 'castgames.com.au/650goals']];
+  var LAUNCH_CARDS = [['1000tries', '1000TRIES', '1000tries.com.au'], ['4000goals', '4000 GOALS', '4000goals.com.au'], ['bigbash', '25000 RUNS', 'castgames.com.au/25000runs'], ['tests', '60000 RUNS', 'castgames.com.au/60000runs'], ['nfl', '777 TDS', 'castgames.com.au/777tds'], ['racing', 'G1 WINNER SPINNER', 'castgames.com.au/g1winner'], ['epl', '650 GOALS', 'castgames.com.au/650goals'], ['nba', '100000 POINTS', 'castgames.com.au/100000points'], ['sc', 'SC POINTS KING', 'castgames.com.au/scpointsking']];
   // One card for each game still to launch (15 Oct 2026: 25000 RUNS waits beside 4000 GOALS). mod.launch.g = the card
   // being asked about, so a tap on one card never confirms another
   function launchCard(d) {
@@ -8859,6 +9107,96 @@
         (L.confirm ? '<small class="ca-adm-launch-q">Launch ' + nm + ' for everyone now?</small>' : '') +
         (L.err ? '<p class="ca-lb-err" role="alert">' + esc(L.err) + '</p>' : '') + '</div>' + btn + '</div>';
     }).join('');
+  }
+
+  /* Launch All (17 Oct 2026, the owner: "can you have a LAUNCH ALL button for all??? seems unnecessary to launch all
+     individually"): the first card on Launches lists every key still to launch, each game ticked, so CAST Games' launch
+     day is one press. Untick anything that isn't ready; switches that aren't games start unticked under their own
+     heading. One server call (adminLaunchMany) puts every ticked key in config/launch at once; a server without it yet
+     (the site pushed before the deploy) gets them one at a time through adminLaunch. Then the card says what launched
+     and anything that didn't. Rows: [key, name, line, emoji]. The games come from LAUNCH_CARDS, so a new game's card
+     joins Launch All by itself; a new mode or switch with its own card goes in LA_MODES or LA_SWITCHES */
+  var LA_ICON = { '1000tries': '&#x1F3C9;', '4000goals': '&#x1F3C9;', bigbash: '&#x1F3CF;', tests: '&#x1F3CF;', nfl: '&#x1F3C8;', racing: '&#x1F3C7;', epl: '&#x26BD;', nba: '&#x1F3C0;' };
+  var LA_MODES = [['ou', 'Six Again', '1000TRIES over or under', '&#x1F3C9;'], ['po', 'Play On', '4000 GOALS over or under', '&#x1F3C9;'], ['bingo', 'NRL Bingo', 'castgames.com.au/nrl-bingo', '&#x2705;']];
+  var LA_SWITCHES = [['wc', 'World Cup Mode', 'World Cup 8-0 and 200+ on 27-0 and 1000TRIES', '&#x1F30F;'], ['imm', 'Immortal Pick', 'On sale in the Shop and the games', '&#x1F3DB;&#xFE0F;'], ['rewards', 'Daily Rewards', 'Daily and streak rewards', '&#x1F381;']];
+  function laAll() {
+    var row = function (game) { return function (x) { return { k: x[0], nm: x[1], line: x[2], ico: x[3] || LA_ICON[x[0]] || '&#x1F3AE;', game: game }; }; };
+    return LAUNCH_CARDS.map(function (x) { return [x[0], x[1], x[2]]; }).map(row(true)).concat(LA_MODES.map(row(true)), LA_SWITCHES.map(row(false)));
+  }
+  function laWaiting(d) { var on = d.launched || []; return laAll().filter(function (r) { return on.indexOf(r.k) < 0; }); }
+  function laTicked(r) { var P = (mod.la && mod.la.pick) || {}; return Object.prototype.hasOwnProperty.call(P, r.k) ? !!P[r.k] : r.game; }
+  function laCount(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+  function launchAllCard(d) {
+    var L = mod.la || {}, wait = laWaiting(d), res = L.res;
+    var games = wait.filter(function (r) { return r.game; }), sw = wait.filter(function (r) { return !r.game; });
+    if ((wait.length < 2 || !games.length) && !res) return ''; // one left (its own card does it), or only switches
+    var ticked = wait.filter(laTicked), nG = ticked.filter(function (r) { return r.game; }).length, nS = ticked.length - nG;
+    var lock = !mod.owner || L.busy || L.confirm;
+    var row = function (r) {
+      var on = laTicked(r);
+      return '<button type="button" class="ca-la-row' + (on ? ' is-on' : '') + '" role="checkbox" aria-checked="' + on + '" data-ca="adm-la-tick" data-g="' + r.k + '"' + (lock ? ' disabled' : '') + '>' +
+        '<i class="ca-la-box" aria-hidden="true">' + (on ? '&#x2713;' : '') + '</i><span class="ca-la-ico" aria-hidden="true">' + r.ico + '</span>' +
+        '<span class="ca-la-nm"><b>' + r.nm + '</b><small>' + r.line + '</small></span></button>';
+    };
+    var list = !wait.length ? '' : '<div class="ca-la-list">' +
+      (games.length ? '<h4 class="ca-la-h">Games <small>' + nG + ' of ' + games.length + ' Ticked</small></h4>' + games.map(row).join('') : '') +
+      (sw.length ? '<h4 class="ca-la-h">Switches, Not Games <small>Left Unticked</small></h4><p class="ca-la-note">These turn on a feature, not a game. Tick one only if you mean to switch it on today.</p>' + sw.map(row).join('') : '') + '</div>';
+    var what = [nG ? laCount(nG, 'game', 'games') : '', nS ? laCount(nS, 'switch', 'switches') : ''].filter(Boolean).join(' and ');
+    var out = '';
+    if (res) {
+      out = '<div class="ca-la-res" role="status">' +
+        (res.ok.length ? '<b class="is-ok">&#x2705; Launched ' + res.ok.length + '</b><ul class="is-ok">' + res.ok.map(function (x) { return '<li>' + esc(x[0]) + (x[1] ? ' <small>' + x[1] + '</small>' : '') + '</li>'; }).join('') + '</ul>' : '') +
+        (res.bad.length ? '<b class="is-bad">&#x26A0;&#xFE0F; Not Launched ' + res.bad.length + '</b><ul>' + res.bad.map(function (x) { return '<li>' + esc(x[0]) + ' <small>' + esc(x[1]) + '</small></li>'; }).join('') + '</ul>' : '') +
+        '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-la-done">Done</button></div>';
+    }
+    var btn = !wait.length ? '' : !mod.owner ? '<small class="ca-muted">Only the owner can launch.</small>'
+      : L.busy ? '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" disabled>' + (L.prog ? 'Launching ' + L.prog + '&hellip;' : 'Working&hellip;') + '</button>'
+      : L.confirm ? '<div class="ca-row"><button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-la-go">Yes, Launch All</button>' +
+        '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-la-cancel">Cancel</button></div>'
+      : '<button type="button" class="ca-btn ca-btn-sm ca-btn-primary ca-la-go" data-ca="adm-la-ask"' + (ticked.length ? '' : ' disabled') + '>&#x1F680; ' +
+        (!ticked.length ? 'Tick at Least One' : nG === games.length && nG > 1 && !nS ? 'Launch All ' + nG + ' Games' : 'Launch ' + ticked.length + ' Ticked') + '</button>';
+    return '<div class="ca-adm-launch is-all' + (!games.length ? ' is-live' : '') + '"><div class="ca-adm-launch-txt">' +
+      '<span class="ca-mod-tag">' + (games.length ? laCount(games.length, 'Game', 'Games') + ' Waiting' : 'All Games Launched') + '</span><b>Launch All</b>' +
+      '<small>One press launches everything ticked, for everyone: accounts and leaderboards on each game, and each one in the other games&rsquo; stats, boards and Shop. Untick anything that isn&rsquo;t ready. No push needed.' +
+      (wchNow() ? '' : ' World Champions isn&rsquo;t in the list: it needs its winner set up in its own card.') + '</small>' +
+      (L.confirm ? '<small class="ca-adm-launch-q">Launch ' + what + ' for everyone now?</small><small class="ca-la-names">' + ticked.map(function (r) { return r.nm; }).join(', ') + '</small>' : '') +
+      (L.err ? '<p class="ca-lb-err" role="alert">' + esc(L.err) + '</p>' : '') + '</div>' + out + (L.confirm || L.busy ? '' : list) + btn + '</div>';
+  }
+  function admLaunchAll() {
+    var d = mod.ov && mod.ov.data, L = mod.la = mod.la || {};
+    if (!d || !mod.owner || L.busy) return;
+    var rows = laWaiting(d).filter(laTicked), keys = rows.map(function (r) { return r.k; }), nm = {};
+    rows.forEach(function (r) { nm[r.k] = r.nm; });
+    L.confirm = false; L.res = null; L.err = '';
+    if (!keys.length) { render(); return; }
+    L.busy = true; L.prog = ''; render();
+    var finish = function (ok, bad, list) {
+      L.busy = false; L.prog = ''; L.res = { ok: ok, bad: bad };
+      if (list) { if (mod.ov && mod.ov.data) mod.ov.data.launched = list; gotLaunch(list); }
+      ok.forEach(function (x) { if (!x[1]) track('admin_launch', { game: x[2], on: 1 }); });
+      render();
+    };
+    // A key the server doesn't have yet (a new game's card pushed before its functions deploy)
+    var unknown = 'The server doesn’t know this one yet. Deploy the functions, then try again.';
+    var why = function (e) { var w = fnError(e); return w === 'Unknown game.' ? unknown : w; };
+    callFn('adminLaunchMany', { games: keys }).then(function (r) {
+      var unk = r.unknown || [], already = r.already || [];
+      finish(keys.filter(function (k) { return unk.indexOf(k) < 0; }).map(function (k) { return [nm[k], already.indexOf(k) >= 0 ? 'Already live' : '', k]; }),
+        unk.map(function (k) { return [nm[k] || k, unknown, k]; }), r.launched || []);
+    }, function (err) {
+      var code = String((err && err.code) || '');
+      // Refused whole (not the owner, or none of them known to the server): nothing launched, the reason on each
+      if (/permission-denied|unauthenticated|invalid-argument/.test(code)) { var w = why(err); finish([], keys.map(function (k) { return [nm[k], w, k]; }), null); return; }
+      // adminLaunchMany isn't on the server yet, or the call didn't get through: each one through its own Launch, in turn
+      var ok = [], bad = [], list = null, i = 0;
+      (function next() {
+        if (i >= keys.length) { finish(ok, bad, list); return; }
+        var k = keys[i++];
+        L.prog = i + ' of ' + keys.length; render();
+        callFn('adminLaunch', { game: k, on: true }).then(function (r) { list = r.launched || list; ok.push([nm[k], '', k]); next(); },
+          function (e) { bad.push([nm[k], why(e), k]); next(); });
+      })();
+    });
   }
 
   /* Six Again's launch (14 Oct 2026): its own card (the games' card shows one game at a time). Until it's on, only a
@@ -9679,7 +10017,7 @@
     // Sports and each sport's team (16 Oct 2026, the sports sign-up)
     var spRows = sportOrder(Array.isArray(u.sports) ? u.sports : u.team ? ['nrl'] : []).filter(function (x) { return x !== 'nrl' && sportHasTeams(x); }).map(function (x) {
       var st = sportTeam(x, u.teams && u.teams[x]);
-      return [SPORT[x].name + ' ' + SPORT[x].club.replace(/^(AFL|NFL) /, ''), st ? st.name : u.teams && u.teams[x] === 'none' ? 'None' : 'Not asked yet'];
+      return [SPORT[x].name + ' ' + SPORT[x].club.replace(/^(AFL|NFL|NBA) /, ''), st ? st.name : u.teams && u.teams[x] === 'none' ? 'None' : 'Not asked yet'];
     });
     var rows = [['Team', team ? team.name : 'None']].concat(spRows, [['Sports', Array.isArray(u.sports) ? sportOrder(u.sports).map(function (x) { return SPORT[x].name; }).join(', ') : 'Not asked (older account)'], ['Location', place || 'Not given'], ['Joined', u.joined ? joinedAt(u.joined) : 'Unknown'],
       ['Last Sign In', a.last ? when(a.last) : 'Unknown'], ['Signs In With', ACCOUNT_VIA[a.via] || 'Unknown'], ['Emails', u.optIn ? 'Opted in' : 'No']]);
@@ -9690,7 +10028,7 @@
     if (r.spend) rows.push(['Spent', r.spend.cents ? money(r.spend.cents / 100) + ' \u00B7 ' + r.spend.buys + ' purchase' + (r.spend.buys === 1 ? '' : 's') + (r.spend.last ? ' \u00B7 last ' + when(r.spend.last) : '') : 'Nothing yet']);
     if (r.streak) { var ls = liveStreak(r.streak); rows.push(['Streak', ls.current + ' day' + (ls.current === 1 ? '' : 's') + ' \u00B7 best ' + ls.best]); }
     if (r.vault) {
-      var VN = [['left', 'Reroll'], ['removes', 'Remove Player'], ['reveals', 'Reveal'], ['ribs', 'Run It Back'], ['freezes', 'Streak Freeze'], ['legend', 'Legend Key'], ['superstar', 'Superstar Key'], ['goats', 'GOAT'], ['totys', 'Team of the Year Pick'], ['prems', 'Premiers Pick'], ['imms', 'Immortal Pick'], ['wcps', '88+ Pick'], ['ilegs', 'World Legend Pick'], ['wchs', 'World Champions Pick'], ['wilds', 'Wild Tile']];
+      var VN = [['left', 'Reroll'], ['removes', 'Remove Player'], ['reveals', 'Reveal'], ['ribs', 'Run It Back'], ['freezes', 'Streak Freeze'], ['legend', 'Legend Key'], ['superstar', 'Superstar Key'], ['goats', 'GOAT'], ['totys', 'Team of the Year Pick'], ['prems', 'Premiers Pick'], ['imms', 'Immortal Pick'], ['wcps', '88+ Pick'], ['ilegs', 'World Legend Pick'], ['wchs', 'World Champions Pick'], ['wilds', 'Wild Tile'], ['caps', 'SC Captain']];
       var held = VN.filter(function (x) { return r.vault[x[0]] > 0; }).map(function (x) { var n = r.vault[x[0]]; return countName(n, x[1] + (n === 1 ? '' : 's')); });
       rows.push(['Vault', held.length ? held.join(', ') : 'Empty']);
     }
@@ -9802,7 +10140,7 @@
      path, so the player gets a pop-up next visit saying what came, and it's in Admin > Log */
   var GIVE_ITEMS = [['left', '&#x1F504;', 'Reroll'], ['removes', '&#x274C;', 'Remove Player'], ['reveals', '&#x1F440;', 'Reveal'], ['ilegs', '&#x1F451;', 'World Legend Pick'],
     ['wcps', '&#x1F30F;', '88+ Pick'], ['imms', '&#x1F3DB;&#xFE0F;', 'Immortal Pick'], ['legend', '&#x2B50;', 'Legend Key'], ['superstar', '&#x1F31F;', 'Superstar Key'],
-    ['ribs', '&#x23EA;', 'Run It Back'], ['goats', '&#x1F410;', 'GOAT'], ['freezes', '&#x1F9CA;', 'Streak Freeze'], ['wilds', '&#x1F0CF;', 'Wild Tile']];
+    ['ribs', '&#x23EA;', 'Run It Back'], ['goats', '&#x1F410;', 'GOAT'], ['freezes', '&#x1F9CA;', 'Streak Freeze'], ['wilds', '&#x1F0CF;', 'Wild Tile'], ['caps', '&#x1F396;&#xFE0F;', 'SC Captain']];
   function giveSummary(items) {
     return GIVE_ITEMS.filter(function (x) { return items[x[0]] > 0; }).map(function (x) { var n = items[x[0]]; return n + ' ' + x[2] + (n === 1 ? '' : 's'); }).join(' + ');
   }
@@ -9840,7 +10178,7 @@
   /* Admin > Players: Give Trophy (6 Oct 2026, the owner only). Pick the game, then any of its trophies; the ones they
      have are marked and cannot be picked. adminGiveTrophy puts it in their cabinet and their next visit to that game
      plays the usual unlock pop-up */
-  var TROPHY_GAMES = [['27-0', '27-0'], ['1000tries', '1000TRIES'], ['4000goals', '4000 GOALS'], ['bigbash', '25000 RUNS'], ['tests', '60000 RUNS'], ['nfl', '777 TDS'], ['racing', 'G1 WINNER SPINNER'], ['epl', '650 GOALS']];
+  var TROPHY_GAMES = [['27-0', '27-0'], ['1000tries', '1000TRIES'], ['4000goals', '4000 GOALS'], ['bigbash', '25000 RUNS'], ['tests', '60000 RUNS'], ['nfl', '777 TDS'], ['racing', 'G1 WINNER SPINNER'], ['epl', '650 GOALS'], ['nba', '100000 POINTS'], ['sc', 'SC POINTS KING']];
   function trophyGiveAdmin(u) {
     var T = mod.trophy;
     if (!u.name || !mod.owner || !T || T.name !== u.name) return '';
@@ -10957,7 +11295,7 @@
       case 'fr-row-ch': track('friend_row_challenge', { game: CFG.game }); openChallengeSend(null, t.getAttribute('data-u')); break;
       case 'fr-feed-more': frFeedAll = !frFeedAll; track('friends_feed_more', { game: CFG.game }); render(); break;
       case 'fr-sent-toggle': frSentOpen = !frSentOpen; render(); break;
-      case 'fr-feed-daily': track('friends_feed_play', { game: CFG.game }); close(); window.dispatchEvent(new CustomEvent('cast:play', { detail: { game: CFG.game, mode: 'daily', board: CFG.game === '27-0' ? '270daily' : CFG.game === '4000goals' ? '4000daily' : CFG.game === 'bigbash' ? 'bbdaily' : CFG.game === 'tests' ? 'tsdaily' : CFG.game === 'nfl' ? 'nfldaily' : CFG.game === 'racing' ? 'rcdaily' : CFG.game === 'epl' ? 'epldaily' : '1000daily' } })); break;
+      case 'fr-feed-daily': track('friends_feed_play', { game: CFG.game }); close(); window.dispatchEvent(new CustomEvent('cast:play', { detail: { game: CFG.game, mode: 'daily', board: CFG.game === '27-0' ? '270daily' : CFG.game === '4000goals' ? '4000daily' : CFG.game === 'bigbash' ? 'bbdaily' : CFG.game === 'tests' ? 'tsdaily' : CFG.game === 'nfl' ? 'nfldaily' : CFG.game === 'racing' ? 'rcdaily' : CFG.game === 'epl' ? 'epldaily' : CFG.game === 'nba' ? 'nbadaily' : CFG.game === 'sc' ? 'scdaily' : '1000daily' } })); break;
       case 'tro-open': openTrophies(t.getAttribute('data-v') || ''); break;
       case 'lb-tro': openTrophyUser(t.getAttribute('data-n')); break;
       case 'tro-user-back': open('boards'); break;
@@ -11087,6 +11425,12 @@
       case 'adm-ou-launch': admOuLaunch(t.getAttribute('data-v')); break;
       case 'adm-launch-cancel': mod.launch = {}; render(); break;
       case 'adm-launch': admLaunch(t.getAttribute('data-v') === 'on', t.getAttribute('data-g') || ''); break;
+      // Launch All (17 Oct 2026): tick or untick a row, ask, confirm or cancel, and Done clears what it launched
+      case 'adm-la-tick': (function () { var k = t.getAttribute('data-g'), r = laAll().filter(function (x) { return x.k === k; })[0]; if (!r) return; mod.la = mod.la || {}; mod.la.pick = mod.la.pick || {}; mod.la.pick[k] = !laTicked(r); })(); render(); break;
+      case 'adm-la-ask': mod.la = Object.assign({}, mod.la, { confirm: true, res: null, err: '' }); render(); break;
+      case 'adm-la-cancel': if (mod.la) mod.la.confirm = false; render(); break;
+      case 'adm-la-go': admLaunchAll(); break;
+      case 'adm-la-done': if (mod.la) mod.la.res = null; render(); break;
       case 'adm-imm-ask': mod.immL = { confirm: true }; render(); break;
       case 'adm-wc-ask': mod.wcL = { confirm: true }; render(); break;
       case 'adm-wct-sync': admWcTriesSync(); break;
@@ -11144,7 +11488,7 @@
       case 'adm-give-step': { if (!mod.give || mod.give.busy) break; var gk = t.getAttribute('data-k'), gn = (mod.give.items[gk] || 0) + (+t.getAttribute('data-d')); mod.give.items[gk] = Math.max(0, Math.min(20, gn)); mod.give.confirm = false; render(); break; }
       case 'adm-give': giveItems(); break;
       case 'adm-wct-fold': mod.wctOpen = !mod.wctOpen; render(); break;
-      case 'adm-launches': mod.launchesOpen = true; render(); { var lp = el.querySelector('.ca-panel'); if (lp) lp.scrollTop = 0; } break;
+      case 'adm-launches': mod.launchesOpen = true; if (mod.la && !mod.la.busy) { mod.la.confirm = false; mod.la.res = null; } render(); { var lp = el.querySelector('.ca-panel'); if (lp) lp.scrollTop = 0; } break;
       case 'adm-launches-back': mod.launchesOpen = false; render(); break;
       case 'adm-wch-fold': mod.wch = mod.wch || {}; mod.wch.open = !mod.wch.open; render(); break;
       case 'adm-wch-edit': mod.wch = { open: true, edit: wchDraft() }; twSquads().then(function () { if (mod.wch && mod.wch.edit) { wchFill(mod.wch.edit); render(); } }, function () { if (mod.wch) { mod.wch.err = 'The World Cup squads did not load. Check your connection and try again.'; render(); } }); render(); break;
@@ -11457,7 +11801,7 @@
      miss, or a new personal best, in that order, on the results strip after that game. The first game here keeps the Rank
      Teaser. GA: guest_moment_view (once per game), and the Sign In tap says which moment it was */
   var gm = { id: null, seen: null };
-  var PB_MODES = { '1000tries': ['plus', 'spin', 'nrlw'], '4000goals': ['plus', 'spin', 'aflw'], bigbash: ['plus', 'spin'], tests: ['plus', 'spin'], nfl: ['plus', 'spin'], racing: ['plus', 'spin'], epl: ['plus', 'spin'], '27-0': ['classic', 'hard', 'pack'] };
+  var PB_MODES = { '1000tries': ['plus', 'spin', 'nrlw'], '4000goals': ['plus', 'spin', 'aflw'], bigbash: ['plus', 'spin'], tests: ['plus', 'spin'], nfl: ['plus', 'spin'], racing: ['plus', 'spin'], epl: ['plus', 'spin'], nba: ['plus', 'spin'], sc: ['plus'], '27-0': ['classic', 'hard', 'pack'] };
   function guestMoment(last, mine) {
     if (!last || likelySignedIn() || Date.now() - (last.at || 0) > 10 * 60000) return null;
     var t = localTrophies(), prevAt = mine.length > 1 ? mine[mine.length - 2].at || 0 : 0, fresh = Object.keys(t).filter(function (k) { return t[k] > prevAt && t[k] >= (last.at || 0) - 30000 && trophyDef(k); }).sort(function (a, b) { return t[b] - t[a]; });
@@ -11591,7 +11935,7 @@
     }
     loadSocial(false);
     var d = soc.data, noMates = !!d && !d.friends.length && !rematchTo, z = g.game === '27-0';
-    var beat = z ? g.score + '-' + (lossesOf(g) || 0) : fmt(g.score) + (g.game === '4000goals' ? ' Goals' : g.game === 'bigbash' || g.game === 'tests' ? ' Runs' : g.game === 'nfl' ? ' TDs' : g.game === 'racing' ? ' G1 Wins' : g.game === 'epl' ? ' Goals' : ' Tries'), open = c.classList.contains('is-open') && !rematchTo;
+    var beat = z ? g.score + '-' + (lossesOf(g) || 0) : fmt(g.score) + (g.game === '4000goals' ? ' Goals' : g.game === 'bigbash' || g.game === 'tests' ? ' Runs' : g.game === 'nfl' ? ' TDs' : g.game === 'racing' ? ' G1 Wins' : g.game === 'epl' ? ' Goals' : g.game === 'nba' ? ' Points' : g.game === 'sc' ? ' SC Points' : ' Tries'), open = c.classList.contains('is-open') && !rematchTo;
     c.hidden = false;
     c.innerHTML = '<button type="button" class="ca-chr-row" data-chr="' + (rematchTo ? 'send' : 'open') + '"' + (rematchTo ? '' : ' aria-expanded="' + open + '"') + '>' +
         '<span class="ca-chr-row-ico" aria-hidden="true">&#x2694;&#xFE0F;</span><span class="ca-chr-row-t">' + (rematchTo ? 'Send the Rematch' : 'Challenge a Mate to Beat ' + esc(beat)) + '</span>' +
@@ -11697,7 +12041,7 @@
   function potwTrophy() {
     if (potwAt === fanNow.at) return;
     potwAt = fanNow.at;
-    var t = localTrophies(), add = ['1000tries:potw', '27-0:potw', '4000goals:potw', 'bigbash:potw', 'tests:potw', 'nfl:potw', 'racing:potw', 'epl:potw'].filter(function (k) { return !t[k] && !(trophyDoc && trophyDoc[k]); });
+    var t = localTrophies(), add = ['1000tries:potw', '27-0:potw', '4000goals:potw', 'bigbash:potw', 'tests:potw', 'nfl:potw', 'racing:potw', 'epl:potw', 'nba:potw', 'sc:potw'].filter(function (k) { return !t[k] && !(trophyDoc && trophyDoc[k]); });
     if (!add.length) return;
     add.forEach(function (k) { t[k] = Date.now(); });
     lsSet(LS_TROPHIES, JSON.stringify(t));
@@ -11803,7 +12147,8 @@
   // Six Again's category picker (14 Oct 2026): under the chips while one of its boards is open
   function ouSub() {
     if (/^nflou/.test(lb.board)) return ''; // Two Point: one category, no picker
-    var cats = /^eplou/.test(lb.board) ? [['eplou', 'Goals'], ['eploua', 'Assists'], ['eplouap', 'Appearances']] // Extra Time (17 Oct 2026)
+    var cats = /^nbaou/.test(lb.board) ? [['nbaou', 'Points'], ['nbaoureb', 'Rebounds'], ['nbaouast', 'Assists']] // 100000 POINTS' over/under (17 Oct 2026)
+      : /^eplou/.test(lb.board) ? [['eplou', 'Goals'], ['eploua', 'Assists'], ['eplouap', 'Appearances']] // Extra Time (17 Oct 2026)
       : /^rcou/.test(lb.board) ? [['rcou', 'Jockeys'], ['rcoub', 'Big Races'], ['rcouh', 'Horses']] // Photo Finish (16 Oct 2026)
       : /^tsou/.test(lb.board) ? [['tsou', 'Test Runs'], ['tsouw', 'Test Wickets']] // Follow On (16 Oct 2026)
       : /^bbou/.test(lb.board) ? [['bbou', 'BBL Runs'], ['bbouw', 'BBL Wickets']] // Free Hit (15 Oct 2026)
@@ -11823,7 +12168,7 @@
     }).join('') + '</div>';
   }
   function troSub() {
-    if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou)/.test(lb.board)) return ouSub();
+    if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(lb.board)) return ouSub();
     if (/^bg(free|daily)$/.test(lb.board)) return bgSub();
     if (!/^trophies/.test(lb.board) || !shown('1000tries')) return '';
     return '<div class="ca-seg ca-lb-trsub" role="tablist" aria-label="Which trophies">' + [['trophies', 'Both Games'], ['trophies270', '27-0'], ['trophies1000', '1000TRIES']].map(function (x) {
@@ -11848,7 +12193,7 @@
   // A board tab's name: phones get the short one where there is one (Classic, not Classic Mode)
   function chipName(b) { return b.tiny ? '<span class="ca-chip-full">' + b.short + '</span><span class="ca-chip-tiny">' + b.tiny + '</span>' : b.short || b.label; }
   // This game's own main board (16 Oct 2026: 777 TDS's home showed the top creator on 1000TRIES' board, in tries)
-  var MAIN_BOARD = { '27-0': '270best', '1000tries': '1000plus', '4000goals': '4000plus', bigbash: 'bbplus', tests: 'tsplus', nfl: 'nflplus', racing: 'rcplus', epl: 'eplplus' };
+  var MAIN_BOARD = { '27-0': '270best', '1000tries': '1000plus', '4000goals': '4000plus', bigbash: 'bbplus', tests: 'tsplus', nfl: 'nflplus', racing: 'rcplus', epl: 'eplplus', nba: 'nbaplus', sc: 'scplus' };
   // CFG.boards: the boards a CAST Games sport page opens on, first live one wins (16 Oct 2026: the cricket page showed tries)
   function defaultBoard() { var ids = BOARDS.map(function (b) { return b.id; }), own = MAIN_BOARD[CFG.game], pref = (CFG.boards || []).filter(function (x) { return ids.indexOf(x) >= 0; })[0]; return pref || (own && ids.indexOf(own) >= 0 ? own : own ? null : ids[0]); }
   // The home page shows this game's four main boards in one row; the rest (Perfect Seasons, Team Spin, Streak) are a tap
@@ -11885,7 +12230,7 @@
         prev = r;
         var mine = me && r.n === me;
         return '<li class="ca-lb-row' + (mine ? ' is-me' : '') + rowTone(r) + (rank <= 3 ? ' is-top' + rank : '') + '">' + posCell(rank) + crest(r, boardSport(B.id)) +
-          '<span class="ca-lb-n">' + nameHtml(r) + (mine ? ' <em>you</em>' : '') + '</span><span class="ca-lb-s">' + fmtScore(B.id, c.kind, r) + '</span></li>';
+          '<span class="ca-lb-n">' + nameHtml(r) + crownOf(B.id, rank) + (mine ? ' <em>you</em>' : '') + '</span><span class="ca-lb-s">' + fmtScore(B.id, c.kind, r) + '</span></li>';
       }).join('') + '</ol>';
       if (c.players > 5) h += '<p class="ca-hb-more">' + fmt(c.players) + ' players on this board</p>';
     }
@@ -12147,7 +12492,7 @@
     var cards = P.cards.map(function (c, i) {
       var t = TEAMS[c[2]] || { c1: '#333', c2: '#fff', abbr: '' };
       return '<div class="ca-pr-card" style="--i:' + i + ';--t1:' + t.c1 + ';--t2:' + t.c2 + '"><span class="ca-pr-top"><span>' + c[1] + '</span><span>' + esc(t.abbr) + '</span></span>' +
-        '<b>' + esc(c[0]) + '</b><small>?? ' + (CFG.game === '4000goals' ? 'goals' : CFG.game === 'bigbash' || CFG.game === 'tests' ? 'runs' : CFG.game === 'nfl' ? 'TDs' : CFG.game === 'racing' ? 'G1 wins' : CFG.game === 'epl' ? 'goals' : 'tries') + '</small></div>';
+        '<b>' + esc(c[0]) + '</b><small>?? ' + (CFG.game === '4000goals' ? 'goals' : CFG.game === 'bigbash' || CFG.game === 'tests' ? 'runs' : CFG.game === 'nfl' ? 'TDs' : CFG.game === 'racing' ? 'G1 wins' : CFG.game === 'epl' ? 'goals' : CFG.game === 'nba' ? 'points' : CFG.game === 'sc' ? 'SC points' : 'tries') + '</small></div>';
     }).join('');
     promoEl.innerHTML = '<div class="ca-backdrop" data-pr="close"></div><div class="ca-panel" role="dialog" aria-modal="true" aria-label="' + esc(P.title) + '">' +
       '<button type="button" class="ca-x ca-x-big" data-pr="close" aria-label="Close"><span aria-hidden="true">&#x2715;</span></button><div class="ca-body">' +
@@ -12246,6 +12591,7 @@
     if (e.game === 'nfl' && e.mode === 'plus' && e.score >= 700 && e.score < 777) return true; // 777 TDS (17 Oct 2026): 90% of the target
     if (e.game === 'racing' && e.mode === 'plus' && e.score >= 495 && e.score < 550) return true;
     if (e.game === 'epl' && e.mode === 'plus' && e.score >= 585 && e.score < 650) return true; // 650 GOALS: 90% of the target
+    if (e.game === 'nba' && e.mode === 'plus' && e.score >= 90000 && e.score < 100000) return true; // 100000 POINTS: 90% of the target
     return e.game === '27-0' && (e.result === 'finals' || (e.result === 'premiers' && (d.losses || 0) <= 2));
   }
   function pfHook(e, x) {
@@ -12283,6 +12629,19 @@
       if (hook === 'wild') return { ico: '&#x1F3B4;', kicker: 'CAST Pass', title: 'Double Wildcards', text: '2 Rerolls, 2 Reveal Wins and 2 Remove Jockeys every game, instead of 1 each.' };
       if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 550+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
       return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best card in every mode, your lucky charms, and the states and eras you draft from.' };
+    }
+    // 100000 POINTS (17 Oct 2026): the same pitch in NBA words
+    if (CFG.game === 'nba' && hook !== 'photo') {
+      if (hook === 'close') return { ico: '&#x1F62C;', kicker: 'So Close', title: fmt(e.score) + ' Points', text: 'With CAST Pass you get 2 rerolls every game, not 1, and a Legend Key every day to turn any offer into a Legends Pick.' };
+      if (hook === 'wild') return { ico: '&#x1F3B4;', kicker: 'CAST Pass', title: 'Double Wildcards', text: '2 Rerolls, 2 Reveal Points and 2 Remove Players every game, instead of 1 each.' };
+      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a 100000+ offer into a Legends Pick. A Superstar Key for 27-0 comes with it.' };
+      return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best team in every mode, your lucky charms, and the franchises and eras you draft from.' };
+    }
+    // SC POINTS KING (17 Oct 2026): no target, so no near miss; Reveal is never free there
+    if (CFG.game === 'sc' && hook !== 'photo') {
+      if (hook === 'wild') return { ico: '&#x1F3B4;', kicker: 'CAST Pass', title: 'Double Wildcards', text: '2 Rerolls and 2 Remove Players every game instead of 1 each, and a Substitute to move a season to his other position.' };
+      if (hook === 'vault') return { ico: '&#x1F511;', kicker: 'CAST Pass', title: 'The Vault', text: 'A Legend Key every day: turn a spin into a Legends Pick of the biggest SC seasons. A Superstar Key for 27-0 comes with it.' };
+      return { ico: '&#x1F4C8;', kicker: 'CAST Pass', title: 'Deep Stats', text: 'Your form guide, your best 13 in every mode, your lucky charms, and the clubs and seasons you draft from.' };
     }
     // 650 GOALS (17 Oct 2026): the same pitch in Premier League words
     if (CFG.game === 'epl' && hook !== 'photo') {
@@ -12650,7 +13009,7 @@
         else pickBuy('ileg', CFG.game, function () { spotRefresh(); });
       });
     }
-    var st = hasPass() && wcOn() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl' ? pickState('ileg') : null, html = '';
+    var st = hasPass() && wcOn() && CFG.game !== '4000goals' && CFG.game !== 'bigbash' && CFG.game !== 'tests' && CFG.game !== 'nfl' && CFG.game !== 'racing' && CFG.game !== 'epl' && CFG.game !== 'nba' && CFG.game !== 'sc' ? pickState('ileg') : null, html = '';
     if (st) {
       var have = st.have || 0;
       html = '<button type="button" class="ca-lead-ileg" data-lead="' + (have ? 'play' : 'buy') + '"><span class="ca-lead-ico" aria-hidden="true">&#x1F451;</span>' +
@@ -12761,7 +13120,7 @@
      Laid out like the item in the Shop, price and all; one tap is that pack's checkout (shopBuy, the Shop's own flow).
      Signed-in players 15 and over only (paid items), CAST Pass holders too.
      GA: spot_wildcard_view (once per wildcard per visit), spot_wildcard_tap. */
-  var WILD = { '4000goals': [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], bigbash: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], tests: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], nfl: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], racing: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], epl: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '1000tries': [['ileg', 'ileg1'], ['imm', 'imm1'], ['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '27-0': [['wch', 'wch1'], ['ileg', 'ileg1'], ['wcp', 'wcp1'], ['prem', 'prem1'], ['toty', 'toty1'], ['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5'], ['rib', 'rib3']] };
+  var WILD = { '4000goals': [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], bigbash: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], tests: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], nfl: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], racing: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], epl: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], nba: [['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], sc: [['cap', 'cap1'], ['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '1000tries': [['ileg', 'ileg1'], ['imm', 'imm1'], ['goat', 'goat1'], ['rr', 'five'], ['rm', 'remove5']], '27-0': [['wch', 'wch1'], ['ileg', 'ileg1'], ['wcp', 'wcp1'], ['prem', 'prem1'], ['toty', 'toty1'], ['imm', 'imm1'], ['rr', 'five'], ['rm', 'remove5'], ['rib', 'rib3']] };
   // [headline, line] (the owner's picks, 30 Sep 2026); a third entry is 27-0's own line
   var WILD_COPY = {
     toty: ['Team of the Year Pick', 'Choose a Team of the Year player for your 13. He joins at 95+.'],
@@ -12773,7 +13132,8 @@
     goat: GOAT_HERE ? ['The GOAT: ' + GOAT_HERE[0], GOAT_HERE[1] + ' ' + GOAT_HERE[2] + (GOAT_HERE[3] ? (/^at /.test(GOAT_HERE[3]) ? ' ' : ', ') + GOAT_HERE[3] : '') + ', straight into your ' + TEAM_N + '.'] : null,
     rr: ['Bad Roll? Roll Again.', 'A fresh three players whenever the offer’s a dud.', 'A fresh spin whenever the club or season’s a dud.'],
     rm: ['Undo That Pick', 'Remove a player from your ' + TEAM_N + ' and go again.'],
-    rib: ['Run It Back', 'Run your season back and your closest loss becomes a win.']
+    rib: ['Run It Back', 'Run your season back and your closest loss becomes a win.'],
+    cap: ['SC Captain', 'Once your 13 is complete, your Captain\u2019s SC points count double.']
   };
   /* Two Shop cards always in the spot (16 Oct 2026, the owner): Wildcards ([data-cast-wild]: Reroll, Remove Player, Run
      It Back) and Picks ([data-cast-wild2]: the Picks on sale), each in best-seller order (config/launch.shopTop, from the
@@ -12787,7 +13147,7 @@
   // The Team of the Year and Premiers Picks: while their promo runs; the Immortal Pick: once it's rolled out. A wildcard
   // with no WILD_COPY never joins (its card would be empty and the spot would stop turning to the next one)
   function wildList(picks) { return wildAll().filter(function (w) { return (PICK_IDS.indexOf(w[0]) >= 0) === !!picks; }).sort(function (a, b) { return topRank(a[0]) - topRank(b[0]); }); }
-  function wildAll() { return (WILD[CFG.game] || []).filter(function (w) { return !!WILD_COPY[w[0]] && (w[0] !== 'toty' || totyOn()) && (w[0] !== 'prem' || premOn()) && (w[0] !== 'imm' || immOn()) && (w[0] !== 'wcp' || wcpOn()) && (w[0] !== 'ileg' || ilegOn()) && (w[0] !== 'wch' || wchOn()); }); }
+  function wildAll() { return (WILD[CFG.game] || []).filter(function (w) { return !!WILD_COPY[w[0]] && (w[0] !== 'toty' || totyOn()) && (w[0] !== 'prem' || premOn()) && (w[0] !== 'imm' || immOn()) && (w[0] !== 'wcp' || wcpOn()) && (w[0] !== 'ileg' || ilegOn()) && (w[0] !== 'wch' || wchOn()) && (w[0] !== 'cap' || gateOpen('sc')); }); }
   function wildOn() { return ENABLED && status === 'signed-in' && !!profile && (ageNow() || 0) >= 15 && wildAll().length > 0; }
   function wildNext(picks) { var k = picks ? 'j' : 'i', n = wildList(picks).length; if (!n) return; wild[k] = (wild[k] + 1) % n; wildRender(); }
   // One wildcard's card, like the Shop's item: its price and Buy (or a Pass holder's free promo Pick, to Play)
@@ -13480,7 +13840,7 @@
   // (game '1000tries': { total, win })
   function dailyGoes(date, game) {
     if (status !== 'signed-in' || !fb) return Promise.resolve(null);
-    var F = fb.F, which = game === '1000tries' || game === '4000goals' || game === 'bigbash' || game === 'tests' || game === 'nfl' || game === 'racing' || game === 'epl' ? game : game === 'bingo' ? '1000tries' : '27-0';
+    var F = fb.F, which = game === '1000tries' || game === '4000goals' || game === 'bigbash' || game === 'tests' || game === 'nfl' || game === 'racing' || game === 'epl' || game === 'nba' || game === 'sc' ? game : game === 'bingo' ? '1000tries' : '27-0';
     var dm = game === 'bingo' ? 'bingod' : 'daily'; // NRL Bingo's Daily (17 Oct 2026): its own mode on 1000TRIES
     return F.getDocs(F.query(gamesCol(), F.where('d.date', '==', date), F.limit(20))).then(function (q) {
       return q.docs.map(function (d) { return d.data(); }).filter(function (g) { return g.game === which && g.mode === dm; })
@@ -13498,7 +13858,7 @@
      account, so each start is noted too (meta/daily: per game, the day, how many goes are used and when each started).
      A go left part way through on a phone then shows as used on the laptop, with the same goes left. */
   function dailyRef() { return fb.F.doc(fb.db, 'users', user.uid, 'meta', 'daily'); }
-  function dailyKey(game) { return game === 'bingo' ? 'gbg' : game === '1000tries' ? 'g1000' : game === '4000goals' ? 'g4000' : game === 'bigbash' ? 'gbb' : game === 'tests' ? 'gts' : game === 'nfl' ? 'gnfl' : game === 'racing' ? 'grc' : game === 'epl' ? 'gepl' : 'g270'; }
+  function dailyKey(game) { return game === 'bingo' ? 'gbg' : game === '1000tries' ? 'g1000' : game === '4000goals' ? 'g4000' : game === 'bigbash' ? 'gbb' : game === 'tests' ? 'gts' : game === 'nfl' ? 'gnfl' : game === 'racing' ? 'grc' : game === 'epl' ? 'gepl' : game === 'nba' ? 'gnba' : game === 'sc' ? 'gsc' : 'g270'; }
   function dailyStarted(date, game, n, times) {
     if (status !== 'signed-in' || !fb) return;
     var t = (times || []).filter(function (x) { return typeof x === 'number' && x > 0; }).sort(function (a, b) { return a - b; }).slice(0, 3);

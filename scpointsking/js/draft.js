@@ -37,7 +37,7 @@
      are dealt without his season (S.goatOut): no offer, Reroll, Remove Player offer or Daily holds it. Now and then
      (T.GOAT_FREE, seeded with the draft, so a friend's challenge deals the same) a game is dealt with him in the pack
      as any other season. The GOAT item itself is unchanged. A Daily follows it from T.GOAT_FROM */
-  T.GOAT_FREE = 0.15;
+  T.GOAT_FREE = 0.2;
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === T.GOAT_SRC; };
 
