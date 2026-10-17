@@ -28,7 +28,11 @@
     'city:sydney': [16725, 17625], 'city:melbourne': [19000, 20525], 'city:rest': [20225, 22350],
     'era:bbl01': [21775, 23425], 'era:bbl06': [23725, 25725], 'era:bbl11': [23075, 24725]
   };
-  function tgt(key, hard) { var t = TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 18000 : 17000); }
+  /* From Sunday 18 October 2026 the GOAT (Chris Lynn) is rare in free play (js/draft.js T.goatOut), so the targets of the days
+     whose pool holds him were set again from that day: [normal, hard]. Every day before keeps its target */
+  var GOAT_FROM = '2026-10-18';
+  var TARGETS_GOAT = { 'club:strikers': [16700, 17500], 'era:bbl01': [20575, 22175], 'club:heat': [13900, 14600], 'era:bbl06': [22825, 24700], 'city:rest': [19175, 21125], 'era:bbl11': [22225, 23775] };
+  function tgt(key, hard, date) { var t = date >= GOAT_FROM && TARGETS_GOAT[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 18000 : 17000); }
 
   var REWARDS = { keys: { bigbash: { legend: 1 } }, wild: { bigbash: { reveals: 1 } }, freeze: { bigbash: { freezes: 1 } }, reroll: { bigbash: { left: 1 } } };
   var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
@@ -79,7 +83,7 @@
     t.planned = !!plan;
     t.hard = !!(t.hard || (!plan && weekday(date) === 0));
     t.onThisDay = null;
-    t.g1000.target = (plan && plan.t) || tgt(t.key, t.hard);
+    t.g1000.target = (plan && plan.t) || tgt(t.key, t.hard, date);
     t.g270 = {};
     var rk = t.hard ? 'reroll' : WEEK_REWARD[weekday(date)];
     t.rewardKind = rk;

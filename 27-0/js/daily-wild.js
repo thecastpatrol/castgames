@@ -134,9 +134,9 @@
     picks.forEach(function (p) { pk[p.k] = p; items.push([p.k, p.ico, p.name, 1, true, '']); });
     /* The draft games' layout (17 Oct 2026, the owner: identical wildcards in every game): rows of three, four as two rows
        of two, the last row sharing its width evenly; from five tiles the icon sits above the name (css/theme.css) */
-    var n = items.length;
+    var tiles = items.length; // tiles on the bar
     b.classList.toggle('has-pick', picks.length > 0);
-    b.classList.toggle('is-stack', n >= 5);
+    b.classList.toggle('is-stack', tiles >= 5);
     // One name a tile, the same in every game: Reroll, Reveal, Remove, Substitute, Superstar Key, then the Picks' own names
     var lab = function (it) { return '<span class="cpw-label"><span class="cpw-ico" aria-hidden="true">' + it[1] + '</span> ' + it[2] + '</span>'; };
     b.innerHTML = items.map(function (it) {
@@ -190,11 +190,11 @@
     }).join('');
     // Six columns: two each, four as two rows of two, and the last row's tiles share all six (one: the row, two: half each).
     // A tile across the whole row keeps its icon beside the name, as 1000TRIES' seventh tile does
-    var bs = b.children, r = n - 3 * Math.floor((n - 1) / 3);
+    var bs = b.children, r = tiles - 3 * Math.floor((tiles - 1) / 3);
     for (var j = 0; j < bs.length; j++) {
-      var span = n === 4 ? 3 : j >= n - r ? 6 / r : 2;
+      var span = tiles === 4 ? 3 : j >= tiles - r ? 6 / r : 2;
       bs[j].style.gridColumn = 'span ' + span;
-      if (span === 6 && n >= 5) bs[j].classList.add('is-wide');
+      if (span === 6 && tiles >= 5) bs[j].classList.add('is-wide');
     }
   }
   function reveal() {

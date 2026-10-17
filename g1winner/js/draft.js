@@ -55,8 +55,9 @@
   /* The main mode plays harder than every other mode, as on 1000TRIES: rarer Legends Picks and lifelines, and offers
      that favour the big winners less. The Daily and Exactly keep the normal settings above. firstStar is the
      first offer's big winner, kept at the normal setting. The weight and the target were set together with the
-     real-engine simulator (15 Oct 2026; its notes stay off the site) */
-  T.HARD = { weight: 20, legends: 0.06, immortal: 0, lifeline: 0.08, firstStar: 0.7 };
+     real-engine simulator (15 Oct 2026; its notes stay off the site), and the weight again on 17 Oct 2026, when the GOAT
+     became rare in free play, so the main mode stays as hard as it was */
+  T.HARD = { weight: 19, legends: 0.06, immortal: 0, lifeline: 0.08, firstStar: 0.7 };
   /* One Legend per card (as on the other CAST games): Legends carry big totals (Damien Oliver's 129), so stacked they would buy the
      target too easily. Once the card has one, no Legends Pick is dealt and no Key or Legend Pick can be used */
   T.hasLegend = function () { return !!S && S.slots.some(function (s) { return s.player && s.player.tier && s.player.tier !== 'goat'; }); };
@@ -72,7 +73,7 @@
      bought Pick and the GOAT item itself are unchanged. A Daily follows it from T.GOAT_FROM, so a day's Daily never
      changes part way through the day, and a draft dealt before it (brought back on this phone) keeps its own deal */
   T.GOAT_FREE = 0.16;
-  T.GOAT_FREE_DAILY = 0.005; // the Daily's (its pools can hold him far more often)
+  T.GOAT_FREE_DAILY = T.GOAT_FREE; // the Daily's (the same, the owner: rare, never impossibly rare)
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === (T.GOAT_SRC || T.GOAT_ID); };
 

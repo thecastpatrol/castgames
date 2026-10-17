@@ -1081,7 +1081,7 @@
   function goHome() {
     // CAST Games: every mode is its own page, so leaving a game goes back to CAST Games (17 Oct 2026, the owner); Play
     // Again (afterHome) starts the mode again here without the home showing (the showScreen wrap in boot)
-    if (cgPage() && !afterHome) { CG.leave(); return; }
+    if (cgPage() && !afterHome) { window.CG.leave(); return; }
     if (typeof resetGame === 'function') resetGame();
     firstSteps(); // a first season just ended: the usual home again
     var then = afterHome;
@@ -1281,11 +1281,11 @@
      shows (17 Oct 2026, the owner; index.html sets html.play-boot). Classic, Hard and Pack bring back this player's saved
      draft for that mode (js/draft-save.js), the World Cup its saved run (js/world-cup.js wcHome). A link that opens
      something else (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it. When nothing
-     could start (a sign-in wall closed, the World Cup not on), CAST Games shows its own card for the mode (CG.bootIdle)
+     could start (a sign-in wall closed, the World Cup not on), CAST Games shows its own card for the mode (window.CG.bootIdle)
      and the game's own site shows its home */
-  function cgPage() { return !!(window.CG && CG.leave && window.CG_MODE); }
+  function cgPage() { return !!(window.CG && window.CG.leave && window.CG_MODE); }
   function bootOn() { return document.documentElement.classList.contains('play-boot'); }
-  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && CG.bootDone) CG.bootDone(); }
+  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && window.CG.bootDone) window.CG.bootDone(); }
   function activeId() { var a = document.querySelector('.screen.active'); return a ? a.id : ''; }
   var bootMode = null, watching = false, rebootT = 0, bootWait = false;
   function bootIdleWatch() {
@@ -1294,7 +1294,7 @@
     var check = function () {
       if (!bootOn() || bootWait || activeId() !== 'setup' || document.documentElement.classList.contains('ca-open')) return;
       if (Array.prototype.some.call(document.querySelectorAll('.cp-confirm'), function (m) { return m.style.display === 'flex'; })) return;
-      if (window.CG && CG.bootIdle) CG.bootIdle(function () { bootPlay(bootMode); }); else bootEnd();
+      if (window.CG && window.CG.bootIdle) window.CG.bootIdle(function () { bootPlay(bootMode); }); else bootEnd();
     };
     var soon = function () { setTimeout(check, 400); };
     setTimeout(check, 2500); setTimeout(check, 7000);
@@ -1305,7 +1305,7 @@
     bootMode = mode;
     bootIdleWatch();
     if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|ch|vs)=/.test(location.search)) return;
-    if ((mode === 'classic' || mode === 'hard' || mode === 'pack') && window.cpDraftSave && cpDraftSave.resumeFor) { cpDraftSave.resumeFor(mode, function () { playMode(mode); }); return; }
+    if ((mode === 'classic' || mode === 'hard' || mode === 'pack') && window.cpDraftSave && window.cpDraftSave.resumeFor) { window.cpDraftSave.resumeFor(mode, function () { playMode(mode); }); return; }
     // World Cup 8-0: a first visit has no saved launch list yet, so wait up to 8 s for the account to say it's on
     var live = function () { return !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive()); };
     if (mode === 'wc' && !live()) {

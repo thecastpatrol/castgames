@@ -61,9 +61,10 @@
      The Daily, Team Spin, NRLW and Exactly 4000 keep the normal settings above. firstStar is the first offer's big
      goalkicker, kept at the normal setting. */
   /* 4000 GOALS (12 Oct 2026, the owner: "the harder the better ... harder at the start"): AFL goal counts run about four
-     times NRL tries, so 1000TRIES' weight of 110 favoured big goalkickers far more here. 900 puts 4000+ between 1000TRIES'
-     difficulty and a much harder one, on the harder side for launch (the simulator: ~/cast-dev/private-notes) */
-  T.HARD = { weight: 900, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
+     times NRL tries, so 1000TRIES' weight favoured big goalkickers far more here; this one puts 4000+ between 1000TRIES'
+     difficulty and a much harder one, on the harder side for launch (the simulator: ~/cast-dev/private-notes). Set again on
+     17 Oct 2026, when the GOAT became rare in free play, so 4000+ stays as hard as it was */
+  T.HARD = { weight: 840, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
   /* One Legend per team from the game's own rolls (12 Oct 2026, the owner's call: stacked Legends bought the target
      too easily): once the team has one, no free Legends Pick is dealt. Legend Keys are not limited (16 Oct 2026, the
      owner: "If people pay they have a right to use"), and the GOAT is not one of the Legends */

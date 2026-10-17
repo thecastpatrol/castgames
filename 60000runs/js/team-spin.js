@@ -4,6 +4,7 @@
 
   var MIN_YEAR = 1877; // 60000 RUNS: the first Test, March 1877
   var MAX_YEAR = 2026; // Test years are calendar years (a year with no Tests for a nation is skipped by the spin)
+  T.SPIN_LIFT = 0; // see spinOffer
 
   function clubsInYear(year) {
     return Object.keys(T.CLUBS).filter(function (slug) {
@@ -68,7 +69,10 @@
     // First spin of a game: often land on a nation and year with a big run scorer in that position
     var first = !S.firstOfferDone;
     S.firstOfferDone = true;
-    if (first && R() < T.FIRST_STAR_CHANCE) {
+    // Now and then a later spin lands the same way (T.SPIN_LIFT, on its own seeded stream, so the other spins are dealt as
+    // before): Team Spin set again on 17 Oct 2026, when the GOAT became rare in free play, so it stays as hard as it was
+    var lift = !first && T.SPIN_LIFT > 0 && T.stream('spinlift' + S.spinNo)() < T.SPIN_LIFT;
+    if ((first && R() < T.FIRST_STAR_CHANCE) || lift) {
       var stars = T.players.filter(function (p) {
         return !S.used[p.id] && !T.goatOut(p) && p.tries_1998_plus >= T.starCut() && (pos ? T.canFill(p, pos) : T.fitsEmpty(p));
       });

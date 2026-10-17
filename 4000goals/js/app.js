@@ -710,7 +710,7 @@
   T.showScreen = show; // Play On's own screen (js/overunder.js)
   T.ouHome = function () { goHome(); };
   function goHome() {
-    if (window.CG && CG.leave) { closeSheet(); busy = false; CG.leave(); return; } // CAST Games: every mode is its own page (17 Oct 2026)
+    if (window.CG && window.CG.leave) { closeSheet(); busy = false; window.CG.leave(); return; } // CAST Games: every mode is its own page (17 Oct 2026)
     closeSheet();
     busy = false;
     renderHome();
@@ -2021,15 +2021,15 @@
      first (17 Oct 2026, the owner). The same player's saved draft for that mode carries on, else a new game starts. A
      link that opens something else (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it.
      When nothing could start (a sign-in wall closed, a mode that isn't on yet), CAST Games shows its own card for the
-     mode (CG.bootIdle) and the game's own site shows its home */
+     mode (window.CG.bootIdle) and the game's own site shows its home */
   var bootMode = null, bootWait = false;
   function bootOn() { return document.documentElement.classList.contains('play-boot'); }
-  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && CG.bootDone) CG.bootDone(); }
+  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && window.CG.bootDone) window.CG.bootDone(); }
   function bootIdleWatch() {
     var check = function () {
       if (!bootOn() || bootWait || busy || !T.players.length || document.documentElement.classList.contains('ca-open') || !$('sheet').hidden) return;
       if (document.body.getAttribute('data-screen') !== 'home') return;
-      if (window.CG && CG.bootIdle) CG.bootIdle(function () { playMode(bootMode); }); else bootEnd();
+      if (window.CG && window.CG.bootIdle) window.CG.bootIdle(function () { playMode(bootMode); }); else bootEnd();
     };
     var soon = function () { setTimeout(check, 400); };
     setTimeout(check, 2500); setTimeout(check, 7000);

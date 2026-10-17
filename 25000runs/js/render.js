@@ -144,7 +144,7 @@
   R.modePicker = function (selected, opt) {
     opt = opt || {};
     var m = T.MODES.plus, c = MODE_CARD.plus;
-    var main = '<button type="button" class="mode-card mode-main' + (selected === 'plus' ? ' is-on' : '') + '" data-mode="plus" aria-label="Play ' + esc(m.name) + '">' +
+    var main = '<button type="button" class="mode-card mode-main is-logo' + (selected === 'plus' ? ' is-on' : '') + '" data-mode="plus" aria-label="Play ' + esc(m.name) + '">' +
       '<span class="mode-tag">Classic</span>' +
       // the game's own logo on its Classic card, not a sport emoji (17 Oct 2026, the owner)
       '<span class="mode-ico is-logo" aria-hidden="true"><img class="mode-logo" src="assets/logos/25000runs.png?v=1" alt=""></span>' +
