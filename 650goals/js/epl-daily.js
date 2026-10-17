@@ -63,7 +63,19 @@
     'era:e90s': [415, 470], 'era:e00s': [435, 485], 'era:e20s': [505, 575], 'era:e10s': [500, 570]
   };
   // @end
-  function tgt(key, hard) { var t = TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 330 : 300); }
+  /* From Sunday 18 October 2026 the themes whose results moved with the true-CM rule (only a true CM flexes to CDM or CAM)
+     have their targets set again: [normal, hard]. Every other theme, and every day before, keeps TARGETS */
+  var CM_FROM = '2026-10-18';
+  var TARGETS_CM = {
+    'club:arsenal': [440, 480], 'club:liverpool': [595, 635], 'club:mancity': [470, 515], 'club:spurs': [500, 545],
+    'club:chelsea': [570, 615], 'club:palace': [310, 335], 'club:southampton': [390, 430], 'club:everton': [440, 475],
+    'club:wolves': [270, 295], 'club:boro': [340, 355], 'club:blackburn': [310, 340], 'club:leicester': [390, 420],
+    'club:fulham': [315, 345], 'club:sunderland': [315, 345], 'club:stoke': [305, 340], 'club:brighton': [290, 305],
+    'club:bolton': [350, 385], 'club:westbrom': [340, 375], 'club:leeds': [405, 430], 'city:northlondon': [490, 555],
+    'city:merseyside': [550, 610], 'era:e90s': [405, 460], 'era:e00s': [425, 485], 'era:e20s': [490, 555],
+    'era:e10s': [495, 570]
+  };
+  function tgt(key, hard, date) { var t = date >= CM_FROM && TARGETS_CM[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 330 : 300); }
 
   var REWARDS = { keys: { epl: { legend: 1 } }, wild: { epl: { reveals: 1 } }, freeze: { epl: { freezes: 1 } }, reroll: { epl: { left: 1 } } };
   var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
@@ -114,7 +126,7 @@
     t.planned = !!plan;
     t.hard = !!(t.hard || (!plan && weekday(date) === 0));
     t.onThisDay = null;
-    t.g1000.target = (plan && plan.t) || tgt(t.key, t.hard);
+    t.g1000.target = (plan && plan.t) || tgt(t.key, t.hard, date);
     t.g270 = {};
     var rk = t.hard ? 'reroll' : WEEK_REWARD[weekday(date)];
     t.rewardKind = rk;

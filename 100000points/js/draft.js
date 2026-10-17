@@ -58,8 +58,9 @@
      in the first hour). Rarer Legends and Hall of Fame Picks and lifelines, and offers that favour big scorers less.
      The Daily, Team Spin, NRLW and Exactly 100000 keep the normal settings above. firstStar is the first offer's big
      scorer, kept at the normal setting. */
-  /* The NBA game's main-mode settings (17 Oct 2026), set with the real-engine smart-fan simulator (kept out of this repo) */
-  T.HARD = { weight: 150000, legends: 0.1, immortal: 0.02, lifeline: 1, firstStar: 0.7 };
+  /* The NBA game's main-mode settings (17 Oct 2026), set with the real-engine smart-fan simulator (kept out of this repo);
+     the weight set again the same day, when the GOAT became rare in free play, so 100000+ stays as hard as it was */
+  T.HARD = { weight: 55000, legends: 0.1, immortal: 0.02, lifeline: 1, firstStar: 0.7 };
   /* One Legend per team from the game's own rolls (12 Oct 2026, the owner's call: stacked Legends bought the target
      too easily): once the team has one, no free Legends Pick is dealt. Legend Keys are not limited (16 Oct 2026, the
      owner: "If people pay they have a right to use"), and the GOAT is not one of the Legends */
@@ -75,8 +76,9 @@
      draft, so a friend's challenge deals the same) a game is dealt with him as before. A Legend Key's Legends Pick, a
      bought Pick and the GOAT item itself are unchanged. A Daily follows it from T.GOAT_FROM, so a day's Daily never
      changes part way through the day, and a draft dealt before it (brought back on this phone) keeps its own deal */
-  T.GOAT_FREE = 0.27;
-  T.GOAT_FREE_DAILY = 0.005; // the Daily's (its pools can hold him far more often)
+  T.GOAT_FREE = 0.24;
+  T.GOAT_FREE_DAILY = 0.06; // the Daily's (its pools hold him more often than the main mode's offers)
+  T.GOAT_FREE_SPIN = 0.075; // Team Spin's (its squads hold him more often than the main mode's offers)
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === (T.GOAT_SRC || T.GOAT_ID); };
 
@@ -149,7 +151,7 @@
     S.special = null; S.specialAt = 0; S.specialDone = false; S.lifelineRoll = null; S.lifelineUsed = false;
     S.luckExp = 0; S.luckGot = 0; // the luck of the draw, see noteLuck()
     S.hard = T.isHard(mode); // 100000+ only (T.HARD)
-    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < (S.daily ? T.GOAT_FREE_DAILY : T.GOAT_FREE)); // T.goatOut
+    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < (S.daily ? T.GOAT_FREE_DAILY : mode.source === 'spin' ? T.GOAT_FREE_SPIN : T.GOAT_FREE)); // T.goatOut
     // Promos (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): 100000+ and Exactly 100000 games dealt
     // during one (the seed carries its mark, so a friend's challenge deals the same after it ends). Never the Daily, the
     // same for everyone. S.promoDef: the promo the seed was dealt in

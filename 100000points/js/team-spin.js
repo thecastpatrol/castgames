@@ -5,6 +5,7 @@
   var MIN_YEAR = 1976; // from the 1976-77 season (the ABA merger), so every roster spun has a few names fans know; the
   // Legends never come in a spin
   var MAX_YEAR = 2025; // seasons by the year they tipped off (2025 = 2025-26; a team with nobody left for the spot is skipped by the spin)
+  T.SPIN_LIFT = 0.15; // see spinOffer
 
   function clubsInYear(year) {
     return Object.keys(T.CLUBS).filter(function (slug) {
@@ -69,7 +70,10 @@
     // First spin of a game: often land on a team and season with a big scorer in that position
     var first = !S.firstOfferDone;
     S.firstOfferDone = true;
-    if (first && R() < T.FIRST_STAR_CHANCE) {
+    // Now and then a later spin lands the same way (T.SPIN_LIFT, on its own seeded stream, so the other spins are dealt as
+    // before): Team Spin set again on 17 Oct 2026, when the GOAT became rare in free play, so it stays as hard as it was
+    var lift = !first && T.SPIN_LIFT > 0 && T.stream('spinlift' + S.spinNo)() < T.SPIN_LIFT;
+    if ((first && R() < T.FIRST_STAR_CHANCE) || lift) {
       var stars = T.players.filter(function (p) {
         return !S.used[p.id] && !T.goatOut(p) && p.tries_1998_plus >= T.starCut() && (pos ? T.canFill(p, pos) : T.fitsEmpty(p));
       });
