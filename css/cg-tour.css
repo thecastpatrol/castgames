@@ -1,0 +1,232 @@
+/* How CAST Games Works (shared/cg-tour.js, 17 Oct 2026): the tour behind The Sports banner. Loaded on the first tap.
+   Phones: full screen. Desktop (720px and up): a centred card over the home page, no backdrop blur (it flickered on
+   desktop, 11 Oct 2026). The root is a .ca (the account's pop-up base, for the phone's Back), so its own look is set
+   here with .ca.cgt. Each step: the picture (drawn 340 x 320, scaled by --s to its stage), then the words; Next is
+   pinned in the foot, in the same place on every step. Gold only on the CAST Pass step (and the GOAT's chip). */
+html.cgt-open, html.cgt-open body { overflow: hidden; }
+.ca.cgt { z-index: 10055; align-items: stretch; justify-content: center; padding: 0; background: #0a0a0f; -webkit-tap-highlight-color: transparent; }
+.cgt * { box-sizing: border-box; }
+.cgt-scrim { display: none; }
+.cgt-box { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; outline: none; background: #0a0a0f; }
+.cgt-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- The top: the dots in the middle, Skip (a close on the last step) on the right ---------- */
+.cgt-top { position: relative; z-index: 3; flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 58px; padding: calc(env(safe-area-inset-top, 0px) + 12px) 16px 6px; }
+.cgt-dots { display: flex; align-items: center; gap: 6px; }
+.cgt-dot { position: relative; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: #3a3a4c; cursor: pointer; transition: width .25s ease, background .25s ease; }
+.cgt-dot::after { content: ''; position: absolute; inset: -12px -4px; } /* a finger-sized target */
+.cgt-dot.is-on { width: 22px; background: #fff; }
+.cgt .cgt-x { position: static; justify-self: end; display: inline-flex; align-items: center; justify-content: center; width: auto; height: 34px; padding: 0 15px; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .06); color: #e4e4ee; font: 800 13px/1 Inter, sans-serif; cursor: pointer; }
+.cgt .cgt-x.is-close { width: 34px; padding: 0; font-size: 14px; }
+@media (hover: hover) { .cgt .cgt-x:hover { color: #fff; border-color: rgba(255, 255, 255, .5); } .cgt-dot:hover:not(.is-on) { background: #6a6a80; } }
+
+/* ---------- The steps, side by side, a swipe moves one ---------- */
+.cgt-track { flex: 1 1 auto; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.cgt-track::-webkit-scrollbar { display: none; }
+.cgt-step { --acc: 255, 255, 255; --s: 1; flex: 0 0 100%; min-width: 0; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; padding: 0 16px; scroll-snap-align: start; scroll-snap-stop: always; }
+.cgt-step::-webkit-scrollbar { display: none; }
+.cgt-step.is-sports { --acc: 74, 222, 128; }
+.cgt-step.is-ways { --acc: 103, 232, 249; }
+.cgt-step.is-wild { --acc: 45, 212, 191; }
+.cgt-step.is-daily { --acc: 251, 146, 60; }
+.cgt-step.is-gold { --acc: 241, 192, 115; } /* CAST Pass */
+.cgt-stage { position: relative; flex: none; height: calc(320px * var(--s)); margin-top: auto; cursor: pointer; } /* the picture and the words, together in the middle */
+/* the step's own light behind its picture, in its colour */
+.cgt-stage::before { content: ''; position: absolute; left: -16px; right: -16px; top: -60px; bottom: -40px; z-index: 0; pointer-events: none;
+  background: radial-gradient(60% 52% at 50% 46%, rgba(var(--acc), .2), rgba(var(--acc), .06) 55%, transparent 75%); }
+.cgt-vis { position: absolute; z-index: 1; left: 50%; top: 50%; width: 340px; height: 320px; transform: translate(-50%, -50%) scale(var(--s, 1)); }
+
+/* ---------- The words ---------- */
+.cgt-copy { flex: none; width: 100%; max-width: 420px; min-height: 196px; margin: 0 auto auto; padding: 14px 8px 12px; text-align: center; }
+.cgt-k { display: block; font: 900 11.5px/1.2 Inter, sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: rgb(var(--acc)); }
+.cgt-step.is-welcome .cgt-k, .cgt-step.is-end:not(.is-gold) .cgt-k { color: #cbd5e1; }
+.cgt-h { margin: 8px 0 0; font: italic 900 30px/1.05 'Inter Tight', Inter, sans-serif; letter-spacing: -.3px; color: #fff; text-wrap: balance; }
+.cgt-p { margin: 10px auto 0; max-width: 350px; font: 600 15.5px/1.45 Inter, sans-serif; color: #c6c6d6; text-wrap: balance; }
+
+/* ---------- The foot: Back (from step 2) and Next, pinned; a second button under Next on the last step ---------- */
+.cgt-foot { position: relative; z-index: 3; flex: none; padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 10px); }
+.cgt-btns { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; }
+.cgt-back { flex: none; width: 54px; height: 54px; padding: 0 0 3px; border-radius: 50%; border: 1px solid #2a2a38; background: #17171f; color: #fff; font: 900 28px/1 Inter, sans-serif; cursor: pointer; }
+.cgt-back.is-off { visibility: hidden; }
+.cgt-next { flex: 1 1 auto; min-width: 0; height: 54px; padding: 0 18px; border-radius: 999px; border: 0; background: #fff; color: #0a0a0f; font: 900 16.5px/1.1 Inter, sans-serif; cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .6); }
+.cgt-next.is-gold { background: linear-gradient(180deg, #ffe7b5, #f1c073 55%, #d8a24f); color: #1a1204; } /* See CAST Pass: the Pass's gold */
+.cgt-alt-row { display: flex; align-items: center; justify-content: center; height: 46px; max-width: 440px; margin: 0 auto; padding: 6px 0 0 64px; }
+.cgt-alt { height: 38px; padding: 0 20px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .06); color: #fff; font: 800 14px/1 Inter, sans-serif; cursor: pointer; }
+.cgt-alt[hidden] { display: none; }
+@media (hover: hover) { .cgt-next:hover { filter: brightness(1.05); } .cgt-back:hover, .cgt-alt:hover { border-color: rgba(255, 255, 255, .45); } }
+.cgt button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* ---------- The mini game card (the home page's card, small): the sport's colour, the logo, one line ---------- */
+.cgt-gc { position: relative; display: flex; flex-direction: column; gap: 4px; width: 100%; height: 100%; padding: 8px; border-radius: 14px; color: var(--ink);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c1) 90%, #fff), color-mix(in srgb, var(--c1) 74%, #000)); border: 1px solid rgba(255, 255, 255, .16);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .22); }
+.cgt-gc-art { position: relative; display: block; flex: 1 1 0; min-height: 0; }
+.cgt-gc-art img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
+.cgt-gc small { flex: none; display: block; font: 800 10px/1.25 Inter, sans-serif; color: color-mix(in srgb, var(--ink) 88%, transparent); text-wrap: balance; }
+
+/* 1: Welcome. The logo over a wall of game cards (one per sport) tilted back under a light, the sports' colours below */
+.is-welcome .cgt-logo { position: absolute; left: 50%; top: 0; width: 168px; height: auto; transform: translateX(-50%); filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .65)); }
+.cgt-wall { position: absolute; left: 0; right: 0; top: 104px; display: flex; flex-direction: column; align-items: center; gap: 8px; perspective: 700px; }
+.cgt-wall-r { display: flex; gap: 8px; transform: rotateX(14deg); transform-origin: 50% 0; }
+.cgt-wall-c { display: block; width: 78px; height: 64px; }
+.cgt-wall-c .cgt-gc { padding: 5px; border-radius: 11px; }
+.is-welcome .cgt-7 { position: absolute; left: 44px; right: 44px; bottom: 30px; height: 4px; border-radius: 2px; box-shadow: 0 0 16px rgba(255, 255, 255, .12); }
+
+/* 2: Pick Your Sport. The bar's switcher pill, the sport chips, the sport's row of cards, a tap */
+.cgt-sw-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: center; }
+.cgt-allg { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid #2a2a38; background: #17171f; color: #fff; font: 900 13.5px/1 Inter, sans-serif; }
+.cgt-allg i { font-style: normal; font-size: 10px; color: #a2a2b8; }
+.cgt-chips { position: absolute; left: 0; right: 0; top: 46px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.cgt-chip { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 11px 0 9px; border-radius: 999px; border: 1px solid rgba(var(--sc), .55); background: rgba(var(--sc), .14); color: #fff; font: 800 12px/1 Inter, sans-serif; white-space: nowrap;
+  transition: background .25s ease, box-shadow .25s ease; }
+.cgt-chip span { font-size: 14px; line-height: 1; }
+.cgt-chip.is-on { background: rgb(var(--sc)); border-color: rgba(255, 255, 255, .7); box-shadow: 0 0 0 2px rgba(255, 255, 255, .85), 0 6px 18px rgba(var(--sc), .5); }
+.cgt-sw-body { position: absolute; left: 0; right: 0; top: 128px; bottom: 0; }
+.cgt-sw-h { display: flex; align-items: center; gap: 8px; height: 26px; }
+.cgt-sw-h i { flex: none; width: 5px; height: 20px; border-radius: 3px; background: rgb(var(--sc)); box-shadow: 0 0 10px rgba(var(--sc), .5); }
+.cgt-sw-h b { font: 900 15px/1 Inter, sans-serif; color: #fff; white-space: nowrap; }
+.cgt-sw-h small { font: 700 11.5px/1 Inter, sans-serif; color: #a2a2b8; white-space: nowrap; }
+.cgt-sw-row { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; height: 150px; margin-top: 10px; }
+.cgt-tap { position: absolute; left: 50px; top: 66px; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; border: 3px solid #fff; background: rgba(255, 255, 255, .25); opacity: 0; pointer-events: none;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, .12), 0 6px 18px rgba(0, 0, 0, .5); }
+
+/* 3: So Many Ways to Play. The real logos, three across */
+.cgt-ways { position: absolute; inset: 4px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 10px; align-content: center; }
+.cgt-way { display: flex; flex-direction: column; gap: 6px; min-height: 0; padding: 9px 7px 10px; border-radius: 14px; color: var(--ink); text-align: center;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c1) 90%, #fff), color-mix(in srgb, var(--c1) 72%, #000)); border: 1px solid rgba(255, 255, 255, .16); box-shadow: 0 12px 24px rgba(0, 0, 0, .45); }
+.cgt-way b { flex: none; font: 900 11.5px/1.15 Inter, sans-serif; text-wrap: balance; }
+
+/* 4: Wildcards. The draft's row (Reroll teal, Reveal amber, Remove pink, as in every game), the Vault, the Shop and the Bag */
+.cgt-offer { position: absolute; left: 0; right: 0; top: 0; padding: 12px 12px 12px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, .1); background: linear-gradient(180deg, #17172a, #101019); box-shadow: 0 16px 32px rgba(0, 0, 0, .5); }
+.cgt-offer-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 2px 10px; }
+.cgt-offer-h b { font: 900 13px/1 'Russo One', Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: #fff; }
+.cgt-offer-h small { font: 700 11px/1 Inter, sans-serif; color: #a2a2b8; white-space: nowrap; }
+.cgt-wcs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.cgt-wc { --wc: 45, 212, 191; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px 7px; border-radius: 12px; border: 1.5px solid rgba(var(--wc), .75);
+  background: linear-gradient(160deg, rgba(var(--wc), .24), rgba(var(--wc), .06)); }
+.cgt-wc b { display: inline-flex; align-items: center; gap: 4px; font: 900 12.5px/1 Inter, sans-serif; color: #fff; white-space: nowrap; }
+.cgt-wc b span { display: inline-block; font-size: 13px; }
+.cgt-wc small { font: 800 9.5px/1 Inter, sans-serif; letter-spacing: .5px; text-transform: uppercase; color: rgb(var(--wc)); }
+.cgt-wc.is-rr { --wc: 45, 212, 191; } .cgt-wc.is-rv { --wc: 251, 191, 36; } .cgt-wc.is-rm { --wc: 244, 114, 182; }
+.cgt-pl { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; margin-top: 9px; padding: 9px 10px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--c1) 70%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c1) 34%, #12121c), #161622 70%); }
+.cgt-pl-club { padding: 3px 6px; border-radius: 6px; background: #fff; color: #0a0a0f; font: 900 10px/1 Inter, sans-serif; letter-spacing: .5px; }
+.cgt-pl b { font: 900 14px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }
+.cgt-pl-q { font: 900 17px/1 Inter, sans-serif; color: #8a8aa3; white-space: nowrap; }
+.cgt-pl-q small { font: 700 11px/1 Inter, sans-serif; color: #a2a2b8; }
+.cgt-vault { position: absolute; left: 0; right: 0; top: 178px; display: flex; flex-direction: column; gap: 8px; padding: 11px 12px; border-radius: 14px; border: 1px solid #2a2a44; background: #16152a; }
+.cgt-vault > b { font: 900 13.5px/1.1 Inter, sans-serif; color: #fff; }
+.cgt-vchips { display: flex; flex-wrap: wrap; gap: 5px; }
+.cgt-vchip { --it: 255, 255, 255; --itl: #fff; display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px 3px 6px; border-radius: 999px; border: 1px solid rgba(var(--it), .45); background: rgba(var(--it), .12);
+  color: var(--itl); font: 900 12px/1.2 Inter, sans-serif; font-style: normal; }
+.cgt-vchip span { font-size: 13px; line-height: 1; }
+.cgt-vchip.is-rr { --it: 45, 212, 191; --itl: #5eead4; } .cgt-vchip.is-rm { --it: 244, 114, 182; --itl: #f9a8d4; } .cgt-vchip.is-rv { --it: 167, 139, 250; --itl: #c4b5fd; }
+.cgt-vchip.is-key { --it: 251, 191, 36; --itl: #fcd34d; } .cgt-vchip.is-rib { --it: 251, 146, 60; --itl: #fdba74; }
+.cgt-vchip.is-goat { --it: 241, 192, 115; --itl: #ffe2a8; } /* the GOAT: gold, as in the Vault */
+.cgt-shop { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 8px; }
+.cgt-shop span { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); background: #17171f; color: #fff; font: 800 12.5px/1 Inter, sans-serif; white-space: nowrap; }
+.cgt-shop span:last-child { border-color: rgba(74, 222, 128, .6); background: rgba(74, 222, 128, .12); color: #bbf7d0; } /* the Bag's green, as on its banner */
+
+/* 5: Daily Challenge, Boards and Friends */
+.cgt-dc { position: absolute; left: 0; right: 0; top: 0; display: grid; grid-template-columns: 74px 1fr; grid-template-rows: auto auto; column-gap: 12px; row-gap: 8px; padding: 12px; border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--c1) 60%, transparent); background: linear-gradient(140deg, color-mix(in srgb, var(--c1) 55%, #0a1a10), #0b0b12 92%); box-shadow: 0 14px 28px rgba(0, 0, 0, .45); }
+.cgt-dc-l { grid-row: span 2; position: relative; border-radius: 12px; background: color-mix(in srgb, var(--c1) 80%, #000); border: 1px solid rgba(255, 255, 255, .14); }
+.cgt-dc-l img { position: absolute; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); object-fit: contain; }
+.cgt-dc-t { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cgt-dc-t b { font: 900 14px/1.2 Inter, sans-serif; color: #fff; }
+.cgt-dc-t small { font: 700 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .86); text-wrap: balance; }
+.cgt-dc-f { display: flex; flex-wrap: wrap; gap: 6px; }
+.cgt-dc-f i { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 999px; background: rgba(255, 255, 255, .1); color: #e4e4ee; font: 800 11px/1 Inter, sans-serif; font-style: normal; white-space: nowrap; }
+.cgt-dc-f i.is-fire { background: rgba(251, 146, 60, .18); color: #fdba74; box-shadow: inset 0 0 0 1px rgba(251, 146, 60, .5); }
+.cgt-two { position: absolute; left: 0; right: 0; top: 128px; bottom: 0; display: grid; grid-template-columns: 1.25fr 1fr; gap: 10px; }
+.cgt-lb, .cgt-fr { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 11px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, .12); background: #141420; box-shadow: 0 14px 28px rgba(0, 0, 0, .4); }
+.cgt-lb > b, .cgt-fr > b { font: 900 13px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }
+.cgt-lb ol { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.cgt-lb li { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 4px; height: 25px; padding: 0 7px; border-radius: 8px; background: rgba(255, 255, 255, .05); font: 800 11px/1 Inter, sans-serif; color: #e4e4ee; }
+.cgt-lb li span { color: #a2a2b8; font-weight: 900; }
+.cgt-lb li b { min-width: 0; font-weight: 800; white-space: nowrap; }
+.cgt-lb li em { font-style: normal; font-weight: 900; color: #fff; }
+.cgt-lb li.is-me { background: rgba(58, 120, 181, .3); box-shadow: inset 0 0 0 1px rgba(96, 165, 250, .7); } /* the player's own row: Friends blue, never gold */
+.cgt-lb li.is-me span { color: #bfdbfe; }
+.cgt-avs { display: flex; padding-left: 6px; }
+.cgt-avs i { display: grid; place-items: center; width: 38px; height: 38px; margin-left: -8px; border-radius: 50%; border: 2px solid #141420; background: var(--a); color: #fff; font: 900 15px/1 Inter, sans-serif; font-style: normal; }
+.cgt-fr small { font: 700 11.5px/1.3 Inter, sans-serif; color: #a2a2b8; text-wrap: balance; }
+.cgt-fr-go { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 32px; border-radius: 999px; background: #3a78b5; color: #fff; font: 900 12px/1 Inter, sans-serif; white-space: nowrap; }
+
+/* 6: a guest's free profile (the sign-in wall's own list), CAST Pass, or all set */
+.cgt-perks { position: absolute; left: 0; right: 0; top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 0; padding: 0; list-style: none; }
+.cgt-perks li { display: flex; align-items: center; gap: 10px; height: 68px; padding: 0 12px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .12); background: #141420; color: #fff; font: 900 13.5px/1.2 Inter, sans-serif; }
+.cgt-perks li span { flex: none; font-size: 24px; line-height: 1; }
+.cgt-free { position: absolute; left: 0; right: 0; bottom: 12px; margin: 0; text-align: center; font: 800 13px/1.3 Inter, sans-serif; color: #cfcfdc; }
+.is-pass .cgt-pass { position: absolute; left: 50%; top: 0; width: 210px; height: auto; transform: translateX(-50%); filter: drop-shadow(0 16px 30px rgba(241, 192, 115, .25)) drop-shadow(0 10px 20px rgba(0, 0, 0, .6)); }
+.is-pass.is-member .cgt-pass { top: 20px; width: 240px; }
+.cgt-pp { position: absolute; left: 30px; right: 30px; bottom: 6px; display: flex; flex-direction: column; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.cgt-pp li { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 12px; border-radius: 12px; border: 1px solid rgba(241, 192, 115, .45); background: rgba(241, 192, 115, .1); color: #ffe7b5; font: 900 13px/1 Inter, sans-serif; }
+.cgt-pp li span { display: inline-flex; width: 18px; justify-content: center; font-size: 15px; }
+.cgt-vf { display: block; width: 18px; height: 18px; }
+.cgt-member { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid rgba(241, 192, 115, .6); background: rgba(241, 192, 115, .14); color: #ffe7b5; font: 900 13px/1 Inter, sans-serif; white-space: nowrap; }
+.is-set .cgt-tick { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); font-size: 76px; line-height: 1; filter: drop-shadow(0 12px 24px rgba(0, 0, 0, .5)); }
+
+/* ---------- Motion: each picture comes in the first time its step shows, then its loop runs while it is on ---------- */
+.cgt-step:not(.is-seen) .cgt-wall-c, .cgt-step:not(.is-seen) .cgt-way, .cgt-step:not(.is-seen) .cgt-perks li, .cgt-step:not(.is-seen) .cgt-offer,
+.cgt-step:not(.is-seen) .cgt-vault, .cgt-step:not(.is-seen) .cgt-shop, .cgt-step:not(.is-seen) .cgt-dc, .cgt-step:not(.is-seen) .cgt-two, .cgt-step:not(.is-seen) .cgt-pp { opacity: 0; }
+.cgt-step.is-seen .cgt-wall-c { animation: cgtDeal .55s cubic-bezier(.2, .9, .3, 1.15) both; animation-delay: var(--d); }
+@keyframes cgtDeal { from { opacity: 0; transform: translateY(26px) scale(.82); } to { opacity: 1; transform: none; } }
+.cgt-step.is-on .cgt-wall { animation: cgtFloat 5s ease-in-out 1s infinite; }
+@keyframes cgtFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.cgt-step.is-seen .cgt-way, .cgt-step.is-seen .cgt-perks li { animation: cgtPop .45s cubic-bezier(.2, .9, .3, 1.2) both; animation-delay: var(--d); }
+@keyframes cgtPop { from { opacity: 0; transform: translateY(14px) scale(.92); } to { opacity: 1; transform: none; } }
+.cgt-step.is-seen .cgt-offer, .cgt-step.is-seen .cgt-dc { animation: cgtUp .5s ease both; }
+.cgt-step.is-seen .cgt-vault, .cgt-step.is-seen .cgt-two { animation: cgtUp .5s ease .15s both; }
+.cgt-step.is-seen .cgt-shop, .cgt-step.is-seen .cgt-pp { animation: cgtUp .5s ease .3s both; }
+@keyframes cgtUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+/* the wildcards light up in turn, Reroll's arrows turning */
+.cgt-step.is-on .cgt-wc { animation: cgtGlow 3.6s ease-in-out infinite; }
+.cgt-step.is-on .cgt-wc.is-rv { animation-delay: 1.2s; } .cgt-step.is-on .cgt-wc.is-rm { animation-delay: 2.4s; }
+@keyframes cgtGlow { 0%, 40%, 100% { box-shadow: none; transform: none; } 12%, 24% { box-shadow: 0 0 18px rgba(var(--wc), .6); transform: translateY(-2px); } }
+.cgt-step.is-on .cgt-wc.is-rr b span { animation: cgtSpin 3.6s ease-in-out infinite; }
+@keyframes cgtSpin { 0%, 6% { transform: rotate(0); } 24%, 100% { transform: rotate(360deg); } }
+/* step 2: the new sport's cards slide in, then a finger taps the first one */
+.cgt-step.is-on .cgt-sw-row .cgt-gc { animation: cgtIn .35s ease both; }
+.cgt-step.is-on .cgt-sw-row .cgt-gc:nth-child(2) { animation-delay: .06s; } .cgt-step.is-on .cgt-sw-row .cgt-gc:nth-child(3) { animation-delay: .12s; }
+@keyframes cgtIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+.cgt-step.is-on .cgt-sw-row .cgt-gc:first-child { animation: cgtIn .35s ease both, cgtPress 2.6s ease .35s; }
+@keyframes cgtPress { 0%, 42% { transform: none; } 50% { transform: scale(.94); } 60%, 100% { transform: none; } }
+.cgt-step.is-on .cgt-tap { animation: cgtTap 2.6s ease .35s; }
+@keyframes cgtTap { 0%, 30% { opacity: 0; transform: scale(1.5); } 44% { opacity: 1; transform: scale(1); } 52% { opacity: 1; transform: scale(.85); } 70%, 100% { opacity: 0; transform: scale(1.3); } }
+.cgt-step.is-on .is-fire { animation: cgtFlick 2.4s ease-in-out infinite; }
+@keyframes cgtFlick { 0%, 100% { box-shadow: inset 0 0 0 1px rgba(251, 146, 60, .5); } 50% { box-shadow: inset 0 0 0 1px rgba(251, 146, 60, .9), 0 0 14px rgba(251, 146, 60, .45); } }
+.cgt-step.is-on .is-pass .cgt-pass { animation: cgtHover 4.5s ease-in-out infinite; }
+@keyframes cgtHover { 0%, 100% { transform: translateX(-50%) rotate(-1.5deg); } 50% { transform: translateX(-50%) translateY(-6px) rotate(1deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .cgt *, .cgt *::before, .cgt *::after { animation: none !important; transition: none !important; }
+  .cgt-step:not(.is-seen) .cgt-wall-c, .cgt-step:not(.is-seen) .cgt-way, .cgt-step:not(.is-seen) .cgt-perks li, .cgt-step:not(.is-seen) .cgt-offer,
+  .cgt-step:not(.is-seen) .cgt-vault, .cgt-step:not(.is-seen) .cgt-shop, .cgt-step:not(.is-seen) .cgt-dc, .cgt-step:not(.is-seen) .cgt-two, .cgt-step:not(.is-seen) .cgt-pp { opacity: 1; }
+}
+
+/* ---------- Short phones (a 360 x 640 screen): a little less room for the words and the foot ---------- */
+@media (max-height: 700px) {
+  .cgt-top { min-height: 50px; padding-top: calc(env(safe-area-inset-top, 0px) + 8px); }
+  .cgt-copy { min-height: 172px; padding-top: 10px; padding-bottom: 8px; }
+  .cgt-h { font-size: 26px; }
+  .cgt-p { margin-top: 8px; font-size: 14.5px; }
+  .cgt-back, .cgt-next { height: 50px; } .cgt-back { width: 50px; }
+  .cgt-alt-row { height: 42px; padding-left: 60px; }
+}
+
+/* ---------- Desktop: a centred card over the home page ---------- */
+@media (min-width: 720px) {
+  .ca.cgt { align-items: center; padding: 24px; background: rgba(5, 5, 10, .84); }
+  .cgt-scrim { display: block; position: absolute; inset: 0; }
+  .cgt-box { width: 540px; height: min(820px, calc(100vh - 48px)); border-radius: 28px; border: 1px solid rgba(255, 255, 255, .12); background: #0c0c13;
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, .03), 0 40px 100px rgba(0, 0, 0, .75); animation: cgtCard .35s cubic-bezier(.2, .9, .3, 1.1) both; }
+  @keyframes cgtCard { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
+  .cgt-top { min-height: 62px; padding: 18px 20px 6px; }
+  .cgt-step { padding: 0 36px; }
+  .cgt-h { font-size: 34px; }
+  .cgt-p { font-size: 16px; max-width: 390px; }
+  .cgt-foot { padding: 8px 28px 18px; }
+}
