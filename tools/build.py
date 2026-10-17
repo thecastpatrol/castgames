@@ -71,14 +71,22 @@ GAMES = [
     # copied to CAST Games/650 GOALS Game. Its cg.js id stays '500goals'; the old /500goals/ address is a redirect (OLD_PATHS)
     ('650goals', '650 GOALS Game', '650goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
+    # SC POINTS KING (17 Oct 2026, the NRL SC spinner): developed in ~/cast-dev/sc/game, copied to CAST Games/SC POINTS KING
+    # Game. On castgames only (never the old sites); its card waits for the owner's Launch ('sc', shared/cg.js launch)
+    ('scpointsking', 'SC POINTS KING Game', 'scpointsking', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
+    # 100000 POINTS (17 Oct 2026, the NBA game): developed in ~/cast-dev/nba/game, copied to CAST Games/100000 POINTS Game.
+    # Its accounts open at the owner's Launch ('nba')
+    ('100000points', '100000 POINTS Game', '100000points', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
 ]
 # The old domains, and the folder each one is now
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
-SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus']}
-SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('racing', 'Horse Racing'), ('epl', 'Premier League'), ('nfl', 'NFL')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
+SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus'], 'nba': ['nbaplus']}
+SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('racing', 'Horse Racing'), ('epl', 'Premier League'), ('nfl', 'NFL'), ('nba', 'NBA')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'shots', 'bingo-reps.json', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
@@ -134,7 +142,7 @@ EXPLAIN = {
 # Every title in one pattern on CAST Games, "<GAME> | <short line> | CAST Games" (audit B8, 16 Oct 2026); the games' own
 # sites keep theirs. A game whose home title runs long gets a shorter line here
 NAMES = {'27-0': '27-0', '1000tries': '1000TRIES', '4000goals': '4000 GOALS', '25000runs': '25000 RUNS', '60000runs': '60000 RUNS',
-         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '650goals': '650 GOALS'}
+         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '650goals': '650 GOALS', 'scpointsking': 'SC POINTS KING', '100000points': '100000 POINTS'}
 HOME_LINE = {'27-0': 'Build an NRL 13 and Go Undefeated'}
 # The games' old homes, written out in their copy (the privacy pages' "available at", 27-0's install steps): their folder
 # here instead (audit T4, 16 Oct 2026)
@@ -205,7 +213,7 @@ def fit_code(dst, folder):
             p = os.path.join(root, f)
             s = open(p, encoding='utf-8').read()
             t = rewrite_links(s, True) if f.endswith('.js') else s
-            if folder in ('4000goals', '25000runs', '60000runs', '650goals') and f.endswith('.js'):
+            if folder in ('4000goals', '25000runs', '60000runs', '650goals', '100000points') and f.endswith('.js'):
                 key = KEEP_KEY.get(folder, folder)  # 650 GOALS keeps 500 GOALS' saved data (17 Oct 2026)
                 t = t.replace("'1000tries_", "'" + key + "_")  # its own saved data here (sound, draft, played...)
                 t = t.replace("'1000_daily_'", "'" + key + "_daily_'")  # and its own Daily goes (1000TRIES keeps '1000_daily_')
@@ -216,7 +224,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/650goals.png', 'assets/logos/100000points.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/650goals.png', 'assets/logos/100000points.png', 'assets/logos/sc.png', 'assets/logos/scpointsking.png']
 
 
 def clear_byline(path):
@@ -394,7 +402,7 @@ def main():
     # contents, so a change reaches everyone at once instead of an old copy kept by the browser (15 Oct 2026)
     idx = os.path.join(HERE, 'index.html')
     hs = open(idx, encoding='utf-8').read()
-    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals|scpointsking|100000points)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
     # and the bar's own files (17 Oct 2026: the home page kept an old cg.css, so a fix never reached it)
     hs2 = re.sub(r'shared/cg\.(css|js)\?v=[\w]*"', lambda m: 'shared/cg.%s?v=%s"' % (m.group(1), CGV), hs2)
     # and the home page's own script and styles (17 Oct 2026: they had fixed numbers, so changes waited in old copies)

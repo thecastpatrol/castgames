@@ -26,7 +26,7 @@
     { id: 'racing', name: 'Horse Racing', chip: 'Racing', ico: '&#x1F3C7;', long: 'Group 1 Jockeys', c: '20,83,45', hex: '#14532D', ink: '#ffffff', status: 'live', path: 'racing/' },
     { id: 'epl', name: 'Premier League', chip: 'EPL', ico: '&#x26BD;', long: 'English Football', c: '76,29,149', hex: '#4C1D95', ink: '#ffffff', status: 'live', path: 'epl/' },
     { id: 'nfl', name: 'NFL', ico: '&#x1F3C8;', long: 'American Football', c: '37,99,235', hex: '#2563EB', ink: '#ffffff', status: 'live', path: 'nfl/' },
-    { id: 'nba', name: 'NBA', ico: '&#x1F3C0;', long: 'Basketball', c: '249,115,22', hex: '#F97316', ink: '#1f0d02', status: 'soon', path: 'nba/' }
+    { id: 'nba', name: 'NBA', ico: '&#x1F3C0;', long: 'Basketball', c: '249,115,22', hex: '#F97316', ink: '#1f0d02', status: 'live', path: 'nba/' }
   ];
   /* Every card is one game a player can play (17 Oct 2026, the owner: "a box of games"): each mode of each game has its
      own card and its own page that opens straight into play (tools/build.py makes the pages from this list's path,
@@ -63,7 +63,10 @@
     // link; its Daily's link is ?play=bingo-daily (dplay)
     { id: 'nrl-bingo', sport: 'nrl', name: 'NRL BINGO', path: 'nrl-bingo/', folder: '1000tries', mode: 'bingo', logo: '', mark: '&#x2705;', status: 'live', launch: 'bingo',
       line: 'Tap his clubs, fill the card', long: 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.', board: 'bgfree', daily: true, dplay: 'bingo-daily' },
-    { id: 'sc', sport: 'nrl', name: 'SC POINTS KING', path: '', logo: '', mark: '&#x1F4C8;', status: 'soon', line: 'Chase the top of the SC board' },
+    // SC POINTS KING (17 Oct 2026): the NRL SC spinner, a 13 of player seasons in SC positions, no target (the biggest total
+    // wins). A Coming Soon card until the owner's Launch ('sc'); its page plays already (the testers' way in)
+    { id: 'scpointsking', sport: 'nrl', name: 'SC POINTS KING', pill: 'SC KING', path: 'scpointsking/', folder: 'scpointsking', mode: 'plus', logo: L + 'scpointsking.png', status: 'live', launch: 'sc',
+      line: 'Chase the top of the SC board', long: 'Spin NRL player seasons from 2009 to 2026 and build the biggest SC 13. The top of the board wears the crown.', of: 13, draft: 'sc_draft_v1', board: 'scplus', daily: true },
     // AFL
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', folder: '4000goals', mode: 'plus', logo: L + '4000goals.png', status: 'live',
       line: 'Draft 18 to 4000 goals', long: 'Draft an AFL 18 with their goals hidden and reach 4000 career goals.', of: 18, draft: '4000goals_draft_v1', board: '4000plus', daily: true, stats: '4000goals' },
@@ -116,8 +119,16 @@
     { id: 'higher-or-lower-nfl', sport: 'nfl', name: 'HIGHER OR LOWER: NFL', pill: '&#x25B2;&#x25BC; NFL', path: 'higher-or-lower-nfl/', folder: '777tds', mode: 'ou', logo: '', mark: '&#x25B2;&#x25BC;', status: 'live', ou: true,
       line: 'Career touchdowns, vs the clock', long: 'Higher or lower? Call NFL players’ career touchdowns before the clock runs out.', board: 'nflou' },
     // NBA (17 Oct 2026: built, not on the site yet)
-    { id: '100000points', sport: 'nba', name: '100000 POINTS', path: '', logo: L + '100000points.png', status: 'soon', line: 'A starting five to 100000' },
-    { id: 'higher-or-lower-nba', sport: 'nba', name: 'HIGHER OR LOWER: NBA', path: '', logo: '', mark: '&#x25B2;&#x25BC;', status: 'soon', ou: true, line: 'Points, rebounds and assists' }
+    // 100000 POINTS (17 Oct 2026): the NBA game, a starting five to 100000 career points. Its accounts open at the owner's
+    // Launch ('nba'); its pages play already, like the other new games before theirs
+    { id: '100000points', sport: 'nba', name: '100000 POINTS', path: '100000points/', folder: '100000points', mode: 'plus', logo: L + '100000points.png', status: 'live',
+      line: 'A starting five to 100000', long: 'Draft an NBA starting five with their points hidden and reach 100000 career points.', of: 5, draft: 'nba_draft_v1', board: 'nbaplus', daily: true },
+    { id: '100000points-exactly', sport: 'nba', name: '100000 POINTS EXACTLY', pill: 'EXACTLY 100000', path: '100000points-exactly/', folder: '100000points', mode: 'exact', logo: L + '100000points.png', tag: 'Exactly 100000', status: 'live',
+      line: 'Land on 100000 points exactly', long: 'Draft an NBA starting five and land on exactly 100000 career points.', of: 5, draft: 'nba_draft_v1_exact', board: 'nbaexact' },
+    { id: '100000points-team-spin', sport: 'nba', name: '100000 POINTS TEAM SPIN', pill: 'TEAM SPIN', path: '100000points-team-spin/', folder: '100000points', mode: 'spin', logo: L + '100000points.png', tag: 'Team Spin', status: 'live',
+      line: 'Spin a team and season, pick 1', long: 'Choose a position, spin an NBA franchise and season, and pick from that roster. Reach 100000 points.', of: 5, draft: 'nba_draft_v1_spin', board: 'nbaspin' },
+    { id: 'higher-or-lower-nba', sport: 'nba', name: 'HIGHER OR LOWER: NBA', pill: '&#x25B2;&#x25BC; NBA', path: 'higher-or-lower-nba/', folder: '100000points', mode: 'ou', logo: '', mark: '&#x25B2;&#x25BC;', status: 'live', ou: true,
+      line: 'Points, rebounds and assists', long: 'Higher or lower? Call NBA players\u2019 career points, rebounds and assists before the clock runs out.', board: 'nbaou' }
   ];
   // Each card's colours are its sport's (the owner: "sport colour background")
   GAMES.forEach(function (g) {
@@ -341,7 +352,7 @@
   window.addEventListener('cast:play', function (e) {
     var d = e.detail || {}, here = currentGame();
     if (!here || !here.folder || d.mode === 'daily') return;
-    var folder = { '1000tries': '1000tries', '27-0': '27-0', '4000goals': '4000goals', bigbash: '25000runs', tests: '60000runs', nfl: '777tds', racing: 'g1winner', epl: '650goals' }[d.game] || d.game;
+    var folder = { '1000tries': '1000tries', '27-0': '27-0', '4000goals': '4000goals', bigbash: '25000runs', tests: '60000runs', nfl: '777tds', racing: 'g1winner', epl: '650goals', nba: '100000points', sc: 'scpointsking' }[d.game] || d.game;
     var m = d.mode === 'aflw' ? 'nrlw' : d.mode === 'bingod' ? 'bingo' : d.mode, g = forMode(folder, m);
     if (!g || g.id === here.id || !g.path) return;
     e.stopImmediatePropagation();

@@ -347,7 +347,7 @@
      daily challenge is, or the reward"): the headline each game's home card shows (js/daily.js themeFor), and the reward */
   // Each game's calendar (index.html loads them) and the name its rewards go under
   var CAL = { '27-0': ['CG_DAILY_NRL', '27-0'], '1000tries': ['CG_DAILY_NRL', '1000tries'], '4000goals': ['CG_DAILY_AFL', '4000goals'],
-    '25000runs': ['CG_DAILY_BBL', 'bigbash'], '60000runs': ['CG_DAILY_TESTS', 'tests'], '777tds': ['CG_DAILY_NFL', 'nfl'], 'g1winner': ['CG_DAILY_RACING', 'racing'], '650goals': ['CG_DAILY_EPL', 'epl'] };
+    '25000runs': ['CG_DAILY_BBL', 'bigbash'], '60000runs': ['CG_DAILY_TESTS', 'tests'], '777tds': ['CG_DAILY_NFL', 'nfl'], 'g1winner': ['CG_DAILY_RACING', 'racing'], '650goals': ['CG_DAILY_EPL', 'epl'], '100000points': ['CG_DAILY_NBA', 'nba'], scpointsking: ['CG_DAILY_SC', 'sc'] };
   function dailyOf(id) {
     // NRL Bingo's Daily (17 Oct 2026): the same card of players for everyone, one go, no reward of its own
     if (id === 'nrl-bingo') return { head: 'Fill all 20 tiles', reward: '' };
