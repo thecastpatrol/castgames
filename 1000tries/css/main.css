@@ -1443,6 +1443,8 @@ h1, h2, h3, h4, h5, p, li, dt, dd, small, label, button, figcaption, summary, td
 /* The other modes: three small buttons in a row, each in its own colour with one tag */
 .mode-more-kicker { margin: 10px 2px 0; font: 900 11px/1 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); }
 .mode-more { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 8px; }
+/* Four modes (World Cup 200+ joined More Modes on 17 Oct 2026) sit two by two on a phone, so every name stays whole */
+@media (max-width: 599px) { .mode-more[style*="--n:4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .mode-mini { display: grid; justify-items: center; align-content: center; gap: 5px; min-height: 96px; padding: 12px 4px 10px; border-radius: 14px; border: 1px solid #2a2a44;
   background: var(--card); color: #fff; font: inherit; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform .12s ease, border-color .15s ease; }
 .mode-mini:active { transform: scale(.97); }
