@@ -1950,7 +1950,7 @@ body {
 .silks-horse { display: inline-block; max-width: 100%; padding: 3px 9px; border-radius: 999px; background: rgba(8, 12, 20, .82);
   color: #fff; font: 800 11px/1.25 var(--font); letter-spacing: .2px; white-space: normal; overflow-wrap: break-word;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .2); text-wrap: balance; }
-.pcard-plate.is-silks { min-height: 42px; background: var(--silks); border-left: 0; box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25); }
+.pcard-plate.is-silks { min-height: 42px; background: var(--silks); border-left: 0; }
 .pcard.is-legend .pcard-plate.is-silks, .chooser-card.is-legend .pcard-plate.is-silks { background: var(--silks); border-left: 0; text-shadow: none; }
 .pcard-plate.is-silks .pcard-tier { margin-left: auto; box-shadow: 0 0 0 1px rgba(0, 0, 0, .25); }
 .chooser-card .pcard-plate.is-silks { min-height: 42px; }
@@ -1968,7 +1968,7 @@ body {
 .rrow-horse { font: 700 11px/1.2 var(--font); color: var(--muted); }
 /* The reveal after a pick: a band of the silks across the top */
 .reveal.is-silks { position: relative; overflow: hidden; padding-top: 38px; }
-.reveal.is-silks::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 20px; background: var(--silks); box-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+.reveal.is-silks::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 20px; background: var(--silks); } /* no line under the band: the silks run straight into the main colour (17 Oct 2026, the owner) */
 /* Photo Finish: a jockey's plate carries the signature horse's name; a jockey without silks gets the neutral look */
 .ou-card.is-silks .ou-plate { justify-content: flex-start; border-left: 0; } /* the silks alone, edge to edge (an accent edge read as part of the pattern) */
 .ou-plate .silks-horse { font-size: 10.5px; padding: 3px 7px; }
