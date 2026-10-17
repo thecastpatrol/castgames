@@ -64,7 +64,7 @@
 <body>
 <script>window.CG_GAME = '100000points'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
 <script src="../shared/cg.js?v=c00e6ce3c635"></script>
-<script src="/shared/cg-speed.js?v=126948ed" defer></script>
+<script src="/shared/cg-speed.js?v=8214b1a5" defer></script>
 
 
 <header class="site-header">
@@ -235,7 +235,7 @@
 <script src="js/render.js?v=87549a2a"></script>
 <script src="js/share-card.js?v=3891f2b4"></script>
 <script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
-<script src="js/app.js?v=0b6d4f2e"></script>
+<script src="js/app.js?v=5b4be231"></script>
 <script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
 <script src="js/nba-daily.js?v=92d0aebc"></script>
 <script src="js/daily.js?v=66d99921"></script>
@@ -246,6 +246,7 @@
   // off here and it stays out of the other games' stats, boards and Shop words; ?castlaunch=1 previews it launched
   window.CAST_ACCOUNT = { enabled: false, launch: 'nba', game: 'nba', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
     inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; }, // a game in progress: sign-in keeps the pop-up (no reload)
+    reloadSafe: function () { return !!(window.T && T.reloadSafe && T.reloadSafe()); }, // mid-draft, same-tab sign-in brings the draft back (js/app.js)
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); }, // no game finished here yet (js/app.js): no spot for a guest
     // The promo pop-up (js/cast-promo.js): its button starts 100000+, and each card shows the player's career points
@@ -256,6 +257,6 @@
 <script src="/1000tries/js/ou-engine.js?v=cbc70b44"></script>
 <script src="js/overunder.js?v=764fb5f4"></script>
 <script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
-<script src="/1000tries/js/cast-account.js?v=2d60b5b2"></script>
+<script src="/1000tries/js/cast-account.js?v=04a056a5"></script>
 </body>
 </html>

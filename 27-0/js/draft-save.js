@@ -26,9 +26,10 @@
   function picks(S) { return (S.team || []).filter(Boolean).length; }
 
   
-  function eligible() {
+  function eligible(force) {
     if (typeof STATE === 'undefined' || !STATE || !MODES[STATE.gameMode] || daily() || STATE.__qd || STATE.__ch || STATE.season) return false;
     if (!SCREENS[screen()]) return false;
+    if (force === true) return true;
     if (STATE.gameMode === 'pack') return (STATE.packPlayers || []).length > 0 || (!STATE.isGodPack && STATE.packIdx > 0);
     
     return picks(STATE) > 0 || !!(STATE.__keyUsed || STATE.__superNext || STATE.__rrN || STATE.rerollUsed) || (STATE.__k || 0) > 1;
@@ -49,8 +50,8 @@
     var d = null; try { d = JSON.parse(e.newValue || 'null'); } catch (x) { d = null; }
     if (d && d.id === STATE.__draftId && d.tab !== TAB) taken();
   });
-  function keep() {
-    if (!eligible() || STATE.__taken) return;
+  function keep(force) {
+    if (!eligible(force) || STATE.__taken) return;
     if (!STATE.__draftId) STATE.__draftId = Math.random().toString(36).slice(2, 12);
     var cur = raw(STATE.gameMode), me = who();
     if (cur && cur.id === STATE.__draftId && cur.tab !== TAB) { taken(); return; }
@@ -215,11 +216,11 @@
       if (done) return;
       done = true;
       var now = saved(m);
-      if (now && who() === now.who) resume(now); else fresh();
+      if (now && (who() === now.who || handed(now))) resume(now); else fresh();
     };
     var signedBefore = false; 
     try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) {   }
-    if (who() === d.who && !(d.who === 'guest' && signedBefore)) { decide(); return; }
+    if (handed(d) || (who() === d.who && !(d.who === 'guest' && signedBefore))) { decide(); return; }
     var on = function (e) {
       var st = e.detail && e.detail.status;
       if (st !== 'signed-in' && st !== 'guest') return;
@@ -229,5 +230,22 @@
     window.addEventListener('cast-account', on);
     setTimeout(decide, 6000);
   }
-  window.cpDraftSave = { keep: keep, saved: saved, drop: drop, resumeFor: resumeFor }; 
+  
+
+
+
+
+
+  function handed(d) {
+    var t = window.CastAccount && CastAccount.signInBack ? CastAccount.signInBack() : 0;
+    return !!(t && d && d.who === 'guest' && d.at >= t);
+  }
+  function reloadSafe() {
+    var m = window.CG_MODE;
+    if (!m || !MODES[m] || typeof STATE === 'undefined' || !STATE || STATE.gameMode !== m || STATE.__taken) return false;
+    return !(daily() || STATE.__qd || STATE.__ch || STATE.season) && !!SCREENS[screen()];
+  }
+  window.addEventListener('cast:signin-away', function () { if (reloadSafe()) keep(true); });
+  window.addEventListener('cast-account', function (e) { if (e.detail && e.detail.status === 'signed-in') keep(); }); 
+  window.cpDraftSave = { keep: keep, saved: saved, drop: drop, resumeFor: resumeFor, reloadSafe: reloadSafe }; 
 })();

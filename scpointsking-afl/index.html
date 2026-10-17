@@ -56,7 +56,7 @@
 <body>
 <script>window.CG_GAME = 'scpointsking-afl'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
 <script src="../shared/cg.js?v=c00e6ce3c635"></script>
-<script src="/shared/cg-speed.js?v=126948ed" defer></script>
+<script src="/shared/cg-speed.js?v=8214b1a5" defer></script>
 
 
 <header class="site-header">
@@ -199,7 +199,7 @@
 <script src="js/render.js?v=4fb188e8"></script>
 <script src="js/share-card.js?v=ac7c3ba7"></script>
 <script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
-<script src="js/app.js?v=393aaa79"></script>
+<script src="js/app.js?v=db59b24c"></script>
 <script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
 <script src="js/scafl-daily.js?v=d9702f9f"></script>
 <script src="js/daily.js?v=16194af5"></script>
@@ -208,11 +208,12 @@
   // game id, boards and server check (lib/checkscafl.js) are hooked up in the 1000TRIES repo's shared code and functions
   window.CAST_ACCOUNT = { enabled: false, launch: 'scafl', game: 'scafl', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
     inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; },
+    reloadSafe: function () { return !!(window.T && T.reloadSafe && T.reloadSafe()); }, // mid-draft, same-tab sign-in brings the draft back (js/app.js)
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; },
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); } };
 </script>
 <script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
 <script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
-<script src="js/cast-account.js?v=423233c5"></script>
+<script src="/1000tries/js/cast-account.js?v=04a056a5"></script>
 </body>
 </html>

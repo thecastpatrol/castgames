@@ -90,7 +90,7 @@
 <body>
 <script>window.CG_GAME = 'world-cup-8-0'; window.CG_PLAY = function (dry) { var b = document.querySelector('.screen.active .cp-new-tab'); if (b) { if (!dry) b.click(); return true; } return false; };</script>
 <script src="../shared/cg.js?v=c00e6ce3c635"></script>
-<script src="/shared/cg-speed.js?v=126948ed" defer></script>
+<script src="/shared/cg-speed.js?v=8214b1a5" defer></script>
 
 
 <div id="setup" class="screen">
@@ -888,6 +888,7 @@
     game: '27-0',
     // A game in progress (any screen but home and results): sign-in keeps the pop-up, since a same-tab sign-in reloads the page
     inGame: function () { var a = document.querySelector('.screen.active'); return !!a && a.id !== 'setup' && a.id !== 'results'; },
+    reloadSafe: function () { return !!(window.cpDraftSave && cpDraftSave.reloadSafe && cpDraftSave.reloadSafe()); }, // mid-draft, same-tab sign-in brings the draft back (js/draft-save.js)
     onHome: function () { var a = document.querySelector('.screen.active'); return !a || a.id === 'setup'; }, // the home page (pop-ups wait for it)
     firstVisit: function () { return !!(window.cpFirstVisit && window.cpFirstVisit()); }, // no season finished here yet (js/theme-fx.js): no spot for a guest
     // The promo pop-up (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): its button opens Packs (a CAST
@@ -909,7 +910,7 @@
 <script src="/1000tries/js/cast-dual.js?v=ffefa095"></script>
 <script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
 <script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
-<script src="/1000tries/js/cast-account.js?v=2d60b5b2"></script>
+<script src="/1000tries/js/cast-account.js?v=04a056a5"></script>
 <script src="/1000tries/js/cast-totw.js?v=513cc917"></script>
 <script src="/1000tries/js/cast-wch.js?v=8dd07687"></script>
 <script src="js/theme-fx.js?v=36e7ed0c"></script>
@@ -923,6 +924,6 @@
 <script src="/1000tries/js/cast-intl.js?v=5f7b4f7d"></script>
 <script src="js/wc-engine.js?v=5f6145b5"></script>
 <script src="js/world-cup.js?v=5c13d7be"></script>
-<script src="js/draft-save.js?v=b02a4712"></script>
+<script src="js/draft-save.js?v=9f74e287"></script>
 </body>
 </html>

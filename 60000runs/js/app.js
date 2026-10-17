@@ -1977,10 +1977,10 @@
     return T.filledCount() > 0 || S.offerNo > 1 || S.spinNo > 1 || !!(S.keysUsed || S.keyUsed || S.immUsed || S.ilegUsed || S.goatUsed || S.subUsed ||
       S.boughtRerolls || S.boughtScouts || S.boughtTweaks || Object.keys(S.paidUsed || {}).length);
   }
-  function keepDraft() {
+  function keepDraft(force) {
     var S = T.state();
     
-    if (!S || S.finished || S.daily || S.qd || S.challenge || !S.mode || !draftWorth(S)) return;
+    if (!S || S.finished || S.daily || S.qd || S.challenge || !S.mode || !(force === true || draftWorth(S))) return; 
     if (!S.draftId) S.draftId = Math.random().toString(36).slice(2, 12);
     var cur = draftRaw(S.mode.id), me = draftWho();
     if (cur && cur.id === S.draftId && cur.tab !== DRAFT_TAB) { draftTaken(); return; }
@@ -2105,12 +2105,12 @@
       if (done) return;
       done = true;
       var now = savedDraft(mode);
-      if (now && draftWho() === now.who) resumeDraft(now); else playMode(mode);
+      if (now && (draftWho() === now.who || draftHanded(now))) resumeDraft(now); else playMode(mode);
     };
     
     var signedBefore = false;
     try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) {   }
-    if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { decide(); return; }
+    if (draftHanded(d) || (draftWho() === d.who && !(d.who === 'guest' && signedBefore))) { decide(); return; }
     var on = function (e) {
       var st = e.detail && e.detail.status;
       if (st !== 'signed-in' && st !== 'guest') return;
@@ -2151,6 +2151,24 @@
   window.addEventListener('cast-account', function () { setTimeout(homeAgain, 0); }); 
   document.addEventListener('visibilitychange', function () { if (document.hidden) keepDraft(); });
   window.addEventListener('pagehide', keepDraft);
+
+  
+
+
+
+
+
+  window.addEventListener('cast:signin-away', function () { if (T.reloadSafe()) keepDraft(true); });
+  window.addEventListener('cast-account', function (e) { if (e.detail && e.detail.status === 'signed-in') keepDraft(); }); 
+  function draftHanded(d) {
+    var t = window.CastAccount && CastAccount.signInBack ? CastAccount.signInBack() : 0;
+    return !!(t && d && d.who === 'guest' && d.at >= t);
+  }
+  T.reloadSafe = function () {
+    var S = T.state();
+    if (!window.CG_MODE || !bootMode || document.body.getAttribute('data-screen') !== 'draft' || !S || S.finished || !S.mode) return false;
+    return !(S.daily || S.qd || S.challenge || busy || qdOn) && S.mode.id === bootMode;
+  };
 
    
 

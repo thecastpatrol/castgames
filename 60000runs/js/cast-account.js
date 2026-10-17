@@ -722,7 +722,10 @@
   function sameTab() {
     var here = SAME_TAB_SIGNIN && !!SELF_AUTH_HOSTS[location.hostname];
     var test = EMU && /[?&]castredirect=1(&|$)/.test(location.search); 
-    return (here || test) && (touchDevice || test) && !(typeof CFG.inGame === 'function' && CFG.inGame());
+    
+    
+    var busy = typeof CFG.inGame === 'function' && CFG.inGame() && !(typeof CFG.reloadSafe === 'function' && CFG.reloadSafe());
+    return (here || test) && (touchDevice || test) && !busy;
   }
   
   var redirectBack = (function () {
@@ -732,6 +735,7 @@
       return r && Date.now() - (+r.at || 0) < 900000 ? r : null;
     } catch (e) { return null; }
   })();
+  var signInBack = redirectBack ? +redirectBack.at || 0 : 0;
   
   window.addEventListener('hashchange', function () {
     var p = grabPass();
@@ -920,6 +924,8 @@
     if (sameTab()) {
       
       try { sessionStorage.setItem(LS_REDIRECT, JSON.stringify({ kind: kind, optIn: pendingOptIn, from: ctaFrom || 'profile', at: Date.now(), play: pendingPlay && pendingMode || null })); } catch (e) {   }
+      
+      try { window.dispatchEvent(new CustomEvent('cast:signin-away')); } catch (e) {   }
       fb.A.signInWithRedirect(fb.auth, providerFor(kind)).catch(function (err) {
         try { sessionStorage.removeItem(LS_REDIRECT); } catch (e) {   }
         signInFailed(err, kind);
@@ -15288,6 +15294,8 @@
     
     wcLive: wcOn, wcTries: wcTries, ouOn: ouOn, poOn: poOn, useFor: function (t) { useFor = t === 'ou' || t === 'bingo' ? t : null; }, bingoOn: bingoOn,
     isLaunched: function (k) { return launchOn.indexOf(k) >= 0; }, 
+    
+    signInBack: function () { return signInBack; },
     
     potw: function () { return fanLive() ? { name: fanNow.name, team: fanNow.team, until: fanNow.until } : null; },
     openPotw: function () { fanPop(fanMine(), false); },

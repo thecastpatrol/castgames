@@ -722,7 +722,10 @@
   function sameTab() {
     var here = SAME_TAB_SIGNIN && !!SELF_AUTH_HOSTS[location.hostname];
     var test = EMU && /[?&]castredirect=1(&|$)/.test(location.search); 
-    return (here || test) && (touchDevice || test) && !(typeof CFG.inGame === 'function' && CFG.inGame());
+    
+    
+    var busy = typeof CFG.inGame === 'function' && CFG.inGame() && !(typeof CFG.reloadSafe === 'function' && CFG.reloadSafe());
+    return (here || test) && (touchDevice || test) && !busy;
   }
   
   var redirectBack = (function () {
@@ -732,6 +735,7 @@
       return r && Date.now() - (+r.at || 0) < 900000 ? r : null;
     } catch (e) { return null; }
   })();
+  var signInBack = redirectBack ? +redirectBack.at || 0 : 0;
   
   window.addEventListener('hashchange', function () {
     var p = grabPass();
@@ -920,6 +924,8 @@
     if (sameTab()) {
       
       try { sessionStorage.setItem(LS_REDIRECT, JSON.stringify({ kind: kind, optIn: pendingOptIn, from: ctaFrom || 'profile', at: Date.now(), play: pendingPlay && pendingMode || null })); } catch (e) {   }
+      
+      try { window.dispatchEvent(new CustomEvent('cast:signin-away')); } catch (e) {   }
       fb.A.signInWithRedirect(fb.auth, providerFor(kind)).catch(function (err) {
         try { sessionStorage.removeItem(LS_REDIRECT); } catch (e) {   }
         signInFailed(err, kind);
@@ -2705,7 +2711,7 @@
   ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
   ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
   ['legend', '&#x1F396;&#xFE0F;', 'Legend', 'Pick a Legend'],
-  ['legs11', '&#x1F3B0;', 'All Sevens', 'Land on 777 exactly outside Exactly 777'],
+  ['legs11', '&#x1F3B0;', 'All Sevens', 'Land on exactly 777 TDs'],
   ['read', '&#x1F52E;', 'Perfect Read', 'Top TD scorer in every offer'],
   ['odds', '&#x1F3B2;', 'Against the Odds', '777+ with Luck at -15% or worse'],
   ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
@@ -2909,7 +2915,7 @@
   ['plays50', '&#x1F3DF;&#xFE0F;', 'Season Ticket', 'Play 50 games'],
   ['plays100', '&#x1F3C6;', 'Life Member', 'Play 100 games'],
   ['legend', '&#x1F396;&#xFE0F;', 'Legend', 'Pick a Legend'],
-  ['legs11', '&#x1F3B0;', 'On the Dot', 'Land on 100000 exactly outside Exactly 100000'],
+  ['legs11', '&#x1F3B0;', 'On the Dot', 'Land on exactly 100000 points'],
   ['read', '&#x1F52E;', 'Perfect Read', 'Top scorer in every offer'],
   ['odds', '&#x1F3B2;', 'Against the Odds', '100000+ with Luck at -15% or worse'],
   ['lucky', '&#x1F340;', 'Born Lucky', 'Luck at +30% or better'],
@@ -2999,7 +3005,9 @@
 
   function trophyList(g, other) { 
     var got = other || allTrophies(), P = window.CAST_PROMO;
-    return (TROPHIES[g] || []).filter(function (x) { return !x[4] || got[g + ':' + x[0]] || (x[4] === 'wc' ? wcOn() : x[4] === 'wch' ? wchOn() : x[4] === 'ou' ? ouOn() : x[4] === 'po' ? poOn() : x[4] === 'bingo' ? bingoOn() : P && P.isOn && P.isOn(x[4])); });
+    
+    
+    return (TROPHIES[g] || []).filter(function (x) { return !(NO_EXACT && x[0] === 'exact' && !got[g + ':' + x[0]]); }).filter(function (x) { return !x[4] || got[g + ':' + x[0]] || (x[4] === 'wc' ? wcOn() : x[4] === 'wch' ? wchOn() : x[4] === 'ou' ? ouOn() : x[4] === 'po' ? poOn() : x[4] === 'bingo' ? bingoOn() : P && P.isOn && P.isOn(x[4])); });
   }
   var LS_TROPHIES = 'cast_trophies_v1', LS_PLAYS = 'cast_plays_v1';
   function trophyDef(key) {
@@ -3317,7 +3325,7 @@
     'nfl:plays50': 'You have played 50 games.',
     'nfl:plays100': 'You have played 100 games.',
     'nfl:legend': 'You picked an NFL Legend.',
-    'nfl:legs11': 'You landed on exactly 777 TDs without playing Exactly 777. All sevens!',
+    'nfl:legs11': 'You landed on exactly 777 TDs. All sevens!',
     'nfl:read': 'You picked the top TD scorer from every offer.',
     'nfl:odds': 'You reached 777 with the luck of the draw against you: Luck at -15% or worse.',
     'nfl:lucky': 'Your Luck was +30% or better. The cards loved you.',
@@ -3497,7 +3505,7 @@
     'nba:plays50': 'You have played 50 games.',
     'nba:plays100': 'You have played 100 games.',
     'nba:legend': 'You picked an NBA Legend.',
-    'nba:legs11': 'You landed on exactly 100000 points without playing Exactly 100000. Right on the dot!',
+    'nba:legs11': 'You landed on exactly 100000 points. Right on the dot!',
     'nba:read': 'You picked the top scorer from every offer.',
     'nba:odds': 'You reached 100000 with the luck of the draw against you: Luck at -15% or worse.',
     'nba:lucky': 'Your Luck was +30% or better. The cards loved you.',
@@ -6027,7 +6035,14 @@
   }
   function toastClear() { Array.prototype.forEach.call(document.querySelectorAll('.ca-toast:not(.is-undo)'), function (x) { if (x.parentNode) x.parentNode.removeChild(x); }); }
   function callFn(name, data) {
-    return loadSdk().then(function () { return fb.Fn.httpsCallable(fb.fns, name)(curData(name, data || {})); }).then(function (r) { return r.data; }); 
+    return loadSdk().then(function () { return fb.Fn.httpsCallable(fb.fns, name)(cgBack(name, curData(name, data || {}))); }).then(function (r) { return r.data; }); 
+  }
+  
+
+
+  function cgBack(name, d) {
+    if (!/^(passCheckout|passPortal|passSwitch)$/.test(name) || !/(^|\.)castgames\.com\.au$/.test(location.hostname)) return d;
+    return Object.assign({}, d, { cg: location.pathname.replace(/index\.html$/, '') });
   }
   
 
@@ -13703,6 +13718,7 @@
     if (hb.board && !BOARDS.some(function (b) { return b.id === hb.board; })) hb.board = null;
     showLaunchBits();
     refreshAll();
+    tierChanged(); 
     if (handoffIn && ENABLED) takeHandoff(); 
     bootLinks(); 
     try { window.dispatchEvent(new CustomEvent('cast:launch', { detail: { game: LAUNCH, on: on } })); } catch (e) {   }
@@ -15278,6 +15294,8 @@
     
     wcLive: wcOn, wcTries: wcTries, ouOn: ouOn, poOn: poOn, useFor: function (t) { useFor = t === 'ou' || t === 'bingo' ? t : null; }, bingoOn: bingoOn,
     isLaunched: function (k) { return launchOn.indexOf(k) >= 0; }, 
+    
+    signInBack: function () { return signInBack; },
     
     potw: function () { return fanLive() ? { name: fanNow.name, team: fanNow.team, until: fanNow.until } : null; },
     openPotw: function () { fanPop(fanMine(), false); },

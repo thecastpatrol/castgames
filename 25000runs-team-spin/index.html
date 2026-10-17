@@ -65,7 +65,7 @@
 <body>
 <script>window.CG_GAME = '25000runs-team-spin'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
 <script src="../shared/cg.js?v=c00e6ce3c635"></script>
-<script src="/shared/cg-speed.js?v=126948ed" defer></script>
+<script src="/shared/cg-speed.js?v=8214b1a5" defer></script>
 
 
 <header class="site-header">
@@ -236,7 +236,7 @@
 <script src="js/render.js?v=d3eafead"></script>
 <script src="js/share-card.js?v=dc412ece"></script>
 <script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
-<script src="js/app.js?v=fd564b2a"></script>
+<script src="js/app.js?v=40b480a3"></script>
 <script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
 <script src="js/bbl-daily.js?v=af4172cf"></script>
 <script src="js/daily.js?v=2c0c22a7"></script>
@@ -247,6 +247,7 @@
   // launchWith (17 Oct 2026): the owner's launch preview here also previews 60000 RUNS, whose Test categories HIGHER OR LOWER: CRICKET plays on this page
   window.CAST_ACCOUNT = { enabled: false, launch: 'bigbash', launchWith: ['tests'], game: 'bigbash', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
     inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; }, // a game in progress: sign-in keeps the pop-up (no reload)
+    reloadSafe: function () { return !!(window.T && T.reloadSafe && T.reloadSafe()); }, // mid-draft, same-tab sign-in brings the draft back (js/app.js)
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); }, // no game finished here yet (js/app.js): no spot for a guest
     // The promo pop-up (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): its button starts 25000+, and each card shows the player's runs
@@ -257,6 +258,6 @@
 <script src="js/ou-engine.js?v=853523c7"></script>
 <script src="js/overunder.js?v=7377b201"></script>
 <script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
-<script src="/1000tries/js/cast-account.js?v=2d60b5b2"></script>
+<script src="/1000tries/js/cast-account.js?v=04a056a5"></script>
 </body>
 </html>

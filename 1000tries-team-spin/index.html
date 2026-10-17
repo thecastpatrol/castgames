@@ -72,7 +72,7 @@
 <body>
 <script>window.CG_GAME = '1000tries-team-spin'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
 <script src="../shared/cg.js?v=c00e6ce3c635"></script>
-<script src="/shared/cg-speed.js?v=126948ed" defer></script>
+<script src="/shared/cg-speed.js?v=8214b1a5" defer></script>
 
 
 <header class="site-header">
@@ -283,7 +283,7 @@
 <script src="/1000tries/js/render.js?v=f7f3088f"></script>
 <script src="/1000tries/js/share-card.js?v=30674101"></script>
 <script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
-<script src="/1000tries/js/app.js?v=503a2c66"></script>
+<script src="/1000tries/js/app.js?v=5598dd76"></script>
 <script src="/1000tries/js/ou-engine.js?v=cbc70b44"></script>
 <script src="/1000tries/js/overunder.js?v=be0ed257"></script>
 <script src="/1000tries/js/bingo-engine.js?v=4441ecbf"></script>
@@ -294,6 +294,7 @@
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
     inGame: function () { var s = document.body.getAttribute('data-screen'); return s === 'draft' || (s === 'bingo' && !!(window.T && T.bingo && T.bingo.playing())); }, // a game in progress (a draft, or an NRL Bingo card): sign-in keeps the pop-up (no reload), and pop-ups wait
+    reloadSafe: function () { return !!(window.T && T.reloadSafe && T.reloadSafe()); }, // mid-draft, same-tab sign-in brings the draft back (js/app.js)
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); }, // no game finished here yet (js/app.js): no spot for a guest
     // The promo pop-up (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): its button starts 1000+ (or NRLW 250+ from its NRLW tab), and each card shows the player's tries
@@ -305,7 +306,7 @@
 <script src="/1000tries/js/cast-dual.js?v=ffefa095"></script>
 <script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
 <script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
-<script src="/1000tries/js/cast-account.js?v=2d60b5b2"></script>
+<script src="/1000tries/js/cast-account.js?v=04a056a5"></script>
 <script src="/1000tries/js/cast-totw.js?v=513cc917"></script>
 <script src="/1000tries/js/cast-wch.js?v=8dd07687"></script>
 </body>
