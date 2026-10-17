@@ -107,9 +107,9 @@
       line: 'Jockeys, races and horses', long: 'Higher or lower? Call jockeys, big races and horses before the clock runs out.', board: 'rcou' },
     // Premier League
     { id: '650goals', art: '650goals', sport: 'epl', name: '650 GOALS', path: '650goals/', folder: '650goals', mode: 'plus', logo: L + '650goals.png?v=5ee67ff2', status: 'live',
-      line: 'An XI to 650 PL goals', long: 'Draft a Premier League XI with their goals hidden and reach 650 career goals.', of: 11, draft: '500goals_draft_v1', board: 'eplplus', daily: true },
+      line: 'An XI to 650 PL goals', long: 'Draft a Premier League XI with their goals hidden and reach 650 career goals.', of: 10, draft: '500goals_draft_v1', board: 'eplplus', daily: true },
     { id: '650goals-team-spin', art: '650goals-team-spin', sport: 'epl', name: '650 GOALS TEAM SPIN', pill: 'TEAM SPIN', path: '650goals-team-spin/', folder: '650goals', mode: 'spin', logo: L + '650goals-team-spin.png?v=d71c9d25', status: 'live',
-      line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a Premier League club and season, and pick from that squad. Reach 650 goals.', of: 11, draft: '500goals_draft_v1_spin', board: 'eplspin' },
+      line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a Premier League club and season, and pick from that squad. Reach 650 goals.', of: 10, draft: '500goals_draft_v1_spin', board: 'eplspin' },
     { id: 'higher-or-lower-premier-league', art: 'hol-epl', sport: 'epl', name: 'HIGHER OR LOWER: PREMIER LEAGUE', pill: '&#x25B2;&#x25BC; EPL', path: 'higher-or-lower-premier-league/', folder: '650goals', mode: 'ou', logo: L + 'hol-epl.png?v=73af468d', mark: '&#x25B2;&#x25BC;', status: 'live', ou: true,
       line: 'Goals, assists and games', long: 'Higher or lower? Call Premier League goals, assists and appearances before the clock runs out.', board: 'eplou' },
     // NFL

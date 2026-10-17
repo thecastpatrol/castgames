@@ -457,6 +457,20 @@ def mode_pages(reg):
         print('built', slug, '(%s %s)' % (g['folder'], g['mode']))
 
 
+def sitemap(reg):
+    """The sitemap robots.txt names on the switch-over build (17 Oct 2026, the bug hunt: robots.txt pointed Google at a
+    sitemap.xml that was never made): the home page, each sport's page and every live card's page. None while hidden"""
+    p = os.path.join(HERE, 'sitemap.xml')
+    if not LIVE:
+        if os.path.exists(p):
+            os.remove(p)
+        return
+    urls = [SITE] + [SITE + sid + '/' for sid, _ in SPORT_PAGES]
+    urls += [SITE + g['path'] for g in reg['games'] if g.get('status') == 'live' and g.get('path') and SITE + g['path'] not in urls]
+    open(p, 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+                                         ''.join('  <url><loc>%s</loc></url>\n' % u for u in urls) + '</urlset>\n')
+
+
 REG = None
 
 
@@ -523,10 +537,18 @@ def main():
         pg = pg.replace('<script src="js/home.js', '<script>window.CG_SPORT = %r;</script>\n<script src="js/home.js' % sid, 1)
         # its Leaderboards open on that sport's own boards (16 Oct 2026: the cricket page's preview counted tries)
         pg = pg.replace('<script src="shared/cg.js', '<script>window.CAST_ACCOUNT.boards = %s;</script>\n<script src="shared/cg.js' % json.dumps(SPORT_BOARDS[sid]), 1)
+        # the tester password and noindex as the home page has them after this build, not as they were before it (17 Oct
+        # 2026, the bug hunt: a --live build left every sport page behind the password and out of Google)
+        pg = re.sub(r'<script src="/shared/cg-gate\.js[^"]*"></script><!-- CG_GATE -->\n?', '', pg)
+        if GATE:
+            pg = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + GATE.rstrip('\n'), pg, count=1)
+        if LIVE:
+            pg = re.sub(r'<meta name="robots" content="noindex"><!-- CG_HIDDEN[^>]*-->\n?', '', pg)
         open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(pg)
         print('built', sid)
     # Hidden until the switch-over: Google stays on the old domains
     open(os.path.join(HERE, 'robots.txt'), 'w').write('User-agent: *\n' + ('Allow: /\nSitemap: ' + SITE + 'sitemap.xml\n' if LIVE else 'Disallow: /\n'))
+    sitemap(REG)
     idx = os.path.join(HERE, 'index.html')
     s = open(idx, encoding='utf-8').read()
     has = '<meta name="robots" content="noindex"><!-- CG_HIDDEN' in s
