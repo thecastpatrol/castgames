@@ -42,7 +42,7 @@
   var IC = 'assets/icons/';
   var ICONS = { '1000tries': IC + '1000tries-192.png?v=129340d4', '27-0': IC + '27-0-192.png?v=e0f2e022', '4000goals': IC + '4000goals-192.png?v=5c5ca7ad', '25000runs': IC + '25000runs-192.png?v=a035ae9b',
     '60000runs': IC + '60000runs-192.png?v=0cdf4153', '777tds': IC + '777tds-192.png?v=d19d259e', 'g1winner': IC + 'g1winner-192.png?v=82e093d7', '650goals': IC + '650goals-192.png?v=f82163a5',
-    '100000points': IC + '100000points-192.png?v=8b5c9f6b', 'nrl-bingo': IC + 'nrl-bingo-192.png?v=17a4ff47', 'sc-points-king': IC + 'sc-points-king-192.png?v=07ddcb11', 'hol-nrl': IC + 'hol-nrl-192.png?v=69ddeb3b',
+    '100000points': IC + '100000points-192.png?v=8b5c9f6b', 'nrl-bingo': IC + 'nrl-bingo-192.png?v=17a4ff47', 'sc-points-king': IC + 'sc-points-king-192.png?v=07ddcb11', 'sc-points-king-afl': IC + 'sc-points-king-afl-192.png?v=4c9ea270', 'hol-nrl': IC + 'hol-nrl-192.png?v=69ddeb3b',
     'hol-afl': IC + 'hol-afl-192.png?v=a57a84e3', 'hol-cricket': IC + 'hol-cricket-192.png?v=20e936d7', 'hol-racing': IC + 'hol-racing-192.png?v=bff34f58', 'hol-epl': IC + 'hol-epl-192.png?v=76971d56',
     'hol-nfl': IC + 'hol-nfl-192.png?v=db581393', 'hol-nba': IC + 'hol-nba-192.png?v=7e704bde' };
   var GAMES = [
@@ -83,6 +83,10 @@
       line: 'Draft 18 AFLW stars to 750 goals', long: 'Draft an AFLW 18 with their goals hidden and reach 750 AFLW goals.', of: 18, draft: '4000goals_draft_v1_nrlw', board: 'aflw' },
     { id: 'higher-or-lower-afl', art: 'hol-afl', sport: 'afl', name: 'HIGHER OR LOWER: AFL', pill: '&#x25B2;&#x25BC; AFL', path: 'higher-or-lower-afl/', folder: '4000goals', mode: 'ou', logo: L + 'hol-afl.png?v=ae3187ef', mark: '&#x25B2;&#x25BC;', status: 'live', launch: 'po', ou: true,
       line: 'Career goals, vs the clock', long: 'Higher or lower? Call AFL players’ career goals before the clock runs out.', board: '4000ou' },
+    // SC POINTS KING: AFL (17 Oct 2026): the AFL twin of SC POINTS KING, an 18 of AFL player seasons in SC positions, no
+    // target (the biggest total wins). Hidden until the owner's Launch ('scafl'); its page plays already (the testers' way in)
+    { id: 'scpointsking-afl', art: 'sc-points-king-afl', sport: 'afl', name: 'SC POINTS KING: AFL', pill: 'SC KING AFL', path: 'scpointsking-afl/', folder: 'scpointsking-afl', mode: 'plus', logo: L + 'sc-points-king-afl.png?v=df354acc', status: 'live', launch: 'scafl',
+      line: 'Chase the top of the AFL SC board', long: 'Spin AFL player seasons from 2007 to 2026 and build the biggest SC 18. The top of the board wears the crown.', of: 18, draft: 'scafl_draft_v1', board: 'scaflplus', daily: true },
     // Cricket
     // Cricket's colours (18 Oct 2026, the owner: "Both"): 60000 RUNS (Tests) Test amber and 25000 RUNS (Big Bash) lime, clearly
     // apart (no orange, no gold); each game's extra modes (TEAM SPIN, HIGHER OR LOWER: CRICKET with 25000 RUNS) a shade darker
@@ -135,7 +139,7 @@
   var POPULAR = ['1000tries', '27-0', '4000goals', 'higher-or-lower-nrl', '60000runs', '25000runs', '777tds', '650goals', 'g1winner', 'world-cup-8-0', 'world-cup-200',
     '100000points', 'scpointsking', 'nrl-bingo', '27-0-pack', '1000tries-team-spin', '27-0-hard', 'nrlw-250', 'higher-or-lower-afl', 'higher-or-lower-cricket',
     '4000goals-team-spin', 'aflw-750', '60000runs-team-spin', '25000runs-team-spin', 'higher-or-lower-nfl', '777tds-team-spin', 'higher-or-lower-premier-league',
-    '650goals-team-spin', 'higher-or-lower-racing', 'higher-or-lower-nba', '100000points-team-spin'];
+    '650goals-team-spin', 'higher-or-lower-racing', 'higher-or-lower-nba', '100000points-team-spin', 'scpointsking-afl']; // SC POINTS KING: AFL last for now (17 Oct 2026)
 
   function acct() { return window.CastAccount || null; }
   function launched(key) {
@@ -436,7 +440,7 @@
   window.addEventListener('cast:play', function (e) {
     var d = e.detail || {}, here = currentGame();
     if (!here || !here.folder || d.mode === 'daily') return;
-    var folder = { '1000tries': '1000tries', '27-0': '27-0', '4000goals': '4000goals', bigbash: '25000runs', tests: '60000runs', nfl: '777tds', racing: 'g1winner', epl: '650goals', nba: '100000points', sc: 'scpointsking' }[d.game] || d.game;
+    var folder = { '1000tries': '1000tries', '27-0': '27-0', '4000goals': '4000goals', bigbash: '25000runs', tests: '60000runs', nfl: '777tds', racing: 'g1winner', epl: '650goals', nba: '100000points', sc: 'scpointsking', scafl: 'scpointsking-afl' }[d.game] || d.game;
     var m = d.mode === 'aflw' ? 'nrlw' : d.mode === 'bingod' ? 'bingo' : d.mode, g = forMode(folder, REMOVED[m] ? mainMode(folder) : m);
     if (REMOVED[m] && g && g.id === here.id) { e.stopImmediatePropagation(); return; } // already on its main card: nothing to start
     if (!g || g.id === here.id || !g.path) return;
