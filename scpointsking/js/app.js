@@ -227,6 +227,81 @@
     }, 1000);
   }
 
+  /* The pick clock (17 Oct 2026, the owner: "I thought we added a 20s timer for every classic 1000TRIES-equivalent mode"),
+     1000TRIES' own: every pick in Classic and the Daily Challenge is timed, T.PICK_SECS. A new offer starts it again (a
+     Reroll, a Remove Player, a Legends Pick's three once their reveal has closed). It runs on the wall clock, so a hidden
+     tab or another app never stops it: back on the page, a clock that ran out picks at once. It waits while the spin
+     lands, while a wildcard or the GOAT moment plays out, while Remove or Substitute is armed and while any pop-up is open
+     (the Shop, a confirm, a purchase, the Daily Challenge), so buying never costs a pick, and while it waits the offer
+     cards are covered, so a pause is never time to look anyone up. The phone's spot chooser is part of the pick, so it
+     never waits. Never the SC Captain step at the end (no offer then), a friend's Quick Draft or Team Full. Time up: the
+     season you tapped goes in, else the first card that fits, in the first open spot he plays. A draft brought back keeps
+     its seconds. GA: pick_timeout */
+  T.PICK_SECS = 20;
+  T.CLOCK_MODES = ['plus', 'daily'];
+  T.clockMode = function (S) { return !!S && !!S.mode && T.CLOCK_MODES.indexOf(S.mode.id) >= 0 && S.mode.source === 'roll' && !S.qd; };
+  T.pickSecs = function () { return T.PICK_SECS; };
+  var clock = { offer: null, end: 0, last: 0, iv: null }, resumeClock = null; // resumeClock: the seconds a draft brought back still had
+  function clockOn(S) { return T.clockMode(S) && !S.finished && !S.fullTime && !S.awaitingLock && !!S.offer && S.offer.players.length > 0 && document.body.getAttribute('data-screen') === 'draft'; }
+  // A pop-up over the draft: a sheet that isn't the spot chooser, a CAST panel (the Shop, a purchase), the Daily Challenge, a reveal
+  function popUpOpen() {
+    var sh = $('sheet');
+    if (sh && !sh.hidden && !$('sheetBody').querySelector('[data-place]')) return true;
+    if (document.documentElement.classList.contains('ca-open') || document.querySelector('.pack-intro')) return true;
+    return Array.prototype.some.call(document.querySelectorAll('[role="dialog"], [aria-modal="true"]'), function (d) {
+      return d.id !== 'sheetBody' && !d.hidden && d.getClientRects().length > 0;
+    });
+  }
+  // Waiting with the cards covered (a long wait) or just held (the spin landing, a wildcard's moment, the GOAT moment)
+  function clockPaused(S) { return !!(S.tweakMode || S.subMode) || popUpOpen(); }
+  function clockHeld(S) { return busy || !!document.querySelector('.wc-burst, .cg') || clockPaused(S); } // .cg: the GOAT moment (js/cast-celebrate.js)
+  function clockStart() {
+    if (!clockOn(T.state())) { clockCover(false); return; }
+    if (!clock.iv) { clock.last = Date.now(); clock.iv = setInterval(clockTick, 200); }
+    clockTick(); // a redraw shows the time left straight away
+  }
+  function clockStop() { if (clock.iv) { clearInterval(clock.iv); clock.iv = null; } }
+  function clockCover(on) { var p = $('offerPanel'); if (p) p.classList.toggle('is-clock-paused', !!on); }
+  // What the offer panel draws (js/render.js): the seconds a pick gets and the time left on this offer
+  T.clockView = function (S) {
+    var secs = T.pickSecs(S), left = clock.offer === S.offer && clock.iv ? Math.max(0, clock.end - Date.now()) : secs * 1000;
+    return { secs: secs, left: left, paused: clock.offer === S.offer && clockPaused(S) };
+  };
+  function clockTick() {
+    var S = T.state(), now = Date.now();
+    if (!clockOn(S)) { clockStop(); clock.offer = null; clockCover(false); return; }
+    var secs = T.pickSecs(S);
+    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : secs * 1000); resumeClock = null; } // a draft brought back keeps its seconds
+    else if (clockHeld(S)) clock.end += now - clock.last; // waiting: the clock doesn't move
+    clock.last = now;
+    var left = Math.max(0, clock.end - now), paused = clockPaused(S), el = document.querySelector('#offerPanel [data-pick-clock]');
+    clockCover(paused);
+    if (el) {
+      var bar = el.querySelector('i'), num = el.querySelector('b');
+      if (bar) bar.style.width = Math.min(100, left / (secs * 10)).toFixed(1) + '%';
+      if (num) num.textContent = Math.ceil(left / 1000) + 's';
+      el.classList.toggle('is-low', left <= 5000 && !paused);
+      el.classList.toggle('is-paused', paused);
+    }
+    if (left <= 0 && !clockHeld(S) && !document.hidden) timeUp(S); // off the page: it picks the moment they're back
+  }
+  // Back on the page (another tab, another app): a clock that ran out while they were away picks at once
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && clock.iv) clockTick(); });
+  window.addEventListener('pageshow', function () { if (clock.iv) clockTick(); });
+  function timeUp(S) {
+    clockStop(); clock.offer = null; clockCover(false);
+    if (S.offer && S.offer.paid && !S.offer.taken) T.keepOffer(); // never spend a paid Pick for them
+    var list = S.offer ? S.offer.players.filter(function (p) { return !S.used[p.id] && T.openCodesFor(p).length > 0; }) : [];
+    var chooser = $('sheet') && !$('sheet').hidden && $('sheetBody').querySelector('[data-place]');
+    var tapped = placingId || (chooser && $('sheetBody').getAttribute('data-player')) || null;
+    var p = tapped && T.byId[tapped] && list.indexOf(T.byId[tapped]) >= 0 ? T.byId[tapped] : list[0];
+    closeSheet(); setPlacing(null);
+    if (!p) { nextOffer(); return; } // nobody on it fits an open spot: a fresh offer
+    T.track('pick_timeout', { mode: S.mode.name, picks: S.picks, tapped: tapped ? 'yes' : 'no' });
+    toast('\u23F1\uFE0F Time\u2019s up: ' + p.name + ' ' + p.year + ' goes in');
+    place(p.id, T.openCodesFor(p)[0]);
+  }
+
   /* A tap right after the cards moved is ignored (as every draft game since 11 Oct 2026) */
   var offerTop = null, offerKey = '', offerMovedAt = 0;
   function noteOffers() {
@@ -250,6 +325,7 @@
     else if (S.offer) panel.innerHTML = R.offerRoll(S);
     else if (S.tweakMode) panel.innerHTML = R.removeMode(S);
     applyPlacing();
+    clockStart(); // the pick clock
     keepDraft();
   }
 
@@ -1188,15 +1264,16 @@
         if (v && typeof v === 'object' && typeof v.id === 'string' && T.byId[v.id] === v) return { __p: v.id };
         return v;
       });
+      var clockLeft = clock.iv && clock.offer === S.offer ? Math.max(0, clock.end - Date.now()) : null;
       localStorage.setItem(LS_DRAFT, JSON.stringify({ v: 1, id: S.draftId, tab: DRAFT_TAB, who: me, at: Date.now(), ds: T.DATASET, sel: selectedMode,
-        name: S.mode.name, picks: T.filledCount(), lock: S.awaitingLock && lockTimer ? lockLeft : null, s: s }));
+        name: S.mode.name, picks: T.filledCount(), clock: clockLeft, lock: S.awaitingLock && lockTimer ? lockLeft : null, s: s }));
     } catch (e) { /* storage full or blocked: no resume */ }
   }
   function draftTaken() {
     var S = T.state();
     if (!S || S.finished) return;
     S.finished = true;
-    stopLockTimer(); closeSheet();
+    stopLockTimer(); clockStop(); closeSheet();
     toast('This draft carried on in another tab.');
     goHome();
   }
@@ -1226,7 +1303,7 @@
     } catch (e) { miss = true; }
     if (miss || !S || !S.mode || !Array.isArray(S.slots) || S.finished) { dropDraft(); toast('That draft could not be brought back. Sorry!'); return; }
     T.adopt(S);
-    resumeLock = typeof d.lock === 'number' ? d.lock : null;
+    resumeClock = typeof d.clock === 'number' ? d.clock : null; resumeLock = typeof d.lock === 'number' ? d.lock : null;
     try { localStorage.setItem(LS_DRAFT, JSON.stringify(Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now() }))); } catch (e) { /* storage blocked */ }
     selectedMode = d.sel || S.mode.id;
     placingId = null; busy = false;

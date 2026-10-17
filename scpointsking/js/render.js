@@ -307,6 +307,17 @@
   }
   R.seasonCard = seasonCard;
 
+  /* The pick clock (js/app.js clockTick runs it, 1000TRIES' own): a bar that runs down over the offer, red for the last
+     five seconds, and Paused while a pop-up is open (the cards are covered then) */
+  R.pickClock = function (S) {
+    if (!T.clockMode || !T.clockMode(S) || S.tweakMode || !S.offer || !S.offer.players.length) return '';
+    var v = T.clockView(S), left = Math.ceil(v.left / 1000);
+    return '<div class="pick-clock' + (v.paused ? ' is-paused' : v.left <= 5000 ? ' is-low' : '') + '" data-pick-clock role="timer" aria-label="Time to pick">' +
+      '<i style="width:' + Math.min(100, v.left / (v.secs * 10)).toFixed(1) + '%"></i>' +
+      '<span class="pc-lbl"><span class="pc-run">&#x23F1;&#xFE0F; Time to Pick</span><span class="pc-wait">&#x23F8;&#xFE0F; Paused</span></span>' +
+      '<b>' + left + 's</b></div>';
+  };
+
   R.offerRoll = function (S) {
     if (S.tweakMode) return R.removeMode(S);
     var players = S.offer ? S.offer.players : [], special = S.offer && S.offer.special;
@@ -314,6 +325,7 @@
         '<span class="panel-title">' + (S.offer && S.offer.goat ? '&#x1F410; The GOAT' : special ? '&#x2B50; Legends Pick' : 'Pick 1') + '</span>' +
         '<span class="panel-meta">' + (special ? 'Pick 1 of 3 Legend seasons &middot; SC points shown' : S.offer && S.offer.goat ? 'SC points shown' : S.scoutMode ? 'Tap the season to see' : 'SC points hidden until you pick') + '</span>' +
       '</div>' +
+      R.pickClock(S) +
       R.wildcardBar(S) +
       R.tweakBanner(S) +
       (S.scoutMode ? '<div class="scout-banner"><span>Tap one season to see his SC points. Nothing is picked.</span><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-scout">Cancel</button></div>' : '') +

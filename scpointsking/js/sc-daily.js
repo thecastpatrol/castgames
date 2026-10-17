@@ -24,10 +24,15 @@
   var DERBIES = [['rabbitohs', 'roosters', 'The Oldest Rivalry'], ['broncos', 'cowboys', 'The Queensland Derby'], ['storm', 'panthers', 'Grand Final Rivals'],
     ['eels', 'tigers', 'The Western Sydney Derby'], ['dragons', 'sharks', 'The Southern Sydney Derby'], ['bulldogs', 'eels', 'The Western Derby'],
     ['seaeagles', 'roosters', 'The Harbour Derby'], ['knights', 'raiders', 'The Country Clash']];
+  // The data's seasons (written by the data updater, ~/cast-dev/updates, when a new season's first round goes in): LAST
+  // the latest season; LATER the seasons that joined the season days after this calendar began, each [season, the
+  // calendar week it joins from] (so every day before it stays as it was played)
+  var LAST = 2026, LATER = [];
   // Seasons with SC hookers (the position began in 2015): one season a day, in turn
   var SEASONS = [2021, 2015, 2024, 2018, 2023, 2016, 2026, 2019, 2022, 2017, 2025, 2020];
+  function seasonsAt(week) { return SEASONS.concat(LATER.filter(function (x) { return week >= x[1]; }).map(function (x) { return x[0]; })); }
   var ERAS = [['2015', '2015 to 2020', 2015, 2020, 'from Johnathan Thurston and Cameron Smith to Nathan Cleary and Jason Taumalolo'],
-    ['2021', 'Since 2021', 2021, 2026, 'from Tom Trbojevic’s record year to the 2026 season'],
+    ['2021', 'Since 2021', 2021, LAST, 'from Tom Trbojevic’s record year to the ' + LAST + ' season'],
     ['2012', '2012 to 2019', 2012, 2019, 'from Corey Parker and Paul Gallen to the first SC hookers']];
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
   function list(a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a.join(''); }
@@ -62,7 +67,7 @@
         g1000: { only: anySeason([dv[0], dv[1]]) } };
     }
     if (kind === 'season') {
-      var y = SEASONS[week % SEASONS.length];
+      var sl = seasonsAt(week), y = sl[week % sl.length];
       return { key: 'season:' + y, name: 'The ' + y + ' Season', short: y + ' Only', lead: 'From ', icon: '📅', title: 'The ' + y + ' Season Only',
         who: y + ' seasons', story: 'One season, every club: every player you can draft today played in ' + y + '. How well do you remember it?',
         g1000: { years: [y, y] } };
@@ -80,7 +85,7 @@
     return { key: 'club:' + k, name: nick + ' Day', short: nick, lead: 'With ', icon: MASCOT[k] || '🏉', title: (clubs.length > 1 ? list(whoN) : NICK[k]) + ' Seasons Only',
       who: (clubs.length > 1 ? list(whoN) : NICK[k]) + ' seasons',
       story: [
-        'It’s ' + nick + ' Day. Every season you can draft today was played for the ' + orList(whoN) + ', from 2009 to 2026.',
+        'It’s ' + nick + ' Day. Every season you can draft today was played for the ' + orList(whoN) + ', from 2009 to ' + LAST + '.',
         'Think you know your ' + (clubs.length > 1 ? 'Brisbane footy' : NICK[k]) + '? Every season on the spinner today was played for the ' + orList(whoN) + '.',
         nick + ' fans, this one’s for you. Every season you can draft today was played for the ' + orList(whoN) + ', so how high can you go?'
       ][week % 3] + (wd === 0 ? ' It’s Sunday, the hard day, so the bar is higher than usual.' : ''),
