@@ -477,6 +477,9 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 /* Team Spin: choose a position first */
 .pp-intro { font-size: 13px; color: #c0c0d0; margin: 0 0 10px; }
 .pp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+/* All four positions open (the All-Rounder spot, 17 Oct 2026): two by two on a phone, one row on a wider screen */
+.pp-grid.is-four { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 560px) { .pp-grid.is-four { grid-template-columns: repeat(4, 1fr); } }
 .pp-btn {
   position: relative; display: grid; justify-items: center; gap: 1px; padding: 12px 6px; min-height: 64px; border-radius: 12px; cursor: pointer;
   background: linear-gradient(160deg, rgba(124, 92, 255, .22), rgba(124, 92, 255, .06)); border: 1.5px solid #6d4fd8; color: #fff;

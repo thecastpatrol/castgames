@@ -5,17 +5,25 @@
 
   T.TARGET = 60000; // set by the real-engine simulation before launch
 
-  // The XI in draft order: 6 batters, a keeper, 4 bowlers (the same Real XI as 25000 RUNS)
   // The over/under mode is a separate game on CAST Games (its own page); this home shows no card for it
   T.OU_SEPARATE = true;
 
-  T.SLOTS = ['B', 'B', 'B', 'B', 'B', 'B', 'K', 'W', 'W', 'W', 'W'];
+  /* The XI in draft order (the same Real XI as 25000 RUNS): 5 batters, an all-rounder at 6, a keeper, 4 bowlers. The
+     All-Rounder spot (A, 17 Oct 2026, the owner: one batter's spot becomes it, in both cricket games) takes only a player
+     listed as both a batter and a bowler (T.positionsOf): a keeper who bats is not an all-rounder unless he bowls too.
+     Until then the XI had 6 batters (T.SLOTS_6): a draft saved on a phone with those spots can't be brought back
+     (js/app.js), and the server still takes a game played on them before the change (lib/checkts.js in the 1000TRIES repo) */
+  T.SLOTS = ['B', 'B', 'B', 'B', 'B', 'A', 'K', 'W', 'W', 'W', 'W'];
+  T.SLOTS_6 = ['B', 'B', 'B', 'B', 'B', 'B', 'K', 'W', 'W', 'W', 'W'];
 
-  T.POS_NAMES = { B: 'Batter', K: 'Keeper', W: 'Bowler' };
-  // What the spots and chips show (the fantasy cricket labels, as 25000 RUNS). The codes underneath (B, K, W) are what
+  // All-Rounder is kept whole (a word joiner after the hyphen: never split across two lines)
+  T.POS_NAMES = { B: 'Batter', A: 'All-\u2060Rounder', K: 'Keeper', W: 'Bowler' };
+  // What the spots and chips show (the fantasy cricket labels, as 25000 RUNS). The codes underneath (B, A, K, W) are what
   // the games save and the server checks, so they never change
-  T.POS_SHORT = { B: 'BAT', K: 'WK', W: 'BOWL' };
+  T.POS_SHORT = { B: 'BAT', A: 'AR', K: 'WK', W: 'BOWL' };
   T.posLabel = function (code) { return T.POS_SHORT[code] || code; };
+  // "a Batter", "an All-Rounder"
+  T.aPos = function (code) { var n = T.POS_NAMES[code] || code; return (/^[AEIOU]/.test(n) ? 'an ' : 'a ') + n; };
 
   // The Test nations, each from its first Test (the ICC World XI's one Test in 2005 counts for runs, not as a nation)
   T.CLUBS = {
@@ -72,14 +80,19 @@
     };
   };
 
-  // Positions a player can fill: positions_played, falling back to draft_role then position
+  // Positions a player can fill: positions_played, falling back to draft_role then position, and the All-Rounder spot (A)
+  // for a player listed as both a batter and a bowler (B and W), straight after B so a chooser lists the spots in field order
   T.positionsOf = function (p) {
     if (p._pos) return p._pos;
     var list = (p.positions_played && p.positions_played.length) ? p.positions_played.slice()
       : [p.draft_role || p.position].filter(Boolean);
+    if (list.indexOf('B') !== -1 && list.indexOf('W') !== -1 && list.indexOf('A') === -1) list.splice(list.indexOf('B') + 1, 0, 'A');
     p._pos = list;
     return list;
   };
+  T.isAllRounder = function (p) { return !!p && T.positionsOf(p).indexOf('A') !== -1; };
+  // The roles a card shows: his own (A isn't one: BAT and BOWL already say he is an all-rounder)
+  T.rolesOf = function (p) { return T.positionsOf(p).filter(function (c) { return c !== 'A'; }); };
 
   T.canFill = function (p, code) {
     return T.positionsOf(p).indexOf(code) !== -1;

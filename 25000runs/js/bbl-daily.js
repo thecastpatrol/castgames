@@ -32,7 +32,12 @@
      whose pool holds him were set again from that day: [normal, hard]. Every day before keeps its target */
   var GOAT_FROM = '2026-10-18';
   var TARGETS_GOAT = { 'club:strikers': [16700, 17500], 'era:bbl01': [20575, 22175], 'club:heat': [13900, 14600], 'era:bbl06': [22825, 24700], 'city:rest': [19175, 21125], 'era:bbl11': [22225, 23775] };
-  function tgt(key, hard, date) { var t = date >= GOAT_FROM && TARGETS_GOAT[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 18000 : 17000); }
+  /* The All-Rounder spot (17 Oct 2026, the owner: the Daily plays as it did before): the days whose pool has few
+     all-rounders, and light ones (the Sixers, the Thunder, the Sydney Derby and the Heat), were set again from AR_FROM, the
+     first of them with the All-Rounder spot live: [normal, hard]. Every other day, and every day before, keeps its target */
+  var AR_FROM = '2026-10-20';
+  var TARGETS_AR = { 'club:sixers': [16125, 17100], 'club:thunder': [13600, 14325], 'city:sydney': [15450, 16350], 'club:heat': [12925, 13800] };
+  function tgt(key, hard, date) { var t = date >= AR_FROM && TARGETS_AR[key] || date >= GOAT_FROM && TARGETS_GOAT[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 18000 : 17000); }
 
   var REWARDS = { keys: { bigbash: { legend: 1 } }, wild: { bigbash: { reveals: 1 } }, freeze: { bigbash: { freezes: 1 } }, reroll: { bigbash: { left: 1 } } };
   var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar

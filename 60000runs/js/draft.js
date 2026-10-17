@@ -61,8 +61,9 @@
      The Daily, Team Spin, NRLW and Exactly 4000 keep the normal settings above. firstStar is the first offer's big
      run scorer, kept at the normal setting. */
   /* 25000 RUNS' settings (12 Oct 2026, the owner: "the harder the better ... harder at the start"), kept for 60000 RUNS:
-     a weight of 900 for 60000+, against the pack's own 300 (the simulator: ~/cast-dev/private-notes) */
-  T.HARD = { weight: 900, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
+     a weight of 900 for 60000+, against the pack's own 300 (the simulator: ~/cast-dev/private-notes). 860 since the
+     All-Rounder spot (17 Oct 2026, the owner: keep the win rates where they were) */
+  T.HARD = { weight: 860, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
   /* One Legend per team from the game's own rolls (12 Oct 2026, the owner's call: stacked Legends bought the target
      too easily): once the team has one, no free Legends Pick is dealt. Legend Keys are not limited (16 Oct 2026, the
      owner: "If people pay they have a right to use"), and the GOAT is not one of the Legends */

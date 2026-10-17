@@ -31,7 +31,17 @@
     'rival:ashes': [49250, 54250], 'rival:sub': [45750, 50000],
     'era:pre1946': [23000, 26500], 'era:1946': [43750, 47500], 'era:1980': [52750, 56750], 'era:2000': [54000, 59250]
   };
-  function tgt(key, hard) { var t = TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 50000 : 46000); }
+  /* The All-Rounder spot (17 Oct 2026, the owner: the Daily plays as it did before): from AR_FROM, the first Daily with the
+     All-Rounder spot live, every day's target is a little lower, Sri Lanka's more (its pool has few all-rounders), set
+     with the same simulator: [normal, hard]. Every day before keeps its target */
+  var AR_FROM = '2026-10-18';
+  var TARGETS_AR = {
+    'nation:aus': [45750, 49450], 'nation:eng': [48225, 52900], 'nation:ind': [43525, 47725], 'nation:sa': [31900, 34375],
+    'nation:nz': [43775, 47225], 'nation:wi': [43275, 46725], 'nation:pak': [38575, 41550], 'nation:sl': [47200, 49325],
+    'rival:ashes': [48700, 53650], 'rival:sub': [45250, 49450],
+    'era:pre1946': [22750, 26200], 'era:1946': [43275, 46975], 'era:1980': [52175, 56125], 'era:2000': [53400, 58600]
+  };
+  function tgt(key, hard, date) { var t = date >= AR_FROM && TARGETS_AR[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 50000 : 46000); }
 
   var REWARDS = { keys: { tests: { legend: 1 } }, wild: { tests: { reveals: 1 } }, freeze: { tests: { freezes: 1 } }, reroll: { tests: { left: 1 } } };
   var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
@@ -85,7 +95,7 @@
     t.planned = !!plan;
     t.hard = !!(t.hard || (!plan && weekday(date) === 0));
     t.onThisDay = null;
-    t.g1000.target = (plan && plan.t) || tgt(t.key, t.hard);
+    t.g1000.target = (plan && plan.t) || tgt(t.key, t.hard, date);
     t.g270 = {};
     var rk = t.hard ? 'reroll' : WEEK_REWARD[weekday(date)];
     t.rewardKind = rk;

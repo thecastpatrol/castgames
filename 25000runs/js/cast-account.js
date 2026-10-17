@@ -84,10 +84,11 @@
       labels: { plays: 'Runs', best: 'Best Streak', wins: null, top: null },
       unit: 'in a row'
     },
-    // NRL Bingo (17 Oct 2026): its own stats (tiles filled, Full Houses). bingo: hidden until launched or previewed
+    // NRL Bingo (17 Oct 2026): its own stats (tiles filled, Full Houses). bingo: hidden until launched or previewed. One
+    // endless game (the owner, 17 Oct 2026): bingod is a card saved on the Daily Bingo before it was dropped
     '1000tries-bingo': {
       name: 'NRL Bingo', tile: 'NRL Bingo', site: '1000tries', url: 'https://castgames.com.au/1000tries/', bingo: true,
-      modes: { bingo: 'Free Play', bingod: 'Daily Bingo' },
+      modes: { bingo: 'NRL Bingo', bingod: 'NRL Bingo' },
       results: { full: 'Full House', out: 'Out' },
       wins: ['full'],
       labels: { plays: 'Boards', best: 'Most Tiles', wins: 'Full Houses', top: null },
@@ -2412,14 +2413,16 @@
       ['ou100', '&#x1F4AF;', 'Centurion', 'Call 100 in a row in HIGHER OR LOWER: NRL', 'ou'],
       ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in HIGHER OR LOWER: NRL, every call under 3 seconds', 'ou'],
       ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in HIGHER OR LOWER: NRL with no Run It Back or Reroll', 'ou'],
-      // NRL Bingo (17 Oct 2026): shown once it's launched (or previewed), like HIGHER OR LOWER: NRL's
-      ['bg15', '&#x1F3AF;', 'Three Quarters', 'Fill 15 tiles on an NRL Bingo card', 'bingo'],
-      ['bgfull', '&#x1F389;', 'Full House', 'Fill all 20 tiles in NRL Bingo', 'bingo'],
+      // NRL Bingo (17 Oct 2026): shown once it's launched (or previewed), like HIGHER OR LOWER: NRL's. The 4 x 6 card (24 tiles, the
+      // owner, 17 Oct 2026): three quarters is 18 tiles, and Rep Round is all seven rep tiles. Daily Full House is retired
+      // with the Daily Bingo (anyone who earned it while it was hidden keeps it)
+      ['bg15', '&#x1F3AF;', 'Three Quarters', 'Fill 18 tiles on an NRL Bingo card', 'bingo'],
+      ['bgfull', '&#x1F389;', 'Full House', 'Fill all 24 tiles in NRL Bingo', 'bingo'],
       ['bgclean', '&#x2764;&#xFE0F;', 'No Lives Lost', 'A Full House in NRL Bingo without losing a life', 'bingo'],
       ['bgspeed', '&#x26A1;', 'Speed Bingo', 'A Full House in NRL Bingo in under 2 minutes', 'bingo'],
-      ['bgrep', '&#x1F3C5;', 'Rep Round', 'Fill Origin, Kangaroos and Kiwis with players on one NRL Bingo card', 'bingo'],
+      ['bgrep', '&#x1F3C5;', 'Rep Round', 'Fill all seven rep tiles with players on one NRL Bingo card', 'bingo'],
       ['bgnohelp', '&#x1F9E0;', 'No Help Needed', 'A Full House in NRL Bingo with no Wild Tile, Reveal, Reroll or Run It Back', 'bingo'],
-      ['bgdaily', '&#x1F4C5;', 'Daily Full House', 'A Full House on the Daily Bingo', 'bingo']
+      ['bgdaily', '&#x1F4C5;', 'Daily Full House', 'A Full House on the Daily Bingo', 'retired']
     ],
     // 4000 GOALS (12 Oct 2026): 1000TRIES' set in AFL terms, at the same distance from the target (4000+, +10%, +20%, the
     // last 1% under, a photo finish within 36). AFLW_T: the AFLW mode's target. No Immortals (one group of Legends), no
@@ -2513,7 +2516,7 @@
       ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
       ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
       ['bb_machine', '&#x1F3CF;', 'Two Thousand Club', '5 players with 2000+ runs in your XI'],
-      ['bb_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 1500+ runs'],
+      ['bb_toporder', '&#x1F9F1;', 'Top Order', 'Your top 6 on 1500+ runs'],
       ['bb_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 2000+ runs'],
       ['bb_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 2000+ runs between them'],
       ['bb_league', '&#x1F5FA;&#xFE0F;', 'The Whole League', 'Players from all 8 clubs'],
@@ -2567,7 +2570,7 @@
   ['ts_don', '&#x1F451;', 'The Don', 'Don Bradman in your XI'],
   ['ts_10k', '&#x1F51F;', 'Ten Thousand Club', 'A player with 10000+ Test runs in your XI'],
   ['ts_five', '&#x1F3CF;', 'Five Grand', '5 players with 5000+ runs in your XI'],
-  ['ts_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 3000+ runs'],
+  ['ts_toporder', '&#x1F9F1;', 'Top Order', 'Your top 6 on 3000+ runs'],
   ['ts_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 5000+ runs'],
   ['ts_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 5000+ runs between them'],
   ['ts_attack', '&#x1F3AF;', 'Strike Force', 'Your 4 bowlers have 1000+ Test wickets between them'],
@@ -3051,7 +3054,7 @@
   var TROPHY_FIRST = {
     '1000tries': ['exact', 'legs11', 'read', 'hit1200', 'odds', 'clubleg', 'zero', 'oldschool', 'fresh', 'hit1100', 'photo', 'timetravel', 'nowild', 'spin',
       'immortal', 'goats', 'family', 'colours', 'lucky', 'nrlw300', 'aj', 'hit1000', 'legend', 'settled', 'namesakes', 'marathon', 'owl', 'nrlw250', 'soclose',
-      'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10', 'bgspeed', 'bgnohelp', 'bgclean', 'bgdaily', 'bgrep', 'bgfull', 'bg15'],
+      'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10', 'bgspeed', 'bgnohelp', 'bgclean', 'bgrep', 'bgfull', 'bg15'],
     bigbash: ['exact', 'legs11', 'read', 'hit1200', 'bb_dayone', 'bb_toporder', 'pure', 'bb_sydney', 'bb_melbourne', 'odds', 'clubleg', 'zero', 'oldschool', 'fresh',
       'hit1100', 'bb_gloves', 'bb_league', 'photo', 'timetravel', 'nowild', 'spin', 'legendary', 'bb_tail', 'bb_core', 'goats', 'bb_machine', 'lucky', 'hit1000', 'dailywin',
       'legend', 'settled', 'namesakes', 'marathon', 'owl', 'soclose', 'bench', 'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10'],
@@ -3108,7 +3111,7 @@
     'bigbash:marathon': 'You played 10 games in one day.',
     'bigbash:settled': 'You beat a mate\u2019s score on their challenge.',
     'bigbash:bb_machine': 'Your XI had 5 players with 2000 or more BBL runs.',
-    'bigbash:bb_toporder': 'All 6 of your batters had 1500 or more runs.',
+    'bigbash:bb_toporder': 'All of your top 6, the batters and the all-rounder, had 1500 or more runs.',
     'bigbash:bb_gloves': 'Your keeper had 2000 or more BBL runs.',
     'bigbash:bb_tail': 'Your 4 bowlers made 2000 or more runs between them.',
     'bigbash:bb_league': 'Your XI had players from all 8 BBL clubs.',
@@ -3157,7 +3160,7 @@
     'tests:ts_don': 'Don Bradman was in your XI. The Don.',
     'tests:ts_10k': 'Your XI had a player with 10000 or more Test runs.',
     'tests:ts_five': 'Your XI had 5 players with 5000 or more Test runs.',
-    'tests:ts_toporder': 'All 6 of your batters had 3000 or more runs.',
+    'tests:ts_toporder': 'All of your top 6, the batters and the all-rounder, had 3000 or more runs.',
     'tests:ts_gloves': 'Your keeper had 5000 or more Test runs.',
     'tests:ts_tail': 'Your 4 bowlers made 5000 or more runs between them.',
     'tests:ts_attack': 'Your 4 bowlers had 1000 or more Test wickets between them.',
@@ -3438,11 +3441,11 @@
     '1000tries:ou100': 'One hundred in a row in HIGHER OR LOWER: NRL. A Centurion.',
     '1000tries:ouice': 'Eight right calls in a row, every one in under 3 seconds.',
     '1000tries:ouclean': 'Fifteen in a row with no Run It Back and no Reroll.',
-    '1000tries:bg15': 'You filled 15 tiles on an NRL Bingo card.',
-    '1000tries:bgfull': 'You filled all 20 tiles in NRL Bingo. Full House!',
+    '1000tries:bg15': 'You filled 18 tiles on an NRL Bingo card.',
+    '1000tries:bgfull': 'You filled all 24 tiles in NRL Bingo. Full House!',
     '1000tries:bgclean': 'A Full House in NRL Bingo with all 3 lives left.',
     '1000tries:bgspeed': 'A Full House in NRL Bingo in under 2 minutes.',
-    '1000tries:bgrep': 'You filled Origin, Kangaroos and Kiwis with players on one NRL Bingo card.',
+    '1000tries:bgrep': 'You filled all seven rep tiles with players on one NRL Bingo card.',
     '1000tries:bgnohelp': 'A Full House in NRL Bingo with no Wild Tile, Reveal, Reroll or Run It Back.',
     '1000tries:bgdaily': 'You got a Full House on the Daily Bingo.',
     '1000tries:hit1100': 'Your 13 reached 1100 NRL tries.',
@@ -3960,6 +3963,7 @@
       wc: ['World Cup Mode Is for CAST Profile Players', 'Sign in free to play the World Cup. It starts as soon as you&rsquo;re in.'],
       ouused: ['You&rsquo;ve Had Your ' + GUEST_OU_MAX + ' Free Runs Today', 'Sign in free to play ' + ouName(CFG.game) + ' as much as you like, save your streaks and climb the board.'],
       wcused: ['You&rsquo;ve Had Your Free World Cup Today', 'Sign in free to play as many as you like, save your results and climb the World Cup board.'],
+      leaderboard: ['Get Your Score on the Board', 'Sign in free and your next scores go up on the leaderboards. Climb to the top and wear the crown.'],
       gift: ['Sign In to Claim Your Gift', 'Your free World Legend Pick is waiting. Sign in with the account your CAST Games emails go to.']
     }[wallWhy] || ['Sign In Free', 'Sign in to keep playing.'];
     // What they were trying to do comes first
@@ -4384,9 +4388,8 @@
     { id: '1000oucaps', label: 'HIGHER OR LOWER: NRL \u00B7 Test Caps', short: 'Test Caps', game: '1000tries', periods: ['today', 'week', 'all'], ou: true, sub: '1000ou' },
     { id: '1000outt', label: 'HIGHER OR LOWER: NRL \u00B7 Test Tries', short: 'Test Tries', game: '1000tries', periods: ['today', 'week', 'all'], ou: true, sub: '1000ou' },
     { id: '1000ounrlw', label: 'HIGHER OR LOWER: NRL \u00B7 NRLW Tries', short: 'NRLW Tries', game: '1000tries', periods: ['today', 'week', 'all'], ou: true, sub: '1000ou' },
-    // NRL Bingo (17 Oct 2026): Free Play (tiles, then time) and the Daily under the one chip. bingo: hidden until launched
+    // NRL Bingo (17 Oct 2026): one board, tiles then time (no Daily Bingo: the owner, the same day). bingo: hidden until launched
     { id: 'bgfree', label: 'NRL Bingo', short: 'NRL Bingo', tiny: 'Bingo', game: '1000tries', periods: ['today', 'week', 'all'], bingo: true },
-    { id: 'bgdaily', label: 'NRL Bingo: Daily Bingo', short: 'Daily Bingo', game: '1000tries', periods: ['today', 'yesterday'], bingo: true, sub: 'bgfree' },
     // 27-0 best records by mode (most wins, then fewest losses, then squad rating). Classic keeps the original id.
     // World Cup 8-0: the stage reached and wins (s = stage x 10 + wins), then points difference (t)
     { id: '270wc', label: '27-0 World Cup', short: 'World Cup', tiny: 'World Cup', game: '27-0', wc: true, periods: ['today', 'week', 'all'] },
@@ -4481,7 +4484,7 @@
   var RECORD_NOTE = { '270best': 'Your best Classic Mode season.', '270pack': 'Your best Pack Mode season.', '270hard': 'Your best Hard Mode season: no ratings, and paid wildcards only.' };
   // Not on a board yet: a red box the same size as "You are #23 of 30", saying what to play to get on it. Tapping it starts
   // that mode: this site's game gets a cast:play event (each game starts its own mode), the other game opens with ?play=.
-  var PLAY_TO_RANK = { bgfree: 'Play NRL Bingo', bgdaily: 'Play today&rsquo;s Daily Bingo', nbaou: 'Play HIGHER OR LOWER: NBA', nbaoureb: 'Play HIGHER OR LOWER: NBA', nbaouast: 'Play HIGHER OR LOWER: NBA', eplou: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eploua: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eplouap: 'Play HIGHER OR LOWER: PREMIER LEAGUE', nflou: 'Play HIGHER OR LOWER: NFL', rcou: 'Play HIGHER OR LOWER: RACING', rcoub: 'Play HIGHER OR LOWER: RACING', rcouh: 'Play HIGHER OR LOWER: RACING', tsou: 'Play HIGHER OR LOWER: CRICKET', tsouw: 'Play HIGHER OR LOWER: CRICKET', bbou: 'Play HIGHER OR LOWER: CRICKET', bbouw: 'Play HIGHER OR LOWER: CRICKET', '4000ou': 'Play HIGHER OR LOWER: AFL', '4000ougames': 'Play HIGHER OR LOWER: AFL', '4000ouaflw': 'Play HIGHER OR LOWER: AFL', '1000ou': 'Play HIGHER OR LOWER: NRL', '1000oucaps': 'Play HIGHER OR LOWER: NRL', '1000outt': 'Play HIGHER OR LOWER: NRL', '1000ounrlw': 'Play HIGHER OR LOWER: NRL', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
+  var PLAY_TO_RANK = { bgfree: 'Play NRL Bingo', nbaou: 'Play HIGHER OR LOWER: NBA', nbaoureb: 'Play HIGHER OR LOWER: NBA', nbaouast: 'Play HIGHER OR LOWER: NBA', eplou: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eploua: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eplouap: 'Play HIGHER OR LOWER: PREMIER LEAGUE', nflou: 'Play HIGHER OR LOWER: NFL', rcou: 'Play HIGHER OR LOWER: RACING', rcoub: 'Play HIGHER OR LOWER: RACING', rcouh: 'Play HIGHER OR LOWER: RACING', tsou: 'Play HIGHER OR LOWER: CRICKET', tsouw: 'Play HIGHER OR LOWER: CRICKET', bbou: 'Play HIGHER OR LOWER: CRICKET', bbouw: 'Play HIGHER OR LOWER: CRICKET', '4000ou': 'Play HIGHER OR LOWER: AFL', '4000ougames': 'Play HIGHER OR LOWER: AFL', '4000ouaflw': 'Play HIGHER OR LOWER: AFL', '1000ou': 'Play HIGHER OR LOWER: NRL', '1000oucaps': 'Play HIGHER OR LOWER: NRL', '1000outt': 'Play HIGHER OR LOWER: NRL', '1000ounrlw': 'Play HIGHER OR LOWER: NRL', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
     '270best': 'Play Classic Mode', '270pack': 'Play Pack Mode', '270hard': 'Play Hard Mode', '270perfect': 'Go 27-0 to get on', '270daily': 'Play today&rsquo;s Daily',
     '4000plus': 'Play 4000+', '4000exact': 'Play Exactly 4000', '4000spin': 'Play Team Spin', aflw: 'Play AFLW 750+', '4000daily': 'Play today&rsquo;s Daily',
     bbplus: 'Play 25000+', bbexact: 'Play Exactly 25000', bbspin: 'Play Team Spin', bbdaily: 'Play today&rsquo;s Daily',
@@ -4491,7 +4494,7 @@
     eplplus: 'Play 650+', eplexact: 'Play Exactly 650', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily',
     nbaplus: 'Play 100000+', nbaexact: 'Play Exactly 100000', nbaspin: 'Play Team Spin', nbadaily: 'Play today&rsquo;s Daily',
     scplus: 'Play SC POINTS KING', scdaily: 'Play today&rsquo;s Daily' };
-  var PLAY_MODE = { bgfree: ['1000tries', 'bingo'], bgdaily: ['1000tries', 'bingod'], '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
+  var PLAY_MODE = { bgfree: ['1000tries', 'bingo'], '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
     '270best': ['27-0', 'classic'], '270pack': ['27-0', 'pack'], '270hard': ['27-0', 'hard'], '270perfect': ['27-0', 'classic'], '270daily': ['27-0', 'daily'],
     '4000plus': ['4000goals', 'plus'], '4000exact': ['4000goals', 'exact'], '4000spin': ['4000goals', 'spin'], aflw: ['4000goals', 'aflw'], '4000daily': ['4000goals', 'daily'],
     bbplus: ['bigbash', 'plus'], bbexact: ['bigbash', 'exact'], bbspin: ['bigbash', 'spin'], bbdaily: ['bigbash', 'daily'], bbou: ['bigbash', 'ou'], bbouw: ['bigbash', 'ou'],
@@ -4530,7 +4533,7 @@
       if (status !== 'signed-in' || !profile) return { who: 'guest' };
       if (!profile.username) return { who: 'noname' };
       if (profile.lbHidden) return { who: 'hidden' };
-      var id = boardId(base === '1000daily' || base === '4000daily' || base === 'bbdaily' || base === 'tsdaily' || base === 'nfldaily' || base === 'rcdaily' || base === 'epldaily' || base === 'nbadaily' || base === 'bgdaily' || base === 'scdaily' ? base : '270daily', 'today', ''), have = lb.rank[id];
+      var id = boardId(base === '1000daily' || base === '4000daily' || base === 'bbdaily' || base === 'tsdaily' || base === 'nfldaily' || base === 'rcdaily' || base === 'epldaily' || base === 'nbadaily' || base === 'scdaily' ? base : '270daily', 'today', ''), have = lb.rank[id];
       if (have && !have.loading && !have.failed && Date.now() - have.at < 30000) return { who: 'player', rank: have.rank || 0, players: have.players || 0 };
       return callFn('myRank', { board: id }).then(function (r) {
         lb.rank[id] = { at: Date.now(), rank: r.rank, players: r.players, s: r.s, t: r.t, g: r.g || null };
@@ -4563,15 +4566,43 @@
   function boardId(b, period, club) {
     var id;
     if (b === 'streak') id = 'streak_all';
-    else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'nbadaily' || b === 'bgdaily' || b === 'scdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
+    else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'nbadaily' || b === 'scdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
     else id = b + '_' + (period === 'week' ? sydneyWeek(Date.now()) : period === 'today' ? sydneyDate(Date.now()) : 'all');
     return club ? id + '~' + club : id;
+  }
+  /* A board for a game's results screen (SC POINTS KING, 17 Oct 2026, the owner: a game with no target shows where the
+     score sits straight after the game). The public board doc (its top rows, the copy the Leaderboards page reads) for one
+     period, kept a minute: one small read per period opened, nothing per game. rank(): the signed-in player's own place
+     (myRank: two counts), only asked for when the score falls outside the top rows. -> { id, top, players, me } where me
+     is { name, hidden } for a signed-in player with a leaderboard name, else null */
+  var rbCache = {};
+  function boardDoc(id) {
+    var c = rbCache[id];
+    if (c && Date.now() - c.at < 60000) return c.p;
+    var url = EMU
+      ? 'http://127.0.0.1:8085/v1/projects/demo-cast-games/databases/(default)/documents/boards/' + id
+      : 'https://firestore.googleapis.com/v1/projects/' + FIREBASE.projectId + '/databases/(default)/documents/boards/' + id + '?key=' + FIREBASE.apiKey;
+    var pr = fetch(url).then(function (r) {
+      if (r.status === 404) return {};
+      if (!r.ok) throw new Error('board ' + r.status);
+      return r.json();
+    }).then(function (j) { var f = j.fields || {}; return { top: fsVal(f.top) || [], players: fsVal(f.players) || 0 }; });
+    rbCache[id] = { at: Date.now(), p: pr };
+    pr.catch(function () { delete rbCache[id]; });
+    return pr;
+  }
+  function resultBoard(base, period) {
+    var id = boardId(base, period, '');
+    return boardDoc(id).then(function (b) {
+      var me = status === 'signed-in' && profile && profile.username ? { name: profile.username, hidden: !!profile.lbHidden } : null;
+      return { id: id, top: b.top, players: b.players, me: me, rank: function () { return me ? callFn('myRank', { board: id }) : Promise.resolve(null); } };
+    });
   }
   // The board that matches a finished game (for "See where you rank")
   function boardForGame(g) {
     if (!g) return null;
     if (g.game === '1000tries' && g.mode === 'ou') return [{ caps: '1000oucaps', ttries: '1000outt', nrlw: '1000ounrlw' }[g.d && g.d.cat] || '1000ou', 'today'];
-    if (g.game === '1000tries' && (g.mode === 'bingo' || g.mode === 'bingod')) return [g.mode === 'bingod' ? 'bgdaily' : 'bgfree', 'today']; // NRL Bingo
+    if (g.game === '1000tries' && (g.mode === 'bingo' || g.mode === 'bingod')) return ['bgfree', 'today']; // NRL Bingo (bingod: a card from the dropped Daily Bingo)
     if (g.game === '1000tries') return [g.mode === 'wc' ? '1000wc' : g.mode === 'nrlw' ? 'nrlw' : g.mode === 'exact' ? '1000exact' : g.mode === 'spin' ? '1000spin' : g.mode === 'daily' ? '1000daily' : '1000plus', 'today'];
     if (g.game === '4000goals' && g.mode === 'ou') return [{ games: '4000ougames', aflw: '4000ouaflw' }[g.d && g.d.cat] || '4000ou', 'today'];
     if (g.game === 'bigbash' && g.mode === 'ou') return [g.d && g.d.cat === 'bblwkts' ? 'bbouw' : 'bbou', 'today'];
@@ -5227,11 +5258,12 @@
       kicker: 'World Champions Pick', title: 'Choose a World Champion', line: 'Pick from three of the World Champions. He\u00a0joins your World Cup 13 at 95+.', tap: 'Tap World Champions Pick to use',
       tags: ['Use It Now', 'Best Value'], small: ['Choose your champion', '<strong>Just $5 each</strong>'], save: 'Save 17%',
       foot: 'World Champions Picks work in 27-0 World Cup 8-0. Use them by 11:59pm Sun 22 Nov. Unused Picks expire when World Champions ends.' },
-    /* The Wild Tile (NRL Bingo, 17 Oct 2026, the owner's BUILD IT): A$2.99, fills any one open tile on the card. On sale once
-       NRL Bingo is launched (the Shop, and the game's own button); one already owned still works */
-    wild: { field: 'wilds', ico: '&#x1F0CF;', one: 'Wild Tile', many: 'Wild Tiles', packs: ['wild1'], used: 'Wild Tile used',
+    /* The Wild Tile (NRL Bingo, 17 Oct 2026, the owner's BUILD IT): A$2.99, or 3 for A$6.99 (the owner, the same day), fills
+       any one open tile on the card. On sale once NRL Bingo is launched (the Shop, and the game's own button); one already
+       owned still works */
+    wild: { field: 'wilds', ico: '&#x1F0CF;', one: 'Wild Tile', many: 'Wild Tiles', packs: ['wild1', 'wild3'], used: 'Wild Tile used',
       kicker: 'Wild Tile', title: 'Fill Any Tile You Like', line: 'Pick any open tile on your card and it fills, no player needed.', tap: 'Tap Wild Tile to use',
-      tags: ['Use It Now'], small: ['Fill one tile, right now'], save: '',
+      tags: ['Use It Now', 'Best Value'], small: ['Fill one tile, right now', '<strong>Just $2.33 each</strong>'], save: 'Save 22%',
       foot: 'Wild Tiles work in NRL Bingo. A board with one in it counts on the leaderboards with a boost mark. Saved ones stay on your CAST Profile.' },
     /* The SC Captain (SC POINTS KING, 17 Oct 2026, the owner): A$4.99. Once a Classic 13 is complete the game asks for a
        Captain (from the Vault, or bought there and then) and his SC points count double. One a game, Classic only, never
@@ -5393,7 +5425,7 @@
     rrShop(game, null, 'shop', hook, 'key', kind);
   }
   // item: 'reroll' (the default), one of ITM, 'freeze' or 'key' (key: 'legend' or 'superstar'), for the words and colour
-  var RR_CLASS = { remove: 'is-rm', reveal: 'is-rv', rib: 'is-rib', freeze: 'is-fz', key: 'is-ky', toty: 'is-toty', prem: 'is-prem', imm: 'is-imm', wcp: 'is-wcp', ileg: 'is-ileg', wch: 'is-wch', restore: 'is-rs', bag: 'is-bag', captain: 'is-captain' };
+  var RR_CLASS = { remove: 'is-rm', reveal: 'is-rv', rib: 'is-rib', freeze: 'is-fz', key: 'is-ky', toty: 'is-toty', prem: 'is-prem', imm: 'is-imm', wcp: 'is-wcp', ileg: 'is-ileg', wch: 'is-wch', wild: 'is-wild', restore: 'is-rs', bag: 'is-bag', captain: 'is-captain' }; // wild: NRL Bingo's Wild Tile in its lime
   function rrShop(game, done, stage, hook, item, key) {
     rr = { game: game || CFG.game, done: done || null, stage: stage, err: '', pack: null, session: null, co: null, hook: hook && hook.line ? hook : null,
       item: ITM[item] || item === 'freeze' || item === 'key' || item === 'restore' || item === 'bag' ? item : 'reroll', key: key || null };
@@ -5417,6 +5449,7 @@
         // The Gameday Bag's steppers, Checkout and way back to the Shop
         else if (a === 'bag-inc' || a === 'bag-dec' || a === 'bag-set') bagChange(b.getAttribute('data-k'), a.slice(4), +b.getAttribute('data-q') || 0);
         else if (a === 'bag-pay') bagPay();
+        else if (a === 'bag-clear') bagClear();
         else if (a === 'bag-shop') { rrClose(); openShop('bag'); }
         else if (PACKS[a]) rrPay(a);
         else if (a === 'pass') { var bagWas = rr && rr.item === 'bag'; rrClose(); openPass(bagWas ? 'bag' : 'key-shop'); }
@@ -5669,8 +5702,10 @@
     } else if (rr.stage === 'err') {
       h = '<div class="ca-center"><div class="ca-badge" aria-hidden="true">&#x26A0;&#xFE0F;</div><p class="ca-text">' + esc(rr.err) + '</p><button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-rr="back">Try Again</button></div>';
     }
+    var fk = rr.item === 'bag' ? focusKey(body) : null;
     body.innerHTML = h;
     keepWhole(body);
+    if (fk) focusBack(body, fk);
     if ((rr.item === 'toty' || rr.item === 'prem' || rr.item === 'wch') && rr.stage === 'shop') dmCount(body); // the ratings count up to 95
   }
   /* A pack in the pop-up: quick (the $1 one, white tag), plain (no glow) or the best value; wide spans the row. Every pack
@@ -5711,6 +5746,7 @@
         if (!r.paid && tries++ < 6) { setTimeout(again, 1500); return; }
         if (!r.paid) { rrDestroyCo(); rr.stage = 'err'; rr.err = 'Your payment is still going through. It will be on your account in a minute.'; rrRender(); return; }
         if (mine.item === 'bag') { bagPaid(mine, r); return; } // the Gameday Bag: everything at once
+        gaOne(mine); // Google Analytics' purchase event, as for a bag
         // A key pack: into the Vault
         var KP = PACKS[mine.pack];
         if (KP && KP.key) {
@@ -5868,7 +5904,7 @@
     if (/^trophies/.test(b)) return r.s + ' <small>' + (r.s === 1 ? 'trophy' : 'trophies') + '</small>';
     if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(b)) return r.s + ' <small>in a row</small>';
     // NRL Bingo: tiles filled, then the time (t: minus tenths of a second, lib/boards.js)
-    if (b === 'bgfree' || b === 'bgdaily') { var bs = Math.max(0, Math.round(-(r.t || 0) / 10)); return (r.s === 20 ? '&#x1F389; ' : '') + r.s + ' <small>' + (r.s === 1 ? 'tile' : 'tiles') + ' &middot; ' + Math.floor(bs / 60) + ':' + ('0' + (bs % 60)).slice(-2) + '</small>'; }
+    if (b === 'bgfree') { var bs = Math.max(0, Math.round(-(r.t || 0) / 10)); return (r.s === 24 ? '&#x1F389; ' : '') + r.s + ' <small>' + (r.s === 1 ? 'tile' : 'tiles') + ' &middot; ' + Math.floor(bs / 60) + ':' + ('0' + (bs % 60)).slice(-2) + '</small>'; }
     if (kind === 'target') return (r.s === 0 ? '&#x1F3AF; On target' : (-r.s) + ' <small>off</small>') + ' <small>&middot; ' + r.t + ' wins</small>';
     // 27-0 Daily rating days (14 Oct 2026): the squad rating first, then wins
     if (kind === 'rating') return '<span class="ca-lb-sq" style="--rc:' + ratingCol(r.s) + '" title="Squad rating ' + r.s + '" aria-label="Squad rating ' + r.s + '">' + r.s + '</span><span class="ca-lb-wins">' + (r.t || 0) + ' <small>' + (r.t === 1 ? 'win' : 'wins') + '</small></span>';
@@ -6038,7 +6074,7 @@
     var list = boardsFor(lb);
     h += gameSwitch(lb, 'lb') + '<div class="ca-lb-chips' + (list.length >= 5 ? ' is-grid' : '') + '" role="tablist">' + list.map(function (b) {
       var name = b.label.replace(/&#x1F525;\s*/, '');
-      var onB = b.id === lb.board || (b.id === 'trophies' && /^trophies/.test(lb.board)) || (b.id === '1000ou' && /^1000ou/.test(lb.board)) || (b.id === '4000ou' && /^4000ou/.test(lb.board)) || (b.id === 'bbou' && /^bbou/.test(lb.board)) || (b.id === 'tsou' && /^tsou/.test(lb.board)) || (b.id === 'rcou' && /^rcou/.test(lb.board)) || (b.id === 'eplou' && /^eplou/.test(lb.board)) || (b.id === 'nbaou' && /^nbaou/.test(lb.board)) || (b.id === 'bgfree' && /^bg/.test(lb.board));
+      var onB = b.id === lb.board || (b.id === 'trophies' && /^trophies/.test(lb.board)) || (b.id === '1000ou' && /^1000ou/.test(lb.board)) || (b.id === '4000ou' && /^4000ou/.test(lb.board)) || (b.id === 'bbou' && /^bbou/.test(lb.board)) || (b.id === 'tsou' && /^tsou/.test(lb.board)) || (b.id === 'rcou' && /^rcou/.test(lb.board)) || (b.id === 'eplou' && /^eplou/.test(lb.board)) || (b.id === 'nbaou' && /^nbaou/.test(lb.board));
       return '<button type="button" role="tab" aria-selected="' + onB + '" class="ca-chip' + (onB ? ' is-on' : '') + '" data-ca="lb-board" data-v="' + b.id + '" title="' + esc(name) + '" aria-label="' + esc(name) + '">' + chipName(b) + '</button>';
     }).join('') + '</div>' + troSub();
     if (status === 'loading') return h + (profileErr ? profileErrCard() : '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>');
@@ -6077,7 +6113,6 @@
       : lb.board === '4000exact' ? 'Most exact 4000s first. Until you land one, your closest full 18 under 4000 counts.'
       : lb.board === '270perfect' ? 'Most perfect seasons first. Level players rank by their hardest 27-0: Hard Mode, then Classic, then Pack.'
       : /^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(lb.board) ? 'Your longest run of right calls. Level players: fewer Run It Backs first.'
-      : lb.board === 'bgdaily' ? 'Your one go at today&rsquo;s Daily Bingo counts. Most tiles first, then the quicker time.'
       : lb.board === 'bgfree' ? 'Most tiles filled first, then the quicker time.'
       : /^trophies/.test(lb.board) ? 'Every trophy you&rsquo;ve unlocked counts' + (lb.board === 'trophies' ? ', 27-0 and 1000TRIES together' : '') + '. Level players rank by who got there first.' : '';
     var ranked = me && !profile.lbHidden && canRank, upd = updText(c);
@@ -6203,6 +6238,9 @@
   // 25000 RUNS (15 Oct 2026): an XI on a cricket ground, the top six across the top, the keeper on the pitch, the bowlers below
   var POS11 = ['BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'WK', 'BOWL', 'BOWL', 'BOWL', 'BOWL']; // shown as the cricket labels (16 Oct 2026)
   var FIELD11 = [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9, 10]];
+  // Both cricket games since 17 Oct 2026: the all-rounder at 6 (the game saves d.ar). A game from before keeps its 6 batters
+  var POS11A = ['BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'AR', 'WK', 'BOWL', 'BOWL', 'BOWL', 'BOWL'];
+  function cricketAr(x) { return !!(x && x.d && x.d.ar); }
   // 777 TDS (16 Oct 2026): the offence lined up from behind, as the game's field (js/render.js ROWS). 10 spots since 17 Oct
   // 2026, in a spread look (17 Oct 2026): the wide receivers and the tight end on the line, the slot receivers, the FLEX
   // spots either side of the quarterback, the two backs. A 9-spot game from before (700 TDS) keeps its own
@@ -6220,7 +6258,7 @@
   // SC POINTS KING (17 Oct 2026): the 13 in SC positions, saved in the game's slot order (js/data.js T.SLOTS): the fullback,
   // the four centres and wingers, the halves, the front row with the hooker between the props, the back row
   var POS13SC = ['FLB', 'CTW', 'CTW', 'CTW', 'CTW', '5/8', 'HFB', 'HOK', 'FRF', 'FRF', '2RF', '2RF', '2RF'];
-  var FIELD13SC = [[0], [1, 2, 3, 4], [5, 6], [8, 7, 9], [10, 11, 12]];
+  var FIELD13SC = [[7], [8, 9], [10, 11, 12], [6, 5], [1, 2, 3, 4], [0]]; // SC's own team view: the hooker at the top, the fullback at the bottom (the owner, 17 Oct 2026)
   var POS10E = ['DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'FWD'];
   var FIELD10E = [[7, 8, 9], [4, 5, 6], [0, 1, 2, 3]];
   /* Since 17 Oct 2026 a 650 GOALS game is drafted in a formation (d.fm), its picks saved in the formation's order (rows from
@@ -6245,7 +6283,7 @@
   function eplFm(x) { var f = x && x.game === 'epl' && x.d && x.d.fm; return f && Object.prototype.hasOwnProperty.call(FM10E, f) ? FM10E[f] : null; }
   function fmPos(rows) { return [].concat.apply([], rows); }
   function fmField(rows) { var i = 0; return rows.map(function (r) { return r.map(function () { return i++; }); }).reverse(); }
-  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? POS11 : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : x && x.game === 'nba' ? POS5 : x && x.game === 'sc' ? POS13SC : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
+  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? (cricketAr(x) ? POS11A : POS11) : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : x && x.game === 'nba' ? POS5 : x && x.game === 'sc' ? POS13SC : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
   function fieldRows(x) { return x && x.game === '4000goals' ? FIELD18 : x && (x.game === 'bigbash' || x.game === 'tests') ? FIELD11 : x && x.game === 'nfl' ? (nfl9(x) ? FIELD9 : FIELD10) : x && x.game === 'racing' ? FIELD8 : x && x.game === 'epl' ? (eplFm(x) ? fmField(eplFm(x)) : FIELD10E) : x && x.game === 'nba' ? FIELD5 : x && x.game === 'sc' ? FIELD13SC : FIELD; }
   var sheet = null, sheets = {}, sheetMode = lsGet('cast_sheet_view') === 'list' ? 'list' : 'field';
   // Saved names can carry a tag: namesakes ("Ben Jones (Raiders)") and 1000TRIES greats ("Ken Irvine (Legend)")
@@ -6386,6 +6424,8 @@
   }
   function sheetList(x, ps, title) {
     var clubs = ps.some(function (p) { return p.club; }); // older saves have no clubs: drop the column
+    // SC POINTS KING lists its 13 in its field's order too (the hooker first, the fullback last)
+    if (x && x.game === 'sc' && ps.length === 13) ps = [].concat.apply([], FIELD13SC).map(function (i) { return ps[i]; });
     return (title ? '<h3 class="ca-h3">' + title + '</h3>' : '') + '<ol class="ca-sheet-list' + (clubs ? '' : ' no-clubs') + '">' + ps.map(function (p) {
       var sub = [p.club && p.club.name, p.year].filter(Boolean).join(' '), cls = (p.tier ? ' is-' + p.tier : '') + srcCls(p);
       return '<li' + (cls ? ' class="' + cls.slice(1) + '"' : '') + '><span class="ca-sl-pos">' + p.pos + '</span>' + (clubs ? clubChip(p.club) : '') +
@@ -6393,15 +6433,27 @@
         '<span class="ca-sl-val">' + sheetVal(x, p) + '</span></li>';
     }).join('') + '</ol>';
   }
-  /* NRL Bingo's card on a team sheet (17 Oct 2026): the 20 tiles in the server's order, each in its jersey (js/cast-intl.js,
-     when the page has it) with the name that filled it */
-  var BINGO_TILES = [['broncos', 'Broncos'], ['bulldogs', 'Bulldogs'], ['cowboys', 'Cowboys'], ['dolphins', 'Dolphins'], ['dragons', 'Dragons'], ['eels', 'Eels'],
+  /* NRL Bingo's card on a team sheet (17 Oct 2026): the tiles in the server's order, each in its jersey (js/cast-intl.js,
+     when the page has it) with the name that filled it. The 4 x 6 card (24 tiles, the owner, 17 Oct 2026); a card saved on
+     the first 4 x 5 card (its Origin, Kangaroos and Kiwis tiles) shows as it was played */
+  var BINGO_CLUBS = [['broncos', 'Broncos'], ['bulldogs', 'Bulldogs'], ['cowboys', 'Cowboys'], ['dolphins', 'Dolphins'], ['dragons', 'Dragons'], ['eels', 'Eels'],
     ['knights', 'Knights'], ['panthers', 'Panthers'], ['rabbitohs', 'Rabbitohs'], ['raiders', 'Raiders'], ['roosters', 'Roosters'], ['seaeagles', 'Sea Eagles'],
-    ['sharks', 'Sharks'], ['storm', 'Storm'], ['titans', 'Titans'], ['warriors', 'Warriors'], ['tigers', 'Wests Tigers'], ['origin', 'Origin'], ['aus', 'Kangaroos'], ['nzl', 'Kiwis']];
-  var BINGO_REP = { origin: '<rect width="100" height="76" fill="#1f63b8"/><polygon points="0,0 100,0 0,76" fill="#7b1435"/>', aus: '<rect width="100" height="76" fill="#00843d"/><polygon points="22,0 50,34 78,0 92,0 50,48 8,0" fill="#ffcd00"/>',
-    nzl: '<rect width="100" height="76" fill="#0b0b0e"/><polygon points="20,0 50,36 80,0 94,0 50,52 6,0" fill="#f5f5f5"/>' };
+    ['sharks', 'Sharks'], ['storm', 'Storm'], ['titans', 'Titans'], ['warriors', 'Warriors'], ['tigers', 'Wests Tigers']];
+  var BINGO_TILES = BINGO_CLUBS.concat([['nsw', 'NSW Blues'], ['qld', 'QLD Maroons'], ['aus', 'Australia'], ['nzl', 'New Zealand'], ['eng', 'England'], ['sam', 'Samoa'], ['ton', 'Tonga']]);
+  var BINGO_TILES_1 = BINGO_CLUBS.concat([['origin', 'Origin'], ['aus', 'Kangaroos'], ['nzl', 'Kiwis']]);
+  // The rep tiles in plain colours (never a logo): the same drawings as the game's own (js/bingo.js REP)
+  var BINGO_REP = {
+    origin: '<rect width="100" height="76" fill="#1f63b8"/><polygon points="0,0 100,0 0,76" fill="#7b1435"/>',
+    nsw: '<rect width="100" height="76" fill="#3a8fd6"/><polygon points="24,0 50,30 76,0 90,0 50,44 10,0" fill="#0b2d63"/>',
+    qld: '<rect width="100" height="76" fill="#7b1435"/><polygon points="24,0 50,30 76,0 90,0 50,44 10,0" fill="#f2b632"/>',
+    aus: '<rect width="100" height="76" fill="#00843d"/><polygon points="22,0 50,34 78,0 92,0 50,48 8,0" fill="#ffcd00"/>',
+    nzl: '<rect width="100" height="76" fill="#0b0b0e"/><polygon points="20,0 50,36 80,0 94,0 50,52 6,0" fill="#f5f5f5"/>',
+    eng: '<rect width="100" height="76" fill="#f4f4f4"/><rect y="30" width="100" height="14" fill="#c8102e"/>',
+    sam: '<rect width="100" height="76" fill="#0b3f91"/><polygon points="22,0 50,32 78,0 92,0 50,46 8,0" fill="#ffffff"/>',
+    ton: '<rect width="100" height="76" fill="#c10000"/><rect y="28" width="100" height="8" fill="#ffffff"/><rect y="40" width="100" height="8" fill="#ffffff"/>' };
   function bingoSheet(x) {
     var CI = window.CastIntl, g = x.bingo || {}, d = x.d || {}, ms = +d.ms || 0, secs = Math.round(ms / 1000);
+    var tiles = 'origin' in g ? BINGO_TILES_1 : BINGO_TILES;
     var tile = function (t) {
       var inner = BINGO_REP[t[0]] || '';
       if (!inner && CI && CI.fill && CI.JERSEYS && CI.JERSEYS[t[0]]) { try { inner = CI.fill(CI.JERSEYS[t[0]], 100, 76); } catch (e) { inner = ''; } }
@@ -6409,8 +6461,8 @@
       return '<span class="ca-bg-tile' + (nm ? ' is-filled' : '') + '"><svg viewBox="0 0 100 76" preserveAspectRatio="none" aria-hidden="true">' + (inner || '<rect width="100" height="76" fill="#1c1c2e"/>') + '</svg>' +
         (nm ? '<b title="' + esc(nm) + '">' + (nm === 'Wild Tile' ? '&#x1F0CF; ' : '&#x2705; ') + esc(sur) + '</b>' : '') + '<small>' + t[1] + '</small></span>';
     };
-    return '<p class="ca-bg-sum">' + (x.result === 'full' ? '&#x1F389; Full House' : x.score + ' of 20 tiles') + (ms ? ' in ' + Math.floor(secs / 60) + ':' + ('0' + (secs % 60)).slice(-2) : '') + '</p>' +
-      '<div class="ca-bg-card">' + BINGO_TILES.map(tile).join('') + '</div>';
+    return '<p class="ca-bg-sum">' + (x.result === 'full' ? '&#x1F389; Full House' : x.score + ' of ' + tiles.length + ' tiles') + (ms ? ' in ' + Math.floor(secs / 60) + ':' + ('0' + (secs % 60)).slice(-2) : '') + '</p>' +
+      '<div class="ca-bg-card">' + tiles.map(tile).join('') + '</div>';
   }
   function sheetPage() {
     var s = sheet, st = s.g ? sheets[s.g] || {} : {}, x = s.local || st.data, who = s.who || {};
@@ -6722,7 +6774,7 @@
      the invite card while you have under 3 friends; sent requests folded into one line */
   var FR_MODE = {
     '27-0': { classic: 'Classic', hard: 'Hard Mode', pack: 'Pack Mode', daily: 'the Daily', wc: 'the World Cup' },
-    '1000tries': { plus: '1000+', exact: 'Exactly 1000', spin: 'Team Spin', nrlw: 'NRLW 250+', wc: 'World Cup 200+', daily: 'the Daily', ou: 'HIGHER OR LOWER: NRL', bingo: 'NRL Bingo', bingod: 'Daily Bingo' },
+    '1000tries': { plus: '1000+', exact: 'Exactly 1000', spin: 'Team Spin', nrlw: 'NRLW 250+', wc: 'World Cup 200+', daily: 'the Daily', ou: 'HIGHER OR LOWER: NRL', bingo: 'NRL Bingo', bingod: 'NRL Bingo' },
     '4000goals': { plus: '4000+', exact: 'Exactly 4000', spin: 'Team Spin', aflw: 'AFLW 750+', daily: 'the Daily', ou: 'HIGHER OR LOWER: AFL' },
     bigbash: { plus: '25000+', exact: 'Exactly 25000', spin: 'Team Spin', daily: 'the Daily', ou: 'HIGHER OR LOWER: CRICKET' },
     tests: { plus: '60000+', exact: 'Exactly 60000', spin: 'Team Spin', daily: 'the Daily', ou: 'HIGHER OR LOWER: CRICKET' },
@@ -6779,7 +6831,7 @@
       ico = e.x === 'perfect' || e.x === 'wc80' ? '&#x1F451;' : e.x === 'exact' || e.x === 'exact4000' || e.x === 'exactbb' || e.x === 'exactts' || e.x === 'exactnfl' || e.x === 'exactrc' || e.x === 'exactepl' || e.x === 'exactnba' ? '&#x1F3AF;' : '&#x1F4AF;';
       if (e.x === 'ou' || e.x === 'po' || e.x === 'fh' || e.x === 'fo' || e.x === 'tp' || e.x === 'pf' || e.x === 'et' || e.x === 'hlnba') ico = '&#x2195;&#xFE0F;';
       if (e.x === 'bingo') ico = '&#x1F389;';
-      txt = e.x === 'bingo' ? 'got a Full House in ' + (e.m === 'bingod' ? 'the Daily Bingo' : 'NRL Bingo') : OU_FEED[e.x] ? 'called ' + e.s + ' in a row in ' + ouName(OU_FEED[e.x]) : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 777' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'exactepl' ? 'landed Exactly 650' : e.x === 'exactnba' ? 'landed Exactly 100000' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
+      txt = e.x === 'bingo' ? 'got a Full House in NRL Bingo' : OU_FEED[e.x] ? 'called ' + e.s + ' in a row in ' + ouName(OU_FEED[e.x]) : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 777' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'exactepl' ? 'landed Exactly 650' : e.x === 'exactnba' ? 'landed Exactly 100000' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
         : e.x === 'exact' ? 'landed Exactly 1000' : e.x === 'exact4000' ? 'landed Exactly 4000'
         : e.x === 'wc200' ? 'reached World Cup 200+ with ' + frScore(e.g, 'wc', e.s) : e.x === 'nrlw250' ? 'reached NRLW 250+ with ' + frScore(e.g, 'nrlw', e.s)
         : e.x === 'aflw750' ? 'reached AFLW 750+ with ' + frScore(e.g, 'aflw', e.s)
@@ -7874,8 +7926,9 @@
     ileg3: { ico: '&#x1F451;', name: '3 World Legend Picks', short: '3 Picks', price: '$11.99', what: 'Just $4 each', kind: 'ileg', n: 3, best: true, chip: 'Save 20%' },
     rib1: { ico: '&#x23EA;', name: '1 Run It Back', price: '$0.99', what: '27-0 Classic: one loss in your season becomes a win', kind: 'rib', n: 1, chip: 'Instant' },
     rib3: { ico: '&#x23EA;', name: '3 Run It Backs', price: '$1.99', what: 'Just 66c each', kind: 'rib', n: 3, best: true, chip: 'Save 33%' },
-    // The Wild Tile (NRL Bingo, 17 Oct 2026): A$2.99, on sale once NRL Bingo is launched
+    // The Wild Tile (NRL Bingo, 17 Oct 2026): A$2.99, or 3 for A$6.99, on sale once NRL Bingo is launched
     wild1: { ico: '&#x1F0CF;', name: '1 Wild Tile', price: '$2.99', what: 'Fill any open tile on your NRL Bingo card', kind: 'wild', n: 1, chip: 'Instant', sub: 'Fill any open tile on your NRL Bingo card' },
+    wild3: { ico: '&#x1F0CF;', name: '3 Wild Tiles', short: '3 Tiles', price: '$6.99', what: 'Just $2.33 each', kind: 'wild', n: 3, best: true, chip: 'Save 22%' },
     // The SC Captain (SC POINTS KING, 17 Oct 2026): A$4.99, on sale once SC POINTS KING is launched
     cap1: { ico: '&#x1F396;&#xFE0F;', name: '1 SC Captain', price: '$4.99', what: 'His SC points count double in SC POINTS KING', kind: 'cap', n: 1, chip: 'Instant', sub: 'His SC points count double in SC POINTS KING' },
     // The GOAT (29 Sep 2026; every draft game from 16 Oct 2026): this game's GOAT as your next pick. Shop only
@@ -7936,7 +7989,7 @@
     ['imm', '&#x1F3DB;&#xFE0F;', 'Immortal Pick', 'Choose one of three of the game\u2019s Immortals for an open spot in your 13: at 99 in 27-0, with his career tries in 1000TRIES.', '27-0 (Classic, Hard and Packs) and 1000TRIES (1000+, Exactly 1000 and Team Spin), any time', ['imm3', 'imm1']],
     ['superstar', '&#x1F31F;', 'Superstar Keys', '27-0\u2019s own key: your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
     ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run a 27-0 season back and your closest loss becomes a win, or keep a HIGHER OR LOWER streak alive.', '', ['rib3', 'rib1']],
-    ['wild', '&#x1F0CF;', 'Wild Tile', 'Fill any one open tile on your NRL Bingo card, your choice. The player on the card stays.', 'NRL Bingo, any time', ['wild1']],
+    ['wild', '&#x1F0CF;', 'Wild Tile', 'Fill any one open tile on your NRL Bingo card, your choice. The player on the card stays.', 'NRL Bingo, any time', ['wild3', 'wild1']],
     ['cap', '&#x1F396;&#xFE0F;', 'SC Captain', 'Once your 13 is complete, make one season your Captain and his SC points count double. One per game.', 'SC POINTS KING Classic, once your 13 is complete', ['cap1']],
     ['fz', '&#x1F9CA;', 'Streak Freeze', 'Miss a day and it is used by itself, so your streak lives on. You can hold one at a time.', '', ['freeze1']]
   ];
@@ -8014,8 +8067,7 @@
       if (fzOn) rows.push('<li><div class="ca-vl-row is-fz is-pass"><span class="ca-vl-ico" aria-hidden="true">&#x1F9CA;</span><span class="ca-vl-txt"><b>This Month&rsquo;s Free Streak Freeze</b><small>' +
         (fzPass ? 'Ready: your CAST Pass freeze, used first' : 'Used this month') + '</small></span></div></li>');
     }
-    if (!rows.length) return '<section class="ca-vl" aria-label="Your Vault"><div class="ca-vl-h"><b>&#x1F510; Your Vault</b><small>Empty for now</small></div>' +
-      '<p class="ca-vl-empty">Items you buy, or win from the Daily Challenge and your streak, wait here until you use them in a game.</p></section>';
+    if (!rows.length) return '<section class="ca-vl is-empty" aria-label="Your Vault"><div class="ca-vl-strip"><b>&#x1F510; Your Vault</b><small>Empty for now</small></div></section>';
     // What's ready to use, per item: bought or won, plus a CAST Pass holder's ready keys, free freeze and free Pick
     var extra = pass ? { legend: dailyUsed('legend') ? 0 : 1, superstar: dailyUsed('superstar') ? 0 : 1, fz: fzOn && fzPass ? 1 : 0, toty: totyFreeNow() ? 1 : 0, prem: premFreeNow() ? 1 : 0, wcp: wcpFreeNow() ? 1 : 0, ileg: ilegFreeNow() ? 1 : 0, wch: wchFreeNow() ? 1 : 0 } : {};
     var chips = items.map(function (it) {
@@ -8024,226 +8076,502 @@
       return n ? '<i class="ca-vl-chip is-' + cls + '" role="img" title="' + name + '" aria-label="' + name + '"><span aria-hidden="true">' + it[1] + '</span>' + (fz ? 'Ready' : n) + '</i>' : '';
     }).join('');
     var total = items.reduce(function (t, it) { return t + (count[it[0]] || 0) + (extra[it[0]] || 0); }, 0);
-    return '<section class="ca-vl' + (vlOpen ? ' is-open' : '') + '" aria-label="Your Vault">' +
-      '<button type="button" class="ca-vl-h ca-vl-toggle" data-ca="vault-toggle" aria-expanded="' + vlOpen + '" aria-controls="caVlList">' +
-        '<b>&#x1F510; Your Vault</b><small>' + (vlOpen ? 'Hide' : total + (total === 1 ? ' Item' : ' Items')) + ' <span class="ca-vl-caret" aria-hidden="true">&#x25BE;</span></small></button>' +
-      (vlOpen ? '<ul class="ca-vl-list" id="caVlList">' + rows.join('') + '</ul>' : '<div class="ca-vl-chips" id="caVlList">' + chips + '</div>') + '</section>';
+    // Folded (Shop A2, 17 Oct 2026): one strip, what you have as chips beside the name; a tap opens the labelled list
+    if (!vlOpen) return '<section class="ca-vl is-strip" aria-label="Your Vault"><button type="button" class="ca-vl-strip ca-vl-toggle" data-ca="vault-toggle" aria-expanded="false" aria-controls="caVlList"' +
+      ' aria-label="Your Vault, ' + total + (total === 1 ? ' item' : ' items') + '. Show them"><b>&#x1F510; Your Vault</b><span class="ca-vl-chips" id="caVlList">' + chips + '</span>' +
+      '<span class="ca-vl-caret" aria-hidden="true">&#x25BE;</span></button></section>';
+    return '<section class="ca-vl is-open" aria-label="Your Vault">' +
+      '<button type="button" class="ca-vl-h ca-vl-toggle" data-ca="vault-toggle" aria-expanded="true" aria-controls="caVlList">' +
+        '<b>&#x1F510; Your Vault</b><small>Hide <span class="ca-vl-caret" aria-hidden="true">&#x25BE;</span></small></button>' +
+      '<ul class="ca-vl-list" id="caVlList">' + rows.join('') + '</ul></section>';
   }
-  function shopTab() {
-    if (status !== 'signed-in') return '';
-    var pass = hasPass(), young = !canBuyReroll();
-    var have = function (k) {
-      var x = k === 'wch' ? itemSaved('wch') + (wchFreeNow() ? 1 : 0) : k === 'wcp' ? itemSaved('wcp') + (wcpFreeNow() ? 1 : 0) : k === 'ileg' ? itemSaved('ileg') + (ilegFreeNow() ? 1 : 0) : k === 'toty' ? itemSaved('toty') + (totyFreeNow() ? 1 : 0) : k === 'prem' ? itemSaved('prem') + (premFreeNow() ? 1 : 0) : k === 'imm' ? itemSaved('imm') : k === 'goat' ? itemSaved('goat') : k === 'rr' ? rerollsSaved() : k === 'rm' ? removesSaved() : k === 'rv' ? itemSaved('reveal') : k === 'rib' ? itemSaved('rib') : k === 'wild' ? itemSaved('wild') : k === 'cap' ? itemSaved('captain') : k === 'fz' ? fzOwned : keysOwned(k);
-      if (k === 'fz') return '<strong class="ca-shop-badge' + (x ? '' : ' is-none') + '">' + (x ? 'Ready' : 'None yet') + '</strong>'; // one at a time: no count
-      return '<strong class="ca-shop-badge' + (x ? '' : ' is-none') + '">' + (x ? 'You have ' + x : 'None yet') + '</strong>';
-    };
-    var off = young ? ' disabled' : '', bag = function (k) { return young ? '' : bagAddBtn(k, off); };
-    // The biggest pack: the big button, with what each one costs and the saving
-    var big = function (id) {
-      var P = PACKS[id], tag = P.tag || (P.key && pass ? '+1 Bonus Key' : 'Best Value'), each = P.key ? (pass ? 'Just $1.25 each' : 'Just $1.66 each') : (P.what || '').split(',')[0];
-      return '<button type="button" class="ca-shop-big" data-ca="shop-buy" data-v="' + id + '"' + off + '><em>' + tag + '</em><span class="ca-shop-big-n">' + packLabel(id) + '</span>' +
-        '<span class="ca-shop-big-p">' + P.price + '</span><small>' + (P.sub || each + ' &middot; ' + (P.key ? (pass ? 'Save 37%' : 'Save 16%') : P.chip)) + '</small></button>';
-    };
-    var mid = function (id) {
-      var P = PACKS[id];
-      return '<button type="button" class="ca-shop-mid" data-ca="shop-buy" data-v="' + id + '"' + off + '><b>' + P.n + ' for ' + P.price + '</b><i>' + P.chip + '</i></button>';
-    };
-    var one = function (id) { return '<button type="button" class="ca-shop-one" data-ca="shop-buy" data-v="' + id + '"' + off + '>or 1 for ' + PACKS[id].price + '</button>'; };
-    /* Two packs side by side (the Team of the Year Pick, the owner's calls on 1 Oct 2026): the single on the left, the best
-       value on the right, both built the same way (tag, short name, price, and a chip held to the foot) so the boxes are
-       even with no empty space, like the payment pop-up's packs */
-    var pair = function (single, best) {
-      var box = function (id, tag, cls) {
-        var P = PACKS[id];
-        return '<button type="button" class="ca-shop-big is-half' + cls + '" data-ca="shop-buy" data-v="' + id + '"' + off + ' aria-label="' + esc(packLabel(id) + ', ' + P.price) + '"><em>' + tag + '</em>' +
-          '<span class="ca-shop-big-n">' + (P.short || packLabel(id)) + '</span><span class="ca-shop-big-p">' + P.price + '</span><i class="ca-shop-chip">' + P.chip + '</i></button>';
-      };
-      return '<div class="ca-shop-pair">' + box(single, 'Single', ' is-single') + box(best, 'Best Value', '') + '</div>';
-    };
-    var h = pass ? '<p class="ca-shop-passline">' + PASS_SVG + '<span>Your CAST Pass keys are used first' + (fzOn ? ', a free Streak Freeze comes each month' : '') + ', and 3-key packs come with a bonus key.</span></p>'
-      : '<button type="button" class="ca-shop-passrow" data-ca="pass-info" data-from="shop">' + PASS_SVG + '<span><b>Best Value: CAST Pass</b><small>2 of every wildcard, every game, plus a Legend Key and a Superstar Key every day. From ' + PR().yM + ' a month.</small></span><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button>';
-    h += vaultList() + bagTip();
-    if (young) h += '<p class="ca-muted ca-center">Packs are for players 15 and over. Anything you win still goes in your Vault.</p>';
-    // Every item on every game's page, the same order everywhere, but the special ones only where they work (SHOP_ONLY,
-    // 16 Oct 2026). Ones already owned still show in the Vault on every site
-    h += '<div class="ca-shop-items">' + shopList().filter(function (it) { return soldHere(it[0]); }).map(function (it) {
-      var cls = it[0] === 'legend' || it[0] === 'superstar' ? 'key' : it[0], packs = it[5];
-      return '<section class="ca-shop-it is-' + cls + '" id="caShop-' + it[0] + '" aria-label="' + it[2] + '"><div class="ca-shop-ith"><span class="ca-shop-iti" aria-hidden="true">' + it[1] + '</span>' +
-        '<span class="ca-shop-itt"><b>' + it[2] + '</b></span><span class="ca-shop-its">' + have(it[0]) + '</span></div>' +
-        '<p class="ca-shop-what">' + it[3] + '</p>' + (it[0] === 'ileg' ? natStrip() + '<button type="button" class="ca-ileg-meet" data-ca="ileg-sell">Meet the World Legends &rsaquo;</button>' : '') +
-        // The Team of the Year Pick: its two packs, then where and until when as small print underneath (the owner, 1 Oct 2026)
-        // The Gameday Bag (17 Oct 2026): Add to Bag under each card's own Buy buttons (bag), which stay as they were
-        shopTag(it[0]) + (it[0] === 'fz' && fzOwned > 0 ? '<p class="ca-shop-ready">&#x1F9CA; Your Streak Freeze is applied and ready, just in case you miss a day.</p>' :
-        (it[0] === 'toty' || it[0] === 'prem') && dmLast() ? pair(packs[1], packs[0]) + bag(it[0]) + '<p class="ca-shop-fine ca-shop-last" data-dm-final>&#x23F3; Last 24 hours: ends in <span data-dm-clock>' + dmClock(dmLeft()) + '</span>. Any left then become 3 Superstar Keys each.</p>' :
-        // World Champions' last 24 hours: its clock (js/cast-wch.js keeps every data-wch-clock ticking)
-        it[0] === 'wch' && wchLast() ? pair(packs[1], packs[0]) + bag(it[0]) + '<p class="ca-shop-fine ca-shop-last" data-wch-final>&#x23F3; Last 24 hours: ends in <span data-wch-clock>' + dmClock((wchNow() || { until: 0 }).until - Date.now()) + '</span>. Unused Picks expire when World Champions ends.</p>' :
-        it[0] === 'toty' || it[0] === 'prem' || it[0] === 'imm' || it[0] === 'wcp' || it[0] === 'ileg' || it[0] === 'wch' ? pair(packs[1], packs[0]) + bag(it[0]) + '<p class="ca-shop-fine">' + shopWhere(it) + '</p>' : big(packs[0]) +
-        (packs.length > 1 ? '<div class="ca-shop-more">' + (packs.length > 2 ? mid(packs[1]) : '') + one(packs[packs.length - 1]) + '</div>' : '') + bag(it[0]) + (it[4] ? '<p class="ca-shop-fine">' + it[4] + '</p>' : '')) + '</section>';
-    }).join('') + '</div>';
-    return h + '<p class="ca-small ca-center">Everything you buy stays on your CAST Profile until you use it, one Vault for every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
+  /* ---------------- The Shop, design A2 (17 Oct 2026, the owner's pick and BUILD IT) ----------------
+     One scrolling list in four groups (Wildcards, Picks, Specials, Streak) under sticky headings, with a jump bar on top
+     that follows the scroll. One compact row per item: emoji, name, one short line, its bundle chips and where it works,
+     the price and − 0 + steppers. Every + goes straight into the Gameday Bag: there is no Buy Now on this page, one
+     Checkout pays for it all (the games' own pop-ups stay one tap). Bundle prices apply by themselves as the count rises,
+     and a small nudge says when a few cents more (or less) gets a bundle. A free profile sees a CAST Pass card first (gold
+     is only ever the Pass), then the Vault strip; the Gameday Bag bar is pinned at the foot with the savings bar in
+     dollars (never a percentage). Rows come from SHOP_ITEMS and PACKS, so a new item there slots in by itself: its group
+     from SHOP_CAT (Specials when it has none), its short line from SHOP_LINE (else the first sentence of what it does), its
+     tag from SHOP_TAG (else SHOP_ONLY), NEW beside its name from SHOP_NEW, and the most one bag holds from BAG_MAX (else
+     30). The server needs the item in lib/bag.js too, or its checkout says it is not in the Shop. */
+  var SHOP_CATS = [['cards', 'Wildcards'], ['picks', 'Picks'], ['specials', 'Specials'], ['streak', 'Streak']];
+  var SHOP_CAT = { rr: 'cards', rm: 'cards', rv: 'cards', rib: 'cards', wch: 'picks', prem: 'picks', toty: 'picks', ileg: 'picks', wcp: 'picks', legend: 'picks', imm: 'picks',
+    superstar: 'picks', goat: 'specials', wild: 'specials', cap: 'specials', fz: 'streak' };
+  var SHOP_LINE = { rr: 'A fresh offer of players', rm: 'Undo a pick you regret', rv: 'See the hidden numbers first', rib: 'Another go at a near miss',
+    wch: 'Choose a World Champion', prem: 'Choose a 2026 premier', toty: 'Choose a Team of the Year player', ileg: 'Choose a World Legend', wcp: 'Choose an 88+ player',
+    legend: 'Choose from three greats', imm: 'Choose an Immortal', superstar: 'Your next spin has a 95+ player', goat: 'The #1 of any game you play',
+    wild: 'Fill any open Bingo tile', cap: 'Your captain scores double', fz: 'Keeps your streak alive' };
+  var SHOP_TAG = { legend: 'Every Draft Game', goat: 'Every Draft Game', superstar: '27-0 Only', imm: '27-0 and 1000TRIES', ileg: 'World Cup Modes', wcp: 'World Cup 8-0',
+    cap: 'SC POINTS KING', fz: 'One at a Time' };
+  // NEW beside the name until then (midnight, Sydney). cap: SC POINTS KING's SC Captain, from its own build
+  var SHOP_NEW = { wild: Date.parse('2026-10-31T13:00:00Z'), cap: Date.parse('2026-11-07T13:00:00Z') };
+  function shopCat(k) { return SHOP_CAT[k] || 'specials'; }
+  function shopLine(it) { return SHOP_LINE[it[0]] || String(it[3] || '').replace(/([.?!])\s[\s\S]*$/, '$1').replace(/[.]$/, ''); }
+  // Where a special item works ("27-0 Only", "NRL Bingo"), or when a promo Pick ends ("Ends Sun 22 Nov", its clock on the last day)
+  function shopWhereTag(k) {
+    if (k === 'wch') { var w = wchNow(); return !w ? '' : wchLast() ? '&#x23F3; Ends in <span data-wch-clock>' + dmClock(w.until - Date.now()) + '</span>' : 'Ends ' + esc(wchEndText().replace(/^\S+\s/, '')); }
+    if ((k === 'toty' || k === 'prem') && dmLast()) return '&#x23F3; Ends in <span data-dm-clock>' + dmClock(dmLeft()) + '</span>';
+    if (k === 'prem') { var pe = premCopy(); return pe ? 'Ends ' + esc(String(pe).replace(/^\S+\s/, '')) : 'Limited Time'; }
+    if (k === 'toty') return 'Limited Time';
+    if (SHOP_TAG[k]) return SHOP_TAG[k];
+    var o = SHOP_ONLY[k];
+    if (!o) return '';
+    if (SHOP_ONLY_WORDS[k]) return SHOP_ONLY_WORDS[k];
+    var names = o.map(function (g) { return (GAMES[g] || {}).name || g; });
+    return names.length === 1 ? names[0] + ' Only' : andList(names);
   }
-  // The Shop on its own (the top bar's Shop button): a short header, then the Shop
-  function shopPage() {
-    var h = '<div class="ca-full-head"><h2 class="ca-full-title">&#x1F6D2; Shop and Vault</h2>' +
-      (named() ? '<p class="ca-me-line">Buying as <b>' + esc(profile.username) + '</b>' + tick(profile.verified) + passTick(hasPass()) + '</p>' : '') + '</div>';
-    if (status === 'loading') return h + '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
-    if (status !== 'signed-in') return h + signInCard(['The Shop Comes With a Free CAST Profile', 'Sign in to buy rerolls, reveals, keys and more. They stay on your profile, for every CAST game.', 'Free CAST Profile']);
-    return h + shopTab() + bagDock();
+  // A Pick bought now but used later: what happens to any left (the bag's line says it before paying)
+  function shopFine(k) {
+    if (k === 'wch') return 'Use by ' + wchEndText() + '. Unused Picks expire then.';
+    if (k === 'toty' || k === 'prem') return 'Any left when the promo ends become 3 Superstar Keys each.';
+    return '';
   }
-  /* ---------------- The Gameday Bag (17 Oct 2026, the owner's BUILD IT) ----------------
-     Every Shop card keeps its own Buy buttons and gets Add to Bag beside them; a pinned Gameday Bag button at the foot of
-     the Shop opens the bag (steppers, line prices, total, You Save) and one pinned Checkout pays for it all in the same
-     Stripe pop-up as a single buy, each item its own line. Shop only: the games' quick buys stay single taps. Prices here
-     are the server's rules (functions lib/bag.js): each item at the cheapest mix of its own packs, then 5% off from $10
-     and 10% off from $20, and a CAST Pass member another 5% once a bag discount applies. The server prices it again from
-     the item list at checkout (this page's numbers are only for show). The bag is kept on this device, per account. */
-  var LS_BAG = 'cast_bag_v1', BAG_TIERS = [[2000, 10], [1000, 5]], BAG_PASS = 5;
+
+  /* ---------------- The Gameday Bag's prices: the server's own rules (BAG-RULES-START) ----------------
+     A line-for-line copy of functions lib/bag.js combo, tierOf, nextTier and quote: each item at the cheapest exact mix of
+     its own packs (ties: more bonus packs, then fewer packs), the bag discount on the subtotal, and a CAST Pass member's
+     extra once a bag discount applies, every amount rounded the same way, so every number on this page is the one Stripe
+     charges. offAt is the Gameday Bag Saving at a threshold ("Add $2.40 more and save $0.50"). firebase/functions/test/
+     bagrules.test.js checks the copy against lib/bag.js on every item and quantity and on thousands of random bags, and
+     that the packs and prices here are the server's: change the two together. Pure (no page state). */
+  var BAG_RULES = (function () {
+    var TIERS = [[2000, 10], [1000, 5]], PASS_PCT = 5;
+    function combo(packs, q) {
+      var list = Object.keys(packs || {}).filter(function (k) { return packs[k] && packs[k].sold !== false && packs[k].n > 0; })
+        .map(function (k) { return { k: k, n: packs[k].n, a: packs[k].amount, b: packs[k].bonus ? 1 : 0 }; });
+      if (!list.length || !(q >= 1)) return null;
+      var best = [{ cents: 0, bonus: 0, count: 0, use: {} }];
+      for (var u = 1; u <= q; u++) {
+        var b = null;
+        for (var i = 0; i < list.length; i++) {
+          var p = list[i], prev = u >= p.n ? best[u - p.n] : null;
+          if (!prev) continue;
+          var c = { cents: prev.cents + p.a, bonus: prev.bonus + p.b, count: prev.count + 1, p: p, from: u - p.n };
+          if (!b || c.cents < b.cents || (c.cents === b.cents && (c.bonus > b.bonus || (c.bonus === b.bonus && c.count < b.count)))) b = c;
+        }
+        if (b) { b.use = Object.assign({}, best[b.from].use); b.use[b.p.k] = (b.use[b.p.k] || 0) + 1; delete b.p; delete b.from; }
+        best[u] = b;
+      }
+      var r = best[q];
+      return r ? { cents: r.cents, use: r.use, bonus: r.bonus } : null;
+    }
+    function tierOf(sub) { var t = TIERS.filter(function (x) { return sub >= x[0]; })[0]; return t ? t[1] : 0; }
+    function nextTier(sub) { var t = TIERS.slice().reverse().filter(function (x) { return sub < x[0]; })[0]; return t ? { at: t[0], pct: t[1], need: t[0] - sub } : null; }
+    // lines: [{ id, q }]; packsOf: { id: packs }; isKey(id): its 3-packs bring a CAST Pass member a bonus key
+    function quote(lines, packsOf, pass, isKey) {
+      var out = lines.map(function (l) {
+        var c = combo(packsOf[l.id], l.q);
+        if (!c) throw new Error('no packs for ' + l.id);
+        var bonus = pass && isKey(l.id) ? c.bonus : 0;
+        return { id: l.id, q: l.q, n: l.q + bonus, bonus: bonus, use: c.use, cents: c.cents };
+      });
+      var sub = out.reduce(function (t, l) { return t + l.cents; }, 0), tier = tierOf(sub), passPct = pass && tier ? PASS_PCT : 0, pct = tier + passPct;
+      var off = Math.round(sub * pct / 100), tierOff = Math.round(sub * tier / 100), passOff = off - tierOff;
+      return { lines: out, sub: sub, tier: tier, passPct: passPct, pct: pct, tierOff: tierOff, passOff: passOff, off: off, total: sub - off,
+        units: out.reduce(function (t, l) { return t + l.n; }, 0) };
+    }
+    function offAt(at) { return Math.round(at * tierOf(at) / 100); }
+    // lib/bag.js split: a payment's cents shared between its lines in proportion to their prices, to the cent (the last
+    // line takes what is left). prices: each line's cents, in the server's order. -> each line's share
+    function split(prices, cents) {
+      var tot = prices.reduce(function (t, c) { return t + c; }, 0), left = cents;
+      return prices.map(function (c, i) {
+        var share = i === prices.length - 1 ? left : tot ? Math.round(cents * c / tot) : Math.round(cents / prices.length);
+        left -= share;
+        return share;
+      });
+    }
+    return { TIERS: TIERS, PASS_PCT: PASS_PCT, combo: combo, tierOf: tierOf, nextTier: nextTier, quote: quote, offAt: offAt, split: split };
+  })();
+  /* BAG-RULES-END */
+
+  /* The Gameday Bag (17 Oct 2026, the owner's BUILD IT; the Shop A2 layout the same day). The Shop's steppers fill it;
+     the pinned bar shows the savings and opens the bag (lines, steppers, quick adds to the next saving, the totals) and
+     one Checkout pays for it all in the same Stripe pop-up as a single buy, each item its own line. The server prices it
+     again from the item list at checkout; this page's numbers come from BAG_RULES, the server's own. The bag is kept on
+     this device, per account. Shop only: the games' quick buys stay single taps. */
+  var LS_BAG = 'cast_bag_v1';
   var BAG_MAX = { rr: 60, rm: 60, rv: 60, legend: 30, superstar: 30, rib: 30, goat: 5, fz: 1, imm: 12, ileg: 12, wcp: 12, wch: 12, prem: 12, toty: 12, wild: 30, cap: 10 };
+  function bagItem(k) { return SHOP_ITEMS.filter(function (it) { return it[0] === k; })[0] || null; }
+  function bagMax(k) { return BAG_MAX[k] || (bagItem(k) ? 30 : 0); }
   function bagGet() {
     var uid = user && user.uid;
     try { var b = JSON.parse(lsGet(LS_BAG) || 'null'); return b && b.uid === uid && b.q && typeof b.q === 'object' ? b.q : {}; } catch (e) { return {}; }
   }
   function bagPut(q) {
     var uid = user && user.uid, keep = {};
-    Object.keys(q || {}).forEach(function (k) { if (BAG_MAX[k] && q[k] > 0) keep[k] = Math.min(BAG_MAX[k], Math.floor(q[k])); });
+    Object.keys(q || {}).forEach(function (k) { if (bagMax(k) && q[k] > 0) keep[k] = Math.min(bagMax(k), Math.floor(q[k])); });
     lsSet(LS_BAG, uid && Object.keys(keep).length ? JSON.stringify({ uid: uid, q: keep, at: Date.now() }) : null);
   }
   function priceCents(p) { return Math.round(parseFloat(String(p || '').replace(/[^\d.]/g, '')) * 100) || 0; }
-  function bagItem(k) { return SHOP_ITEMS.filter(function (it) { return it[0] === k; })[0] || null; }
-  // The cheapest mix of an item's packs for exactly q of it (ties: more 3-key packs, as each brings a CAST Pass bonus key)
-  function bagMix(k, q) {
-    var it = bagItem(k), packs = it ? it[5].map(function (id) { var P = PACKS[id]; return { n: P.n, c: priceCents(P.price), b: P.key && P.n === 3 ? 1 : 0 }; }) : [], best = [{ c: 0, b: 0, k: 0 }];
-    for (var u = 1; u <= q; u++) {
-      var top = null;
-      packs.forEach(function (p) {
-        var prev = u >= p.n ? best[u - p.n] : null;
-        if (!prev) return;
-        var x = { c: prev.c + p.c, b: prev.b + p.b, k: prev.k + 1 };
-        if (!top || x.c < top.c || (x.c === top.c && (x.b > top.b || (x.b === top.b && x.k < top.k)))) top = x;
-      });
-      best[u] = top;
-    }
-    return best[q] || null;
+  // An item's packs as the server has them (BAG_PACKS): { packKey: { n, amount, bonus } }, smallest first like index.js
+  function bagPacks(k) {
+    var it = bagItem(k), o = {};
+    (it ? it[5] : []).filter(function (id) { return PACKS[id]; }).sort(function (a, b) { return PACKS[a].n - PACKS[b].n; })
+      .forEach(function (id) { var P = PACKS[id]; o[id] = { n: P.n, amount: priceCents(P.price), bonus: !!P.key && P.n > 1 }; });
+    return o;
   }
+  function bagIsKey(k) { return k === 'legend' || k === 'superstar'; }
+  function bagOne(k) { var c = BAG_RULES.combo(bagPacks(k), 1); return c ? c.cents : 0; }
   // Whether an item can go in the bag here and now: on sale in this game's Shop, and a Streak Freeze only when none is held
   function bagSold(k) {
-    if (!BAG_MAX[k] || !soldHere(k) || !shopList().some(function (it) { return it[0] === k; })) return false;
+    if (!bagMax(k) || !soldHere(k) || !shopList().some(function (it) { return it[0] === k; })) return false;
     return k !== 'fz' || !(fzOwned > 0);
   }
-  // The bag priced: { lines: [{ k, it, q, n, bonus, c }], sub, tier, passPct, tierOff, passOff, off, total, units, next }
-  function bagQuote() {
-    var q = bagGet(), pass = hasPass();
-    var lines = SHOP_ITEMS.filter(function (it) { return q[it[0]] > 0 && bagSold(it[0]); }).map(function (it) {
-      var k = it[0], n = Math.min(q[k], BAG_MAX[k]), m = bagMix(k, n), bonus = pass && (k === 'legend' || k === 'superstar') ? m.b : 0;
-      return { k: k, it: it, q: n, n: n + bonus, bonus: bonus, c: m.c };
-    });
-    var sub = lines.reduce(function (t, l) { return t + l.c; }, 0), t = BAG_TIERS.filter(function (x) { return sub >= x[0]; })[0], tier = t ? t[1] : 0;
-    var passPct = pass && tier ? BAG_PASS : 0, off = Math.round(sub * (tier + passPct) / 100), tierOff = Math.round(sub * tier / 100);
-    var nx = BAG_TIERS.slice().reverse().filter(function (x) { return sub < x[0]; })[0];
-    return { lines: lines, sub: sub, tier: tier, passPct: passPct, tierOff: tierOff, passOff: off - tierOff, off: off, total: sub - off, units: lines.reduce(function (s, l) { return s + l.n; }, 0),
-      next: lines.length && nx ? { pct: nx[1], need: nx[0] - sub } : null };
+  /* Every number the Shop, the bar and the bag show, from one place: the server's quote (BAG_RULES) for this bag (or a
+     what-if q), plus each line's price at singles (full) and its bundle saving, the next saving up (need, and the Gameday
+     Bag Saving at it), and for a free profile what CAST Pass would take off as well (passExtra) */
+  function bagMath(q0, pass0) {
+    var q = q0 || bagGet(), pass = pass0 === undefined ? hasPass() : !!pass0, packsOf = {};
+    var lines = SHOP_ITEMS.filter(function (it) { return q[it[0]] > 0 && bagSold(it[0]); }).map(function (it) { return { id: it[0], q: Math.min(q[it[0]], bagMax(it[0])) }; });
+    lines.forEach(function (l) { packsOf[l.id] = bagPacks(l.id); });
+    var Q = BAG_RULES.quote(lines, packsOf, pass, bagIsKey);
+    Q.lines.forEach(function (l) { var one = bagOne(l.id); l.k = l.id; l.it = bagItem(l.id); l.full = one ? one * l.q : l.cents; l.saved = Math.max(0, l.full - l.cents); });
+    Q.bundleSaved = Q.lines.reduce(function (t, l) { return t + l.saved; }, 0);
+    var nx = BAG_RULES.nextTier(Q.sub);
+    Q.next = Q.lines.length && nx ? { at: nx.at, need: nx.need, save: BAG_RULES.offAt(nx.at) } : null;
+    Q.pass = pass;
+    Q.passExtra = pass ? Q.passOff : Q.tier ? BAG_RULES.quote(lines, packsOf, true, bagIsKey).passOff : 0;
+    return Q;
   }
   function cents$(c) { return money(c / 100); }
-  // "50c each" or "$4.00 each"
-  function bagEach(c, q) { var e = c / q; return e < 99.5 ? Math.round(e) + 'c each' : cents$(Math.round(e)) + ' each'; }
+  // "$6" for a round amount to add, "$9.05" otherwise; "1c" under a dollar (the nudges)
+  function centsW(c) { return c % 100 ? cents$(c) : '$' + Math.round(c / 100); }
+  function centsC(c) { return c < 100 ? c + 'c' : cents$(c); }
   function bagName(l) { var v = VAULT_NAME[l.k] || [l.it[2], l.it[2]]; return l.k === 'fz' ? 'Streak Freeze' : l.k === 'goat' && l.q === 1 ? 'The GOAT' : countName(l.q, v[l.q === 1 ? 0 : 1]); }
-  // The amount Add to Bag puts in: the item's Best Value pack (12 Rerolls, 3 Picks, 1 GOAT)
-  function bagStep(k) { var it = bagItem(k); return it ? PACKS[it[5][0]].n : 1; }
-  // The Add to Bag button on a Shop card (beside its own Buy buttons): once in, it says how many and opens the bag
-  function bagAddBtn(k, off) {
-    if (!BAG_MAX[k] || !bagSold(k)) return '';
-    var n = bagGet()[k] || 0, s = bagStep(k);
-    return n ? '<button type="button" class="ca-bag-add is-in" data-ca="bag-open"' + off + '><span aria-hidden="true">&#x1F392;</span> ' + n + ' in Your Bag</button>'
-      : '<button type="button" class="ca-bag-add" data-ca="bag-add" data-v="' + k + '"' + off + '><span aria-hidden="true">&#x1F392;</span> ' + (s > 1 ? 'Add ' + s + ' to Bag' : 'Add to Bag') + '</button>';
+  /* The nudge on a row or a bag line: the next amount where a bundle kicks in, when it costs at most one single more
+     ("1c more gets you 3 for $1.99"; 4 Rerolls at $3.96: "97c less gets you 5 for $2.99"). -> { q, cents, d } or null */
+  function bagNudge(k, q) {
+    var packs = bagPacks(k), cur = q > 0 ? BAG_RULES.combo(packs, q) : null, one = bagOne(k), max = bagMax(k);
+    if (!cur || !one) return null;
+    var big = Math.max.apply(null, Object.keys(packs).map(function (id) { return packs[id].n; }));
+    for (var x = q + 1; x <= Math.min(max, q + big); x++) {
+      var m = BAG_RULES.combo(packs, x);
+      if (!m) continue;
+      var d = m.cents - cur.cents;
+      if (d < (x - q) * one && d <= one) return { q: x, cents: m.cents, d: d };
+    }
+    return null;
   }
-  // The pinned Gameday Bag button at the foot of the Shop: how many items and the total (and the saving)
-  function bagDock() {
+  function nudgeText(nd) { return (nd.d > 0 ? centsC(nd.d) + ' more gets you ' : nd.d < 0 ? centsC(-nd.d) + ' less gets you ' : 'No extra cost for ') + nd.q + ' for ' + cents$(nd.cents); }
+  // The little gold Pass Card beside a CAST Pass line
+  var PASS_CHIP = '<span class="ca-passchip" aria-hidden="true">PASS</span>';
+  // The savings bar: $0 to the top saving, a mark at each saving (a tick once reached)
+  function bagProgress(Q) {
+    var T = BAG_RULES.TIERS, top = T[0][0], w = Math.min(100, Q.sub / top * 100);
+    return '<div class="ca-bagp" role="progressbar" aria-label="Gameday Bag savings" aria-valuemin="0" aria-valuemax="' + (top / 100) + '" aria-valuenow="' + (Math.min(Q.sub, top) / 100).toFixed(2) + '" aria-valuetext="' + cents$(Q.sub) + ' in your bag">' +
+      '<span class="ca-bagp-track"></span><span class="ca-bagp-fill" style="width:' + w.toFixed(2) + '%"></span>' +
+      T.slice().reverse().map(function (t) {
+        var on = Q.sub >= t[0], at = t[0] / top * 100, end = at >= 100 ? ' is-end' : '';
+        return '<span class="ca-bagp-mark' + (on ? ' is-on' : '') + end + '" style="--at:' + at + '%" aria-hidden="true">' + (on ? '&#x2713;' : '') + '</span>' +
+          '<span class="ca-bagp-lbl' + (on ? ' is-on' : '') + end + '" style="--at:' + at + '%">' + centsW(t[0]) + '</span>';
+      }).join('') + '</div>';
+  }
+  // The line under the savings bar, in dollars
+  function bagLine(Q) {
+    var first = BAG_RULES.TIERS[BAG_RULES.TIERS.length - 1][0];
+    if (!Q.lines.length) return 'Tap + on anything and pay once. <b class="is-save">Savings start at ' + centsW(first) + '.</b>';
+    if (!Q.tierOff) return 'Add ' + centsW(Q.next.need) + ' more and <b class="is-save">save ' + cents$(Q.next.save) + '</b>';
+    if (Q.next) return '<b class="is-save">You&rsquo;re saving ' + cents$(Q.tierOff) + '</b>, add ' + centsW(Q.next.need) + ' more to save ' + cents$(Q.next.save);
+    return '<b class="is-save">You&rsquo;re saving ' + cents$(Q.tierOff) + ' &#x1F389;</b>';
+  }
+  /* The gold CAST Pass line: a member's own extra saving; a free profile what the Pass would add, with Join (on the bar
+     once the top saving is reached, in the bag once any saving applies). act: the Join button's attribute */
+  function bagPassLine(Q, where, act) {
+    if (Q.pass) return Q.passOff ? '<p class="ca-bag-pl">' + PASS_CHIP + '<span>+ ' + cents$(Q.passOff) + ' extra Pass saving</span></p>' : '';
+    if (!Q.passExtra || (where === 'bar' && Q.next)) return '';
+    return '<div class="ca-bag-pj">' + PASS_CHIP + '<span>+ ' + cents$(Q.passExtra) + ' extra Pass saving with CAST Pass</span><button type="button" class="ca-bag-join" ' + act + ' aria-label="Join CAST Pass">Join</button></div>';
+  }
+  // The pinned Gameday Bag bar at the foot of the Shop (signed in, 15 and over), empty or not
+  function bagBar() {
     if (status !== 'signed-in' || !canBuyReroll()) return '';
-    var Q = bagQuote();
-    if (!Q.lines.length) return '';
-    return '<div class="ca-bag-dock"><button type="button" class="ca-bag-btn" data-ca="bag-open" aria-label="Gameday Bag, ' + Q.units + (Q.units === 1 ? ' item, ' : ' items, ') + cents$(Q.total) + '">' +
-      '<span class="ca-bag-ico" aria-hidden="true">&#x1F392;</span><span class="ca-bag-t"><b>Gameday Bag</b><small>' + Q.units + (Q.units === 1 ? ' Item' : ' Items') +
-      (Q.off ? ' &middot; You Save ' + cents$(Q.off) : Q.next ? ' &middot; ' + Q.next.pct + '% off from ' + cents$(Q.sub + Q.next.need) : '') + '</small></span>' +
-      '<strong>' + cents$(Q.total) + '</strong><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button></div>';
+    var Q = bagMath(), n = Q.units, empty = !Q.lines.length;
+    return '<div class="ca-bagbar' + (empty ? ' is-empty' : '') + '"><div class="ca-bagbar-in">' + bagProgress(Q) +
+      '<p class="ca-bag-msg">' + bagLine(Q) + '</p>' + bagPassLine(Q, 'bar', 'data-ca="pass-info" data-from="bag-bar"') +
+      '<div class="ca-bagbar-row"><button type="button" class="ca-bagbar-bag" data-ca="bag-open" aria-label="Open the Gameday Bag' + (empty ? ', empty' : ', ' + n + (n === 1 ? ' item' : ' items')) + '">' +
+        '<span class="ca-bagbar-ico" aria-hidden="true">&#x1F392;</span><span class="ca-bagbar-t"><b>Gameday Bag</b><small>' + (empty ? 'Empty for now' : n + (n === 1 ? ' Item' : ' Items') + ' &#x25B2;') + '</small></span></button>' +
+        '<button type="button" class="ca-bagbar-go" data-ca="bag-go"' + (empty ? ' disabled' : '') + '>Checkout' + (empty ? '' : ' &middot; ' + cents$(Q.total)) + '</button></div></div></div>';
   }
-  // The line at the top of the Shop that says what the bag is (and the CAST Pass member's extra, in gold)
-  function bagTip() {
-    if (!canBuyReroll()) return '';
-    return '<p class="ca-bag-tip"><span aria-hidden="true">&#x1F392;</span><span><b>Gameday Bag:</b> add a few things and pay once. 5% off from $10, 10% off from $20' +
-      (hasPass() ? '. <em class="is-pass">Your CAST Pass takes another 5% off.</em>' : '. <em class="is-pass">CAST Pass members save another 5%.</em>') + '</span></p>';
+  // One item's row: what it is, its bundles, the price for the amount in the bag and the steppers
+  function shopItemRow(it, q, young) {
+    var k = it[0], packs = bagPacks(k), one = bagOne(k), max = bagMax(k), held = k === 'fz' && fzOwned > 0, pass = hasPass();
+    var c = q ? BAG_RULES.combo(packs, q) : null, bonus = c && pass && bagIsKey(k) ? c.bonus : 0;
+    var bundles = Object.keys(packs).filter(function (id) { return packs[id].n > 1; });
+    var chips = bundles.map(function (id) { var on = !!(c && c.use[id]); return '<span class="ca-sr-chip' + (on ? ' is-on' : '') + '">' + (on ? '&#x2713; ' : '') + packs[id].n + ' for ' + cents$(packs[id].amount) + '</span>'; }).join('');
+    var tag = shopWhereTag(k);
+    if (tag) chips += '<span class="ca-sr-chip is-tag">' + tag + '</span>';
+    var full = one * q, price = c ? (c.cents < full ? '<s>' + cents$(full) + '</s>' : '') + '<b>' + cents$(c.cents) + '</b>' : '<b>' + cents$(one) + '</b>' + (bundles.length ? '<small>each</small>' : '');
+    var nd = q ? bagNudge(k, q) : null, note = '';
+    if (held) note = '<p class="ca-sr-note is-ready">&#x1F9CA; Your Streak Freeze is applied and ready, just in case you miss a day.</p>';
+    else if (nd) note = '<div class="ca-sr-note is-nudge"><span>&#x1F4A1; ' + nudgeText(nd) + '</span><button type="button" class="ca-sr-make" data-ca="shop-make" data-k="' + k + '" data-q="' + nd.q + '"' + (young ? ' disabled' : '') + '>Make It ' + nd.q + '</button></div>';
+    else if (c && c.cents < full) note = '<p class="ca-sr-note is-save">&#x1F389; Bundle price applied, you save ' + cents$(full - c.cents) + '</p>';
+    if (bonus) note += '<p class="ca-sr-note is-pass">' + PASS_CHIP + '<span>+' + bonus + ' CAST Pass Bonus Key' + (bonus === 1 ? '' : 's') + ' with your Pass</span></p>';
+    var nw = SHOP_NEW[k] && Date.now() < SHOP_NEW[k];
+    var step = held ? '<span class="ca-sr-ready">&#x2713; Ready</span>' :
+      '<div class="ca-step' + (q ? ' is-on' : '') + '" role="group" aria-label="How many ' + esc(it[2]) + '">' +
+      '<button type="button" class="ca-step-b is-dec" data-ca="shop-step" data-k="' + k + '" data-d="-1" aria-label="' + (q === 1 ? 'Take out of the bag' : 'One less') + '"' + (!q || young ? ' disabled' : '') + '>&minus;</button>' +
+      '<output>' + q + '</output>' +
+      '<button type="button" class="ca-step-b is-inc" data-ca="shop-step" data-k="' + k + '" data-d="1" aria-label="One more"' + (q >= max || young ? ' disabled' : '') + '>+</button></div>';
+    return '<div class="ca-sr' + (q ? ' is-in' : '') + (held ? ' is-held' : '') + '" id="caShop-' + k + '">' +
+      '<span class="ca-sr-ico" aria-hidden="true">' + it[1] + '</span>' +
+      '<div class="ca-sr-t"><div class="ca-sr-nm"><b>' + it[2] + '</b>' + (nw ? '<i class="ca-sr-new">New</i>' : '') + '</div><p class="ca-sr-l">' + esc(shopLine(it)) + '</p>' +
+        (chips ? '<div class="ca-sr-chips">' + chips + '</div>' : '') + '</div>' +
+      '<div class="ca-sr-buy"><div class="ca-sr-p">' + price + '</div>' + step + '</div>' + note + '</div>';
   }
-  function bagAdd(k) {
+  function shopTab() {
+    if (status !== 'signed-in') return '';
+    var pass = hasPass(), young = !canBuyReroll(), q = young ? {} : bagGet();
+    var h = pass ? '<p class="ca-shop-passline">' + PASS_SVG + '<span>Your CAST Pass keys are used first' + (fzOn ? ', a free Streak Freeze comes each month' : '') + ', 3-key packs come with a bonus key, and your Gameday Bag saves extra.</span></p>'
+      : '<button type="button" class="ca-shop-pcard" data-ca="pass-info" data-from="shop">' + '<span class="ca-passchip is-big" aria-hidden="true">PASS</span>' +
+        '<span class="ca-shop-pcard-t"><em>CAST Pass</em><b>Double Wildcards, Every Game</b><small>Plus daily keys and extra Gameday Bag savings. From ' + PR().yM + ' a month.</small></span>' +
+        '<span class="ca-shop-pcard-go">Join</span></button>';
+    h += vaultList();
+    if (young) h += '<p class="ca-muted ca-center ca-shop-young">Packs are for players 15 and over. Anything you win still goes in your Vault.</p>';
+    // Every item on every game's page, the same order everywhere, but the special ones only where they work (SHOP_ONLY,
+    // 16 Oct 2026); ones already owned still show in the Vault on every site
+    var items = shopList().filter(function (it) { return soldHere(it[0]); });
+    var cats = SHOP_CATS.map(function (c) { return [c[0], c[1], items.filter(function (it) { return shopCat(it[0]) === c[0]; })]; }).filter(function (c) { return c[2].length; });
+    h += '<nav class="ca-jump" aria-label="Shop sections"><div class="ca-jump-in">' + cats.map(function (c, i) {
+      return '<button type="button" class="ca-jump-b is-' + c[0] + (i ? '' : ' is-on') + '" data-ca="shop-cat" data-v="' + c[0] + '"' + (i ? '' : ' aria-current="true"') + '><i aria-hidden="true"></i>' + c[1] + '</button>';
+    }).join('') + '</div></nav>';
+    h += cats.map(function (c) {
+      var n = c[2].length, inBag = c[2].reduce(function (t, it) { return t + (bagSold(it[0]) ? Math.min(q[it[0]] || 0, bagMax(it[0])) : 0); }, 0);
+      return '<section class="ca-sh is-' + c[0] + '" id="caShopCat-' + c[0] + '" aria-labelledby="caShopH-' + c[0] + '"><div class="ca-sh-h"><span class="ca-sh-bar" aria-hidden="true"></span>' +
+        '<h3 class="ca-sh-t" id="caShopH-' + c[0] + '">' + c[1] + '</h3><small>' + n + (n === 1 ? ' Item' : ' Items') + '</small>' + (inBag ? '<span class="ca-sh-in">&#x1F392; ' + inBag + ' in Bag</span>' : '') + '</div>' +
+        '<div class="ca-sh-list">' + c[2].map(function (it) { return shopItemRow(it, bagSold(it[0]) ? Math.min(q[it[0]] || 0, bagMax(it[0])) : 0, young); }).join('') + '</div></section>';
+    }).join('');
+    return h + '<p class="ca-small ca-center ca-shop-foot">Everything you buy stays in your Vault, for every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
+  }
+  // The Shop on its own (the top bar's Shop button): a short header, then the Shop and the pinned Gameday Bag bar
+  function shopPage() {
+    var h = '<div class="ca-full-head"><h2 class="ca-full-title">&#x1F6D2; Shop and Vault</h2>' +
+      (named() ? '<p class="ca-me-line">Buying as <b>' + esc(profile.username) + '</b>' + tick(profile.verified) + passTick(hasPass()) + '</p>' : '') + '</div>';
+    if (status === 'loading') return h + '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
+    if (status !== 'signed-in') return h + signInCard(['The Shop Comes With a Free CAST Profile', 'Sign in to buy rerolls, reveals, keys and more. They stay on your profile, for every CAST game.', 'Free CAST Profile']);
+    return h + shopTab() + bagBar();
+  }
+  // A Shop stepper: one more or less of an item in the bag (the bar and the row redraw; nothing is bought until Checkout)
+  var bagBump = 0;
+  function shopStep(k, d, to) {
     if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
     if (!bagSold(k)) return;
-    var q = bagGet();
-    q[k] = Math.min(BAG_MAX[k], (q[k] || 0) + bagStep(k));
+    var q = bagGet(), was = q[k] || 0, n = Math.max(0, Math.min(bagMax(k), to !== undefined ? to : was + d));
+    if (n === was) return;
+    if (n) q[k] = n; else delete q[k];
     bagPut(q);
-    track('bag_add', { game: CFG.game, item: k, q: q[k] });
+    track(to !== undefined ? 'shop_make' : 'shop_step', { game: CFG.game, item: k, q: n });
+    if (n > was) bagBump = Date.now();
     render();
-    var Q = bagQuote(), l = Q.lines.filter(function (x) { return x.k === k; })[0];
-    if (l) toast('🎒 ' + bagName(l) + ' in your Gameday Bag.');
+  }
+  // The jump bar: straight to a group, its heading under the bar
+  function shopJump(cat) {
+    var pn = el && el.querySelector('.ca-panel'), s = document.getElementById('caShopCat-' + cat), bar = pn && pn.querySelector('.ca-jump');
+    if (!pn || !s) return;
+    track('shop_jump', { game: CFG.game, to: cat });
+    var y = pn.scrollTop + s.getBoundingClientRect().top - pn.getBoundingClientRect().top - (bar ? bar.offsetHeight : 0);
+    shopSpyHold = Date.now() + 900; shopSpySet(cat);
+    try { pn.scrollTo({ top: Math.max(0, y), behavior: 'smooth' }); } catch (e) { pn.scrollTop = Math.max(0, y); }
+  }
+  // The jump bar follows the scroll: the group whose heading has reached the bar (the last one at the very end)
+  var shopSpyHold = 0, shopSpyRaf = 0;
+  function shopSpySet(cat) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ca-jump-b'), function (b) {
+      var on = b.getAttribute('data-v') === cat;
+      b.classList.toggle('is-on', on);
+      if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  }
+  function shopSpy() {
+    shopSpyRaf = 0;
+    var pn = el && el.querySelector('.ca-panel'), bar = pn && pn.querySelector('.ca-jump');
+    if (!bar || view !== 'shop') return;
+    // Stuck to the top (its top at the panel's, under any notch): room for the close button beside it
+    var pr = pn.getBoundingClientRect(), safe = (parseFloat(getComputedStyle(pn).paddingTop) || 18) - 18;
+    bar.classList.toggle('is-stuck', bar.getBoundingClientRect().top <= pr.top + safe + 1);
+    var line = bar.getBoundingClientRect().bottom + 8, secs = pn.querySelectorAll('.ca-sh'), cur = secs[0];
+    Array.prototype.forEach.call(secs, function (s) { if (s.getBoundingClientRect().top <= line) cur = s; });
+    if (secs.length && pn.scrollTop + pn.clientHeight >= pn.scrollHeight - 2 && pn.scrollTop > 0) cur = secs[secs.length - 1];
+    if (cur && Date.now() >= shopSpyHold) shopSpySet(cur.id.replace('caShopCat-', ''));
+  }
+  // After each Shop render: the jump bar's place, and the bag icon's little bump when something went in
+  function shopAfter(panel) {
+    if (!panel.getAttribute('data-ca-spy')) {
+      panel.setAttribute('data-ca-spy', '1');
+      panel.addEventListener('scroll', function () { if (view === 'shop' && !shopSpyRaf) shopSpyRaf = requestAnimationFrame(shopSpy); }, { passive: true });
+    }
+    shopSpy();
+    if (bagBump && Date.now() - bagBump < 600) {
+      var ic = panel.querySelector('.ca-bagbar-ico');
+      if (ic) { ic.classList.add('is-bump'); setTimeout(function () { ic.classList.remove('is-bump'); }, 450); }
+    }
+    bagBump = 0;
   }
   function bagOpen() {
     if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
-    track('bag_open', { game: CFG.game, items: bagQuote().lines.length });
+    track('bag_open', { game: CFG.game, items: bagMath().lines.length });
     rrShop(CFG.game, null, 'shop', null, 'bag');
   }
-  // A stepper in the bag: one more or less, or straight to a quantity (the "Make It 5" nudge)
+  // The bar's own Checkout: straight to payment (Back there shows the bag)
+  function bagGo() {
+    if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
+    if (!bagMath().lines.length) return;
+    rrShop(CFG.game, null, 'shop', null, 'bag');
+    bagPay('bar');
+  }
+  // A stepper in the bag: one more or less, or straight to a quantity (the nudges and the quick adds)
   function bagChange(k, how, to) {
     var q = bagGet();
-    if (!BAG_MAX[k]) return;
+    if (!bagMax(k) || !bagSold(k)) return;
     var n = how === 'set' ? to : (q[k] || 0) + (how === 'inc' ? 1 : -1);
-    q[k] = Math.max(0, Math.min(BAG_MAX[k], n));
+    q[k] = Math.max(0, Math.min(bagMax(k), n));
     if (!q[k]) delete q[k];
     bagPut(q);
+    if (how === 'set') track('bag_set', { game: CFG.game, item: k, q: q[k] || 0 });
     if (rr && rr.item === 'bag') rrRender();
     render();
   }
-  // The smallest bigger amount of an item that costs no more (4 Rerolls are $3.96; 5 are $2.99): [q, cents] or null
-  function bagCheaper(l) {
-    var it = l.it, most = Math.max.apply(null, it[5].map(function (id) { return PACKS[id].n; }));
-    for (var x = l.q + 1; x <= Math.min(BAG_MAX[l.k], l.q + most - 1); x++) { var m = bagMix(l.k, x); if (m && m.c <= l.c) return [x, m.c]; }
-    return null;
+  /* Quick adds in the bag: one tap each to reach the next saving, from what is on sale here. Each item's smallest pack
+     whose extra cost gets the bag there (or its biggest when none does), the cheapest first, things not yet in the bag
+     before more of the same; never a second Streak Freeze. -> up to 2 of { k, q (the new amount), step, inc } */
+  function bagQuick(Q) {
+    if (!Q.next) return [];
+    var q = bagGet(), need = Q.next.need, out = [];
+    shopList().forEach(function (it) {
+      var k = it[0], cur = q[k] || 0, packs = bagPacks(k), base = cur ? BAG_RULES.combo(packs, cur).cents : 0, best = null, most = null;
+      if (k === 'fz' || !bagSold(k)) return;
+      Object.keys(packs).forEach(function (id) {
+        var st = packs[id].n;
+        if (cur + st > bagMax(k)) return;
+        var m = BAG_RULES.combo(packs, cur + st), inc = m ? m.cents - base : 0;
+        if (!m) return;
+        var x = { k: k, q: cur + st, step: st, inc: inc, in: cur > 0, at: out.length };
+        if (inc >= need && (!best || inc < best.inc)) best = x;
+        if (!most || inc > most.inc) most = x;
+      });
+      if (best || most) out.push(best || most);
+    });
+    // Ones that get there, the cheapest first; then the biggest of the rest (closest to it)
+    var tie = function (a, b) { return (a.in - b.in) || (a.at - b.at); };
+    var reach = out.filter(function (x) { return x.inc >= need; }).sort(function (a, b) { return (a.inc - b.inc) || tie(a, b); });
+    var rest = out.filter(function (x) { return x.inc < need; }).sort(function (a, b) { return (b.inc - a.inc) || tie(a, b); });
+    return reach.concat(rest).slice(0, 2);
   }
-  // The bag itself, in the Stripe pop-up's sheet
+  // The bag itself, in the Stripe pop-up's sheet (the approved bag drawer)
   function bagSheet() {
-    var Q = bagQuote();
-    var h = '<div class="ca-center ca-rr-top"><div class="ca-badge ca-rr-badge" aria-hidden="true">&#x1F392;</div><div class="ca-kicker ca-rr-kicker">Gameday Bag</div>' +
-      '<h2 class="ca-title">Your Gameday Bag</h2></div>';
+    var Q = bagMath(), n = Q.units;
+    var h = '<div class="ca-bag-head"><span class="ca-bag-hi" aria-hidden="true">&#x1F392;</span><div class="ca-bag-ht"><h2 class="ca-title">Your Gameday Bag</h2>' +
+      '<div class="ca-bag-hs"><small>' + (Q.lines.length ? n + (n === 1 ? ' Item' : ' Items') + ', one payment' : 'Empty for now') + '</small>' +
+      (Q.lines.length ? '<button type="button" class="ca-bag-clear" data-rr="bag-clear">Clear Bag</button>' : '') + '</div></div></div>';
     if (!Q.lines.length) {
-      return h + '<p class="ca-text ca-center">Your bag is empty. Tap Add to Bag on anything in the Shop.</p>' +
+      return h + '<p class="ca-text ca-center ca-bag-empty">Tap + on anything in the Shop and pay once. Savings start at ' + centsW(BAG_RULES.TIERS[BAG_RULES.TIERS.length - 1][0]) + '.</p>' +
         '<button type="button" class="ca-btn ca-btn-ghost ca-btn-block ca-bag-back" data-rr="bag-shop">Back to the Shop</button>';
     }
     h += '<ul class="ca-bag-list">' + Q.lines.map(function (l) {
-      var cls = l.k === 'legend' || l.k === 'superstar' ? 'key' : l.k, ch = bagCheaper(l), max = l.q >= BAG_MAX[l.k];
-      var small = l.bonus ? '+' + l.bonus + ' CAST Pass Bonus Key' + (l.bonus === 1 ? '' : 's') : l.q > 1 ? bagEach(l.c, l.q) : l.it[2] === 'The GOAT' ? 'Any game\u2019s #1' : '';
-      return '<li class="ca-bag-row is-' + cls + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span><b class="ca-bag-rn">' + bagName(l) + '</b>' +
-        '<strong class="ca-bag-rp">' + cents$(l.c) + '</strong><small class="ca-bag-rs' + (l.bonus ? ' is-pass' : '') + '">' + small +
-        (ch ? (small ? ' ' : '') + '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + ch[0] + '">Make It ' + ch[0] + ' for ' + cents$(ch[1]) + '</button>' : '') + '</small>' +
-        '<span class="ca-bag-q" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-bag-st" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out' : 'One less') + '">' + (l.q === 1 ? '&#x2715;' : '&minus;') + '</button>' +
-        '<output>' + l.q + '</output><button type="button" class="ca-bag-st" data-rr="bag-inc" data-k="' + l.k + '" aria-label="One more"' + (max ? ' disabled' : '') + '>+</button></span></li>';
+      var cat = shopCat(l.k), nd = bagNudge(l.k, l.q), max = l.q >= bagMax(l.k), fine = shopFine(l.k);
+      var small = l.saved ? '<span class="is-save"><span class="ca-nw">Bundle price applied</span><br>You save ' + cents$(l.saved) + ' &#x1F389;</span>'
+        : nd ? '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + nd.q + '">' + nudgeText(nd) + '</button>'
+        : '<span>' + (l.k === 'goat' ? 'Any game’s #1, in every CAST draft game' : esc(shopLine(l.it))) + '</span>';
+      if (l.saved && nd) small += '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + nd.q + '">' + nudgeText(nd) + '</button>';
+      if (l.bonus) small += '<span class="is-pass">+' + l.bonus + ' CAST Pass Bonus Key' + (l.bonus === 1 ? '' : 's') + '</span>';
+      if (fine) small += '<span class="is-fine">' + esc(fine) + '</span>';
+      return '<li class="ca-bag-row is-' + cat + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span>' +
+        '<div class="ca-bag-rt"><b class="ca-bag-rn">' + bagName(l) + '</b><small class="ca-bag-rs">' + small + '</small></div>' +
+        '<div class="ca-bag-rb"><div class="ca-bag-rp">' + (l.saved ? '<s>' + cents$(l.full) + '</s>' : '') + '<b>' + cents$(l.cents) + '</b></div>' +
+        '<div class="ca-step is-on" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-step-b is-dec" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out of the bag' : 'One less') + '">&minus;</button>' +
+        '<output>' + l.q + '</output><button type="button" class="ca-step-b is-inc" data-rr="bag-inc" data-k="' + l.k + '" aria-label="One more"' + (max ? ' disabled' : '') + '>+</button></div></div></li>';
     }).join('') + '</ul>';
+    // The savings: the bar, the line, and quick adds to the next saving
+    var top = BAG_RULES.TIERS[0][0], quick = bagQuick(Q);
+    h += '<div class="ca-bag-box"><div class="ca-bag-boxh"><b>Bag Savings</b><small>' + (Q.sub < top ? cents$(Q.sub) + ' of ' + cents$(top) : '&#x2713; Top Saving Reached') + '</small></div>' + bagProgress(Q) +
+      '<p class="ca-bag-msg">' + bagLine(Q) + '</p>' +
+      (quick.length ? '<div class="ca-bag-quick">' + quick.map(function (x) {
+        var it = bagItem(x.k), v = VAULT_NAME[x.k] || [it[2], it[2]];
+        return '<button type="button" class="ca-bag-qa" data-rr="bag-set" data-k="' + x.k + '" data-q="' + x.q + '" data-quick="1"><span aria-hidden="true">' + it[1] + '</span>+ ' + (x.k === 'goat' && x.step === 1 ? 'The GOAT' : countName(x.step, v[x.step === 1 ? 0 : 1])) + ' &middot; ' + cents$(x.inc) + '</button>';
+      }).join('') + '</div>' : '') + '</div>';
+    // The totals: subtotal (bundle prices in it), the Gameday Bag Saving, the Pass line, the total
+    var keys = Q.lines.filter(function (l) { return l.bonus; });
     h += '<div class="ca-bag-sum"><p><span>Subtotal</span><b>' + cents$(Q.sub) + '</b></p>' +
-      (Q.tierOff ? '<p class="is-off"><span>Gameday Bag ' + Q.tier + '% Off</span><b>&minus;' + cents$(Q.tierOff) + '</b></p>' : '') +
-      (Q.passOff ? '<p class="is-pass"><span>CAST Pass ' + Q.passPct + '% Off</span><b>&minus;' + cents$(Q.passOff) + '</b></p>' : '') +
-      '<p class="is-total"><span>Total</span><b>' + cents$(Q.total) + '</b></p>' +
-      (Q.off ? '<p class="ca-bag-save">&#x1F389; You Save ' + cents$(Q.off) + '</p>'
-        : Q.next ? '<p class="ca-bag-next">Add ' + cents$(Q.next.need) + ' more and save ' + Q.next.pct + '%' + (hasPass() ? ', plus 5% with your CAST Pass' : '') + '.</p>' : '') + '</div>' +
-      (Q.off && Q.next ? '<p class="ca-bag-next">Add ' + cents$(Q.next.need) + ' more and save ' + (Q.next.pct + Q.passPct) + '%.</p>' : '') +
-      // A free profile: what CAST Pass would take off this bag (the natural spot to show it)
-      (Q.tier && !hasPass() ? '<button type="button" class="ca-bag-passup" data-rr="pass">' + PASS_SVG + '<span>With CAST Pass, this bag is another ' + cents$(Math.round(Q.sub * (Q.tier + BAG_PASS) / 100) - Q.off) + ' off.</span><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button>' : '');
-    return h + '<p class="ca-small ca-center">Each item shows on its own line in Stripe, with the bag discount as one line. Everything goes in your Vault, for every CAST game. Secure payment by Stripe. Prices in AUD.</p>' +
-      '<div class="ca-sticky-actions"><button type="button" class="ca-bag-go" data-rr="bag-pay">Checkout &middot; ' + cents$(Q.total) + '</button></div>';
+      (Q.bundleSaved ? '<p class="is-note">Bundle prices included, you save ' + cents$(Q.bundleSaved) + '</p>' : '') +
+      (Q.tierOff ? '<p class="is-off"><span>Gameday Bag Saving</span><b>&minus;' + cents$(Q.tierOff) + '</b></p>' : '') +
+      (Q.pass && Q.passOff ? '<p class="is-pass"><span>' + PASS_CHIP + '+ ' + cents$(Q.passOff) + ' extra Pass saving</span><b>&minus;' + cents$(Q.passOff) + '</b></p>' : '') +
+      (Q.pass ? keys.map(function (l) { return '<p class="is-passnote">' + bagName(l) + ' come with ' + (l.bonus === 1 ? 'a ' + ordinal(l.q + 1) + ': their CAST Pass Bonus Key.' : l.bonus + ' more: their CAST Pass Bonus Keys.') + '</p>'; }).join('') : bagPassLine(Q, 'bag', 'data-rr="pass"')) +
+      '<p class="is-total"><span>Total</span><b>' + cents$(Q.total) + '</b></p></div>';
+    return h + '<div class="ca-sticky-actions ca-bag-foot"><button type="button" class="ca-bag-go" data-rr="bag-pay">Checkout &middot; ' + cents$(Q.total) + '</button>' +
+      '<p class="ca-small ca-center">Secure payment by Stripe. Prices in AUD.</p></div>';
+  }
+  /* Clear Bag (the owner, 17 Oct 2026, from trying the bag on his phone): everything out in one tap and the bar back to
+     empty, with a few seconds to undo it in the toast instead of an "are you sure" pop-up. Undo puts it all back (on top
+     of anything added since) and opens the bag again */
+  function bagClear() {
+    var was = bagGet();
+    if (!Object.keys(was).length) return;
+    bagPut({});
+    track('bag_clear', { game: CFG.game, items: Object.keys(was).length });
+    rrClose(); render();
+    toastUndo('\uD83C\uDF92 Bag Cleared', function () {
+      var q = bagGet();
+      Object.keys(was).forEach(function (k) { q[k] = Math.max(q[k] || 0, was[k]); });
+      bagPut(q);
+      track('bag_clear_undo', { game: CFG.game });
+      render();
+      if (view === 'shop' && el && !el.hidden && canBuyReroll()) bagOpen();
+    });
+  }
+  // A toast with an Undo button for 5 seconds, above the Shop's bag bar when it is on screen
+  function toastUndo(msg, undo) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ca-toast.is-undo'), function (x) { if (x.parentNode) x.parentNode.removeChild(x); });
+    var t = document.createElement('div'), s = document.createElement('span'), b = document.createElement('button'), done = false;
+    t.className = 'ca-toast is-undo'; t.setAttribute('role', 'status');
+    s.textContent = whole(String(msg)); b.type = 'button'; b.className = 'ca-toast-undo'; b.textContent = 'Undo';
+    t.appendChild(s); t.appendChild(b);
+    var bar = document.querySelector('.ca:not([hidden]) .ca-bagbar'), r = bar ? bar.getBoundingClientRect() : null;
+    if (r && r.top > 0 && r.top < innerHeight) t.style.bottom = Math.round(innerHeight - r.top + 10) + 'px';
+    var gone = function () { t.classList.add('is-out'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 600); };
+    b.addEventListener('click', function () { if (done) return; done = true; gone(); undo(); });
+    document.body.appendChild(t);
+    setTimeout(function () { done = true; gone(); }, 5000);
+  }
+  function ordinal(n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+  /* Google Analytics' own purchase event (17 Oct 2026, the owner: each item of a bag in its items array). One per payment:
+     transaction_id is the checkout, value what was paid; each item has its units and its price after its share of the
+     bag and CAST Pass savings (lib/bag.js split, the Admin's own sharing), so GA's item revenue adds up to the value */
+  function r4(x) { return Math.round(x * 10000) / 10000; }
+  function gaItem(id, units, cents, gross) {
+    var it = bagItem(id), cat = SHOP_CATS.filter(function (c) { return c[0] === shopCat(id); })[0];
+    var o = { item_id: id, item_name: it ? it[2] : id === 'restore' ? 'Streak Restore' : id, item_category: id === 'restore' ? 'Streak' : cat ? cat[1] : 'Specials', quantity: units, price: r4(cents / units / 100) };
+    if (gross > cents) o.discount = r4((gross - cents) / units / 100);
+    return o;
+  }
+  function gaPurchase(id, total, items, coupon) {
+    if (!id || !items.length) return;
+    track('purchase', Object.assign({ transaction_id: id, value: total / 100, currency: 'AUD', items: items, game: CFG.game }, coupon ? { coupon: coupon } : {}));
+  }
+  // A bag, from the server's own quote (its lines in the server's order)
+  function gaBag(id, Q) {
+    if (!Q || !Q.lines || !Q.lines.length) return;
+    var shares = BAG_RULES.split(Q.lines.map(function (l) { return l.cents; }), Q.total);
+    gaPurchase(id, Q.total, Q.lines.map(function (l, i) { return gaItem(l.id, l.n, shares[i], l.cents); }), Q.off ? (Q.passOff ? 'Gameday Bag + CAST Pass Saving' : 'Gameday Bag Saving') : '');
+  }
+  // A single buy (a Shop pack, an in-game pop-up, a Streak Restore): one item
+  function gaOne(mine) {
+    var P = PACKS[mine.pack];
+    if (!P) return;
+    var id = P.key || (P.kind === 'restore' ? 'restore' : P.kind), c = priceCents(P.price);
+    gaPurchase(mine.session, c, [gaItem(id, mine.n || P.n, c, c)]);
   }
   // Checkout: the server prices the bag again from the item list, then the same Stripe pop-up as a single buy
-  function bagPay() {
-    var mine = rr, Q = bagQuote();
+  function bagPay(from) {
+    var mine = rr, Q = bagMath();
     if (!Q.lines.length) return;
     rr.stage = 'starting'; rr.pack = null; rrRender();
-    track('bag_checkout', { game: CFG.game, items: Q.lines.length, units: Q.units, value: Q.total / 100 });
+    track('bag_checkout', { game: CFG.game, items: Q.lines.length, units: Q.units, value: Q.total / 100, from: from || 'bag' });
     callFn('rerollShop', { act: 'bag', items: Q.lines.map(function (l) { return { id: l.k, q: l.q }; }), site: CFG.game }).then(function (r) {
       if (rr !== mine) return null;
       rr.session = r.id; rr.bagQuote = r.quote || null;
+      // The page's numbers are the server's rules (BAG_RULES); if they ever differ, the server's are what Stripe shows
+      if (r.quote && r.quote.total !== Q.total) track('bag_price_differs', { game: CFG.game, page: Q.total, server: r.quote.total });
       return loadStripeJs().then(function (S) {
         var st = S(r.pk), open = st.initEmbeddedCheckout || st.createEmbeddedCheckoutPage;
         if (!open) throw new Error('Stripe could not open the payment form.');
@@ -8263,10 +8591,23 @@
     if (typeof r.freezes === 'number') { fzOwned = r.freezes; fzOn = true; }
     rrSeq++; rrFresh = (Q && Q.lines.some(function (l) { return l.id === 'rr'; })) || rrFresh;
     track('bag_bought', { game: mine.game, items: Q ? Q.lines.length : 0, value: Q ? Q.total / 100 : 0 });
+    gaBag(mine.session, Q);
     bagPut({});
     rrClose(); rrChanged(); render();
     try { window.dispatchEvent(new CustomEvent('cast:keys')); } catch (e) { /* very old browser */ }
     toast('✅ Gameday Bag added' + (said.length ? ': ' + andList(said) : '') + '. It’s all in your Vault.');
+  }
+  // Steppers redraw the whole list: the keyboard keeps its place on the same button (by its data attributes)
+  function focusKey(root) {
+    var a = document.activeElement;
+    if (!a || !root || a === document.body || !root.contains(a)) return null;
+    var key = ['data-ca', 'data-rr', 'data-k', 'data-d', 'data-v'].map(function (n) { var v = a.getAttribute(n); return v === null ? '' : '[' + n + '="' + String(v).replace(/["\\]/g, '') + '"]'; }).join('');
+    return key || null;
+  }
+  function focusBack(root, key) {
+    if (!key || !root) return;
+    var b = root.querySelector(key);
+    if (b && !b.disabled) { try { b.focus({ preventScroll: true }); } catch (e) { b.focus(); } }
   }
   function vaultCard() {
     if (status !== 'signed-in') return '';
@@ -8477,7 +8818,7 @@
     }, function () { /* not an admin, or offline: nothing to show */ });
   }
   // Every board's name, including boards of a game this site hides (the Admin tab lists them all)
-  var BOARD_NAMES = { bgfree: 'NRL Bingo', bgdaily: 'Daily Bingo', '4000daily': '4000 GOALS Daily', '4000plus': '4000+', '4000exact': 'Exactly 4000', '4000spin': '4000 GOALS Team Spin', aflw: 'AFLW 750+', '1000daily': '1000TRIES Daily', '1000plus': '1000+', '1000exact': 'Exactly 1000', '1000spin': 'Team Spin', nrlw: 'NRLW 250+', '270best': '27-0 Classic Mode', '270pack': '27-0 Pack Mode', '270perfect': '27-0 Perfect Seasons',
+  var BOARD_NAMES = { bgfree: 'NRL Bingo', '4000daily': '4000 GOALS Daily', '4000plus': '4000+', '4000exact': 'Exactly 4000', '4000spin': '4000 GOALS Team Spin', aflw: 'AFLW 750+', '1000daily': '1000TRIES Daily', '1000plus': '1000+', '1000exact': 'Exactly 1000', '1000spin': 'Team Spin', nrlw: 'NRLW 250+', '270best': '27-0 Classic Mode', '270pack': '27-0 Pack Mode', '270perfect': '27-0 Perfect Seasons',
     '270daily': '27-0 Daily', '270hard': '27-0 Hard Mode', streak: 'Longest Streak',
     bbplus: '25000+', bbexact: 'Exactly 25000', bbspin: '25000 RUNS Team Spin', bbdaily: '25000 RUNS Daily',
     tsplus: '60000+', tsexact: 'Exactly 60000', tsspin: '60000 RUNS Team Spin', tsdaily: '60000 RUNS Daily',
@@ -8911,9 +9252,11 @@
     h += head('CAST Profiles', 'CAST Profiles (Signed In)') + list([['New in Last Hour', d.newH, 'newH'], ['New in 7 Days', d.new7, 'new7'], ['Usernames', d.names, 'names'],
       ['Email Opt-ins', d.optIn, 'optIn'], ['Partner Opt-ins', d.partner, 'partner'], ['Verified', d.verified, 'verified'], ['Hidden by You', d.modHidden, 'modHidden'], ['Hidden Themselves', d.selfHidden, 'selfHidden']]);
     // Sales: three totals, then a table of every item (money, purchases underneath), HIGHER OR LOWER: NRL its own row
+    // Each item's money (a Gameday Bag's share in its items' lines), purchases and units: how many went out (17 Oct 2026)
     var per = (rev && rev.per) || {}, pk = function (name, k, all, buysAll) {
-      var p = per[k] || { d: 0, w: 0, nd: 0, nw: 0 };
-      return [name, money(p.d || 0) + (p.nd ? ' (' + p.nd + ')' : ''), money(p.w || 0) + (p.nw ? ' (' + p.nw + ')' : ''), money(all || 0) + (buysAll ? '<small>' + fmt(buysAll) + ' bought</small>' : ''), sk(k), SALE_HEADS[k]];
+      var p = per[k] || { d: 0, w: 0, nd: 0, nw: 0 }, un = rev && rev.units ? rev.units[k] || 0 : 0;
+      return [name, money(p.d || 0) + (p.nd ? ' (' + p.nd + ')' : ''), money(p.w || 0) + (p.nw ? ' (' + p.nw + ')' : ''),
+        money(all || 0) + (buysAll ? '<small>' + fmt(buysAll) + ' bought' + (un ? ' &middot; ' + fmt(un) + ' units' : '') + '</small>' : ''), sk(k), SALE_HEADS[k]];
     };
     var ITEMS_K = [['rerolls', 'Rerolls', 'rerollBuys'], ['removes', 'Remove Players', 'removeBuys'], ['reveals', 'Reveals', 'revealBuys'], ['keys', 'Keys', 'keyBuys'], ['ribs', 'Run It Backs', 'ribBuys'],
       ['freezes', 'Streak Freezes', 'freezeBuys'], ['restores', 'Streak Restores', 'restoreBuys'], ['wilds', 'Wild Tiles', 'wildBuys'], ['caps', 'SC Captains', 'capBuys']];
@@ -8975,13 +9318,12 @@
       var bm = bgo.money || (rev && rev.bingo) || null;
       ouCard += '<div class="ca-ov-card"><div class="ca-ov-h"><h3 class="ca-h3">NRL Bingo</h3></div>' +
         periods([
-          ['Boards', bgo.boards.d, bgo.boards.w, bgo.boards.all], ['Daily Bingo', bgo.daily.d, bgo.daily.w, bgo.daily.all], ['Free Play', bgo.free.d, bgo.free.w, bgo.free.all],
+          ['Boards', bgo.boards.d, bgo.boards.w, bgo.boards.all],
           ['Full Houses', bgo.full.d, bgo.full.w, bgo.full.all], ['Players', bgo.players.d, '', bgo.players.all],
           ['Money', bm ? money(bm.d) : null, bm ? money(bm.w) : null, bm ? money(bm.all) : null, 'Wild Tiles, Run It Backs, Rerolls and Reveals bought on a card'],
           ['Vault Wild Tiles Used', bgo.used.wild.d, bgo.used.wild.w, bgo.used.wild.all], ['Vault Run It Backs Used', bgo.used.rib.d, bgo.used.rib.w, bgo.used.rib.all],
           ['Vault Rerolls Used', bgo.used.rr.d, bgo.used.rr.w, bgo.used.rr.all], ['Vault Reveals Used', bgo.used.rv.d, bgo.used.rv.w, bgo.used.rv.all]]) +
-        list([['Average Tiles', bgo.avg == null ? null : String(bgo.avg)], ['Free Play Board', bgo.free_board ? fmt(bgo.free_board.players) + ' players' : null],
-          ['Today&rsquo;s Daily Board', bgo.daily_board ? fmt(bgo.daily_board.players) + ' players' : null]]) +
+        list([['Average Tiles', bgo.avg == null ? null : String(bgo.avg)], ['Leaderboard', bgo.free_board ? fmt(bgo.free_board.players) + (bgo.free_board.players === 1 ? ' player' : ' players') : null]]) +
         '<p class="ca-ov-note">Counted from launch. Money: everything bought from inside a card. Wild Tile sales are also in Sales above.</p></div>';
     }
     h += head('Players on Each Board', '') + table(['Board', 'Players'], (d.boards || []).map(function (b) { return [esc(boardName(b.id)) + (/_\d{4}-/.test(b.id) ? ' <small>Today</small>' : ''), b.players]; }));
@@ -8995,6 +9337,16 @@
   }
   /* Every sale (the owner's tap on Total Collected, or on one kind of sale): newest first, with who bought it, what, in
      which game and when, and the amount after refunds. Tap a buyer to open them in Players. */
+  /* A Gameday Bag's items, one line each at its share of the money after the bag and CAST Pass savings (the Sales list
+     and a player's Purchases, 17 Oct 2026, the owner: never just "Gameday Bag $27.96") */
+  function admBagLines(lines) {
+    if (!lines || !lines.length) return '';
+    return '<ul class="ca-adm-baglines">' + lines.map(function (l) {
+      var it = SHOP_ITEMS.filter(function (x) { return x[0] === l.id; })[0], v = VAULT_NAME[l.id] || [it ? it[2] : l.id, it ? it[2] : l.id];
+      var name = l.id === 'goat' && l.n === 1 ? 'The GOAT' : countName(l.n, v[l.n === 1 ? 0 : 1]), net = l.paid - (l.refunded || 0);
+      return '<li><span>' + (it ? '<i aria-hidden="true">' + it[1] + '</i>' : '') + esc(name) + '</span><b' + (l.refunded >= l.paid && l.paid > 0 ? ' class="is-refunded"' : '') + '>' + money(l.refunded >= l.paid ? l.paid : net) + '</b></li>';
+    }).join('') + '</ul>';
+  }
   var SALE_KINDS = { pass: 'CAST Pass', rerolls: 'Rerolls', removes: 'Remove Players', reveals: 'Reveals', keys: 'Keys', ribs: 'Run It Back', freezes: 'Streak Freezes', goats: 'The GOAT', totys: 'Team of the Year Picks', prems: 'Premiers Picks', imms: 'Immortal Picks', wcps: '88+ Picks', ilegs: 'World Legend Picks', wchs: 'World Champions Picks', wilds: 'Wild Tiles', caps: 'SC Captains', restores: 'Streak Restores', bag: 'Gameday Bag', other: 'Other' };
   var SALE_HEADS = { pass: 'CAST Pass Sales', rerolls: 'Reroll Sales', removes: 'Remove Player Sales', reveals: 'Reveal Sales', keys: 'Key Sales', ribs: 'Run It Back Sales', freezes: 'Streak Freeze Sales', goats: 'GOAT Sales', totys: 'Team of the Year Pick Sales', prems: 'Premiers Pick Sales', imms: 'Immortal Pick Sales', wcps: '88+ Pick Sales', ilegs: 'World Legend Pick Sales', wchs: 'World Champions Pick Sales', wilds: 'Wild Tile Sales', caps: 'SC Captain Sales', restores: 'Streak Restore Sales', bag: 'Gameday Bag Sales', other: 'Other Payments' };
   function admSalesView() {
@@ -9024,7 +9376,8 @@
       var tag = s.refunded > 0 || rv ? '<span class="ca-adm-tags is-under">' + (s.refunded > 0 ? '<span class="ca-mod-tag is-refund">' + (s.refunded >= s.paid ? 'Refunded' : 'Part Refunded') + '</span>' : '') + rvTag + '</span>' +
         (rv ? '<small class="ca-adm-rev">' + esc(rv.text) + '</small>' : '') : '';
       return '<li' + (tap ? ' class="is-tap" role="button" tabindex="0" data-ca="adm-find-name" data-n="' + esc(w.n) + '"' : '') + '>' + badge(w && w.c) +
-        '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag + '</span>' +
+        '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag +
+        (s.kind === 'bag' && !s.part ? admBagLines(s.lines) : '') + '</span>' +
         (s.refunded >= s.paid ? '<b class="ca-adm-sale is-refunded">' + money(s.paid) + '</b>' : '<b class="ca-adm-sale">' + money(s.paid - s.refunded) + '</b>') + '</li>';
     }).join('') + '</ul>' + (d.more ? '<p class="ca-small">Showing the latest 1000.</p>' : '');
   }
@@ -9223,7 +9576,8 @@
         '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-ou-cancel" data-v="' + k + '">Cancel</button></div>'
       : '<button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-ou-ask" data-v="' + k + '">&#x1F680; Launch ' + nm + '</button>';
     return '<div class="ca-adm-launch"><div class="ca-adm-launch-txt"><span class="ca-mod-tag">Not Launched</span><b>' + nm + ' Launch</b>' +
-      '<small>One tap shows ' + nm + ' on ' + site + ' for everyone: the mode card, its leaderboards, trophies and ' + (k === 'bingo' ? 'the Wild Tile in the Shop, and its page on CAST Games' : 'Run It Back in the Shop') + (k === 'ou' ? ', and the banner on 27-0' : '') + '. Your private link works until then.</small>' +
+      (k === 'bingo' ? '<small>One tap shows NRL Bingo on CAST Games for everyone: its page and card, its leaderboard, trophies and the Wild Tile in the Shop. Your private link works until then.</small>' // CAST Games only (17 Oct 2026)
+        : '<small>One tap shows ' + nm + ' on ' + site + ' for everyone: the mode card, its leaderboards, trophies and Run It Back in the Shop' + (k === 'ou' ? ', and the banner on 27-0' : '') + '. Your private link works until then.</small>') +
       (L.confirm ? '<small class="ca-adm-launch-q">Launch ' + nm + ' for everyone now?</small>' : '') +
       (L.err ? '<p class="ca-lb-err" role="alert">' + esc(L.err) + '</p>' : '') + '</div>' + btn + '</div>';
   }
@@ -10090,6 +10444,14 @@
         : mod.fanAsk ? '<span class="ca-adm-fanask">Make ' + esc(u.name) + ' the CAST Player of the Week? Their prize (5 of each wildcard and 5 World Legend Picks) goes straight into their Vault. <button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-fan">Yes</button>' +
         '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-cancel">Cancel</button></span>' : '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-ask">&#x1F3C6; Make Player of the Week</button>') +
       (!(mod.trophy && mod.trophy.name === u.name) ? '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-trophy-open">&#x1F3C5; Give Trophy</button>' : '')) + trophyGiveAdmin(u) : '');
+    // Purchases (17 Oct 2026, the owner): their latest payments, each once; a Gameday Bag with its items as lines
+    var pu = r.purchases;
+    h += pu && pu.list && pu.list.length ? sec('Purchases', '<ul class="ca-adm-list ca-adm-buys">' + pu.list.map(function (x) {
+      var gone = x.refunded >= x.paid && x.paid > 0;
+      return '<li><span class="ca-adm-pn"><b>' + (x.kind === 'bag' ? '&#x1F392; ' : '') + esc(x.what) + '</b><small>' + esc(joinedAt(x.at) + (x.site === '27-0' ? ' · 27-0' : x.site === '1000tries' ? ' · 1000TRIES' : '')) +
+        (gone ? ' · Refunded' : x.refunded > 0 ? ' · Part Refunded' : '') + '</small>' + (x.kind === 'bag' ? admBagLines(x.lines) : '') + '</span>' +
+        '<b class="ca-adm-sale' + (gone ? ' is-refunded' : '') + '">' + money(gone ? x.paid : x.paid - x.refunded) + '</b></li>';
+    }).join('') + '</ul>' + (pu.n > pu.list.length ? '<p class="ca-small">The latest ' + pu.list.length + ' of ' + fmt(pu.n) + '.</p>' : '')) : '';
     // Give Items (the owner only; the server checks it's the owner too): anything from the Vault, a pop-up tells them
     h += mod.owner ? sec('Give Wildcards', giveItemsAdmin(r)) : ''; // Wildcards, not Items, everywhere in Admin (the owner, 15 Oct 2026)
     // Details: who they are and how they play, and (the owner) correcting a date of birth typed wrong at sign-up
@@ -11266,9 +11628,12 @@
     panel.classList.toggle('is-steps', view === 'age' || view === 'name' || (view === 'sports' && !!spDraft)); // the sign-up steps (and Your Sports): one sheet height, the button pinned
     if (tm) { panel.style.setProperty('--t1', tm.c1); panel.style.setProperty('--t2', tm.c2); }
     if (view !== lastView) { panel.scrollTop = 0; lastView = view; }
+    var fk = view === 'shop' ? focusKey(body) : null;
+    el.classList.toggle('is-shop', view === 'shop'); // the Shop's own look (Shop A2, 17 Oct 2026)
     body.innerHTML = h;
     keepWhole(body);
     fitRows(body);
+    if (view === 'shop') { focusBack(body, fk); shopAfter(panel); }
   }
 
   function onClick(e) {
@@ -11619,8 +11984,11 @@
       case 'streak-open': open('streak'); break;
       case 'streak-back': open('stats'); break;
       case 'shop-buy': shopBuy(t.getAttribute('data-v')); break;
-      case 'bag-add': bagAdd(t.getAttribute('data-v')); break;
+      case 'shop-step': shopStep(t.getAttribute('data-k'), +t.getAttribute('data-d') || 0); break;
+      case 'shop-make': shopStep(t.getAttribute('data-k'), 0, +t.getAttribute('data-q') || 0); break;
+      case 'shop-cat': shopJump(t.getAttribute('data-v')); break;
       case 'bag-open': bagOpen(); break;
+      case 'bag-go': bagGo(); break;
       case 'vault-toggle': vlOpen = !vlOpen; track('vault_toggle', { game: CFG.game, open: vlOpen ? 1 : 0 }); render(); break;
       case 'shop-jump': { var sj = document.getElementById('caShop-' + t.getAttribute('data-v')); if (sj) sj.scrollIntoView({ behavior: 'smooth', block: 'center' }); break; }
       case 'lb-board': lb.reportOpen = false; lb.reportMsg = ''; lb.board = t.getAttribute('data-v'); lb.period = BOARDS.filter(function (b) { return b.id === lb.board; })[0].periods[0]; render(); break;
@@ -12177,16 +12545,8 @@
     }).join('');
   }
   // The Trophies board's game picker (both games, or one): under the chips while a Trophies board is open
-  // NRL Bingo's picker (17 Oct 2026): Free Play or Daily Bingo, under its chip
-  function bgSub() {
-    return '<div class="ca-seg ca-lb-trsub ca-lb-ousub" role="tablist" aria-label="Which board">' + [['bgfree', 'Free Play'], ['bgdaily', 'Daily Bingo']].map(function (x) {
-      var on = x[0] === lb.board;
-      return '<button type="button" role="tab" aria-selected="' + on + '" class="ca-seg-btn' + (on ? ' is-on' : '') + '" data-ca="lb-board" data-v="' + x[0] + '">' + x[1] + '</button>';
-    }).join('') + '</div>';
-  }
   function troSub() {
     if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(lb.board)) return ouSub();
-    if (/^bg(free|daily)$/.test(lb.board)) return bgSub();
     if (!/^trophies/.test(lb.board) || !shown('1000tries')) return '';
     return '<div class="ca-seg ca-lb-trsub" role="tablist" aria-label="Which trophies">' + [['trophies', 'Both Games'], ['trophies270', '27-0'], ['trophies1000', '1000TRIES']].map(function (x) {
       var on = x[0] === lb.board;
@@ -12216,7 +12576,7 @@
   function defaultBoard() { var ids = BOARDS.map(function (b) { return b.id; }), own = MAIN_BOARD[CFG.game], pref = (CFG.boards || []).filter(function (x) { return ids.indexOf(x) >= 0; })[0]; return pref || (own && ids.indexOf(own) >= 0 ? own : own ? null : ids[0]); }
   // The home page shows this game's four main boards in one row; the rest (Perfect Seasons, Team Spin, Streak) are a tap
   // away in See All
-  var HOME_SKIP = ['270perfect', '1000spin', 'streak', 'trophies', 'trophies270', 'trophies1000', '1000oucaps', '1000outt', '1000ounrlw', 'bgdaily']; // the Trophies boards live on Leaderboards and the Trophies page
+  var HOME_SKIP = ['270perfect', '1000spin', 'streak', 'trophies', 'trophies270', 'trophies1000', '1000oucaps', '1000outt', '1000ounrlw']; // the Trophies boards live on Leaderboards and the Trophies page
   function homeBoards() { return BOARDS.filter(function (b) { return (b.game === CFG.game || !b.game) && HOME_SKIP.indexOf(b.id) < 0; }); }
   function renderHome() {
     var boxes = document.querySelectorAll('[data-cast-board]');
@@ -13858,15 +14218,14 @@
   // (game '1000tries': { total, win })
   function dailyGoes(date, game) {
     if (status !== 'signed-in' || !fb) return Promise.resolve(null);
-    var F = fb.F, which = game === '1000tries' || game === '4000goals' || game === 'bigbash' || game === 'tests' || game === 'nfl' || game === 'racing' || game === 'epl' || game === 'nba' || game === 'sc' ? game : game === 'bingo' ? '1000tries' : '27-0';
-    var dm = game === 'bingo' ? 'bingod' : 'daily'; // NRL Bingo's Daily (17 Oct 2026): its own mode on 1000TRIES
+    var F = fb.F, which = game === '1000tries' || game === '4000goals' || game === 'bigbash' || game === 'tests' || game === 'nfl' || game === 'racing' || game === 'epl' || game === 'nba' || game === 'sc' ? game : '27-0';
     return F.getDocs(F.query(gamesCol(), F.where('d.date', '==', date), F.limit(20))).then(function (q) {
-      return q.docs.map(function (d) { return d.data(); }).filter(function (g) { return g.game === which && g.mode === dm; })
+      return q.docs.map(function (d) { return d.data(); }).filter(function (g) { return g.game === which && g.mode === 'daily'; })
         .sort(function (a, b) { return (a.at && a.at.toMillis ? a.at.toMillis() : 0) - (b.at && b.at.toMillis ? b.at.toMillis() : 0); })
         .map(function (g) {
           var d = g.d || {};
           var at = g.at && g.at.toMillis ? g.at.toMillis() : 0;
-          if (which !== '27-0') return { total: g.score, win: g.result === 'won' || g.result === 'full', at: at }; // 1000TRIES and 4000 GOALS (full: NRL Bingo's Full House)
+          if (which !== '27-0') return { total: g.score, win: g.result === 'won', at: at }; // 1000TRIES and 4000 GOALS
           return { w: g.score, l: d.losses, rating: d.rating, diff: d.diff, premiers: g.result === '27-0' || g.result === 'premiers', perfect: g.result === '27-0', at: at };
         });
     }, function () { return null; });
@@ -13876,7 +14235,7 @@
      account, so each start is noted too (meta/daily: per game, the day, how many goes are used and when each started).
      A go left part way through on a phone then shows as used on the laptop, with the same goes left. */
   function dailyRef() { return fb.F.doc(fb.db, 'users', user.uid, 'meta', 'daily'); }
-  function dailyKey(game) { return game === 'bingo' ? 'gbg' : game === '1000tries' ? 'g1000' : game === '4000goals' ? 'g4000' : game === 'bigbash' ? 'gbb' : game === 'tests' ? 'gts' : game === 'nfl' ? 'gnfl' : game === 'racing' ? 'grc' : game === 'epl' ? 'gepl' : game === 'nba' ? 'gnba' : game === 'sc' ? 'gsc' : 'g270'; }
+  function dailyKey(game) { return game === '1000tries' ? 'g1000' : game === '4000goals' ? 'g4000' : game === 'bigbash' ? 'gbb' : game === 'tests' ? 'gts' : game === 'nfl' ? 'gnfl' : game === 'racing' ? 'grc' : game === 'epl' ? 'gepl' : game === 'nba' ? 'gnba' : game === 'sc' ? 'gsc' : 'g270'; }
   function dailyStarted(date, game, n, times) {
     if (status !== 'signed-in' || !fb) return;
     var t = (times || []).filter(function (x) { return typeof x === 'number' && x > 0; }).sort(function (a, b) { return a - b; }).slice(0, 3);
@@ -13914,6 +14273,7 @@
     open: open,
     openBoards: openBoards,
     dailyRank: dailyRank,
+    resultBoard: resultBoard, // the results' leaderboard (SC POINTS KING, 17 Oct 2026)
     unlock: function (ids) { return unlock(ids); },
     // Invite a Mate v2 (17 Oct 2026): a share's link or message with the signed-in player's invite code (?r=) added
     inviteLink: function (url) { return inviteLink(url); }, inviteText: function (text) { return inviteText(text); },
@@ -14008,6 +14368,8 @@
     },
     contactSend: function (data) { return callFn('contactSend', data); }
   };
+  // The emulator's checks read the Shop's own numbers (a what-if bag: { item: how many }, CAST Pass or not); local tests only
+  if (EMU) window.CastAccount.__bagMath = function (q, pass) { return bagMath(q, pass); };
 
   // A scroll lock must never outlive its pop-up: a page left locked can't scroll (in 27-0, down to the players).
   // Every account pop-up is a .ca element, so unlock whenever none of them is showing.
