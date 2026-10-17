@@ -51,6 +51,7 @@ def version_logos():
     p = os.path.join(HERE, 'shared', 'cg.js')
     s = open(p, encoding='utf-8').read()
     t = re.sub(r"L \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "L + '%s?v=%s'" % (m.group(1), _ver('assets/logos/' + m.group(1))), s)
+    t = re.sub(r"TB \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "TB + '%s?v=%s'" % (m.group(1), _ver('assets/tabs/' + m.group(1))), t)  # the bar's icons
     if t != s:
         open(p, 'w', encoding='utf-8').write(t)
 

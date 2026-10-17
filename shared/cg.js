@@ -192,6 +192,18 @@
     ['play', '&#x1F3AE;', 'Play'], ['stats', '&#x1F4CA;', 'Stats'], ['boards', '&#x1F3C6;', 'Boards'],
     ['friends', '&#x1F465;', 'Friends'], ['shop', '&#x1F6D2;', 'Shop'] // the cart, the same as the games' Shop and Vault
   ];
+  /* The bar's own icons (17 Oct 2026, the owner picked "Bold Gradient Glyphs"): each in grey (-off) and lit (-on, its glow
+     drawn in); the selected tab shows -on on a soft white pill. tools/build.py gives each icon address its content version */
+  var TB = 'assets/tabs/';
+  var TAB_ICONS = {
+    play: [TB + 'play-off.png?v=72b98a10', TB + 'play-on.png?v=7a540de7'], stats: [TB + 'stats-off.png?v=9be20023', TB + 'stats-on.png?v=7cb0ecf8'], boards: [TB + 'boards-off.png?v=4141ae8b', TB + 'boards-on.png?v=1f012f44'],
+    friends: [TB + 'friends-off.png?v=5e6d38c3', TB + 'friends-on.png?v=42d2099a'], shop: [TB + 'shop-off.png?v=215bb569', TB + 'shop-on.png?v=c1346e02'], 'new-game': [TB + 'new-game-off.png?v=79d446df', TB + 'new-game-on.png?v=d0f70d5e'],
+    admin: [TB + 'admin-off.png?v=0b53d497', TB + 'admin-on.png?v=47b3267f']
+  };
+  function tabIcon(name) {
+    var t = TAB_ICONS[name];
+    return '<i class="cg-ti" aria-hidden="true"><img class="is-off" src="' + url(t[0]) + '" alt="" width="26" height="26"><img class="is-on" src="' + url(t[1]) + '" alt="" width="26" height="26"></i>';
+  }
   function bar() {
     var g = currentGame();
     var el = document.createElement('div');
@@ -200,13 +212,15 @@
       '<a class="cg-logo" href="' + url('') + '" aria-label="CAST Games home"><img src="' + url('assets/logos/castgames.png') + '" alt="CAST Games" width="300" height="150"></a>' +
       '<button type="button" class="cg-game" data-cg="switch" aria-haspopup="dialog">' + (g ? g.pill || esc(g.name) : 'All Games') + ' <i aria-hidden="true">&#x25BE;</i></button>' +
       '<nav class="cg-tabs" aria-label="CAST Games">' + TABS.map(function (t) {
-        return '<button type="button" class="cg-tab' + (t[0] === 'play' ? ' is-on' : '') + '" data-cg="' + t[0] + '"><i aria-hidden="true">' + t[1] + '</i><span>' + t[2] + '</span></button>';
+        return '<button type="button" class="cg-tab' + (t[0] === 'play' ? ' is-on' : '') + '" data-cg="' + t[0] + '" aria-label="' + t[2] + '">' + tabIcon(t[0]) + '<span>' + t[2] + '</span></button>';
       }).join('') + '</nav>' +
       '<span class="cg-sp"></span>' +
-      '<span class="cg-right"><button type="button" class="cg-new" data-cg="new" aria-label="New Game" hidden><i aria-hidden="true">&#x2699;&#xFE0F;</i><span>New Game</span></button><span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span></span>' +
+      '<span class="cg-right"><button type="button" class="cg-new" data-cg="new" aria-label="New Game" hidden>' + tabIcon('new-game') + '<span>New Game</span></button><span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span></span>' +
       '</div>';
     document.body.insertBefore(el, document.body.firstChild);
     document.documentElement.classList.add('cg-on');
+    document.documentElement.style.setProperty('--cg-admin-off', 'url("' + url(TAB_ICONS.admin[0]) + '")');
+    document.documentElement.style.setProperty('--cg-admin-on', 'url("' + url(TAB_ICONS.admin[1]) + '")');
     if (HERE) document.documentElement.classList.add('cg-in-game', 'cg-g-' + HERE);
     // The sport's colour as a 3px line under the bar, on its game pages and its sport page (17 Oct 2026, the owner)
     var sp = sportOf((g && g.sport) || window.CG_SPORT || '');

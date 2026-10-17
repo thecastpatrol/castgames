@@ -157,3 +157,21 @@ html.cg-has-sport .cg-bar { border-bottom: 3px solid var(--cg-sport); }
 .cg-sheet .cg-sp-game.is-kid b { font-size: 13.5px; }
 .cg-sheet .cg-sp-game.is-kid small { font-size: 11.5px; }
 @media (hover: hover) { .cg-sheet .cg-sp-game:not(.is-on):hover { border-color: rgba(255, 255, 255, .3); border-left-color: rgb(var(--sc, 255, 255, 255)); } }
+
+/* The bar's own icons (17 Oct 2026, the owner's "Bold Gradient Glyphs"): grey when off, lit when on; the selected tab on a
+   soft white pill with a white label (no gold, no underline) */
+.cg-ti { position: relative; display: block; width: 26px; height: 26px; }
+.cg-ti img { position: absolute; inset: 0; width: 26px; height: 26px; display: block; }
+.cg-ti .is-on { opacity: 0; }
+.cg-tab.is-on .cg-ti .is-on, .cg-new:hover .cg-ti .is-on { opacity: 1; }
+.cg-tab.is-on .cg-ti .is-off, .cg-new:hover .cg-ti .is-off { opacity: 0; }
+@media (hover: hover) { .cg-tab:hover .cg-ti .is-on { opacity: 1; } .cg-tab:hover .cg-ti .is-off { opacity: 0; } }
+.cg-tab { border-bottom: 0; border-radius: 12px; }
+.cg-tab.is-on { color: #fff; background: rgba(255, 255, 255, .1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+@media (max-width: 899px) { .cg-tabs { padding: 0 6px 4px; gap: 4px; } .cg-tab { height: 50px; } }
+@media (min-width: 900px) { .cg-tab { height: 52px; margin: 6px 0; align-items: center; } }
+.cg-new .cg-ti { width: 24px; height: 24px; } .cg-new .cg-ti img { width: 24px; height: 24px; }
+/* The account's Admin button: the same set's shield in place of its line drawing */
+.cg-acct .ca-btn-admin > svg { display: none; }
+.cg-acct .ca-btn-admin::before { content: ""; flex: none; width: 22px; height: 22px; background: var(--cg-admin-off) center / contain no-repeat; }
+@media (hover: hover) { .cg-acct .ca-btn-admin:hover::before { background-image: var(--cg-admin-on); } }
