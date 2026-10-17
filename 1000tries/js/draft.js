@@ -74,7 +74,7 @@
      bought Pick and the GOAT item itself are unchanged. A Daily follows it from T.GOAT_FROM, so a day's Daily never
      changes part way through the day, and a draft dealt before it (brought back on this phone) keeps its own deal */
   T.GOAT_FREE = 0.04;
-  T.GOAT_FREE_DAILY = 0.005; // the Daily's (its pools can hold him far more often)
+  T.GOAT_FREE_DAILY = T.GOAT_FREE; // the Daily's (the same, the owner: rare, never impossibly rare)
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === (T.GOAT_SRC || T.GOAT_ID); };
 

@@ -156,7 +156,7 @@
         var left = S.wildcards[k], usable = T.canUse(k);
         if (S.wcLocked && !left && !S.finished) {
           return '<button type="button" class="wc wc-' + k + ' wc-lock" data-action="wc-signin" title="Sign in free to use wildcards">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO[k] + '</span> ' + esc(five ? SHORT[k] : T.WILDCARDS[k].label) + '</span>' +
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO[k] + '</span> ' + esc(SHORT[k]) + '</span>' +
             '<span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign in free</span></button>';
         }
         // Used up: a saved one ("2 left") or one to buy, in a pop-up over the game (CastAccount.buyReroll, buyRemove, buyItem)
@@ -169,7 +169,7 @@
         if (k === 'tweak' && buyable && A.canBuyRemove && (A.canBuyRemove() || (A.canUseSaved() && A.removesSaved() > 0))) {
           var rs = A.removesSaved(), can = T.filledCount() > 0 && !S.subMode, rfresh = !!(rs && A.removesFresh && A.removesFresh());
           return '<button type="button" class="wc wc-tweak wc-buy' + (rfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-remove"' + (can ? '' : ' disabled') + ' title="' + (rs ? 'Use one of your saved Remove Players' : 'Buy an extra Remove Player') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO.tweak + '</span> ' + esc(five ? SHORT.tweak : T.WILDCARDS.tweak.label) + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO.tweak + '</span> ' + esc(SHORT.tweak) + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
         }
         if (k === 'scout' && buyable && A.buyItem && (A.canBuyReroll() || (A.canUseSaved() && A.itemSaved('reveal') > 0))) {
           var vs = A.itemSaved('reveal'), hidden = !!(S.offer && S.offer.players.some(function (p) { return !R.triesShown(S, p); }));
@@ -188,7 +188,7 @@
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO.scout + '</span> Reveal</span><span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign In</span></button>';
         }
         var armed = (k === 'tweak' && S.tweakMode) || (k === 'scout' && S.scoutMode);
-        var label = five ? SHORT[k] : T.WILDCARDS[k].label;
+        var label = SHORT[k]; // one word on every tile, in every game (17 Oct 2026, the owner)
         return '<button type="button" class="wc wc-' + k + (left ? '' : ' is-spent') + (armed ? ' is-armed' : '') + '" data-wildcard="' + k + '"' +
           ((usable || armed) ? '' : ' disabled') + ' title="' + esc(T.WILDCARDS[k].desc) + '">' +
           '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO[k] + '</span> ' + esc(label) + '</span>' +

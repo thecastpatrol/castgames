@@ -2,11 +2,16 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>window.CG_MODE = 'plus';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=f53b17ede243">
+<link rel="stylesheet" href="../shared/cg.css?v=fef6c609aba1">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
+<!-- Opened on a mode (?play=, or CAST Games' page for it): the home never shows on the way in, only the game itself once it
+     opens (17 Oct 2026, the owner: "straight into play"). js/app.js ends html.play-boot -->
+<script>(function(){try{if(/[?&]play=(plus|daily)(?=&|#|$)/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
+<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle-on::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame: no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#060d18}</style>
@@ -21,20 +26,20 @@
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
   }
 </script>
-<title>SC POINTS KING | Chase the Biggest NRL SC 13 | CAST Games</title>
-<meta name="description" content="Spin three NRL player seasons, pick one, thirteen times. Their SC points stay hidden until you pick. Build the biggest SC 13 and take the crown. A free NRL game by The Cast Patrol.">
+<title>SC POINTS KING | Chase the Top of the SC Board | CAST Games</title>
+<meta name="description" content="Spin NRL player seasons from 2009 to 2026 and build the biggest SC 13. The top of the board wears the crown.">
 <link rel="canonical" href="https://castgames.com.au/scpointsking/">
 <meta name="theme-color" content="#060d18">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://castgames.com.au/scpointsking/">
 <meta property="og:site_name" content="CAST Games">
-<meta property="og:title" content="SC POINTS KING | Chase the Biggest NRL SC 13 | CAST Games">
-<meta property="og:description" content="Spin player seasons from 2009 to 2026, pick your 13 in SC positions and chase the biggest SC total. Free NRL game by The Cast Patrol.">
+<meta property="og:title" content="SC POINTS KING | Chase the Top of the SC Board | CAST Games">
+<meta property="og:description" content="Spin NRL player seasons from 2009 to 2026 and build the biggest SC 13. The top of the board wears the crown.">
 <meta property="og:image" content="https://castgames.com.au/scpointsking/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SC POINTS KING | Chase the Biggest NRL SC 13 | CAST Games">
-<meta name="twitter:description" content="Spin player seasons from 2009 to 2026, pick your 13 in SC positions and chase the biggest SC total.">
+<meta name="twitter:title" content="SC POINTS KING | Chase the Top of the SC Board | CAST Games">
+<meta name="twitter:description" content="Spin NRL player seasons from 2009 to 2026 and build the biggest SC 13. The top of the board wears the crown.">
 <meta name="twitter:image" content="https://castgames.com.au/scpointsking/assets/og-image.png">
 
 <link rel="icon" href="favicon.ico?v=1" sizes="any">
@@ -45,12 +50,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=814552a8">
+<link rel="stylesheet" href="css/main.css?v=da7fa829">
 <link rel="stylesheet" href="css/cast-account.css?v=0406b83a">
 </head>
 <body>
 <script>window.CG_GAME = 'scpointsking'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=f53b17ede243"></script>
+<script src="../shared/cg.js?v=fef6c609aba1"></script>
 
 
 <header class="site-header">
@@ -190,10 +195,10 @@
 <script src="js/cast-intl.js?v=e79b8507"></script>
 <script src="js/kits-data.js?v=2e7e35a9"></script>
 <script src="js/cast-kits.js?v=3717bf89"></script>
-<script src="js/render.js?v=676eb5f2"></script>
+<script src="js/render.js?v=17691612"></script>
 <script src="js/share-card.js?v=dc4ec6e1"></script>
 <script src="js/cast-celebrate.js?v=155b2d28"></script>
-<script src="js/app.js?v=5fc05983"></script>
+<script src="js/app.js?v=ae2b9f67"></script>
 <script src="js/cast-daily.js?v=e7382c3c"></script>
 <script src="js/sc-daily.js?v=97cad31f"></script>
 <script src="js/daily.js?v=787b0ea9"></script>

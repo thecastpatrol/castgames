@@ -1,0 +1,759 @@
+{
+"source": "NBA regular-season careers from the NBA\u2019s own stats (stats.nba.com, all-time totals; ABA points never count), checked against Basketball-Reference. Positions and teams by season from Basketball-Reference. Snapshot 2026-10-17, after the 2025-26 season.",
+"stat": "career NBA regular-season points (BAA 1946-49 included, as the NBA counts it; ABA and playoffs never count)",
+"odds": {
+"legends": 0.33,
+"immortal": 0
+},
+"players": [
+{
+"id": "legend-kareem-abdul-jabbar",
+"name": "Kareem Abdul-Jabbar",
+"tries_1998_plus": 38387,
+"primary_club": "lakers",
+"club_years": [
+{
+"club": "bucks",
+"from": 1969,
+"to": 1974
+},
+{
+"club": "lakers",
+"from": 1975,
+"to": 1988
+}
+],
+"positions_played": [
+"C"
+],
+"draft_role": "C",
+"position": "C",
+"active": false,
+"career_span": "1969-1989",
+"gp": 1560,
+"nba_id": 76003,
+"tier": "legend",
+"record_name": "Kareem Abdul-Jabbar (Legend)"
+},
+{
+"id": "legend-karl-malone",
+"name": "Karl Malone",
+"tries_1998_plus": 36928,
+"primary_club": "jazz",
+"club_years": [
+{
+"club": "jazz",
+"from": 1985,
+"to": 2002
+},
+{
+"club": "lakers",
+"from": 2003,
+"to": 2003
+}
+],
+"positions_played": [
+"PF"
+],
+"draft_role": "PF",
+"position": "PF",
+"active": false,
+"career_span": "1985-2004",
+"gp": 1476,
+"nba_id": 252,
+"tier": "legend",
+"record_name": "Karl Malone (Legend)"
+},
+{
+"id": "legend-kobe-bryant",
+"name": "Kobe Bryant",
+"tries_1998_plus": 33643,
+"primary_club": "lakers",
+"club_years": [
+{
+"club": "lakers",
+"from": 1996,
+"to": 2015
+}
+],
+"positions_played": [
+"SG"
+],
+"draft_role": "SG",
+"position": "SG",
+"active": false,
+"career_span": "1996-2016",
+"gp": 1346,
+"nba_id": 977,
+"tier": "legend",
+"record_name": "Kobe Bryant (Legend)"
+},
+{
+"id": "legend-michael-jordan",
+"name": "Michael Jordan",
+"tries_1998_plus": 32292,
+"primary_club": "bulls",
+"club_years": [
+{
+"club": "bulls",
+"from": 1984,
+"to": 1992
+},
+{
+"club": "bulls",
+"from": 1994,
+"to": 1997
+},
+{
+"club": "wizards",
+"from": 2001,
+"to": 2002
+}
+],
+"positions_played": [
+"SG"
+],
+"draft_role": "SG",
+"position": "SG",
+"active": false,
+"career_span": "1984-2003",
+"gp": 1072,
+"nba_id": 893,
+"tier": "legend",
+"record_name": "Michael Jordan (Legend)"
+},
+{
+"id": "legend-dirk-nowitzki",
+"name": "Dirk Nowitzki",
+"tries_1998_plus": 31560,
+"primary_club": "mavericks",
+"club_years": [
+{
+"club": "mavericks",
+"from": 1998,
+"to": 2018
+}
+],
+"positions_played": [
+"PF",
+"C"
+],
+"draft_role": "PF",
+"position": "PF",
+"active": false,
+"career_span": "1998-2019",
+"gp": 1522,
+"nba_id": 1717,
+"tier": "legend",
+"record_name": "Dirk Nowitzki (Legend)"
+},
+{
+"id": "legend-wilt-chamberlain",
+"name": "Wilt Chamberlain",
+"tries_1998_plus": 31419,
+"primary_club": "warriors",
+"club_years": [
+{
+"club": "warriors",
+"from": 1959,
+"to": 1964
+},
+{
+"club": "76ers",
+"from": 1964,
+"to": 1967
+},
+{
+"club": "lakers",
+"from": 1968,
+"to": 1972
+}
+],
+"positions_played": [
+"C"
+],
+"draft_role": "C",
+"position": "C",
+"active": false,
+"career_span": "1959-1973",
+"gp": 1045,
+"nba_id": 76375,
+"tier": "legend",
+"record_name": "Wilt Chamberlain (Legend)"
+},
+{
+"id": "legend-shaquille-o-neal",
+"name": "Shaquille O'Neal",
+"tries_1998_plus": 28596,
+"primary_club": "lakers",
+"club_years": [
+{
+"club": "magic",
+"from": 1992,
+"to": 1995
+},
+{
+"club": "lakers",
+"from": 1996,
+"to": 2003
+},
+{
+"club": "heat",
+"from": 2004,
+"to": 2007
+},
+{
+"club": "suns",
+"from": 2007,
+"to": 2008
+},
+{
+"club": "cavaliers",
+"from": 2009,
+"to": 2009
+},
+{
+"club": "celtics",
+"from": 2010,
+"to": 2010
+}
+],
+"positions_played": [
+"C"
+],
+"draft_role": "C",
+"position": "C",
+"active": false,
+"career_span": "1992-2011",
+"gp": 1207,
+"nba_id": 406,
+"tier": "legend",
+"record_name": "Shaquille O'Neal (Legend)"
+},
+{
+"id": "legend-carmelo-anthony",
+"name": "Carmelo Anthony",
+"tries_1998_plus": 28289,
+"primary_club": "nuggets",
+"club_years": [
+{
+"club": "nuggets",
+"from": 2003,
+"to": 2010
+},
+{
+"club": "knicks",
+"from": 2010,
+"to": 2016
+},
+{
+"club": "thunder",
+"from": 2017,
+"to": 2017
+},
+{
+"club": "rockets",
+"from": 2018,
+"to": 2018
+},
+{
+"club": "blazers",
+"from": 2019,
+"to": 2020
+},
+{
+"club": "lakers",
+"from": 2021,
+"to": 2021
+}
+],
+"positions_played": [
+"SF",
+"PF"
+],
+"draft_role": "SF",
+"position": "SF",
+"active": false,
+"career_span": "2003-2022",
+"gp": 1260,
+"nba_id": 2546,
+"tier": "legend",
+"record_name": "Carmelo Anthony (Legend)"
+},
+{
+"id": "legend-moses-malone",
+"name": "Moses Malone",
+"tries_1998_plus": 27409,
+"primary_club": "rockets",
+"club_years": [
+{
+"club": "clippers",
+"from": 1976,
+"to": 1976
+},
+{
+"club": "rockets",
+"from": 1976,
+"to": 1981
+},
+{
+"club": "76ers",
+"from": 1982,
+"to": 1985
+},
+{
+"club": "wizards",
+"from": 1986,
+"to": 1987
+},
+{
+"club": "hawks",
+"from": 1988,
+"to": 1990
+},
+{
+"club": "bucks",
+"from": 1991,
+"to": 1992
+},
+{
+"club": "76ers",
+"from": 1993,
+"to": 1993
+},
+{
+"club": "spurs",
+"from": 1994,
+"to": 1994
+}
+],
+"positions_played": [
+"C"
+],
+"draft_role": "C",
+"position": "C",
+"active": false,
+"career_span": "1976-1995",
+"gp": 1329,
+"nba_id": 77449,
+"tier": "legend",
+"record_name": "Moses Malone (Legend)"
+},
+{
+"id": "legend-elvin-hayes",
+"name": "Elvin Hayes",
+"tries_1998_plus": 27313,
+"primary_club": "wizards",
+"club_years": [
+{
+"club": "rockets",
+"from": 1968,
+"to": 1971
+},
+{
+"club": "wizards",
+"from": 1972,
+"to": 1980
+},
+{
+"club": "rockets",
+"from": 1981,
+"to": 1983
+}
+],
+"positions_played": [
+"PF",
+"C"
+],
+"draft_role": "PF",
+"position": "PF",
+"active": false,
+"career_span": "1968-1984",
+"gp": 1303,
+"nba_id": 76979,
+"tier": "legend",
+"record_name": "Elvin Hayes (Legend)"
+},
+{
+"id": "legend-hakeem-olajuwon",
+"name": "Hakeem Olajuwon",
+"tries_1998_plus": 26946,
+"primary_club": "rockets",
+"club_years": [
+{
+"club": "rockets",
+"from": 1984,
+"to": 2000
+},
+{
+"club": "raptors",
+"from": 2001,
+"to": 2001
+}
+],
+"positions_played": [
+"C"
+],
+"draft_role": "C",
+"position": "C",
+"active": false,
+"career_span": "1984-2002",
+"gp": 1238,
+"nba_id": 165,
+"tier": "legend",
+"record_name": "Hakeem Olajuwon (Legend)"
+},
+{
+"id": "legend-oscar-robertson",
+"name": "Oscar Robertson",
+"tries_1998_plus": 26710,
+"primary_club": "kings",
+"club_years": [
+{
+"club": "kings",
+"from": 1960,
+"to": 1969
+},
+{
+"club": "bucks",
+"from": 1970,
+"to": 1973
+}
+],
+"positions_played": [
+"PG"
+],
+"draft_role": "PG",
+"position": "PG",
+"active": false,
+"career_span": "1960-1974",
+"gp": 1040,
+"nba_id": 600015,
+"tier": "legend",
+"record_name": "Oscar Robertson (Legend)"
+},
+{
+"id": "legend-dominique-wilkins",
+"name": "Dominique Wilkins",
+"tries_1998_plus": 26668,
+"primary_club": "hawks",
+"club_years": [
+{
+"club": "hawks",
+"from": 1982,
+"to": 1993
+},
+{
+"club": "clippers",
+"from": 1993,
+"to": 1993
+},
+{
+"club": "celtics",
+"from": 1994,
+"to": 1994
+},
+{
+"club": "spurs",
+"from": 1996,
+"to": 1996
+},
+{
+"club": "magic",
+"from": 1998,
+"to": 1998
+}
+],
+"positions_played": [
+"SF"
+],
+"draft_role": "SF",
+"position": "SF",
+"active": false,
+"career_span": "1982-1999",
+"gp": 1074,
+"nba_id": 1122,
+"tier": "legend",
+"record_name": "Dominique Wilkins (Legend)"
+},
+{
+"id": "legend-tim-duncan",
+"name": "Tim Duncan",
+"tries_1998_plus": 26496,
+"primary_club": "spurs",
+"club_years": [
+{
+"club": "spurs",
+"from": 1997,
+"to": 2015
+}
+],
+"positions_played": [
+"PF",
+"C"
+],
+"draft_role": "PF",
+"position": "PF",
+"active": false,
+"career_span": "1997-2016",
+"gp": 1392,
+"nba_id": 1495,
+"tier": "legend",
+"record_name": "Tim Duncan (Legend)"
+},
+{
+"id": "legend-paul-pierce",
+"name": "Paul Pierce",
+"tries_1998_plus": 26397,
+"primary_club": "celtics",
+"club_years": [
+{
+"club": "celtics",
+"from": 1998,
+"to": 2012
+},
+{
+"club": "nets",
+"from": 2013,
+"to": 2013
+},
+{
+"club": "wizards",
+"from": 2014,
+"to": 2014
+},
+{
+"club": "clippers",
+"from": 2015,
+"to": 2016
+}
+],
+"positions_played": [
+"SG",
+"SF"
+],
+"draft_role": "SG",
+"position": "SG",
+"active": false,
+"career_span": "1998-2017",
+"gp": 1343,
+"nba_id": 1718,
+"tier": "legend",
+"record_name": "Paul Pierce (Legend)"
+},
+{
+"id": "legend-john-havlicek",
+"name": "John Havlicek",
+"tries_1998_plus": 26395,
+"primary_club": "celtics",
+"club_years": [
+{
+"club": "celtics",
+"from": 1962,
+"to": 1977
+}
+],
+"positions_played": [
+"SG",
+"SF"
+],
+"draft_role": "SG",
+"position": "SG",
+"active": false,
+"career_span": "1962-1978",
+"gp": 1270,
+"nba_id": 76970,
+"tier": "legend",
+"record_name": "John Havlicek (Legend)"
+},
+{
+"id": "legend-kevin-garnett",
+"name": "Kevin Garnett",
+"tries_1998_plus": 26071,
+"primary_club": "timberwolves",
+"club_years": [
+{
+"club": "timberwolves",
+"from": 1995,
+"to": 2006
+},
+{
+"club": "celtics",
+"from": 2007,
+"to": 2012
+},
+{
+"club": "nets",
+"from": 2013,
+"to": 2014
+},
+{
+"club": "timberwolves",
+"from": 2014,
+"to": 2015
+}
+],
+"positions_played": [
+"PF",
+"C"
+],
+"draft_role": "PF",
+"position": "PF",
+"active": false,
+"career_span": "1995-2016",
+"gp": 1462,
+"nba_id": 708,
+"tier": "legend",
+"record_name": "Kevin Garnett (Legend)"
+},
+{
+"id": "legend-vince-carter",
+"name": "Vince Carter",
+"tries_1998_plus": 25728,
+"primary_club": "raptors",
+"club_years": [
+{
+"club": "raptors",
+"from": 1998,
+"to": 2004
+},
+{
+"club": "nets",
+"from": 2004,
+"to": 2008
+},
+{
+"club": "magic",
+"from": 2009,
+"to": 2010
+},
+{
+"club": "suns",
+"from": 2010,
+"to": 2010
+},
+{
+"club": "mavericks",
+"from": 2011,
+"to": 2013
+},
+{
+"club": "grizzlies",
+"from": 2014,
+"to": 2016
+},
+{
+"club": "kings",
+"from": 2017,
+"to": 2017
+},
+{
+"club": "hawks",
+"from": 2018,
+"to": 2019
+}
+],
+"positions_played": [
+"SG",
+"SF"
+],
+"draft_role": "SG",
+"position": "SG",
+"active": false,
+"career_span": "1998-2020",
+"gp": 1541,
+"nba_id": 1713,
+"tier": "legend",
+"record_name": "Vince Carter (Legend)"
+},
+{
+"id": "legend-alex-english",
+"name": "Alex English",
+"tries_1998_plus": 25613,
+"primary_club": "nuggets",
+"club_years": [
+{
+"club": "bucks",
+"from": 1976,
+"to": 1977
+},
+{
+"club": "pacers",
+"from": 1978,
+"to": 1979
+},
+{
+"club": "nuggets",
+"from": 1979,
+"to": 1989
+},
+{
+"club": "mavericks",
+"from": 1990,
+"to": 1990
+}
+],
+"positions_played": [
+"SF"
+],
+"draft_role": "SF",
+"position": "SF",
+"active": false,
+"career_span": "1976-1991",
+"gp": 1193,
+"nba_id": 76673,
+"tier": "legend",
+"record_name": "Alex English (Legend)"
+},
+{
+"id": "legend-reggie-miller",
+"name": "Reggie Miller",
+"tries_1998_plus": 25279,
+"primary_club": "pacers",
+"club_years": [
+{
+"club": "pacers",
+"from": 1987,
+"to": 2004
+}
+],
+"positions_played": [
+"SG"
+],
+"draft_role": "SG",
+"position": "SG",
+"active": false,
+"career_span": "1987-2005",
+"gp": 1389,
+"nba_id": 397,
+"tier": "legend",
+"record_name": "Reggie Miller (Legend)"
+},
+{
+"id": "legend-jerry-west",
+"name": "Jerry West",
+"tries_1998_plus": 25192,
+"primary_club": "lakers",
+"club_years": [
+{
+"club": "lakers",
+"from": 1960,
+"to": 1973
+}
+],
+"positions_played": [
+"PG",
+"SG"
+],
+"draft_role": "PG",
+"position": "PG",
+"active": false,
+"career_span": "1960-1974",
+"gp": 932,
+"nba_id": 78497,
+"tier": "legend",
+"record_name": "Jerry West (Legend)"
+}
+],
+"replaces": []
+}

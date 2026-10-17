@@ -37,7 +37,11 @@
     // HIGHER OR LOWER: PREMIER LEAGUE (17 Oct 2026): 650 GOALS' version, career Premier League goals, assists and appearances since 1992-93
     plgoals: { name: 'Premier League Goals', unit: 'PL goals', one: 'PL goal', base: 150, step: 45, game: 'epl' },
     plassists: { name: 'Premier League Assists', unit: 'PL assists', one: 'PL assist', base: 150, step: 45, game: 'epl' },
-    plapps: { name: 'Premier League Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' }
+    plapps: { name: 'Premier League Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' },
+    // 100000 POINTS' over/under (17 Oct 2026): career NBA regular-season points, rebounds and assists
+    nbapts: { name: 'NBA Points', unit: 'NBA points', one: 'NBA point', base: 150, step: 45, game: 'nba' },
+    nbareb: { name: 'NBA Rebounds', unit: 'NBA rebounds', one: 'NBA rebound', base: 150, step: 45, game: 'nba' },
+    nbaast: { name: 'NBA Assists', unit: 'NBA assists', one: 'NBA assist', base: 120, step: 40, game: 'nba' }
   };
   function gameOf(cat) { return (CATS[cat] && CATS[cat].game) || '1000tries'; }
   // The relative gap a pair aims for, by streak: |a - b| / max(a, b). Far apart early, close later

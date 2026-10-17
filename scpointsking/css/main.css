@@ -1286,10 +1286,11 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .wc.wc-sub .wc-left { color: var(--gold); }
 .wc.wc-sub.is-armed { border-color: var(--gold); box-shadow: 0 0 14px rgba(241, 192, 115, .45); }
 .wc-pass-tag { display: inline-block; padding: 2px 7px; border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(241, 192, 115, .6); background: rgba(241, 192, 115, .14); font-size: 9.5px !important; letter-spacing: .6px; }
-.slot.is-subcan { cursor: pointer; animation: wiggle 1.2s ease-in-out infinite; outline: 3px solid var(--gold); outline-offset: 1px; box-shadow: 0 0 14px rgba(var(--acc-rgb), .55); }
+/* Substitute's highlights in its tile's blue, in every game (17 Oct 2026, the owner) */
+.slot.is-subcan { cursor: pointer; animation: wiggle 1.2s ease-in-out infinite; outline: 3px solid #3b82f6; outline-offset: 1px; box-shadow: 0 0 14px rgba(59, 130, 246, .55); }
 .slot.is-subfrom { outline: 3px solid #fff; outline-offset: 1px; }
 .slot.is-subno { opacity: .35; filter: grayscale(.5); }
-.slot.is-subto { cursor: pointer; outline: 3px dashed var(--gold); outline-offset: 1px; animation: wiggle 1.2s ease-in-out infinite; background: rgba(var(--acc-rgb), .12); font: inherit; color: inherit; }
+.slot.is-subto { cursor: pointer; outline: 3px dashed #60a5fa; outline-offset: 1px; animation: wiggle 1.2s ease-in-out infinite; background: rgba(59, 130, 246, .14); font: inherit; color: inherit; }
 
 /* Sound: a small labelled toggle in the footer (off the header, which is full) */
 .footer-sound { display: flex; justify-content: center; margin: 0 0 12px; }
@@ -1766,3 +1767,74 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .result-pb.is-new { border-color: rgba(var(--acc-rgb), .6); background: rgba(var(--acc-rgb), .12); }
 .result-pb.is-new span, .result-pb.is-new b { color: var(--gold); }
 .result-crown { margin: 10px auto 0; font-size: 13px; color: #d6d6e4; max-width: 34ch; }
+
+/* ---------------- Standard wildcard tiles, 17 Oct 2026 ----------------
+   The owner: "WILDCARDS IDENTICAL IN EVERY GAME". This block is the same, byte for byte, at the end of every draft game's
+   css/main.css (1000TRIES, 4000 GOALS, 25000 RUNS, 60000 RUNS, 777 TDS, G1 WINNER SPINNER, 650 GOALS, 100000 POINTS), and
+   27-0's css/theme.css uses the same colours for its bar. Explicit colours only, never a game's theme colours (--gold,
+   --acc-rgb), so a tile looks the same in every game. It wins over the older per-tile rules above (.wildcards .wc beats .wc).
+   Tiles (js/render.js), in this order, each only where its mode allows it: Reroll teal, Reveal yellow, Remove pink,
+   Substitute blue, Legend Key violet, The GOAT gold foil (the owner's own exception to gold being for CAST Pass), then
+   1000TRIES' Immortal and World Legend Picks (charcoal, a gold edge). The CAST Pass tag stays CAST Pass gold. A guest's
+   "Sign in free", the free bonus Reroll, "Buy" and "N left" all keep their tile's own colours. */
+.wildcards .wc { --wc: #ffffff; --wc-rgb: 255, 255, 255; color: #fff; }
+.wildcards .wc.wc-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; border-color: #14b8a6; background: linear-gradient(160deg, rgba(20, 184, 166, .22), rgba(20, 184, 166, .06)); }
+.wildcards .wc.wc-reroll .wc-left { color: #5eead4; }
+.wildcards .wc.wc-scout { --wc: #facc15; --wc-rgb: 250, 204, 21; border-color: #facc15; background: linear-gradient(160deg, rgba(250, 204, 21, .2), rgba(250, 204, 21, .05)); }
+.wildcards .wc.wc-scout .wc-left { color: #fde047; }
+.wildcards .wc.wc-tweak { --wc: #f472b6; --wc-rgb: 244, 114, 182; border-color: #ec4899; background: linear-gradient(160deg, rgba(236, 72, 153, .22), rgba(236, 72, 153, .06)); }
+.wildcards .wc.wc-tweak .wc-left { color: #f9a8d4; }
+.wildcards .wc.wc-sub { --wc: #60a5fa; --wc-rgb: 96, 165, 250; border-color: #3b82f6; background: linear-gradient(160deg, rgba(59, 130, 246, .22), rgba(59, 130, 246, .05)); }
+.wildcards .wc.wc-sub .wc-left { color: #93c5fd; }
+.wildcards .wc.wc-key { --wc: #a78bfa; --wc-rgb: 167, 139, 250; border-color: #a78bfa; background: linear-gradient(160deg, rgba(167, 139, 250, .22), rgba(167, 139, 250, .05)); }
+.wildcards .wc.wc-key .wc-left { color: #c4b5fd; }
+.wildcards .wc.wc-key.is-ready { box-shadow: inset 0 0 0 1px rgba(167, 139, 250, .45); }
+.wildcards .wc.wc-goat { --wc: #f1c073; --wc-rgb: 241, 192, 115; border-color: #f1c073; color: #1a1204; background: linear-gradient(135deg, #7a5a12 0%, #f1c073 30%, #fff1c4 50%, #f1c073 70%, #7a5a12 100%); background-size: 200% 100%; }
+.wildcards .wc.wc-goat .wc-left { color: #3a2a08; font-weight: 900; }
+.wildcards .wc.wc-goat.is-ready { box-shadow: 0 0 16px rgba(241, 192, 115, .45); }
+.wildcards .wc.wc-imm { --wc: #f1c073; --wc-rgb: 241, 192, 115; border-color: #f1c073; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .12), transparent 60%), linear-gradient(160deg, #2b2a33, #121219 85%); }
+.wildcards .wc.wc-ileg { --wc: #f1c073; --wc-rgb: 241, 192, 115; border-color: #f1c073; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .1), transparent 60%), linear-gradient(160deg, #1d1b26, #0b0a11 85%); }
+.wildcards .wc.wc-imm .wc-left, .wildcards .wc.wc-ileg .wc-left { color: #ffe2a8; font-weight: 900; }
+.wildcards .wc.wc-imm.is-have .wc-left { display: inline-block; align-self: center; padding: 2px 8px; border-radius: 999px; color: #14161d;
+  background: linear-gradient(135deg, #8e97a6 0%, #dfe4ec 26%, #ffffff 50%, #dfe4ec 74%, #8e97a6 100%); background-size: 200% 100%; }
+.wildcards .wc.wc-imm.is-ready, .wildcards .wc.wc-ileg.is-ready { box-shadow: 0 0 16px rgba(241, 192, 115, .4); }
+.wildcards .wc.wc-imm .wc-label, .wildcards .wc.wc-ileg .wc-label { white-space: normal; text-wrap: balance; }
+/* Hover: a lighter rim of the tile's own colour */
+@media (hover: hover) {
+  .wildcards .wc:hover:not(:disabled) { border-color: rgba(255, 255, 255, .55); }
+  .wildcards .wc.wc-reroll:hover:not(:disabled) { border-color: #5eead4; }
+  .wildcards .wc.wc-scout:hover:not(:disabled) { border-color: #fde047; }
+  .wildcards .wc.wc-tweak:hover:not(:disabled) { border-color: #f9a8d4; }
+  .wildcards .wc.wc-sub:hover:not(:disabled) { border-color: #93c5fd; }
+  .wildcards .wc.wc-key:hover:not(:disabled) { border-color: #c4b5fd; }
+  .wildcards .wc.wc-goat:hover:not(:disabled), .wildcards .wc.wc-imm:hover:not(:disabled), .wildcards .wc.wc-ileg:hover:not(:disabled) { border-color: #fff1c4; }
+}
+/* Armed (tap the field next): Remove goes red, Substitute keeps its blue with a glow */
+.wildcards .wc.is-armed, .wildcards .wc.wc-tweak.is-armed { border-color: #f87171; background: #2a1116; opacity: 1; }
+.wildcards .wc.wc-sub.is-armed { border-color: #93c5fd; background: linear-gradient(160deg, rgba(59, 130, 246, .22), rgba(59, 130, 246, .05)); box-shadow: 0 0 14px rgba(59, 130, 246, .45); }
+/* Not usable right now, then used up; the Legend Key's countdown stays readable */
+.wildcards .wc:disabled { opacity: .4; cursor: not-allowed; }
+.wildcards .wc.is-spent { opacity: .3; }
+.wildcards .wc.wc-goat:disabled, .wildcards .wc.wc-imm:disabled, .wildcards .wc.wc-ileg:disabled { opacity: .5; }
+.wildcards .wc.wc-key.is-used { opacity: .8; cursor: default; }
+/* The CAST Pass tag (Substitute and the Legend Key for a free profile) */
+.wildcards .wc .wc-left.wc-pass-tag { display: inline-block; padding: 2px 7px; border-radius: 999px; color: #f1c073; box-shadow: inset 0 0 0 1px rgba(241, 192, 115, .6); background: rgba(241, 192, 115, .14); font-size: 9.5px; letter-spacing: .6px; }
+/* Layout by count: 3 in a row; 4 as two rows of two; 5 as three and two; 6 as two rows of three; 7 the same and the last
+   across the row. From 5 the icon sits above the name, so every tile in a row is the same height */
+.wildcards.has-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wildcards.has-5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.wildcards.has-5 > .wc { grid-column: span 2; }
+.wildcards.has-5 > .wc:nth-child(n+4) { grid-column: span 3; }
+.wildcards.has-6, .wildcards.has-7 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.wildcards.has-7 > .wc:last-child { grid-column: span 3; }
+.wildcards.has-5 .wc-label, .wildcards.has-6 .wc-label, .wildcards.has-7 .wc-label { flex-direction: column; gap: 3px; flex-wrap: nowrap; }
+.wildcards.has-7 > .wc:last-child .wc-label { flex-direction: row; gap: 6px; }
+.wildcards.has-5 .wc-ico, .wildcards.has-6 .wc-ico, .wildcards.has-7 .wc-ico { font-size: 17px; line-height: 1; }
+/* The burst when one fires, in its tile's colour */
+.wc-burst.wc-burst-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; }
+.wc-burst.wc-burst-scout { --wc: #facc15; --wc-rgb: 250, 204, 21; }
+.wc-burst.wc-burst-tweak { --wc: #f472b6; --wc-rgb: 244, 114, 182; }
+.wc-burst.wc-burst-sub { --wc: #60a5fa; --wc-rgb: 96, 165, 250; }
+/* The Legend Key's line under the offer ("Not these? Swap for a Legends Pick"), in the key's violet */
+.key-swap { border-color: rgba(167, 139, 250, .6); background: rgba(167, 139, 250, .08); color: #c4b5fd; }
+@media (hover: hover) { .key-swap:hover { background: rgba(167, 139, 250, .16); } }

@@ -3922,6 +3922,18 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name { font-size: 11px; letter-spacing: -.2px; overflow-wrap: normal; }
 .ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name.is-long { font-size: 9.5px; letter-spacing: -.3px; }
 .ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name.is-xlong { font-size: 9px; letter-spacing: -.3px; overflow-wrap: anywhere; hyphens: auto; }
+/* 100000 POINTS team sheets (17 Oct 2026): a half court, as the game's own: hardwood under the arena lights, the painted
+   key and the three-point arc drawn from the hoop at the top. The centre under the hoop, the forwards on the blocks,
+   the guards out on the arc */
+.ca-pitch.is-court { position: relative; isolation: isolate; border-radius: 10px; padding: 34px 12px 18px; gap: 14px; border: 2px solid rgba(255, 255, 255, .6);
+  background:
+    radial-gradient(circle at 50% 22px, transparent 0 7px, rgba(255, 106, 19, .9) 7px 9px, transparent 9px),
+    radial-gradient(ellipse 46% 64% at 50% 0, transparent 0 calc(100% - 2px), rgba(255, 255, 255, .5) calc(100% - 2px) 100%, transparent 100%),
+    linear-gradient(90deg, transparent calc(50% - 64px), rgba(255, 255, 255, .5) calc(50% - 64px) calc(50% - 62px), rgba(255, 106, 19, .16) calc(50% - 62px) calc(50% + 62px), rgba(255, 255, 255, .5) calc(50% + 62px) calc(50% + 64px), transparent calc(50% + 64px)) 0 0 / 100% 46% no-repeat,
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, .07) 0 1px, transparent 1px 22px),
+    linear-gradient(180deg, #b9773f, #9a5e2d 55%, #84501f); }
+.ca-pitch.is-court .ca-spot { flex-basis: 34%; }
+.ca-pitch.is-court .ca-pitch-row:nth-child(2) { justify-content: space-around; }
 /* One Shop for every CAST game (16 Oct 2026): a special item's "Only in" tag, quiet and never gold */
 .ca-shop-where.is-only { display: inline-block; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #e5e7eb; }
 /* Admin > Insights (17 Oct 2026): a card per segment (its own accent, gold only on the CAST Pass ones), the last 8

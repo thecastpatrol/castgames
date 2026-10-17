@@ -12,6 +12,7 @@
   /* Screens */
 
   function show(name) {
+    if (bootOn()) bootEnd(); // opened on a mode (index.html): the screens show from here
     ['home', 'draft', 'results'].forEach(function (n) {
       var el = $('screen-' + n);
       if (el) el.classList.toggle('is-active', n === name);
@@ -299,6 +300,7 @@
   }
   T.showScreen = show;
   function goHome() {
+    if (window.CG && window.CG.leave) { closeSheet(); busy = false; stopLockTimer(); window.CG.leave(); return; } // CAST Games: every mode is its own page (17 Oct 2026)
     closeSheet();
     busy = false;
     stopLockTimer();
@@ -1184,6 +1186,50 @@
     if (S.fullTime) { S.fullTime = false; S.capStep = false; captainStep(T.outcome(true)); return; }
     if (!S.offer && !S.awaitingLock) nextOffer(); else renderDraft();
   }
+  /* Opened on a mode (?play=, or CAST Games' page for it, window.CG_MODE): straight into play, never the home first (17 Oct
+     2026, the owner). The same player's saved draft carries on, else a new game starts. A link that opens something else
+     (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it. When nothing could start (a
+     sign-in wall closed, not launched yet), CAST Games shows its own card for the game (CG.bootIdle), this site its home */
+  var bootMode = null;
+  function bootOn() { return document.documentElement.classList.contains('play-boot'); }
+  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && window.CG.bootDone) window.CG.bootDone(); }
+  function bootIdleWatch() {
+    var check = function () {
+      if (!bootOn() || busy || !T.players.length || document.documentElement.classList.contains('ca-open') || !$('sheet').hidden) return;
+      if (document.body.getAttribute('data-screen') !== 'home') return;
+      if (window.CG && window.CG.bootIdle) window.CG.bootIdle(function () { playMode(bootMode); }); else bootEnd();
+    };
+    var soon = function () { setTimeout(check, 400); };
+    setTimeout(check, 2500); setTimeout(check, 7000);
+    try {
+      new MutationObserver(soon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      new MutationObserver(soon).observe($('sheet'), { attributes: true, attributeFilter: ['hidden'] });
+    } catch (e) { /* very old browser: the timers above */ }
+  }
+  function bootPlay(mode) {
+    bootMode = mode;
+    bootIdleWatch();
+    if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|vs)=/.test(location.search)) return;
+    var d = mode === 'daily' ? null : savedDraft();
+    if (!d || (d.sel || 'plus') !== mode) { playMode(mode); return; }
+    var done = false, decide = function () {
+      if (done) return;
+      done = true;
+      var now = savedDraft();
+      if (now && draftWho() === now.who) resumeDraft(now); else playMode(mode);
+    };
+    var signedBefore = false;
+    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) { /* storage blocked */ }
+    if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { decide(); return; }
+    var on = function (e) {
+      var st = e.detail && e.detail.status;
+      if (st !== 'signed-in' && st !== 'guest') return;
+      window.removeEventListener('cast-account', on);
+      decide();
+    };
+    window.addEventListener('cast-account', on);
+    setTimeout(decide, 6000); // a page whose accounts are off never says
+  }
   function offerResume() {
     var d = savedDraft();
     if (!d || /#(challenge|cast-profile|leaderboards|cast-pass)/.test(location.hash)) return;
@@ -1225,11 +1271,11 @@
     btn.hidden = true;
     homeAgain();
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
-    var play = /[?&]play=(plus|daily)(?=&|#|$)/.exec(location.search);
+    var play = /[?&]play=(plus|daily)(?=&|#|$)/.exec(location.search) || (window.CG_MODE ? [0, window.CG_MODE] : null);
     if (!play) offerResume();
     if (play) {
       try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address */ }
-      playMode(play[1]);
+      bootPlay(play[1]);
     }
   }).catch(function () {
     $('startBtn').textContent = 'Could Not Load the Seasons';
