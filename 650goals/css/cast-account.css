@@ -4072,9 +4072,9 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
    card and the Pass lines. The bag opens in the Stripe pop-up's sheet with its Checkout pinned at the bottom */
 .ca.is-shop .ca-panel { background: #0a0a0f; }
 .ca.is-shop .ca-x { z-index: 9; } /* above the stuck jump bar, in the room it leaves */
-.ca-sh.is-cards, .ca-jump-b.is-cards, .ca-bag-row.is-cards { --c: 56, 189, 248; --cl: #bae6fd; }
-.ca-sh.is-picks, .ca-jump-b.is-picks, .ca-bag-row.is-picks { --c: 167, 139, 250; --cl: #ddd6fe; }
-.ca-sh.is-specials, .ca-jump-b.is-specials, .ca-bag-row.is-specials { --c: 244, 114, 182; --cl: #fbcfe8; }
+.ca-sh.is-cards, .ca-jump-b.is-cards, .ca-bag-row.is-cards, .ca-bag-offer.is-cards { --c: 56, 189, 248; --cl: #bae6fd; }
+.ca-sh.is-picks, .ca-jump-b.is-picks, .ca-bag-row.is-picks, .ca-bag-offer.is-picks { --c: 167, 139, 250; --cl: #ddd6fe; }
+.ca-sh.is-specials, .ca-jump-b.is-specials, .ca-bag-row.is-specials, .ca-bag-offer.is-specials { --c: 244, 114, 182; --cl: #fbcfe8; }
 .ca-sh.is-streak, .ca-jump-b.is-streak, .ca-bag-row.is-streak { --c: 251, 146, 60; --cl: #fed7aa; }
 /* CAST Pass: the card on top for a free profile, and the little gold Pass Card beside every Pass line */
 .ca-passchip { flex: none; display: inline-grid; place-items: center; width: 22px; height: 14px; box-sizing: border-box; border-radius: 3px;
@@ -4140,6 +4140,18 @@ button.ca-vl-strip { cursor: pointer; -webkit-tap-highlight-color: transparent; 
 .ca-sr-chip { padding: 3px 7px; border-radius: 999px; background: rgba(var(--c), .13); color: var(--cl); font: 800 10.5px/1.2 Inter, sans-serif; white-space: nowrap; }
 .ca-sr-chip.is-on { background: rgb(var(--c)); color: #0a0a0f; }
 .ca-sr-chip.is-tag { background: #1f1f2b; color: #c9c9d6; }
+/* Bundle chips are buttons (the owner, 17 Oct 2026): a tap puts that bundle in the bag. A little bigger to see, and a 44px
+   target (the ::after reaches above and below the chip, so the row is no taller); a quick press, then a pop once it's in */
+button.ca-sr-chip { position: relative; margin: 0; padding: 4px 8px; border: 0; font: 800 11px/1.2 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; transition: transform .1s ease, background-color .15s ease, color .15s ease; }
+button.ca-sr-chip::after { content: ''; position: absolute; left: -2px; right: -2px; top: -12px; bottom: -11px; }
+button.ca-sr-chip:active:not(:disabled) { transform: scale(.9); }
+button.ca-sr-chip:disabled { cursor: default; opacity: .55; }
+button.ca-sr-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ca-sr-chips { gap: 6px 4px; }
+.ca-sr-chip.is-flash { animation: caChipPop .45s ease; }
+@keyframes caChipPop { 0% { transform: scale(.88); box-shadow: 0 0 0 0 rgba(var(--c), .75); } 45% { transform: scale(1.1); box-shadow: 0 0 0 7px rgba(var(--c), 0); } 100% { transform: none; box-shadow: none; } }
+@media (hover: hover) { button.ca-sr-chip:not(.is-on):not(:disabled):hover { background: rgba(var(--c), .28); color: #fff; } }
 .ca-sr-buy { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
 .ca-sr-p, .ca-bag-rp { display: flex; align-items: baseline; justify-content: flex-end; gap: 5px; white-space: nowrap; }
 .ca-sr-p s, .ca-bag-rp s { font: 700 11px/1 Inter, sans-serif; color: #6e6e85; }
@@ -4263,8 +4275,77 @@ button.ca-vl-strip { cursor: pointer; -webkit-tap-highlight-color: transparent; 
 .ca-rr.is-bag .ca-bag-foot { background: #111119; border-top-color: #23232f; }
 .ca-bag-foot .ca-bag-go { flex: none; width: 100%; height: 52px; }
 .ca-bag-foot .ca-small { margin: 2px 0 0; color: #6e6e85; }
-.ca-bag-back { margin-top: 12px; }
+@media (prefers-reduced-motion: reduce) { .ca-sr-chip.is-flash { animation: none; } button.ca-sr-chip:active { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ca-bagbar-go:active, .ca-bag-go:active, .ca-step-b:active { transform: none; } .ca-bagbar-ico.is-bump { animation: none; } .ca-bagp-fill, .ca-jump-in { transition: none; } }
+/* Before You Go (17 Oct 2026, the owner): one small offer at Checkout, in the bag's sheet. The offer line, the item, then
+   Add and Checkout (the new total) and No Thanks, Checkout */
+.ca-bag-offer-q { margin: 10px 0 12px; font: 800 15px/1.4 Inter, sans-serif; color: #fff; text-wrap: balance; }
+.ca-bag-offer { --c: 255, 255, 255; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: 10px 12px; border-radius: 14px;
+  background: linear-gradient(90deg, rgba(var(--c), .08), #16161f 60%); border: 1px solid rgba(var(--c), .45); }
+.ca-bag-offer-t { min-width: 0; display: grid; gap: 2px; }
+.ca-bag-offer-t b { font: 900 15px/1.2 Inter, sans-serif; color: #fff; text-wrap: balance; }
+.ca-bag-offer-t small { font: 600 12px/1.3 Inter, sans-serif; color: #a2a2b8; text-wrap: balance; }
+.ca-bag-offer-p { font: 900 16px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; white-space: nowrap; }
+.ca-bag-offer-btns { display: grid; gap: 8px; margin-top: 14px; }
+.ca-bag-offer-btns .ca-bag-go { flex: none; width: 100%; height: 52px; }
+/* ---------------- The Shop's polish pass (17 Oct 2026, the owner: "100% like other premium apps") ----------------
+   Motion is transform and opacity only (smooth at 60fps) and stops for anyone who asks for less motion */
+/* The item flies into the bag: x and y on two layers make an arc */
+.ca-fly { position: fixed; z-index: 2147482000; pointer-events: none; transition: transform .46s cubic-bezier(.3, .1, .6, 1); will-change: transform; }
+.ca-fly-y { display: grid; place-items: center; width: 100%; height: 100%; font-size: 23px; line-height: 1; transition: transform .46s cubic-bezier(.55, -.35, .8, .6), opacity .46s ease-in; will-change: transform, opacity; }
+/* The count ticks; a new note slides in on the row just changed */
+.ca-step output.is-tick { animation: caTick .26s ease; }
+@keyframes caTick { 0% { transform: scale(.7); opacity: .4; } 60% { transform: scale(1.18); } 100% { transform: none; opacity: 1; } }
+.ca-sr-note.is-new { animation: caNoteIn .28s ease both; }
+@keyframes caNoteIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+/* True badges: Most Popular (real sales), Best Value (the cheapest each) */
+.ca-sr-pop { flex: none; padding: 2px 6px; border-radius: 5px; background: rgba(74, 222, 128, .16); border: 1px solid rgba(74, 222, 128, .5); color: #bbf7d0; font: 900 9.5px/1.2 Inter, sans-serif; font-style: normal;
+  letter-spacing: .4px; text-transform: uppercase; white-space: nowrap; }
+.ca-sr-chips:has(.ca-sr-best) { margin-top: 9px; }
+.ca-sr-best { position: absolute; top: -8px; right: -5px; padding: 1px 4px; border-radius: 4px; background: #fff; color: #0a0a0f; font: 900 7.5px/1.25 Inter, sans-serif; font-style: normal;
+  letter-spacing: .4px; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+/* A quiet second button (No Thanks, Keep Shopping, Back to the Shop): neutral, never gold (gold is the Pass) */
+.ca-bag-ghost { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 48px; margin: 0; padding: 0 16px; box-sizing: border-box; border-radius: 999px;
+  border: 1px solid #2a2a38; background: #1b1b26; color: #fff; font: 800 14.5px/1.2 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .ca-bag-ghost:hover:not(:disabled) { border-color: rgba(255, 255, 255, .4); } }
+.ca-bag-ghost:active:not(:disabled) { transform: scale(.99); }
+.ca-bag-back { margin-top: 12px; }
+/* Checkout opening: the button says so, with a spinner; the rest waits */
+.ca-bag-go, .ca-bag-ghost { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.ca-bag-go:disabled, .ca-bag-ghost:disabled { cursor: default; }
+.ca-bag-go.is-loading { background: #86efac; }
+.ca-bag-spin { flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 2.5px solid currentColor; border-right-color: transparent; animation: caSpin .7s linear infinite; }
+@keyframes caSpin { to { transform: rotate(360deg); } }
+.ca-rr.is-loading .ca-bag-list, .ca-rr.is-loading .ca-bag-box, .ca-rr.is-loading .ca-bag-clear, .ca-rr.is-loading .ca-bag-pj { pointer-events: none; opacity: .55; transition: opacity .2s; }
+/* The success moment: the bag bursts, each item lands in turn, then Back to Game */
+.ca-bag-done { display: grid; justify-items: center; text-align: center; padding: 6px 0 2px; }
+.ca-bag-done-burst { position: relative; width: 84px; height: 84px; display: grid; place-items: center; margin: 4px 0 8px; }
+.ca-bag-done-bag { width: 72px; height: 72px; border-radius: 22px; display: grid; place-items: center; font-size: 40px; line-height: 1; background: rgba(74, 222, 128, .14);
+  border: 1px solid rgba(74, 222, 128, .5); box-shadow: 0 0 34px rgba(74, 222, 128, .3); animation: caDonePop .5s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes caDonePop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+.ca-bag-done-burst i { position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; background: #4ade80; opacity: 0;
+  animation: caBurst .7s ease-out .15s both; }
+.ca-bag-done-burst i:nth-child(odd) { background: #fff; }
+@keyframes caBurst { 0% { transform: rotate(var(--a)) translateY(0); opacity: 1; } 100% { transform: rotate(var(--a)) translateY(-54px); opacity: 0; } }
+.ca-bag-done-h { margin: 0 0 12px; font: italic 900 22px/1.2 Inter, sans-serif; letter-spacing: -.3px; color: #fff; text-wrap: balance; }
+.ca-bag-done-items { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 14px; padding: 0; }
+.ca-bag-done-items li { --c: 255, 255, 255; display: flex; align-items: center; gap: 7px; padding: 7px 12px 7px 8px; border-radius: 999px; background: rgba(var(--c), .12);
+  border: 1px solid rgba(var(--c), .45); color: #fff; font: 800 13px/1.2 Inter, sans-serif; animation: caLand .42s cubic-bezier(.2, 1.3, .4, 1) both; animation-delay: calc(.35s + var(--i) * .12s); }
+.ca-bag-done-items li.is-cards { --c: 56, 189, 248; } .ca-bag-done-items li.is-picks { --c: 167, 139, 250; } .ca-bag-done-items li.is-specials { --c: 244, 114, 182; }
+.ca-bag-done-items li span { font-size: 18px; line-height: 1; }
+@keyframes caLand { from { transform: translateY(-18px) scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
+.ca-bag-done-v { margin: 0 0 16px; font: 700 13px/1.4 Inter, sans-serif; color: #a2a2b8; text-wrap: balance; }
+.ca-bag-done-btns { display: grid; gap: 8px; width: 100%; }
+.ca-bag-done-btns .ca-bag-go { flex: none; width: 100%; height: 52px; }
+.ca-rr.is-done .ca-rr-panel { padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+/* 44px targets on phones without bigger buttons: each reaches a little past its edge (the owner kept the small look) */
+.ca-step-b, .ca-jump-b, .ca-sr-make, .ca-bag-clear, .ca-bag-join, .ca-bag-qa, .ca-bag-nudge { position: relative; }
+.ca-step-b::after { content: ''; position: absolute; inset: -7px -2px; }
+.ca-jump-b::after { content: ''; position: absolute; inset: -6px 0; }
+.ca-sr-make::after, .ca-bag-clear::after, .ca-bag-join::after { content: ''; position: absolute; inset: -9px -4px; }
+.ca-bag-qa::after, .ca-bag-nudge::after { content: ''; position: absolute; inset: -6px -2px; }
+@media (prefers-reduced-motion: reduce) { .ca-step output.is-tick, .ca-sr-note.is-new, .ca-bag-done-bag, .ca-bag-done-burst i, .ca-bag-done-items li { animation: none; opacity: 1; }
+  .ca-bag-done-burst i { display: none; } .ca-bag-spin { animation-duration: 1.6s; } }
 /* A Gameday Bag's items as lines under its sale (Admin Sales and a player's Purchases, 17 Oct 2026) */
 .ca-adm-baglines { list-style: none; display: grid; gap: 2px; margin: 5px 0 0; padding: 6px 8px; border-radius: 9px; background: rgba(74, 222, 128, .06); border: 1px solid rgba(74, 222, 128, .18); }
 .ca-adm-list .ca-adm-baglines li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
