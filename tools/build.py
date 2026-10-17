@@ -289,6 +289,18 @@ def page_meta(src, g):
             (r'<meta name="twitter:description" content="[^"]*">', '<meta name="twitter:description" content="%s">' % esc(desc))]
     for pat, rep in tags:
         src = re.sub(pat, lambda m: rep, src, count=1)
+    # its own share picture and icons from the final logo set (17 Oct 2026): assets/og/<art>-og.png, assets/icons/<art>-*.png
+    art = g.get('art')
+    if art:
+        og = SITE + 'assets/og/%s-og.png' % art
+        src = re.sub(r'<meta property="og:image" content="[^"]*">', lambda m: '<meta property="og:image" content="%s">' % og, src, count=1)
+        src = re.sub(r'<meta name="twitter:image" content="[^"]*">', lambda m: '<meta name="twitter:image" content="%s">' % og, src, count=1)
+        src = re.sub(r'<meta property="og:image:width" content="[^"]*">', '<meta property="og:image:width" content="1200">', src)
+        src = re.sub(r'<meta property="og:image:height" content="[^"]*">', '<meta property="og:image:height" content="630">', src)
+        icons = ('<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/%s-192.png">\n'
+                 '<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/%s-180.png">\n') % (art, art)
+        src = re.sub(r'[ \t]*<link rel="(?:icon|apple-touch-icon)"[^>]*>\n?', '', src)
+        src = re.sub(r'(<meta name="viewport"[^>]*>\n)', lambda m: m.group(1) + icons, src, count=1)
     return src
 
 
@@ -360,10 +372,7 @@ REG = None
 def main():
     global REG
     REG = registry()
-    # The home page's own copies of the logos lose the byline too (16 Oct 2026: 777 TDS' home card still said created by cast)
-    for rel in LOGOS:
-        if os.path.exists(os.path.join(HERE, rel)):
-            clear_byline(os.path.join(HERE, rel))
+    # (the home page's own logos are the final set since 17 Oct 2026, with no byline: only the games' own copies are cleared)
     for folder, src, gid, hide, play in GAMES:
         if ONLY and folder not in ONLY:
             continue

@@ -179,7 +179,7 @@
     var sp = sportOf(g), off = soon(g), c = off ? null : CG.continueOf(g), name = g.ou ? 'HIGHER OR LOWER' : g.name;
     var art = g.logo ? '<span class="cg-art"><img src="' + esc(CG.url(g.logo)) + '" alt="' + esc(g.name) + '" loading="lazy" decoding="async"></span>'
       : '<span class="cg-art is-mark" aria-hidden="true">' + (g.mark || '') + '</span><b class="cg-nm">' + esc(name) + '</b>';
-    var chips = (g.tag ? '<span class="cg-tag">' + esc(g.tag) + '</span>' : '') + (g.ou && where !== 'row' ? '<span class="cg-tag">' + esc(sp.chip || sp.name) + '</span>' : '');
+    var chips = (g.tag ? '<span class="cg-tag">' + esc(g.tag) + '</span>' : '') + (g.ou && !g.logo && where !== 'row' ? '<span class="cg-tag">' + esc(sp.chip || sp.name) + '</span>' : '');
     var inner = art + (chips ? '<span class="cg-tags">' + chips + '</span>' : '') +
       (c ? '<small class="cg-ln is-cont">' + esc(c.label) + '</small>' : '<small class="cg-ln">' + esc(g.line) + '</small>');
     if (off) return '<div class="cg-c is-soon" ' + vars(g) + ' aria-label="' + esc(g.name) + ', coming soon">' + inner + '<span class="cg-soon-chip">Coming Soon</span></div>';
