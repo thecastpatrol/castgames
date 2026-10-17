@@ -7553,7 +7553,7 @@
     rib1: { ico: '&#x23EA;', name: '1 Run It Back', price: '$0.99', what: '27-0 Classic: one loss in your season becomes a win', kind: 'rib', n: 1, chip: 'Instant' },
     rib3: { ico: '&#x23EA;', name: '3 Run It Backs', price: '$1.99', what: 'Just 66c each', kind: 'rib', n: 3, best: true, chip: 'Save 33%' },
     // The GOAT (29 Sep 2026; every draft game from 16 Oct 2026): this game's GOAT as your next pick. Shop only
-    goat1: { ico: '&#x1F410;', name: 'The GOAT', price: '$9.99', what: GOAT_HERE ? GOAT_HERE[0] + ', ' + GOAT_HERE[1] + ' ' + GOAT_HERE[2] : 'Each draft game\u2019s own GOAT', kind: 'goat', n: 1, tag: GOAT_HERE ? GOAT_HERE[0] : 'The GOAT',
+    goat1: { ico: '&#x1F410;', name: 'The GOAT', price: '$9.99', what: 'The #1 of whichever game you use it in', kind: 'goat', n: 1, tag: 'The GOAT',
       sub: GOAT_HERE ? GOAT_HERE[1] + ' ' + GOAT_HERE[2] + (GOAT_HERE[3] ? (/^at /.test(GOAT_HERE[3]) ? ' ' : ', ') + GOAT_HERE[3] : '') : 'The all-time great of whichever game you play' },
     freeze1: { ico: '&#x1F9CA;', name: '1 Streak Freeze', price: '$2.99', what: 'Saves your streak if you miss a day', kind: 'fz', n: 1, chip: 'Automatic' },
     // The Streak Restore (one off, from its own pop-up)
@@ -7606,8 +7606,7 @@
     ['rm', '&#x274C;', 'Remove Players', 'Regret a pick? Take one player out of your team and draft that spot again.', '', ['remove12', 'remove5', 'remove1']],
     ['rv', '&#x1F440;', 'Reveals', 'See the hidden numbers before you pick: tries, goals, runs, TDs, Group 1 wins or ratings, whichever game you play.', '', ['reveal5', 'reveal1']],
     ['legend', '&#x2B50;', 'Legend Keys', 'Swap an offer for a Legends Pick: three greats of the game to choose from. Use as many as you have in one team.', 'In each draft game\u2019s main mode', ['legend3', 'legend1']],
-    ['goat', '&#x1F410;', 'The GOAT', GOAT_HERE ? goatLine(GOAT_HERE) + ', straight into your ' + TEAM_N + ' as your next pick. In another draft game, it brings that game\u2019s GOAT.'
-      : 'The all-time great of whichever game you play, straight into your team as your next pick: Alex Johnston, Tony Lockett, Chris Lynn, Sachin Tendulkar, Jerry Rice or Damien Oliver.', 'In each draft game\u2019s main mode and Exactly, once a game', ['goat1']],
+    ['goat', '&#x1F410;', 'The GOAT', 'The #1 player of whichever CAST draft game you use it in, straight into your team as your next pick. One item, every game.', 'In each draft game\u2019s main mode and Exactly, once a game', ['goat1']],
     ['imm', '&#x1F3DB;&#xFE0F;', 'Immortal Pick', 'Choose one of three of the game\u2019s Immortals for an open spot in your 13: at 99 in 27-0, with his career tries in 1000TRIES.', '27-0 (Classic, Hard and Packs) and 1000TRIES (1000+, Exactly 1000 and Team Spin), any time', ['imm3', 'imm1']],
     ['superstar', '&#x1F31F;', 'Superstar Keys', '27-0\u2019s own key: your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
     ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run a 27-0 season back and your closest loss becomes a win, or keep an over/under streak alive.', '', ['rib3', 'rib1']],
@@ -7885,7 +7884,7 @@
     }
     h += '<ul class="ca-bag-list">' + Q.lines.map(function (l) {
       var cls = l.k === 'legend' || l.k === 'superstar' ? 'key' : l.k, ch = bagCheaper(l), max = l.q >= BAG_MAX[l.k];
-      var small = l.bonus ? '+' + l.bonus + ' CAST Pass Bonus Key' + (l.bonus === 1 ? '' : 's') : l.q > 1 ? bagEach(l.c, l.q) : l.it[2] === 'The GOAT' && GOAT_HERE ? GOAT_HERE[0] : '';
+      var small = l.bonus ? '+' + l.bonus + ' CAST Pass Bonus Key' + (l.bonus === 1 ? '' : 's') : l.q > 1 ? bagEach(l.c, l.q) : l.it[2] === 'The GOAT' ? 'Any game\u2019s #1' : '';
       return '<li class="ca-bag-row is-' + cls + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span><b class="ca-bag-rn">' + bagName(l) + '</b>' +
         '<strong class="ca-bag-rp">' + cents$(l.c) + '</strong><small class="ca-bag-rs' + (l.bonus ? ' is-pass' : '') + '">' + small +
         (ch ? (small ? ' ' : '') + '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + ch[0] + '">Make It ' + ch[0] + ' for ' + cents$(ch[1]) + '</button>' : '') + '</small>' +
