@@ -21,7 +21,14 @@
    picture (left third back, the rest on). Next sits in the same place on every step. Skip on every step but the last,
    which has a close instead. The phone's Back closes it: the root is a body > .ca with a .ca-x, so the account's Back
    helper picks it up like any pop-up. GA: cg_tour_open { from, who } and then one of cg_tour_finish { step, action, who }
-   or cg_tour_skip { step, how, who }. */
+   or cg_tour_skip { step, how, who }. from: hero (The Sports banner), welcome (the Welcome banner), link, auto.
+
+   Once by itself (18 Oct 2026, the owner: "once for everyone"): anyone, guest or signed in, who has never finished,
+   skipped or closed it gets it once on the home page (CGTour.auto, after the page's hook loads this file). The seen
+   flag is this device's own (localStorage cg_tour_seen_v1, no new profile field). It waits for a quiet home: never over
+   a pop-up (sign-in and sign-up steps, Shop, CAST Pass, the in-app browser how-to, Contact Us, the game switcher, the
+   tester password), never on an address that came with a purpose (a #link, a Stripe or Pass return, a test switch), and
+   only once the account has settled and nobody has touched the page for a moment. */
 (function () {
   'use strict';
   if (window.CGTour) return;
@@ -118,9 +125,11 @@
     var C = window.CG_DAILY_NRL || window.CAST_DAILY;
     try {
       var d = C.day(sydDate(Date.now())), era = d.key.indexOf('era:') === 0, lead = d.lead != null ? d.lead : era ? 'From ' : 'With ';
-      return d.g1000.target + '+ ' + lead + d.short;
+      return plainDash(d.g1000.target + '+ ' + lead + d.short);
     } catch (e) { return 'A new challenge today'; }
   }
+  // No en dashes, minus signs or em dashes on screen (the owner's rule), even from a calendar's own words
+  function plainDash(t) { return String(t).replace(/(\d)\s*[\u2013\u2212]\s*(\d)/g, '$1 to $2').replace(/\s*\u2014\s*/g, ', ').replace(/[\u2013\u2212]/g, '-'); }
   function nextDaily() {
     try {
       var p = {};
@@ -315,6 +324,7 @@
   function close(how, action) {
     if (!root || root.hidden) return;
     var step = at + 1, done = !!action;
+    try { localStorage.setItem(SEEN, '1'); } catch (e) { /* storage blocked */ }
     if (!ended) {
       ended = true;
       if (done) track('cg_tour_finish', { step: step, action: action, who: whoNow });
@@ -368,5 +378,47 @@
     }
   }
 
-  window.CGTour = { open: open, close: function () { close('skip'); }, step: function (i) { if (root && !root.hidden) goTo(i, false); return at; } };
+  /* ---------------- Once by itself ---------------- */
+  var SEEN = 'cg_tour_seen_v1', autoOn = false;
+  function seen() { try { return localStorage.getItem(SEEN) === '1'; } catch (e) { return true; } }
+  // An address with a purpose (a #link, a Stripe or Pass return, an invite, a test switch): not this visit. Ad and social
+  // tags are an ordinary visit
+  function plainVisit() {
+    if (location.hash && location.hash !== '#') return false;
+    var q = location.search.replace(/^\?/, '');
+    return !q || q.split('&').every(function (p) { return /^(utm_[a-z]+|fbclid|gclid|igshid|ttclid|msclkid|si)(=|$)/i.test(p); });
+  }
+  function shown(n) { if (!n || n.hidden) return false; var r = n.getClientRects(); if (!r.length) return false; var cs = getComputedStyle(n); return cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity > 0.05; }
+  // Anything already up: the account's pop-ups and panels (sign-in, sign-up steps, Shop, CAST Pass, the in-app how-to...),
+  // Contact Us, the game switcher, the tester password, a toast, the in-app browser box, any other dialog
+  function busy() {
+    var h = document.documentElement;
+    if (h.classList.contains('ca-open') || h.classList.contains('cg-sheet-open') || h.classList.contains('cgt-open')) return true;
+    var list = document.querySelectorAll('body > .ca, body > .ctc, .cg-sheet, #cgGate, .ca-toast, .ca-ia-box, [role="dialog"], [aria-modal="true"]');
+    for (var i = 0; i < list.length; i++) { if (list[i] !== root && !(root && root.contains(list[i])) && shown(list[i])) return true; }
+    return false;
+  }
+  function settled() { var w = call('contactWho', null); return !w || w.state !== 'loading'; }
+  function auto() {
+    CG = CG || window.CG;
+    if (autoOn || !CG || window.CG_SPORT || seen() || !plainVisit()) return;
+    autoOn = true;
+    var t0 = Date.now(), last = Date.now(), calm = 0, iv = 0;
+    var touched = function () { last = Date.now(); calm = 0; };
+    // a person's taps, keys and page scrolls (not the home slides turning by themselves, whose scroll stays in their strip)
+    var EV = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'];
+    EV.forEach(function (n) { window.addEventListener(n, touched, { passive: true }); });
+    var stop = function () { clearInterval(iv); EV.forEach(function (n) { window.removeEventListener(n, touched, { passive: true }); }); };
+    iv = setInterval(function () {
+      // gives up for this visit after 90 s, or once it has been opened some other way
+      if (Date.now() - t0 > 90000 || seen() || (root && !root.hidden)) { stop(); return; }
+      if (document.hidden || busy() || Date.now() - last < 2500 || (!settled() && Date.now() - t0 < 12000)) { calm = 0; return; }
+      if (++calm < 2) return; // clear twice in a row, then when the browser is idle
+      stop();
+      var go = function () { if (!busy() && !seen() && (!root || root.hidden)) open('auto'); };
+      if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1500 }); else go();
+    }, 700);
+  }
+
+  window.CGTour = { auto: auto, open: open, close: function () { close('skip'); }, step: function (i) { if (root && !root.hidden) goTo(i, false); return at; } };
 })();

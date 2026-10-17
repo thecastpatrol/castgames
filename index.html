@@ -36,13 +36,14 @@
   <a href="1000tries/privacy.html">Privacy</a><a href="1000tries/terms.html">Terms</a><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button>
   <small>&copy; 2026 The Cast Patrol</small>
 </footer>
-<!-- How CAST Games Works (17 Oct 2026, the owner): a tap on The Sports banner, anywhere but its See All Games button, opens
-     the tour (shared/cg-tour.js, css/cg-tour.css), loaded on that first tap so the home page loads nothing extra.
-     castgames.com.au/#how-it-works opens it too, once the page has loaded. tools/build.py keeps the two versions up to date -->
+<!-- How CAST Games Works (17 Oct 2026, the owner): a tap on The Sports or Welcome banner, anywhere but its button, opens
+     the tour (shared/cg-tour.js, css/cg-tour.css), loaded on that first tap. castgames.com.au/#how-it-works opens it too.
+     Once by itself for anyone who hasn't seen it (18 Oct 2026): loaded after the page, then CGTour.auto waits for a quiet
+     home. tools/build.py keeps the two versions up to date -->
 <script>
 (function () {
-  var F = ['css/cg-tour.css?v=55a176b4', 'shared/cg-tour.js?v=64dd4a84'], wait = 0, want = '';
-  function go() { if (window.CGTour) window.CGTour.open(want); }
+  var F = ['css/cg-tour.css?v=55a176b4', 'shared/cg-tour.js?v=2fb30a8d'], wait = 0, want = '';
+  function go() { var T = window.CGTour; if (T) { if (want === 'auto') T.auto(); else T.open(want); } }
   function open(from) {
     want = from;
     if (window.CGTour) { go(); return; }
@@ -53,12 +54,16 @@
     var s = document.createElement('script'); s.src = F[1]; s.onload = done; s.onerror = fail; document.body.appendChild(s);
   }
   document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('.cgb.is-sports');
-    if (!b || e.target.closest('.cgb-b')) return; // See All Games still goes to All Games
+    var b = e.target.closest && e.target.closest('.cgb.is-sports, .cgb.is-welcome');
+    if (!b || e.target.closest('.cgb-b')) return; // their buttons (See All Games, Start Playing) still go to All Games
     e.preventDefault(); e.stopPropagation();
-    open('hero');
+    open(b.classList.contains('is-welcome') ? 'welcome' : 'hero');
   }, true);
-  if (location.hash === '#how-it-works') window.addEventListener('load', function () { open('link'); });
+  var seen = '1'; try { seen = localStorage.getItem('cg_tour_seen_v1'); } catch (e) { /* storage blocked: never by itself */ }
+  window.addEventListener('load', function () {
+    if (location.hash === '#how-it-works') open('link');
+    else if (!seen && !window.CG_SPORT) setTimeout(function () { if (!want) open('auto'); }, 1500);
+  });
 })();
 </script>
 <script>
