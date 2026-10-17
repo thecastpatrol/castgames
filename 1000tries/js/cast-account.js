@@ -4580,9 +4580,12 @@
     if (n.src === 'prem') ico = '&#x1F3C6;';
     if (n.src === 'potw') ico = '&#x1F31F;'; // the Player of the Week prize (16 Oct 2026)
     if (n.src === 'welcome' || n.src === 'gift') ico = '&#x1F381;'; // a new CAST Profile's two keys (7 Oct 2026); the owner's Give Items (11 Oct 2026)
-    var kicker = n.src === 'streak' ? n.days + '-Day Streak' : n.src === 'potw' ? 'CAST Player of the Week' : n.src === 'gift' ? 'From The Cast Patrol' : n.src === 'optin' ? 'Thanks for Joining' : n.src === 'welcome' ? 'Welcome to CAST Games' : n.src === 'toty' ? 'Team of the Year' : n.src === 'prem' ? '2026 Premiers' : 'Daily Challenge Complete';
-    var title = n.src === 'welcome' ? 'Your Welcome Gift' : n.src === 'potw' ? 'Your Player of the Week Prize' : items + (n.src === 'streak' ? '' : ' Added');
-    var line = n.src === 'streak' ? 'You’ve played ' + n.days + ' days in a row. Your reward is in your Vault.' + (next && next.items ? ' Next: ' + D.itemsText(next.items) + ' at ' + next.days + ' days.' : '')
+    // A refunded or bank-reversed Shop purchase (17 Oct 2026): what came off, in the server's own words (and, a dispute won, what went back)
+    var rfd = n.src === 'refund' || n.src === 'refundback';
+    if (rfd) ico = n.src === 'refundback' ? '&#x2705;' : '&#x1F9FE;';
+    var kicker = rfd ? (n.src === 'refundback' ? 'Items Back' : n.why === 'dispute' ? 'Payment Reversed' : 'Purchase Refunded') : n.src === 'streak' ? n.days + '-Day Streak' : n.src === 'potw' ? 'CAST Player of the Week' : n.src === 'gift' ? 'From The Cast Patrol' : n.src === 'optin' ? 'Thanks for Joining' : n.src === 'welcome' ? 'Welcome to CAST Games' : n.src === 'toty' ? 'Team of the Year' : n.src === 'prem' ? '2026 Premiers' : 'Daily Challenge Complete';
+    var title = rfd ? (n.src === 'refundback' ? 'Your Items Are Back' : 'Items Removed') : n.src === 'welcome' ? 'Your Welcome Gift' : n.src === 'potw' ? 'Your Player of the Week Prize' : items + (n.src === 'streak' ? '' : ' Added');
+    var line = rfd ? String(n.text || '') : n.src === 'streak' ? 'You’ve played ' + n.days + ' days in a row. Your reward is in your Vault.' + (next && next.items ? ' Next: ' + D.itemsText(next.items) + ' at ' + next.days + ' days.' : '')
       : n.src === 'potw' ? 'You\u2019re this week\u2019s CAST Player of the Week. ' + items + ' are in your Vault, ready for your next games.'
       : n.src === 'gift' ? 'A gift for you. ' + (Object.keys(n.items || {}).reduce(function (t, k) { return t + (+n.items[k] || 0); }, 0) > 1 ? 'They\u2019re' : 'It\u2019s') + ' in your Vault, ready for your next game.'
       : n.src === 'optin' ? 'Thanks for joining the CAST Games emails. Your free Reveal is in your Vault, ready for your next draft.'
@@ -4612,8 +4615,8 @@
           '<div class="ca-kicker">' + esc(kicker) + '</div>' +
           '<h2 class="ca-title" id="caRwTitle">' + esc(title) + '</h2>' +
           '<p class="ca-text">' + esc(line) + '</p></div>' +
-        '<button type="button" class="ca-btn ca-btn-primary" data-rwp="close">Nice!</button>' +
-        '<button type="button" class="ca-btn ca-btn-ghost" data-rwp="vault">Open My Vault</button>' +
+        '<button type="button" class="ca-btn ca-btn-primary" data-rwp="close">' + (n.src === 'refund' ? 'OK' : 'Nice!') + '</button>' +
+        (n.src === 'refund' ? '' : '<button type="button" class="ca-btn ca-btn-ghost" data-rwp="vault">Open My Vault</button>') +
       '</div>';
     rwEl.hidden = false;
     document.documentElement.classList.add('ca-open');
@@ -8543,7 +8546,10 @@
     return h + '<ul class="ca-adm-list ca-adm-people ca-adm-sales">' + rows.map(function (s) {
       var w = s.who, name = w ? (w.gone ? 'Account deleted' : w.n || 'No name yet') : 'Not on a CAST Profile', tap = !!(w && w.n && !w.gone);
       var site = s.site === '27-0' ? '27-0' : s.site === '1000tries' ? '1000TRIES' : '';
-      var tag = s.refunded > 0 ? '<span class="ca-adm-tags is-under"><span class="ca-mod-tag is-refund">' + (s.refunded >= s.paid ? 'Refunded' : 'Part Refunded') + '</span></span>' : '';
+      // A refund or bank dispute's reversal (17 Oct 2026): its tag, and what came off the account under the sale
+      var rv = s.rev, rvTag = rv ? '<span class="ca-mod-tag is-refund">' + (rv.why === 'dispute' ? (rv.won ? 'Dispute Won' : 'Disputed') : s.refunded > 0 ? 'Items Removed' : 'Refunded') + '</span>' : '';
+      var tag = s.refunded > 0 || rv ? '<span class="ca-adm-tags is-under">' + (s.refunded > 0 ? '<span class="ca-mod-tag is-refund">' + (s.refunded >= s.paid ? 'Refunded' : 'Part Refunded') + '</span>' : '') + rvTag + '</span>' +
+        (rv ? '<small class="ca-adm-rev">' + esc(rv.text) + '</small>' : '') : '';
       return '<li' + (tap ? ' class="is-tap" role="button" tabindex="0" data-ca="adm-find-name" data-n="' + esc(w.n) + '"' : '') + '>' + badge(w && w.c) +
         '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag + '</span>' +
         (s.refunded >= s.paid ? '<b class="ca-adm-sale is-refunded">' + money(s.paid) + '</b>' : '<b class="ca-adm-sale">' + money(s.paid - s.refunded) + '</b>') + '</li>';
@@ -9412,6 +9418,12 @@
       var held = VN.filter(function (x) { return r.vault[x[0]] > 0; }).map(function (x) { var n = r.vault[x[0]]; return countName(n, x[1] + (n === 1 ? '' : 's')); });
       rows.push(['Vault', held.length ? held.join(', ') : 'Empty']);
     }
+    // Refunds and bank disputes on their Shop purchases (17 Oct 2026): when, and what came off (or went back)
+    // (one row each: "Disputed" with "1 GOAT removed, 17/10/26 1:17pm"; a number never sits alone at the end of a line)
+    (r.refunds || []).slice(0, 5).forEach(function (x) {
+      var m = /^([^:]+): (.*)$/.exec(x.text || '') || [null, 'Refund', x.text || ''];
+      rows.push([m[1].replace(/\b\w/g, function (c) { return c.toUpperCase(); }), m[2].replace(/(\d) /g, '$1\u00A0') + ' \u00B7 ' + joinedAt(x.at)]);
+    });
     // CAST Pass: when it started (the date and time), the plan, and when it renews or ends
     var pi = r.passInfo;
     if (pi && (pi.on || pi.since)) {
