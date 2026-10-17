@@ -1958,7 +1958,7 @@ body {
 .slot.is-filled.is-silks { background: var(--silks); border-color: rgba(255, 255, 255, .6); box-shadow: 0 4px 12px rgba(0, 0, 0, .45); text-shadow: none; }
 .slot.is-silks .slot-code, .slot.is-silks .slot-name, .slot.is-silks .slot-tries { color: #fff; background: rgba(8, 12, 20, .8); border-radius: 5px; opacity: 1; }
 .slot.is-silks .slot-code { padding: 1px 4px; }
-.slot.is-silks .slot-name { box-sizing: border-box; max-width: 100%; padding: 1px 3px; white-space: normal; overflow-wrap: normal; overflow: visible; } /* js/app.js fitSlotNames steps a long name down until it fits whole */
+.slot.is-silks .slot-name { box-sizing: border-box; max-width: 100%; padding: 1px 3px; white-space: nowrap; overflow-wrap: normal; overflow: hidden; } /* one line always (17 Oct 2026: Du Plessis wrapped to two and covered the silks); js/app.js fitSlotNames steps a long name down until it fits whole */
 .slot.is-silks .slot-tries { padding: 0 5px; margin-top: 3px; }
 .slot.is-legend.is-silks { border-color: #e7c08f; box-shadow: 0 0 14px rgba(217, 166, 107, .45); }
 .slot.is-legend.is-silks .slot-name, .slot.is-legend.is-silks .slot-tries { color: #e7c08f; }
