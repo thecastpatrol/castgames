@@ -113,7 +113,7 @@
         return '<button type="button" class="cg-tab' + (t[0] === 'play' ? ' is-on' : '') + '" data-cg="' + t[0] + '"><i aria-hidden="true">' + t[1] + '</i><span>' + t[2] + '</span></button>';
       }).join('') + '</nav>' +
       '<span class="cg-sp"></span>' +
-      '<span class="cg-right"><button type="button" class="cg-new" data-cg="new" hidden><i aria-hidden="true">&#x1F504;</i><span>New Game</span></button><span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span></span>' +
+      '<span class="cg-right"><button type="button" class="cg-new" data-cg="new" aria-label="New Game" title="New Game" hidden><i aria-hidden="true">&#x1F195;</i></button><span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span></span>' +
       '</div>';
     document.body.insertBefore(el, document.body.firstChild);
     document.documentElement.classList.add('cg-on');
