@@ -1117,9 +1117,14 @@
   /* A Daily Challenge link (?play=daily: the CAST Games home's Daily Challenge cards) can be read before js/daily.js and
      the account have run, as the players often arrive first, and then the Daily never started (17 Oct 2026, the bug hunt:
      the game's own card showed instead, for guests and signed-in players alike). It starts once both are there */
+  // and once the account knows who is playing and whether its game is launched, so a guest gets the Daily's sign-in rather
+  // than a go of the Daily (a first visit has no launch list yet: cast_launch_v1); after 8 s it starts anyway
+  var acctSeen = !window.CAST_ACCOUNT;
+  window.addEventListener('cast-account', function (e) { var s = e.detail && e.detail.status; if (s === 'signed-in' || s === 'guest') acctSeen = true; });
+  function launchKnown() { try { return !!localStorage.getItem('cast_launch_v1'); } catch (e) { return true; } }
   function dailyWhenReady(n) {
     n = n || 0;
-    if (T.dailyStart && T.players.length && (!window.CAST_ACCOUNT || window.CastAccount)) { T.dailyStart(); return; }
+    if (T.dailyStart && T.players.length && (!window.CAST_ACCOUNT || (window.CastAccount && ((acctSeen && launchKnown()) || n >= 40)))) { T.dailyStart(); return; }
     if (n < 75) setTimeout(function () { dailyWhenReady(n + 1); }, 200);
   }
   function playMode(modeId) {
