@@ -779,9 +779,47 @@
     if (T.buildShareCard) T.buildShareCard(S, out).then(function (card) { if (T.state() === S) shareCard = card; });
     if (out.win || S.pb) sfx.win(); else sfx.done();
     show('results');
+    if (!S.daily && !S.qd) resBoardStart(S, out.total);
     if (S.daily && T.dailyDone) T.dailyDone(S, out);
     countUp($('rtNum'), 0, out.total);
   }
+  /* The leaderboard on the results (R.resBoard): Today first, This Week and All Time when tapped. One small read of the
+     public board per period (CastAccount.resultBoard keeps it a minute); a score outside the top rows asks the signed-in
+     player's own place once, after the server has had time to save the game. Only once CAST accounts are on for SC */
+  var rb = { S: null, period: 'today', score: 0, data: {}, own: {} };
+  function resBoardOn() { var A = window.CastAccount; return !!(A && A.resultBoard && A.tier && A.tier() !== null); }
+  function resBoardDraw() {
+    var el = $('resBoard');
+    if (!el || rb.S !== T.state()) return;
+    el.hidden = false;
+    el.innerHTML = R.resBoard(rb);
+  }
+  function resBoardLoad(period) {
+    rb.period = period;
+    resBoardDraw();
+    if (rb.data[period] && !rb.data[period].failed) return;
+    var S = rb.S;
+    delete rb.data[period];
+    CastAccount.resultBoard('scplus', period).then(function (b) {
+      if (rb.S !== S) return;
+      rb.data[period] = b;
+      resBoardDraw();
+      var rows = (b.top || []).filter(function (r) { return !b.me || r.n !== b.me.name; });
+      var outside = (b.top || []).length >= 100 && (b.players || 0) > (b.top || []).length && rows.length && rb.score < rows[rows.length - 1].s;
+      if (outside && b.me && !rb.own[period]) {
+        setTimeout(function () {
+          b.rank().then(function (r) { if (rb.S === S && r && r.s === rb.score && r.rank) { rb.own[period] = r.rank; if (rb.period === period) resBoardDraw(); } }, function () {});
+        }, 4000);
+      }
+    }, function () { if (rb.S !== S) return; rb.data[period] = { failed: true }; resBoardDraw(); });
+  }
+  function resBoardStart(S, score) {
+    if (!resBoardOn()) return;
+    rb = { S: S, period: 'today', score: score, data: {}, own: {} };
+    T.track('results_board_view', { total: score });
+    resBoardLoad('today');
+  }
+
   var LS_BEST = 'sc_best_v1';
   function bestScore() { try { return +localStorage.getItem(LS_BEST) || 0; } catch (e) { return 0; } }
   T.bestScore = bestScore;
@@ -892,6 +930,9 @@
       case 'lock-in': if (T.state()) lockIn(T.state()); break;
       case 'captain': setCaptain(); break;
       case 'no-captain': if (T.state()) noCaptain(T.state(), false); break;
+      case 'rb-tab': { var rv = t.getAttribute('data-v'); if (rv && rb.S === T.state()) resBoardLoad(rv); break; }
+      case 'rb-retry': if (rb.S === T.state()) resBoardLoad(rb.period); break;
+      case 'rb-signin': T.track('results_board_signin', {}); if (window.CastAccount && CastAccount.requireSignIn) CastAccount.requireSignIn(null, 'leaderboard'); break;
       case 'play-again': {
         var wasDaily = !!(T.state() && T.state().daily);
         if (wasDaily && T.dailyStart) T.dailyStart(); else newGame(selectedMode);

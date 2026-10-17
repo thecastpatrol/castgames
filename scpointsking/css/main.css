@@ -1866,3 +1866,32 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 /* The Legend Key's line under the offer ("Not these? Swap for a Legends Pick"), in the key's violet */
 .key-swap { border-color: rgba(167, 139, 250, .6); background: rgba(167, 139, 250, .08); color: #c4b5fd; }
 @media (hover: hover) { .key-swap:hover { background: rgba(167, 139, 250, .16); } }
+
+/* The leaderboard on the results (R.resBoard, 17 Oct 2026): where this score sits, the top 3 with the crown, the rows
+   either side of it and what it takes to pass the one above */
+.res-board { margin: 14px 0 0; padding: 14px 14px 12px; border-radius: 16px; background: var(--card); border: 1.5px solid #22344f; }
+.rb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 10px; }
+.rb-kick { font-size: 12px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.rb-where { font-size: 20px; font-weight: 900; color: #fff; text-align: right; font-variant-numeric: tabular-nums; }
+.rb-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0 0 10px; }
+.rb-tab { min-height: 36px; border-radius: 999px; border: 1px solid #22344f; background: rgba(255, 255, 255, .04); color: var(--muted); font: 800 13px/1 var(--font); cursor: pointer; white-space: nowrap; }
+.rb-tab.is-on { background: rgba(var(--acc-rgb), .16); border-color: rgba(var(--acc-rgb), .6); color: #fff; }
+.rb-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rb-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 38px; padding: 0 12px; border-radius: 10px; background: rgba(255, 255, 255, .04); }
+.rb-rank { font-size: 13px; font-weight: 900; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rb-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 800; color: #fff; }
+.rb-name em { font-style: normal; font-size: 11px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--gold); }
+.rb-pts { font-size: 15px; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; }
+.rb-row.is-king .rb-rank { color: #fff; }
+.rb-row.is-you { background: rgba(var(--acc-rgb), .14); box-shadow: inset 0 0 0 1.5px rgba(var(--acc-rgb), .7); }
+.rb-row.is-you .rb-pts, .rb-row.is-you .rb-rank { color: var(--gold); }
+.rb-gap { text-align: center; color: var(--muted); font-weight: 900; letter-spacing: 2px; line-height: 1; }
+.rb-pass { margin: 10px 0 0; text-align: center; font-size: 14px; color: #d6d6e4; text-wrap: balance; }
+.rb-pass b { color: var(--gold); font-variant-numeric: tabular-nums; }
+.rb-note { margin: 8px 0 0; text-align: center; font-size: 12.5px; color: var(--muted); text-wrap: balance; }
+.rb-retry { margin-left: 6px; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(var(--acc-rgb), .6); background: rgba(var(--acc-rgb), .12); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.rb-signin { margin-top: 10px; }
+/* A long leaderboard name (up to 18 letters, plus "(this game)") wraps rather than being cut */
+.rb-name { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; line-height: 1.2; padding: 4px 0; }
+@media (max-width: 380px) { .rb-name, .rb-pts { font-size: 14px; } .rb-row { grid-template-columns: 42px minmax(0, 1fr) auto; padding: 0 10px; } }
+.rb-row.is-mine .rb-name { color: #c8d3e6; }
