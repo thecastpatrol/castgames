@@ -144,7 +144,8 @@
     var m = T.MODES.plus, c = MODE_CARD.plus;
     var main = '<button type="button" class="mode-card mode-main' + (selected === 'plus' ? ' is-on' : '') + '" data-mode="plus" aria-label="Play ' + esc(m.name) + '">' +
       '<span class="mode-tag">Classic</span>' +
-      '<span class="mode-ico" aria-hidden="true">' + c.ico + '</span>' +
+      // the game's own logo on its Classic card, not a sport emoji (17 Oct 2026, the owner)
+      '<span class="mode-ico is-logo" aria-hidden="true"><img class="mode-logo" src="assets/logos/777tds.png?v=1" alt=""></span>' +
       '<span class="mode-name">' + esc(m.name) + '</span>' +
       '<span class="mode-line">Draft an offence of ' + T.SLOTS.length + '. ' + esc(c.line) + ' career TDs</span>' +
       '<span class="mode-chips">' + c.chips.map(function (t) { return '<span class="mode-chip">' + esc(t) + '</span>'; }).join('') + '</span>' +

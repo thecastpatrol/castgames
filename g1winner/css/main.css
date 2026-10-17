@@ -1981,3 +1981,8 @@ body {
 @media (hover: hover) { .footer-links a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
 .footer-legal a { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); color: #c9c9d8; font-weight: 700; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .footer-legal, .nf-sub { text-wrap: balance; } /* no word alone on the last line at 390px (audit T9) */
+
+/* The Classic card shows the game's logo (17 Oct 2026) */
+.mode-main .mode-ico.is-logo { display: grid; place-items: center; }
+.mode-main .mode-logo { display: block; width: 112px; height: auto; }
+@media (max-width: 420px) { .mode-main .mode-logo { width: 92px; } }
