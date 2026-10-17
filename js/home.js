@@ -162,13 +162,14 @@
       return d || (pr[a.id] == null ? 99 : pr[a.id]) - (pr[b.id] == null ? 99 : pr[b.id]);
     });
   }
-  // A sport's cards: games in progress first (newest), then most played (CG.byPopular, the World Cup games last, 18 Oct
-  // 2026), then Coming Soon
+  // A sport's cards: games in progress first (newest), then most played (CG.byPopular), the World Cup cards lifted to 2nd
+  // and 4th of those (CG.wcSlots), then Coming Soon
   function sportCards(sid) {
     var gs = CG.GAMES.filter(function (g) { return g.sport === sid && g.status !== 'hidden'; });
     var on = CG.byPopular ? CG.byPopular(gs.filter(live), bd ? players : null) : byPlays(gs.filter(live)), cont = [], rest = [];
     on.forEach(function (g) { var c = CG.continueOf(g); if (c) cont.push([g, c.at || 0]); else rest.push(g); });
     cont.sort(function (a, b) { return b[1] - a[1]; });
+    if (CG.wcSlots) rest = CG.wcSlots(rest); // the World Cup cards 2nd and 4th among the rest (18 Oct 2026)
     return { live: cont.map(function (x) { return x[0]; }).concat(rest), soon: gs.filter(soon) };
   }
 

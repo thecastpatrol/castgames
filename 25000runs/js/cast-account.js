@@ -8300,7 +8300,7 @@
   /* ---------------- The Shop, design A2 (17 Oct 2026, the owner's pick and BUILD IT) ----------------
      One scrolling list in four groups (Wildcards, Picks, Specials, Streak) under sticky headings, with a jump bar on top
      that follows the scroll. One compact row per item: emoji, name, one short line, its bundle chips and where it works,
-     the price and - 0 + steppers. Every + goes straight into the Gameday Bag: there is no Buy Now on this page, one
+     the price and the minus, count and plus steppers. Every + goes straight into the Gameday Bag: there is no Buy Now on this page, one
      Checkout pays for it all (the games' own pop-ups stay one tap). Bundle prices apply by themselves as the count rises,
      and a small nudge says when a few cents more (or less) gets a bundle. A free profile sees a CAST Pass card first (gold
      is only ever the Pass), then the Vault strip; the Gameday Bag bar is pinned at the foot with the savings bar in
@@ -8566,7 +8566,7 @@
     var nw = SHOP_NEW[k] && Date.now() < SHOP_NEW[k], pop = k === shopPopular();
     var step = held ? '<span class="ca-sr-ready">&#x2713; Ready</span>' :
       '<div class="ca-step' + (q ? ' is-on' : '') + '" role="group" aria-label="How many ' + esc(it[2]) + '">' +
-      '<button type="button" class="ca-step-b is-dec" data-ca="shop-step" data-k="' + k + '" data-d="-1" aria-label="' + (q === 1 ? 'Take out of the bag' : 'One less') + '"' + (!q || young ? ' disabled' : '') + '>-</button>' +
+      '<button type="button" class="ca-step-b is-dec" data-ca="shop-step" data-k="' + k + '" data-d="-1" aria-label="' + (q === 1 ? 'Take out of the bag' : 'One less') + '"' + (!q || young ? ' disabled' : '') + '><i class="ca-minus" aria-hidden="true"></i></button>' +
       '<output>' + q + '</output>' +
       '<button type="button" class="ca-step-b is-inc" data-ca="shop-step" data-k="' + k + '" data-d="1" aria-label="One more"' + (q >= max || young ? ' disabled' : '') + '>+</button></div>';
     return '<div class="ca-sr' + (q ? ' is-in' : '') + (held ? ' is-held' : '') + '" id="caShop-' + k + '">' +
@@ -8786,7 +8786,7 @@
       return '<li class="ca-bag-row is-' + cat + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span>' +
         '<div class="ca-bag-rt"><b class="ca-bag-rn">' + bagName(l) + '</b><small class="ca-bag-rs">' + small + '</small></div>' +
         '<div class="ca-bag-rb"><div class="ca-bag-rp">' + (l.saved ? '<s>' + cents$(l.full) + '</s>' : '') + '<b>' + cents$(l.cents) + '</b></div>' +
-        '<div class="ca-step is-on" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-step-b is-dec" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out of the bag' : 'One less') + '">-</button>' +
+        '<div class="ca-step is-on" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-step-b is-dec" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out of the bag' : 'One less') + '"><i class="ca-minus" aria-hidden="true"></i></button>' +
         '<output>' + l.q + '</output><button type="button" class="ca-step-b is-inc" data-rr="bag-inc" data-k="' + l.k + '" aria-label="One more"' + (max ? ' disabled' : '') + '>+</button></div></div></li>';
     }).join('') + '</ul>';
     // The savings: the bar, the line, and quick adds to the next saving
@@ -10940,7 +10940,7 @@
     return '<div class="ca-adm-give"><ul class="ca-give-list">' + GIVE_ITEMS.map(function (x) {
       var n = G.items[x[0]] || 0, has = v[x[0]] || 0;
       return '<li><span class="ca-give-n"><span class="ca-give-ico" aria-hidden="true">' + x[1] + '</span>' + x[2] + 's' + (has ? ' <small>has ' + has + '</small>' : '') + '</span>' +
-        '<span class="ca-give-step"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-step" data-k="' + x[0] + '" data-d="-1" aria-label="One fewer ' + x[2] + '"' + (n ? '' : ' disabled') + '>-</button>' +
+        '<span class="ca-give-step"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-step" data-k="' + x[0] + '" data-d="-1" aria-label="One fewer ' + x[2] + '"' + (n ? '' : ' disabled') + '><i class="ca-minus" aria-hidden="true"></i></button>' +
         '<b>' + n + '</b><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-give-step" data-k="' + x[0] + '" data-d="1" aria-label="One more ' + x[2] + '"' + (n < 20 ? '' : ' disabled') + '>+</button></span></li>';
     }).join('') + '</ul>' +
       (what ? '<p class="ca-give-sum">To give: <b>' + esc(what) + '</b></p>' : '') +

@@ -4167,7 +4167,7 @@ button.ca-sr-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; 
 .ca-sr-make { flex: none; padding: 7px 11px; border-radius: 999px; border: 0; background: #fff; color: #0a0a0f; font: 900 11.5px/1 Inter, sans-serif; white-space: nowrap; cursor: pointer;
   -webkit-tap-highlight-color: transparent; }
 .ca-sr-make:disabled { opacity: .45; cursor: default; }
-/* The - 0 + steppers (the Shop's rows and the bag's lines) */
+/* The minus, count and plus steppers (the Shop's rows and the bag's lines) */
 .ca-step { display: flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px; background: #1b1b26; border: 1px solid #2a2a38; }
 .ca-step.is-on { border-color: rgba(var(--c), .6); }
 .ca-step-b { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: #2a2a38; color: #fff;
@@ -4455,3 +4455,5 @@ button.ca-sr-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; 
 .ca-cur-opt.is-on { border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .12); color: #fff; }
 .ca-cur-change:focus-visible, .ca-cur-opt:focus-visible { outline: 2px solid rgba(255, 255, 255, .7); outline-offset: 2px; }
 @media (hover: hover) { .ca-cur-change:hover, .ca-cur-opt:hover { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .1); } }
+/* A minus on a stepper button is a drawn bar, never a character (18 Oct 2026, the owner: no en dashes or minus signs) */
+.ca-minus { display: block; width: 12px; height: 2.5px; border-radius: 2px; background: currentColor; }

@@ -520,7 +520,7 @@
   }
   function popHtml() {
     var b = st.board, x = st.pop, pl = D.players[x.p], name = esc(pl[0]);
-    var head = x.kind === 'good' ? '&#x2705; Correct!' : x.kind === 'bad' ? '&#x274C; Wrong! &minus;1 Life' : '&#x1F6AB; No Open Tile. &minus;1 Life';
+    var head = x.kind === 'good' ? '&#x2705; Correct!' : x.kind === 'bad' ? '&#x274C; Wrong! -1 Life' : '&#x1F6AB; No Open Tile. -1 Life';
     var line = x.kind === 'good' ? name + ' played for ' + esc(theName(x.t)) + '.' : x.kind === 'bad' ? name + ' never played for ' + esc(theName(x.t)) + '.'
       : name + ' fits none of your open tiles.';
     var go = b.won() ? 'See Your Card' : b.out ? 'Continue' : 'Next Player';

@@ -159,7 +159,8 @@
   }
   /* A sport's games in popularity order (18 Oct 2026, the owner: "sort by most popular, but the World Cup modes by
      themselves"): this week's players on each card's main board (plays(g), else the home page's copy of the weekly boards
-     kept on this device, cg_home_boards_v1), then POPULAR, then the list's own order. The World Cup games always go last */
+     kept on this device, cg_home_boards_v1), then POPULAR, then the list's own order. The World Cup games take their places
+     in it by their own players; wcSlots then lifts them to their set places in a sport's row (18 Oct 2026) */
   function isWC(g) { return g.badge === 'World Cup'; }
   function boardsKept() { try { var b = JSON.parse(localStorage.getItem('cg_home_boards_v1') || 'null'); return b && b.b ? b.b : null; } catch (e) { return null; } }
   function byPopular(list, plays) {
@@ -168,8 +169,22 @@
     var p = plays || function (g) { var x = kept && g.board && kept[g.board]; return x ? x.p || 0 : -1; };
     var r = function (g) { return rank[g.id] == null ? 99 : rank[g.id]; };
     return list.map(function (g, i) { return [g, i]; }).sort(function (a, b) {
-      return ((isWC(a[0]) ? 1 : 0) - (isWC(b[0]) ? 1 : 0)) || (p(b[0]) - p(a[0])) || (r(a[0]) - r(b[0])) || (a[1] - b[1]);
+      return (p(b[0]) - p(a[0])) || (r(a[0]) - r(b[0])) || (a[1] - b[1]);
     }).map(function (x) { return x[0]; });
+  }
+  /* The World Cup cards high in the NRL row (18 Oct 2026, the owner: "Move the World Cup modes higher up on the NRL swiper.
+     It's one of the most popular games, and it separates the all-green boxes"): WORLD CUP 8-0 2nd and WORLD CUP 200+ 4th,
+     the blue breaking up the green; the rest keep their popularity order around them, and a World Cup card already
+     higher on its own players stays where it is */
+  var WC_SLOTS = [['world-cup-8-0', 1], ['world-cup-200', 3]];
+  function wcSlots(list) {
+    var out = list.slice();
+    WC_SLOTS.forEach(function (x) {
+      var i = -1;
+      for (var k = 0; k < out.length; k++) if (out[k].id === x[0]) i = k;
+      if (i > x[1]) out.splice(x[1], 0, out.splice(i, 1)[0]);
+    });
+    return out;
   }
   function sportOf(id) { for (var i = 0; i < SPORTS.length; i++) if (SPORTS[i].id === id) return SPORTS[i]; return null; }
   function game(id) { for (var i = 0; i < GAMES.length; i++) if (GAMES[i].id === id) return GAMES[i]; return null; }
@@ -338,8 +353,8 @@
   }
   /* The switcher's list, grouped by game (18 Oct 2026, the owner: "I like groups but this looks too weird"): each game a
      plain label (its app icon and name), then its modes as rows all the same size, the main mode first and the rest by
-     popularity; the games themselves by popularity (byPopular), and the World Cup games last, as their own World Cup
-     group in World Cup blue. A HIGHER OR LOWER game, NRL Bingo and SC POINTS KING are games of their own */
+     popularity; the games themselves by popularity (byPopular). The World Cup games are their own World Cup group in World
+     Cup blue, right after the first game (18 Oct 2026, the owner), or higher if their own players put them there. A HIGHER OR LOWER game, NRL Bingo and SC POINTS KING are games of their own */
   function mainOf(g) {
     if (!g.folder || g.ou || g.mode === 'bingo' || g.path === g.folder + '/') return null;
     for (var i = 0; i < GAMES.length; i++) if (GAMES[i].folder === g.folder && GAMES[i].path === g.folder + '/') return GAMES[i];
@@ -350,14 +365,15 @@
   function swGroups(gs) {
     var out = [], by = {}, wc = null;
     gs.forEach(function (g) {
-      if (isWC(g)) { if (!wc) wc = { wc: true, label: 'World Cup', icon: '', rows: [] }; wc.rows.push({ g: g, name: g.name }); return; }
+      if (isWC(g)) { if (!wc) { wc = { wc: true, label: 'World Cup', icon: '', rows: [] }; out.push(wc); } wc.rows.push({ g: g, name: g.name }); return; }
       var m = mainOf(g), key = m && gs.indexOf(m) >= 0 ? m.id : g.id;
       if (!by[key]) { var main = m && gs.indexOf(m) >= 0 ? m : g; by[key] = { label: gameLabel(main), icon: ICONS[main.art] || '', rows: [], main: main }; out.push(by[key]); }
       by[key].rows.push({ g: g, name: g === by[key].main ? g.name : subName(g, by[key].main) });
     });
     // the main mode first in its group, the rest as they came (by popularity)
-    out.forEach(function (grp) { grp.rows.sort(function (a, b) { return (b.g === grp.main ? 1 : 0) - (a.g === grp.main ? 1 : 0); }); });
-    if (wc) out.push(wc);
+    out.forEach(function (grp) { if (grp.main) grp.rows.sort(function (a, b) { return (b.g === grp.main ? 1 : 0) - (a.g === grp.main ? 1 : 0); }); });
+    var w = out.indexOf(wc);
+    if (w > 1) out.splice(1, 0, out.splice(w, 1)[0]); // right after the first game, unless already higher
     return out;
   }
   // A mode's own words under its game: "1000TRIES TEAM SPIN" is Team Spin, "27-0 PACK MODE" Pack Mode (NRLW, 250+ and 8-0 kept)
@@ -480,6 +496,6 @@
   })();
 
   window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, popular: popular, sportOf: sportOf, game: game, forMode: forMode, continueOf: continueOf, inProgress: inProgress,
-    launched: launched, url: url, root: ROOT, openSwitcher: openSwitcher, byPopular: byPopular, isWC: isWC, track: track, leave: leave, bootIdle: bootIdle, bootDone: bootDone };
+    launched: launched, url: url, root: ROOT, openSwitcher: openSwitcher, byPopular: byPopular, wcSlots: wcSlots, isWC: isWC, track: track, leave: leave, bootIdle: bootIdle, bootDone: bootDone };
   if (document.body) bar(); else document.addEventListener('DOMContentLoaded', bar);
 })();
