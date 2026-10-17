@@ -15,6 +15,16 @@
 (function () {
   'use strict';
 
+  /* Clickjacking guard (17 Oct 2026, the security review): GitHub Pages can't send X-Frame-Options or frame-ancestors, so
+     a page shown inside another site's frame hides itself and asks to open on its own. Nothing of ours frames a game page
+     (Firebase's sign-in frame is its own page); our own pages and local tools may */
+  (function () {
+    try { if (window.top === window.self || window.top.location.hostname === location.hostname) return; } catch (e) { /* another site's frame */ }
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+    document.documentElement.style.setProperty('display', 'none', 'important');
+    try { window.top.location.replace(location.href); } catch (e) { /* the frame forbids it: the page stays hidden */ }
+  })();
+
   var CFG = window.CAST_ACCOUNT || {};
   // Every home card and pop-up belongs to its games (16 Oct 2026): see cardGames, near the home spot
   var NRL_SITES = ['1000tries', '27-0'];
@@ -1959,9 +1969,9 @@
   function favList(picks) {
     var top = Object.keys(picks).sort(function (a, b) { return picks[b] - picks[a] || a.localeCompare(b); }).slice(0, 10);
     var max = picks[top[0]] || 1;
-    return '<details class="ca-fav"><summary><span class="ca-fav-lbl">Most Picked</span><span class="ca-fav-top">' + esc(pickName(top[0]).name) + ' &times;' + picks[top[0]] + '</span><span class="ca-fav-chev" aria-hidden="true"></span></summary>' +
+    return '<details class="ca-fav"><summary><span class="ca-fav-lbl">Most Picked</span><span class="ca-fav-top">' + esc(pickName(top[0]).name) + ' &times;' + fmt(+picks[top[0]] || 0) + '</span><span class="ca-fav-chev" aria-hidden="true"></span></summary>' +
       '<ol class="ca-fav-list">' + top.map(function (n) {
-        return '<li><span class="ca-fav-name">' + esc(pickName(n).name) + tierIco(pickName(n)) + '</span><span class="ca-fav-bar"><i style="width:' + Math.max(8, Math.round(picks[n] / max * 100)) + '%"></i></span><span class="ca-fav-n">&times;' + picks[n] + '</span></li>';
+        return '<li><span class="ca-fav-name">' + esc(pickName(n).name) + tierIco(pickName(n)) + '</span><span class="ca-fav-bar"><i style="width:' + Math.max(8, Math.round(picks[n] / max * 100)) + '%"></i></span><span class="ca-fav-n">&times;' + fmt(+picks[n] || 0) + '</span></li>';
       }).join('') + '</ol></details>';
   }
 
@@ -6456,7 +6466,7 @@
     return null;
   }
   function pickSrc(x, raw, bits, tier) {
-    if (PICK_SRC[bits[3]]) return bits[3];
+    if (bits[3] && Object.prototype.hasOwnProperty.call(PICK_SRC, bits[3])) return bits[3]; // a saved sheet's own mark ('constructor' is not one)
     if (x.game === '27-0' && tier === 'immortal') return 'I'; // 27-0's Immortals only ever came with the Pick
     if (x.mode === 'wc') { var wl = wlNames(x.game); if (wl && wl[pickName(raw).name.toLowerCase()]) return 'W'; }
     return '';
@@ -7516,7 +7526,7 @@
         return '<div class="ca-play"><div class="ca-play-h">' + esc(G.name) + '</div>' +
           '<div class="ca-play-hero"><span class="ca-play-lbl">' + esc(G.labels.best) + '</span><b>' + bestText(G, s) + '</b></div>' +
           '<div class="ca-play-grid">' + tile(fmt(s.plays), G.labels.plays) + tile(fmt(s.wins), G.labels.wins) + tile(fmt(s.plays ? s.sum / s.plays : 0), 'Average') + '</div>' +
-          (s.picks && s.picks.length ? '<p class="ca-soc-picks"><span>Most Picked</span>' + s.picks.slice(0, 3).map(function (x) { return esc(pickName(x[0]).name) + ' &times;' + x[1]; }).join(' &middot; ') + '</p>' : '') + '</div>';
+          (s.picks && s.picks.length ? '<p class="ca-soc-picks"><span>Most Picked</span>' + s.picks.slice(0, 3).map(function (x) { return esc(pickName(x[0]).name) + ' &times;' + fmt(+x[1] || 0); }).join(' &middot; ') + '</p>' : '') + '</div>';
       }).join('') + '</div>';
     } else h += '<p class="ca-muted">No games saved yet.</p>';
     var ranked = d.boards.filter(function (b) { return BOARDS.some(function (x) { return x.id === b.id; }); });

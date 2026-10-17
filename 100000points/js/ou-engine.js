@@ -71,7 +71,7 @@
     this.used[i] = 1;
     return i;
   };
-  /* An easy call (version 2): from the third call, about 1 in 8 and never twice running, a player far below the left one
+  /* An easy call (version 2): from the third call, now and then, never twice running, a player far below the left one
      (a fifth of his number or less, and 5 or more under), from anywhere in the list: a prop next to a winger. None when
      the left player's number is too small for one */
   Run.prototype.easy = function (level) {

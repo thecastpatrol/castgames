@@ -351,7 +351,7 @@
     d.starCut = null;
   };
 
-  // Big tryscorers (top 5% of a pack) for the first-offer 'false hope'. Cached per pack.
+  // Big tryscorers (top 5% of a pack) for the first offer. Cached per pack.
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {

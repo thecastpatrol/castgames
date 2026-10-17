@@ -41,13 +41,10 @@
     }
   };
 
-  /* Offer weighting. Offers are random, but a player's chance of turning up
-     scales with (tries + OFFER_WEIGHT_BASE). With a flat random draw most of the
-     pack is low scorers (median 10) and 1000 is out of reach even with perfect
-     knowledge. Raise the base to make the game harder, lower it to make it easier. */
+  /* Offer weighting: offers are random, each player weighted by (tries + OFFER_WEIGHT_BASE). */
   T.OFFER_WEIGHT_BASE = 40; // NRL default; each pack sets its own in T.DATASETS (tuned with tools/simulate.py)
-  // First offer of a game shows a big tryscorer (top 5% of the pack) this often: false hope
-  T.FIRST_STAR_CHANCE = 0.7; // plus the natural chance of a star in the other cards = about 80% overall
+  // How often the first offer of a game shows a big tryscorer (top 5% of the pack)
+  T.FIRST_STAR_CHANCE = 0.7;
   T.OFFER_SIZE = 3;
   T.IL_NATURAL = 0.5; // World Cup 200+: games with a free World Legend (T.newGame)
   // A player's first World Cup game always has a free World Legend (9 Oct 2026, the owner), marked on this device for their

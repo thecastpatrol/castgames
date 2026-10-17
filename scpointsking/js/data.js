@@ -192,7 +192,7 @@
     return d.loading;
   };
 
-  // Big seasons (top 5% of the pack) for the first offer's 'false hope'. Cached per pack.
+  // Big seasons (top 5% of the pack) for the first offer. Cached per pack.
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {
