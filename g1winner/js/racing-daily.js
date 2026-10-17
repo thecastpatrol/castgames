@@ -1,20 +1,20 @@
-/* global require */ // only on the server, where this file is loaded with require (see below)
-/* The racing game's Daily calendar (15 Oct 2026): the racing twin of the shared CAST Daily calendar (js/cast-daily.js,
-   loaded first), from the cricket twin's Daily calendar. It keeps the shared rewards, item names and streak ladder, and swaps in
-   racing days. No states (the owner, 16 Oct 2026): year days taking turns, Sunday to Friday, through the decades (the
-   1980s and 1990s, the 2000s, the 2010s, the 2020s) and two eras (2000 to 2012, Since 2013), each day its jockeys who won
-   a Group 1 in those years; a Spring Carnival day on Saturdays (Melbourne Group 1 wins only: the 'vic' pack); Sunday the
-   hard day. No theme filters on a state (no 'only'). Each player gets their own random draft within the theme.
+  
 
-   CAST_DAILY.day('YYYY-MM-DD') gives the same shape as the shared calendar:
-     { date, key, name, short, icon, title, story, who, hard, planned, onThisDay: null,
-       g1000: { target, years, ds, unit }, reward, rewardKind } */
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var shared = (typeof module !== 'undefined' && module.exports && typeof require === 'function') ? require('./cast-daily.js') : (root.CAST_DAILY || {});
 
-  /* Targets (16 Oct 2026): [normal, hard (Sundays)], set like 1000TRIES' Daily since 7 Oct from the real engine with each
-     theme's pool (tools/strat.js, MODE=daily: a thoughtful fan's 75th and 90th percentile totals, rounded to 5) */
+  
+
   var TARGETS = {
     'dec:1980': [320, 345], 'dec:2000': [525, 565], 'dec:2010': [525, 565], 'dec:2020': [555, 580],
     'era:2000': [510, 550], 'era:2013': [515, 555],
@@ -23,14 +23,14 @@
   function tgt(key, hard) { var t = TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 520 : 500); }
 
   var REWARDS = { keys: { racing: { legend: 1 } }, wild: { racing: { reveals: 1 } }, freeze: { racing: { freezes: 1 } }, reroll: { racing: { left: 1 } } };
-  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
+  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; 
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  // The planned days (edit here): { key, name, short, icon, title, who, story, t (target), g1000: { only | years | ds } }
+  
   var DAYS = {};
 
-  // The year days, in turn (key, name, from, to, the story's line, the years in a sentence)
+  
   var YEARS = [['dec:1980', '1980s and 1990s', 1983, 1999, 'the years of Dittman, Dye, Beadman and the young Damien Oliver', 'the 1980s and 1990s'],
     ['dec:2000', '2000s', 2000, 2009, 'from Northerly and Sunline to Makybe Diva', 'the 2000s'],
     ['era:2000', '2000 to 2012', 2000, 2012, 'from Northerly and Sunline to Black Caviar', '2000 to 2012'],
@@ -38,14 +38,14 @@
     ['era:2013', 'Since 2013', 2013, 2026, 'the Winx years and the jockeys riding today', 'the years since 2013'],
     ['dec:2020', '2020s', 2020, 2026, 'the jockeys riding today', 'the 2020s']];
   function auto(date) {
-    var n = dayNum(date), wd = weekday(date), week = Math.floor((n + 4) / 7); // weeks run Sunday to Saturday
+    var n = dayNum(date), wd = weekday(date), week = Math.floor((n + 4) / 7); 
     if (wd === 6) {
       return { key: 'spring', name: 'Spring Carnival', short: 'Spring Carnival', icon: '🌸', title: 'Melbourne Wins Only',
         who: 'jockeys with a Group 1 in Melbourne',
         story: 'It’s Spring Carnival day. Every jockey you can draft has won a Group 1 at Flemington, Caulfield, Moonee Valley or Sandown, and only those wins count.',
         g1000: { ds: 'vic', unit: 'Melbourne Group 1 wins' } };
     }
-    // Sunday to Friday: the year days in turn, starting one further on each week
+    
     var e = YEARS[(week + wd) % YEARS.length];
     return { key: e[0], name: e[1], short: e[1], icon: e[0].indexOf('dec:') === 0 ? '📅' : '🕰️', title: e[1] + ' Only', who: 'Group 1 winners from ' + e[5],
       story: 'How well do you remember ' + e[5] + '? Every jockey you can draft today won a Group 1 in those years, ' + e[4] + '.' +
@@ -67,7 +67,7 @@
     return t;
   }
 
-  // Where a reward item is used, in the racing game's words
+  
   var ITEM_USE = { legend: 'Use it in the main mode to swap an offer for a Legends Pick.', reveals: 'Use it in your next draft to see the hidden wins.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh roll.', removes: 'Use it to take a jockey off your card.' };
   function useText(items) {
@@ -78,6 +78,6 @@
 
   var api = Object.assign({}, shared, { day: day, finals: [], nick: {}, mascot: {}, clubs: [], cities: {},
     useText: useText, TARGETS: TARGETS, TARGETS_HARDER: TARGETS });
-  if (typeof module !== 'undefined' && module.exports) module.exports = api; // the server: its own copy, the shared one untouched
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; 
   else root.CAST_DAILY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

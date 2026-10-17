@@ -1,12 +1,12 @@
-/* 27-0 finals, watched live (7 Oct 2026, the owner: World Cup 8-0's live view in every 27-0 mode, for the finals).
-   Each finals game the player is in gets a match card (their badge against the club's, and what's at stake), then Watch
-   It (the clock runs and the tries, goals and field goals land at their minutes, with golden point when it's level at 80)
-   or Quick Result, then the full time card. The results and scores are the engine's (runFinalsSeries in
-   js/game-data-sim.js), decided before the finals start; nothing here changes them. Takes over from the old finals
-   viewer: launchFinalsViewer and fvSkipFinals keep their names (Quick Draft and Run It Back call them).
-   8 Oct 2026 (the owner's calls, to match World Cup 8-0): the four finals weeks as chips across the top, Finals So Far
-   under the card (every result so far and who's still in), Watch It first for every final, your team's rating on your
-   plate, Classic gold accents, and Share This Win after a Grand Final win. */
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   var F = null, liveTimer = null, skipArm = 0;
@@ -18,14 +18,14 @@
   function short(name) { return typeof fvShort === 'function' ? fvShort(name) : name; }
   function surname(n) { return typeof cardSurname === 'function' ? cardSurname(n) : String(n).split(' ').pop(); }
 
-  /* ---------- The player's finals games ---------- */
+   
   function roundOf(label, seed) {
     if (label === 'Finals Week 1') return seed && seed <= 4 ? { name: 'Qualifying Final', kind: 'qf' } : { name: 'Elimination Final', kind: 'ef' };
     if (label === 'Semi Finals') return { name: 'Semi Final', kind: 'sf' };
     if (label === 'Preliminary Finals') return { name: 'Preliminary Final', kind: 'pf' };
     return { name: 'Grand Final', kind: 'gf' };
   }
-  // As the player's side sees them. A season from before 7 Oct 2026 has only tries (all converted, 6 each)
+  
   function myGames(f, seed) {
     var me = myTeam(), out = [];
     (f.weeks || []).forEach(function (wk, wi) {
@@ -44,7 +44,7 @@
     return out;
   }
 
-  /* ---------- Badges: the player's photo or club (as in World Cup 8-0), and each club's colours ---------- */
+   
   function badge(side, cls) {
     cls = cls || '';
     if (side === 'me') {
@@ -59,12 +59,12 @@
   }
   function nameOf(side) { return side === 'me' ? myTeam() : short(side); }
 
-  /* ---------- Kickers and try scorers ---------- */
+   
   function goals(n) { return (typeof GOAL_KICKER_RANK !== 'undefined' && GOAL_KICKER_RANK[n]) || 0; }
   function myKicker() { var s = STATE.season; return (s && s.kicker) || (typeof fvFindMyConv === 'function' ? fvFindMyConv() : ''); }
   function roster(club) { return (typeof FV_ROSTERS !== 'undefined' && FV_ROSTERS[club]) || { conv: '', players: [] }; }
   function theirKicker(club) { return roster(club).conv || ''; }
-  // Field goals by a half: the one with the most career goals, else the halfback (the owner: "the FE or HALFBACK usually")
+  
   function pickHalf(list) {
     var best = null;
     list.forEach(function (x) { if (!best || goals(x.n) > goals(best.n) || (goals(x.n) === goals(best.n) && x.p === 'HB' && best.p !== 'HB')) best = x; });
@@ -91,11 +91,11 @@
     return out;
   }
 
-  /* ---------- The game in order (as World Cup 8-0, js/world-cup.js) ----------
-     Tries at their own minutes, each one's conversion a moment later, penalty goals, and a field goal last: in the last
-     10 minutes (level, or 6 ahead to go 7 up), or in golden point (the engine's call) when it was level at 80. Level late
-     with time to spare, a side sometimes has a shot at a field goal and misses. A season from before 7 Oct 2026 kicked
-     every goal with its try */
+  
+
+
+
+
   function ptsOf(e) { return e.p ? (e.conv == null ? 6 : 4) : e.pen || e.goal === true ? 2 : e.fg ? 1 : 0; }
   function place(groups, top) {
     var free = [], mins = [], out = [];
@@ -138,7 +138,7 @@
     if (fg !== null) out.push({ min: fgMin, me: fg, fg: true, gp: gp, k: fg ? myFgKicker() : theirFgKicker(g.opp) });
     return { ev: withMisses(out, g, fgMin), mine: mine, theirs: theirs };
   }
-  // Player of the Match: the winners' top try scorer (the better player breaks a tie)
+  
   function potmOf(g, mine, theirs) {
     var by = {}, list = g.won ? mine : theirs;
     list.forEach(function (p) { (by[p.name] = by[p.name] || { p: p, n: 0 }).n++; });
@@ -152,7 +152,7 @@
     F.potm[i] = potmOf(F.games[i], t.mine, t.theirs);
   }
 
-  /* ---------- What the cards say ---------- */
+   
   function stakes(g) {
     switch (g.round.kind) {
       case 'qf': return 'Win and you go straight through to a Preliminary Final. Lose and you get a second chance.';
@@ -168,7 +168,7 @@
     var t = lad[i];
     return t ? '<b>' + esc(g.opp) + '</b> finished ' + (i + 1) + ordinal(i + 1) + ' on the ladder (' + t.wins + '-' + (24 - t.wins) + ').' : '';
   }
-  // Your plate carries your team's rating (the owner: yours only; the clubs' stay hidden, as in the season)
+  
   function plate(side) { return '<div class="wc-plate">' + badge(side, 'wc-badge-xl') + '<b>' + esc(nameOf(side)) + '</b>' + (side === 'me' && F.s.rating ? '<small>Rating ' + F.s.rating + '</small>' : '') + '</div>'; }
   function feedRow(e, g) {
     var side = e.me ? 'me' : g.opp, pts = ptsOf(e), what;
@@ -235,16 +235,16 @@
   }
   function actsHtml() {
     var b = function (cls, on, label) { return '<button type="button" class="btn' + cls + '" onclick="' + on + '">' + label + '</button>'; };
-    // Every final starts on Watch It, as World Cup 8-0's knockouts do; Quick Result is one tap away
+    
     if (F.phase === 'pre') return b('', 'flWatch()', '&#x25B6; Watch It') + b(' btn-outline', 'flQuick()', '&#x26A1; Quick Result');
     if (F.phase === 'live') return b(' btn-outline', 'flFull()', '&#x23ED; Skip to Full Time');
     return b('', 'flNext()', nextLabel());
   }
-  /* ---------- The road: the four finals weeks as chips (World Cup 8-0's road) ----------
-     Played: the score, green or red. The game up next: lit. A week off after a Qualifying Final win: Bye, once that win
-     is on screen. Weeks never reached: greyed only once the last game is on screen (nothing gives away where it ends) */
+  
+
+
   var WEEK_CODE = ['W1', 'SF', 'PF', 'GF'];
-  // Each chip names its round (9 Oct 2026, the owner: "Semi Final, Prelim Final, Grand Final"); week 1 is yours: Qual or Elim
+  
   function roundName(wk) { return wk ? ['', 'Semi Final', 'Prelim Final', 'Grand Final'][wk] : F.games[0] && F.games[0].round.kind === 'qf' ? 'Qual Final' : 'Elim Final'; }
   function shown() { return F.phase === 'ft' ? F.i + 1 : F.i; }
   function stripHtml() {
@@ -263,9 +263,9 @@
     return '<div class="wc-strip-h"><b>2026 Finals</b><span>' + w + '-' + (done.length - w) + '</span></div><ol class="wc-chips fl-chips">' + chips + '</ol>' +
       '<p class="fl-season">Season ' + s.wins + '-' + s.losses + ' &middot; ' + s.myLadderPos + ordinal(s.myLadderPos) + ' on the ladder</p>';
   }
-  /* ---------- Finals So Far: every result up to the game on screen, then who's still in ----------
-     The week's other finals show once your game is at full time; after your last game, the rest of the finals */
-  function weekName(label) { return label === 'GRAND FINAL' ? 'Grand Final' : label; } // the season keeps it in capitals
+  
+
+  function weekName(label) { return label === 'GRAND FINAL' ? 'Grand Final' : label; } 
   function sideHtml() {
     var weeks = (F.s.finals && F.s.finals.weeks) || [], g = F.games[F.i], me = myTeam(), lad = F.s.ladder || [];
     var upTo = F.phase === 'ft' && F.i === F.games.length - 1 ? weeks.length - 1 : g ? (F.phase === 'ft' ? g.wk : g.wk - 1) : -1;
@@ -278,7 +278,7 @@
     weeks.forEach(function (wk, wi) {
       if (wi > upTo) return;
       rows += '<div class="wc-sub-h">' + esc(weekName(wk.label)) + '</div>' + wk.games.map(function (x) {
-        // Week 1's Qualifying Finals (both sides top 4) give the loser a second chance; every other loser is out
+        
         if (wi > 0 || posOf(x.loser.name) > 4) alive = alive.filter(function (n) { return n !== x.loser.name; });
         var ws = x.wPts != null ? x.wPts : x.wTries * 6, ls = x.lPts != null ? x.lPts : x.lTries * 6, a = sideOf(x.winner.name), b = sideOf(x.loser.name);
         return '<div class="wc-also-g' + (a === 'me' || b === 'me' ? ' is-me' : '') + '">' + badge(a) + ' <span>' + esc(nameOf(a)) + '</span> <b>' + ws + '-' + ls + '</b> <span>' + esc(nameOf(b)) + '</span> ' + badge(b) + '</div>';
@@ -299,11 +299,11 @@
     if (acts) acts.innerHTML = actsHtml();
   }
 
-  /* ---------- Playing it ---------- */
-  // Watch It: about 9 seconds a game; each try's conversion a moment after it; golden point runs the clock past 80
+   
+  
   window.flWatch = function () {
     if (!F || F.phase !== 'pre') return;
-    skipArm = 0; // a Skip the Finals tap just before no longer counts (its timer would redraw the screen mid-game)
+    skipArm = 0; 
     var i = F.i, g = F.games[i];
     play(i);
     F.phase = 'live';
@@ -326,7 +326,7 @@
         if (sMe) sMe.textContent = me;
         if (sThem) sThem.textContent = them;
         if (feed) { feed.insertAdjacentHTML('afterbegin', feedRow(e, g)); var li = feed.firstChild; if (li && li.classList) li.classList.add('is-new'); }
-        if (n < ev.length && ev[n].after) { beat = now + 800; break; } // the conversion a moment after its try
+        if (n < ev.length && ev[n].after) { beat = now + 800; break; } 
       }
       if (clock) clock.innerHTML = min >= end && n >= ev.length ? 'FT' : ht && min < 41 ? 'HT' : Math.floor(min) + '&prime;';
       if (beat) return;
@@ -342,7 +342,7 @@
     render();
   };
   window.flFull = function () { if (F && F.phase === 'live') { fullTime(F.i); render(); } };
-  // Share This Win (a Grand Final won): the season's picture, premiership and all (js/game-data-sim.js showShareCard)
+  
   window.flShareWin = function () {
     track('share_click', { mode: 'finals_win' });
     if (typeof window.showShareCard === 'function') window.showShareCard();
@@ -364,7 +364,7 @@
     render();
     window.scrollTo(0, 0);
   };
-  // Skip the Finals: a second tap within 3 seconds (the old viewer asked first too)
+  
   window.flSkipFinals = function () {
     if (!F) return;
     if (!skipArm || Date.now() - skipArm > 3000) { skipArm = Date.now(); render(); setTimeout(function () { if (skipArm && Date.now() - skipArm >= 3000) { skipArm = 0; if (F && F.phase === 'pre') render(); } }, 3100); return; }
@@ -380,7 +380,7 @@
     showResults();
   }
 
-  /* ---------- Taking over from the old viewer ---------- */
+   
   window.launchFinalsViewer = function () {
     var s = STATE.season, f = s && s.finals;
     if (!f || !f.myTeamInFinals) { showResults(); return; }
@@ -392,12 +392,12 @@
     showScreen('finals-viewer');
     render();
     window.scrollTo(0, 0);
-    try { fvShowMadeFinalsPopup(); } catch (e) { /* the popup is a nicety */ }
+    try { fvShowMadeFinalsPopup(); } catch (e) {   }
   };
-  // Quick Draft (js/theme-fx.js) skips straight to the results
+  
   window.fvSkipFinals = function () { var p = $('fvMadeFinalsPopup'); if (p) p.style.display = 'none'; leave(); };
   window.fvNextGame = window.flNext;
-  // Leaving for a new game (New Game, the logo, Change Mode) stops the clock
+  
   var origReset = window.resetGame;
   if (typeof origReset === 'function') window.resetGame = function () { stopLive(); F = null; return origReset.apply(this, arguments); };
 })();

@@ -1,7 +1,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--gold:#f1c073;--gold-dark:#c9953a;--bg:#0a0a0f;--card:#141420;--card2:#1c1c2e;--text:#f0f0f0;--muted:#888;--radius:12px;--accent:#6a4cc5}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
-/* ===== REDESIGNED DRAFT LAYOUT ===== */
+
 .draft-layout{display:flex;flex-direction:column;flex:1}
 .draft-left-col{display:flex;flex-direction:column;flex-shrink:0}
 .draft-strength-bar{background:var(--card);border-bottom:1px solid #222;padding:8px 12px;flex-shrink:0}
@@ -14,7 +14,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .dsb-sub{background:#1a1a2a;border-radius:6px;padding:4px 6px;text-align:center}
 .dsb-slabel{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px}
 .dsb-sval{font-size:13px;font-weight:800;font-family:'Inter',sans-serif}
-/* NRL Field */
+
 .nrl-field-wrap{background:linear-gradient(180deg,#1a5c2e 0%,#1e6b34 100%);padding:0;flex-shrink:0;position:relative;height:min(86vw,420px)}
 .nrl-field-inner{position:absolute;top:0;left:0;width:100%;height:100%}
 .field-row{display:none}
@@ -43,7 +43,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .fpos-label{font-size:7.5px;color:rgba(255,255,255,0.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:68px}
 .field-progress{text-align:center;font-size:10px;color:rgba(255,255,255,0.45);margin-top:5px}
 .field-progress span{color:var(--gold);font-weight:700}
-/* Spin zone */
+
 .spin-zone{background:var(--card);border-top:1px solid #1a1a2a;padding:14px 14px;flex-shrink:0;overflow:hidden}
 #spinBtn{box-shadow:none!important}
 .spin-slots{display:flex;align-items:center;gap:10px;margin-bottom:12px}
@@ -54,11 +54,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .spin-x{color:#333;font-size:22px;font-weight:200;flex-shrink:0}
 .spin-row-btns{display:flex;gap:7px}
 .spin-picked-msg{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:14px 12px;text-align:center}
-/* Player rows */
+
 .player-section{flex:1;overflow-y:auto;padding:9px 10px 16px}
 .draft-right{display:flex;flex-direction:column;flex:1}
 @media(min-width:768px){
-  /* Layout split only: circle sizes stay at mobile defaults until 900px */
+  
   #draft.screen,#pack-squad.screen{height:100vh;min-height:0;max-height:100vh;overflow:hidden;display:flex;flex-direction:column}
   #draft .content,#pack-squad .ps-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
   .draft-layout{flex-direction:row;flex:1;min-height:0;overflow:hidden}
@@ -77,7 +77,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   .fpos-prtg{font-size:15px}
   .fpos-label{font-size:9px;max-width:78px}
 }
-/* Landscape phones: wide enough for desktop layout but very short: shrink circles to prevent overlap */
+
 @media(min-width:768px) and (max-height:500px){
   .fpos{width:var(--fpos-size, 46px)!important}
   .fpos-circle{width:var(--fpos-size, 38px)!important;height:var(--fpos-size, 38px)!important}
@@ -104,12 +104,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   .fpos-label{font-size:11.5px;max-width:108px}
 }
 @media(min-width:1024px){
-  /* Default (all non-draft screens): banner edge-to-edge, centred */
+  
   #siteFooter{display:flex!important;flex-direction:column!important;align-items:center;padding:0!important;gap:0;text-align:center}
   #siteFooter .footer-logo{display:block!important;width:100%;padding:0;box-sizing:border-box;margin-bottom:0!important;border-right:none!important}
   #siteFooter .footer-logo img{display:block!important;margin:0 auto;max-width:100%;width:100%;height:auto}
   #siteFooter .footer-text{width:100%;padding:8px 24px;max-width:none!important;margin:0!important;text-align:center}
-  /* Draft screen: banner exactly 42% wide matching the field, no horizontal padding so % aligns */
+  
   #siteFooter.footer-draft{flex-direction:row!important;align-items:stretch;padding:0!important;text-align:left}
   #siteFooter.footer-draft .footer-logo{width:42%;flex-shrink:0;padding:10px 16px;border-right:1px solid #1a1a2a!important}
   #siteFooter.footer-draft .footer-logo img{max-width:100%}
@@ -153,10 +153,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .ptag-HK{background:#7c2d12;color:#fdba74}
 .ptag-P{background:#7f1d1d;color:#fca5a5}
 .ptag-SR,.ptag-LK{background:#3b0764;color:#c4b5fd}
-/* Refresh button */
+
 .btn-refresh{background:none;border:1px solid #333;color:var(--muted);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .btn-refresh:hover{border-color:var(--gold);color:var(--gold)}
-/* ===== END REDESIGN ===== */
+
 
 .screen{display:none!important}
 .screen.active{display:flex!important;flex-direction:column;position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#0d0d1f;z-index:1}
@@ -354,7 +354,7 @@ tr.tr-tribute .pst-name{color:#02702A!important;font-weight:900!important}
 .finals-matchup .fm-team{flex:1;font-weight:600}
 .finals-matchup .fm-score.win{color:#22c55e;font-weight:800}
 .finals-matchup .fm-score.loss{color:#ef4444;font-weight:800}
-/* ── Finals Match Viewer ── */
+
 #finals-viewer{display:flex;flex-direction:column;height:100%;padding:0;overflow:hidden}
 .fv-top-bar{flex-shrink:0;background:#0e0e1a;border-bottom:1px solid #2a2a3a;padding:8px 10px;display:flex;gap:6px}
 .fv-btn{flex:1;padding:8px 4px;border-radius:7px;border:none;font-size:10px;font-weight:800;letter-spacing:.4px;cursor:pointer;text-transform:uppercase;transition:opacity .15s;white-space:nowrap}
@@ -365,7 +365,7 @@ tr.tr-tribute .pst-name{color:#02702A!important;font-weight:900!important}
 .fv-btn-sim{background:#2563eb;color:#fff}
 .fv-btn-skip{background:#0e7c5b;color:#fff;border:none}
 .fv-btn-skipall{background:#7f1d1d;color:#fca5a5;border:none;font-size:9px}
-/* ── Match card header ── */
+
 .fv-header{flex-shrink:0;background:linear-gradient(160deg,#111128 0%,#0d0d1f 100%);border-bottom:3px solid rgba(241,192,115,0.25);padding:0 12px 10px}
 @keyframes gfShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 @keyframes gfPulse{0%,100%{box-shadow:0 0 12px rgba(241,192,115,0.5),0 2px 8px rgba(241,192,115,0.3)}50%{box-shadow:0 0 28px rgba(241,192,115,0.9),0 4px 16px rgba(241,192,115,0.6)}}
@@ -406,7 +406,7 @@ tr.tr-tribute .pst-name{color:#02702A!important;font-weight:900!important}
 .fv-event.is-halftime .fv-event-body{text-align:center;font-size:9px;color:#444;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
 .fv-event.is-fulltime{justify-content:center;padding:8px 0;border-bottom:1px solid #2a2a3a}
 .fv-event.is-fulltime .fv-event-body{text-align:center;font-size:9px;color:#f1c073;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
-/* Made Finals popup */
+
 .fv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;z-index:9000;padding:20px}
 #fvMadeFinalsPopup{z-index:9100}
 .fv-popup{background:var(--card);border:1px solid #333;border-radius:14px;padding:24px 20px;max-width:320px;width:100%;text-align:center}
@@ -416,7 +416,7 @@ tr.tr-tribute .pst-name{color:#02702A!important;font-weight:900!important}
 .fv-popup-btn{width:100%;padding:13px;border-radius:9px;border:none;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.4px;margin-bottom:8px}
 .fv-popup-btn.primary{background:var(--gold);color:#111}
 .fv-popup-btn.secondary{background:var(--card2);color:var(--muted);font-size:12px;padding:9px}
-/* Result popup */
+
 .fv-result-popup{position:fixed;inset:0;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;z-index:9000;padding:20px}
 .fv-result-box{background:var(--card);border-radius:14px;padding:22px 18px;max-width:320px;width:100%;text-align:center;position:relative}
 .fv-result-box.win{border:1px solid rgba(34,197,94,0.45)}
@@ -427,7 +427,7 @@ tr.tr-tribute .pst-name{color:#02702A!important;font-weight:900!important}
 .fv-result-box.loss .fv-result-verdict{color:#ef4444}
 .fv-result-teams{font-size:12px;color:var(--muted);margin-bottom:4px}
 .fv-result-final-score{font-size:32px;font-weight:900;font-family:'Inter',sans-serif;color:var(--text);margin-bottom:16px;line-height:1}
-/* Floating next button when popup is closed */
+
 .fv-float-next{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:8000;padding:16px 40px;border-radius:12px;border:none;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.4px;box-shadow:0 4px 24px rgba(0,0,0,.7);white-space:nowrap}
 .fv-float-next.win{background:#22c55e;color:#111}
 .fv-float-next.loss{background:#ef4444;color:#fff}
@@ -484,7 +484,7 @@ details[open] .details-arrow{transform:rotate(90deg);}
 ::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 
-/* ── Share Card Modal ────────────────────────────────── */
+
 #shareCardModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9998;overflow-y:auto;padding:20px 16px;box-sizing:border-box}
 #shareCardModal .sc-inner{max-width:410px;margin:0 auto}
 #shareCardModal .sc-preview{width:100%;border-radius:12px;display:block;margin-bottom:14px;box-shadow:0 8px 32px rgba(0,0,0,0.6)}
@@ -492,7 +492,7 @@ details[open] .details-arrow{transform:rotate(90deg);}
 .sc-btn{background:#1a1a2e;border:1px solid #333;color:#fff;padding:12px 6px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:background .15s}
 .sc-btn:hover{background:#252540}
 .sc-close{width:100%;background:transparent;border:1px solid #2a2a3a;color:#666;padding:10px;border-radius:9px;font-size:13px;cursor:pointer;margin-top:4px}
-/* Dual range slider thumbs */
+
 #eraSliderFrom::-webkit-slider-thumb,#eraSliderTo::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#22c55e;border:2px solid #0a0a14;cursor:pointer;pointer-events:all;box-shadow:0 1px 4px rgba(0,0,0,.4)}
 #eraSliderFrom::-moz-range-thumb,#eraSliderTo::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#22c55e;border:2px solid #0a0a14;cursor:pointer;pointer-events:all;box-shadow:0 1px 4px rgba(0,0,0,.4)}
 #eraSliderFrom::-webkit-slider-runnable-track,#eraSliderTo::-webkit-slider-runnable-track{background:transparent}

@@ -3,11 +3,13 @@
 <head>
 <base href="../">
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>(function () { function inn(t) { var b = t.closest && t.closest('.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'); if (b) b.classList.add('is-in'); } document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; if (/\.webp(\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); t.src = t.src.replace(/\.webp(\?v=\w*)?/, '.png'); return; } inn(t); }, true); })();</script><style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'"><!-- like every game page: never plain http, no plugins, no base-URL swaps (GitHub Pages sets no headers) -->
+<script>(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy'; m.content = "upgrade-insecure-requests; object-src 'none'; base-uri 'self'"; document.head.appendChild(m); })();</script><!-- like every game page: never plain http, no plugins, no base-URL swaps (GitHub Pages sets no headers) -->
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button (1000TRIES's copy, like the account), early so it also notes the page's errors -->
-<script src="1000tries/js/cast-contact.js?v=6ee39b8f" data-site="castgames"></script>
+<script src="1000tries/js/cast-contact.js?v=b2363faf" data-site="castgames"></script>
 <title>NBA Games | CAST Games</title>
 <meta name="description" content="Free sports draft games from The Cast Patrol for NRL, AFL, cricket, NFL and horse racing. Pick a sport, pick a game, climb the leaderboards.">
 <meta property="og:type" content="website">
@@ -27,9 +29,9 @@
 <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-E52G6MVZFP');</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Inter:wght@500;600;700;800;900&family=Inter+Tight:ital,wght@1,800;1,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="1000tries/css/cast-account.css?v=c8cbeee9">
-<link rel="stylesheet" href="shared/cg.css?v=9d1d652119b3">
-<link rel="stylesheet" href="css/home.css?v=0ca4f4e6">
+<link rel="stylesheet" href="1000tries/css/cast-account.css?v=4066998e">
+<link rel="stylesheet" href="shared/cg.css?v=e4b6e41dc635">
+<link rel="stylesheet" href="css/home.css?v=749de1c6">
 <link rel="stylesheet" href="css/hero-banners.css?v=02f4df7a">
 </head>
 <body>
@@ -77,35 +79,37 @@
     promoPlay: function (mode) { location.href = mode === 'wc' ? '27-0/?play=wc' : '1000tries/?play=' + (mode || 'plus'); } };
 </script>
 <script>window.CAST_ACCOUNT.boards = ["nbaplus"];</script>
-<script src="shared/cg.js?v=9d1d652119b3"></script>
+<script src="shared/cg.js?v=e4b6e41dc635"></script>
+<!-- Art before it is needed and a game's files on their way from the first touch of its card (speed pass, 18 Oct 2026) -->
+<script src="shared/cg-speed.js?v=cef2eaf1" defer></script>
 <!-- The Daily calendars (the Daily Challenge cards say what today's is and its reward): the shared one (27-0, 1000TRIES),
      then 4000 GOALS's, which takes the same name, so both are kept and the shared one put back -->
-<script src="1000tries/js/cast-daily.js?v=e7382c3c"></script>
+<script src="1000tries/js/cast-daily.js?v=f0b9cc73"></script>
 <script>window.CG_DAILY_NRL = window.CAST_DAILY;</script>
-<script src="4000goals/js/afl-daily.js?v=96203492"></script>
+<script src="4000goals/js/afl-daily.js?v=cb4561c3"></script>
 <script>window.CG_DAILY_AFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
 <!-- The newer games' calendars the same way (audit L9, 16 Oct 2026: the Daily strip lists every live Daily) -->
-<script src="25000runs/js/bbl-daily.js?v=8bd3a58b"></script>
+<script src="25000runs/js/bbl-daily.js?v=af4172cf"></script>
 <script>window.CG_DAILY_BBL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="60000runs/js/tests-daily.js?v=cbe75e92"></script>
+<script src="60000runs/js/tests-daily.js?v=5501ae7a"></script>
 <script>window.CG_DAILY_TESTS = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="777tds/js/nfl-daily.js?v=9fcc2017"></script>
+<script src="777tds/js/nfl-daily.js?v=37f5e98e"></script>
 <script>window.CG_DAILY_NFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="g1winner/js/racing-daily.js?v=fa9e5cf0"></script>
+<script src="g1winner/js/racing-daily.js?v=c7213b46"></script>
 <script>window.CG_DAILY_RACING = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="650goals/js/epl-daily.js?v=61c144ce"></script>
+<script src="650goals/js/epl-daily.js?v=b6ea864a"></script>
 <script>window.CG_DAILY_EPL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="100000points/js/nba-daily.js?v=50ea766f"></script>
+<script src="100000points/js/nba-daily.js?v=92d0aebc"></script>
 <script>window.CG_DAILY_NBA = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="scpointsking/js/sc-daily.js?v=d83fc4d2"></script>
+<script src="scpointsking/js/sc-daily.js?v=d60f93f6"></script>
 <script>window.CG_DAILY_SC = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
-<script src="scpointsking-afl/js/scafl-daily.js?v=e43a1596"></script>
+<script src="scpointsking-afl/js/scafl-daily.js?v=d9702f9f"></script>
 <script>window.CG_DAILY_SCAFL = window.CAST_DAILY; window.CAST_DAILY = window.CG_DAILY_NRL;</script>
 <!-- The nation flags (the account's World Cup pop-ups) -->
-<script src="1000tries/js/cast-nations.js?v=46208301"></script>
-<script src="1000tries/js/cast-prices.js?v=1f44db96"></script>
-<script src="1000tries/js/cast-account.js?v=7287b591"></script>
+<script src="1000tries/js/cast-nations.js?v=4c4e8435"></script>
+<script src="1000tries/js/cast-prices.js?v=d1be5481"></script>
+<script src="1000tries/js/cast-account.js?v=423233c5"></script>
 <script>window.CG_SPORT = 'nba';</script>
-<script src="js/home.js?v=7bc143f9"></script>
+<script src="js/home.js?v=96c198e1"></script>
 </body>
 </html>

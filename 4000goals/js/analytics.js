@@ -1,10 +1,10 @@
-/* 1000TRIES analytics (GA4). Loads on the live site only; on localhost track() is a no-op. */
+ 
 (function (T) {
   'use strict';
 
-  var GA_ID = 'G-1769GX4698'; // 4000 GOALS' own property (558490641, The Cast Patrol account, 12 Oct 2026)
+  var GA_ID = 'G-1769GX4698'; 
 
-  // Local testing never reaches GA, so reports only show real players
+  
   var local = /^(localhost|127\.0\.0\.1|\[::1\]|0\.0\.0\.0)$/.test(location.hostname) || location.protocol === 'file:';
   var enabled = !local && /^G-[A-Z0-9]+$/.test(GA_ID) && GA_ID !== 'G-XXXXXXXXXX';
 

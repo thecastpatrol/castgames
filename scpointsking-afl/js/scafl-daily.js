@@ -1,39 +1,39 @@
-/* global require */ // only on the server, where this file is loaded with require (see below)
-/* SC POINTS KING: AFL Daily calendar (17 Oct 2026): the AFL twin of SC POINTS KING's (js/sc-daily.js there), on top of the
-   shared CAST Daily calendar (js/cast-daily.js, loaded first). It keeps the shared rewards, item names and streak ladder,
-   and swaps in AFL SC days: club days taking turns through the 18 clubs, a season day (one season, every club), a derby
-   day (two clubs), an era day, and Sunday as the hard club day, the same weekly pattern as SC POINTS KING. The spins are
-   seeded, so everyone's go 1 is the same draft. No Legend Key or GOAT in a Daily.
+  
 
-   CAST_DAILY.day('YYYY-MM-DD') gives the same shape as the shared calendar:
-     { date, key, name, short, lead, icon, title, story, who, hard, planned, onThisDay: null,
-       g1000: { target, only, years }, reward, rewardKind } */
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var shared = (typeof module !== 'undefined' && module.exports && typeof require === 'function') ? require('./cast-daily.js') : (root.CAST_DAILY || {});
 
-  // The 18 clubs' nicknames and emojis (as 4000 GOALS' AFL calendar)
+  
   var NICK = { ad: 'Crows', bl: 'Lions', ca: 'Blues', cw: 'Magpies', es: 'Bombers', fr: 'Dockers', ge: 'Cats', gc: 'Suns', gw: 'Giants',
     hw: 'Hawks', me: 'Demons', nm: 'Kangaroos', pa: 'Power', ri: 'Tigers', sk: 'Saints', sy: 'Swans', wc: 'Eagles', wb: 'Bulldogs' };
   var MASCOT = { ad: '🐦‍⬛', bl: '🦁', ca: '💙', cw: '🖤', es: '🔴', fr: '⚓', ge: '🐱', gc: '☀️', gw: '🧡', hw: '🤎', me: '😈',
     nm: '🦘', pa: '⚡', ri: '🐯', sk: '😇', sy: '🦢', wc: '🦅', wb: '🐶' };
-  // A club day's name where the nickname reads badly as a day (as 4000 GOALS: "Bombers Day" sounds like a hijack)
+  
   var DAY_NAME = { es: 'Essendon' };
   function dayName(c) { return DAY_NAME[c] || NICK[c]; }
-  // Club days in turn
+  
   var CLUBS = ['cw', 'ca', 'es', 'ri', 'hw', 'ge', 'sy', 'bl', 'wc', 'ad', 'pa', 'fr', 'me', 'nm', 'sk', 'wb', 'gw', 'gc'];
   var DERBIES = [['ad', 'pa', 'The Showdown'], ['wc', 'fr', 'The Western Derby'], ['cw', 'ca', 'The Old Rivals'], ['sy', 'gw', 'The Sydney Derby'],
     ['es', 'cw', 'The Anzac Day Rivals'], ['bl', 'gc', 'The QClash'], ['ge', 'hw', 'Cats and Hawks'], ['ri', 'ca', 'The Season Openers']];
-  // One season a day, in turn (every season in the data)
+  
   var SEASONS = [2021, 2012, 2024, 2016, 2009, 2023, 2010, 2018, 2026, 2014, 2007, 2019, 2022, 2011, 2017, 2025, 2008, 2015, 2013, 2020];
-  var FIRST = 2007; // the first season in the data (data/seasons.json)
+  var FIRST = 2007; 
   var ERAS = [['2007', '2007 to 2012', 2007, 2012, 'the first six seasons on the spinner'], ['2013', '2013 to 2019', 2013, 2019, 'through the middle of the 2010s'],
     ['2020', 'Since 2020', 2020, 2026, 'from the short 2020 season to 2026']];
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
   function orList(a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' or ' + a[a.length - 1] : a.join(''); }
 
-  /* Targets: [normal, hard (Sundays)], set with the real-engine smart-fan simulator on each theme's own pool, no
-     wildcards, as the Daily deals (kept with the game's private notes) */
+  
+
   var TARGETS = {
     'club:ad': [34500, 35300], 'club:bl': [34050, 34900], 'club:ca': [33600, 34300], 'club:cw': [34050, 34950], 'club:es': [32050, 32850], 'club:fr': [34000, 34700], 'club:gc': [32300, 33350], 'club:ge': [35850, 36550], 'club:gw': [33100, 34200], 'club:hw': [34650, 35550], 'club:me': [32900, 33400], 'club:nm': [34200, 34950], 'club:pa': [33750, 34600], 'club:ri': [33650, 34400], 'club:sk': [35200, 36350], 'club:sy': [36100, 36450], 'club:wb': [35350, 36050], 'club:wc': [32950, 33600],
     'derby:ad-pa': [34500, 35350], 'derby:bl-gc': [34200, 35050], 'derby:cw-ca': [34750, 35600], 'derby:es-cw': [34250, 35100], 'derby:ge-hw': [35800, 36700], 'derby:ri-ca': [34150, 35200], 'derby:sy-gw': [35150, 36050], 'derby:wc-fr': [34100, 34950],
@@ -43,14 +43,14 @@
   function tgt(key, hard) { var t = TARGETS[key]; return t && t[0] ? (hard ? t[1] : t[0]) : (hard ? 35300 : 34500); }
 
   var REWARDS = { keys: { scafl: { legend: 1 } }, wild: { scafl: { reveals: 1 } }, freeze: { scafl: { freezes: 1 } }, reroll: { scafl: { left: 1 } } };
-  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
+  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; 
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  // The planned days (edit here): { key, name, short, lead, icon, title, who, story, t (target), g1000: { only | years } }
+  
   var DAYS = {};
 
-  var WEEK = ['club', 'club', 'club', 'season', 'club', 'era', 'derby']; // Sun ... Sat
+  var WEEK = ['club', 'club', 'club', 'season', 'club', 'era', 'derby']; 
   function auto(date) {
     var n = dayNum(date), wd = weekday(date), kind = WEEK[wd], week = Math.floor((n + 3) / 7);
     if (kind === 'derby') {
@@ -72,8 +72,8 @@
         story: 'Every season you can draft today was played ' + (since ? 'since 2020' : 'from ' + e[1]) + ', ' + e[4] + '.',
         g1000: { years: [e[2], e[3]] } };
     }
-    // Club days: four a week, taking turns through the clubs (a week starts one club on, so a Sunday and the Monday
-    // after never share one)
+    
+    
     var slot = [0, 1, 2, -1, 3, -1, -1][wd], k = CLUBS[(week * 4 + slot) % CLUBS.length], nick = NICK[k], dn = dayName(k);
     return { key: 'club:' + k, name: dn + ' Day', short: dn, lead: 'With ', icon: MASCOT[k] || '🏉', title: nick + ' Seasons Only',
       who: nick + ' seasons',
@@ -109,6 +109,6 @@
 
   var api = Object.assign({}, shared, { day: day, finals: [], nick: NICK, mascot: MASCOT, clubs: CLUBS, derbies: DERBIES, seasons: SEASONS, eras: ERAS,
     useText: useText, TARGETS: TARGETS, TARGETS_HARDER: TARGETS });
-  if (typeof module !== 'undefined' && module.exports) module.exports = api; // the server: its own copy, the shared one untouched
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; 
   else root.CAST_DAILY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

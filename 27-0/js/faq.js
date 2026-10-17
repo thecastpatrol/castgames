@@ -11,10 +11,10 @@
       ["Do I need an account?","No. You can play 2 seasons a day as a guest, and they stay on this device. A free CAST Profile (Google or Apple, for ages 13 and over) gives you unlimited seasons, the Daily, wildcards in Classic, and saves your history, stats and trophies and puts you on the leaderboards."],
       ["Is 27-0 free to play?","Yes. 27-0 is free to play in your browser, with nothing to download. Guests get 2 seasons a day, and a free CAST Profile unlocks unlimited seasons. CAST Pass is an optional paid subscription with extras like Custom Seasons."],
       ["Where do player ratings come from?","The Cast Patrol uses a formula based on peak performance, era context and career impact. They are debatable. That is the point. 27-0 player ratings are an independent interpretation based on publicly available data and are used for descriptive purposes only. They may differ from any official source."],
-      ["Who made 27-0?","The Cast Patrol, the team behind CAST Games."], // 16 Oct 2026: the same answer on every CAST game
+      ["Who made 27-0?","The Cast Patrol, the team behind CAST Games."], 
       ["Is 27-0 affiliated with the NRL?","No. 27-0 is a fan-made game created by The Cast Patrol and is not affiliated with, endorsed by or associated with the NRL, its clubs or any official Rugby League organisation."],
       ["How can I sponsor The Cast Patrol?","Businesses interested in sponsoring The Cast Patrol podcast, 27-0 or partnering with us across social media can email us at <strong>cast@thecastpatrol.com.au</strong> or send us a message with Contact Us. We work with brands on podcast integrations, social content, competitions, live activations and custom campaigns.<span class='ctc-pills is-left'><button type='button' class='ctc-pill' data-cast-contact='contact'>&#x2709;&#xFE0F; Contact Us</button></span>"],
-      ["How do I contact you or report a bug?","Use the form: pick what it&rsquo;s about, tell us what happened and we&rsquo;ll reply by email. Every message gets a reference number, so nothing gets lost.<span class='ctc-pills is-left'><button type='button' class='ctc-pill' data-cast-contact='contact'>&#x2709;&#xFE0F; Contact Us</button> <button type='button' class='ctc-pill' data-cast-contact='bug'>&#x1F41E; Report a Bug</button></span>"], // 17 Oct 2026: the Contact Us form (js/cast-contact.js)
+      ["How do I contact you or report a bug?","Use the form: pick what it&rsquo;s about, tell us what happened and we&rsquo;ll reply by email. Every message gets a reference number, so nothing gets lost.<span class='ctc-pills is-left'><button type='button' class='ctc-pill' data-cast-contact='contact'>&#x2709;&#xFE0F; Contact Us</button> <button type='button' class='ctc-pill' data-cast-contact='bug'>&#x1F41E; Report a Bug</button></span>"], 
       ["Where can I listen to The Cast Patrol podcast?","You can find The Cast Patrol on all major podcast platforms including Spotify, Apple Podcasts and Amazon Music. Full episodes are also released weekly on YouTube."]
     ];
     var list=document.getElementById('faqList');
@@ -22,7 +22,7 @@
     faqs.forEach(function(faq,i){
       var item=document.createElement('div');
       item.style.cssText='background:#111;border:1px solid #1e1e2e;border-radius:12px;overflow:hidden';
-      if(faq[2]==='wc'){item.hidden=true;item.setAttribute('data-cast-wc','');} // World Cup: shown once it is launched (js/world-cup.js)
+      if(faq[2]==='wc'){item.hidden=true;item.setAttribute('data-cast-wc','');} 
       var btn=document.createElement('button');
       btn.style.cssText='width:100%;background:none;border:none;padding:13px 16px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;touch-action:manipulation';
       btn.setAttribute('aria-expanded','false');
@@ -42,7 +42,7 @@
       ans.appendChild(p);
       btn.onclick=function(){
         var open=btn.getAttribute('aria-expanded')==='true';
-        // Close all other FAQs first
+        
         list.querySelectorAll('button[aria-expanded="true"]').forEach(function(otherBtn){
           if(otherBtn===btn) return;
           otherBtn.setAttribute('aria-expanded','false');
@@ -61,8 +61,8 @@
       item.appendChild(ans);
       list.appendChild(item);
     });
-    // The questions start folded away so the home page stays short: the heading opens them, and so does the
-    // Full Rules & FAQ button (#faq)
+    
+    
     var sec = document.getElementById('faq'), title = document.getElementById('faqTitle');
     if (sec && title) {
       var tog = document.createElement('button');

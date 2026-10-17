@@ -1,25 +1,25 @@
-/* SC POINTS KING app controller (17 Oct 2026, from 100000 POINTS): screens, events, the spin, the full-time reveal, sound. */
+ 
 (function (T) {
   'use strict';
 
   var R = T.render;
   var $ = function (id) { return document.getElementById(id); };
-  var GAME = 'sc'; // the game's id with CAST accounts, its boards and the server (lib/checksc.js)
+  var GAME = 'sc'; 
   var selectedMode = 'plus';
-  var busy = false;          // blocks input during the spin and reveal animations
+  var busy = false;          
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Screens */
+   
 
   function show(name) {
-    if (bootOn()) bootEnd(); // opened on a mode (index.html): the screens show from here
+    if (bootOn()) bootEnd(); 
     ['home', 'draft', 'results'].forEach(function (n) {
       var el = $('screen-' + n);
       if (el) el.classList.toggle('is-active', n === name);
     });
     document.body.setAttribute('data-screen', name);
     if (name === 'home') document.body.removeAttribute('data-mode'); else document.body.setAttribute('data-mode', selectedMode);
-    // Mid-draft, footer page links open in a new tab so the current 13 survives
+    
     Array.prototype.forEach.call(document.querySelectorAll('.footer-links a[href$=".html"]'), function (a) {
       if (name === 'draft') { a.target = '_blank'; a.rel = 'noopener'; } else { a.removeAttribute('target'); }
     });
@@ -40,11 +40,11 @@
     });
   }
 
-  /* Sound (on by default; a player's mute choice is remembered in their browser) */
+   
 
   var sound = true;
   var ctx = null;
-  try { sound = localStorage.getItem('sc_sound_v1') !== 'off'; } catch (e) { /* storage blocked */ }
+  try { sound = localStorage.getItem('sc_sound_v1') !== 'off'; } catch (e) {   }
   function setSound(on) {
     sound = on;
     var b = $('soundToggle');
@@ -53,9 +53,9 @@
     b.classList.toggle('is-on', on);
     var l = b.querySelector('.sound-lbl');
     if (l) l.textContent = on ? 'Sound On' : 'Sound Off';
-    try { localStorage.setItem('sc_sound_v1', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
+    try { localStorage.setItem('sc_sound_v1', on ? 'on' : 'off'); } catch (e) {   }
   }
-  // iPhones only let a page make sound if its audio engine is created or resumed inside a tap
+  
   var AC = window.AudioContext || window.webkitAudioContext;
   var master = null;
   function audioReady() {
@@ -65,7 +65,7 @@
     return ctx;
   }
   var unlocked = false;
-  function useMediaChannel() { try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) { /* not supported */ } }
+  function useMediaChannel() { try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) {   } }
   function unlockAudio() {
     if (!sound || !AC) return;
     try {
@@ -73,7 +73,7 @@
       var c = audioReady(), buf = c.createBuffer(1, 1, 22050), src = c.createBufferSource();
       src.buffer = buf; src.connect(c.destination); src.start(0);
       if (c.state === 'running') unlocked = true;
-    } catch (e) { /* audio unavailable */ }
+    } catch (e) {   }
   }
   ['touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, unlockAudio, true); });
   document.addEventListener('visibilitychange', function () {
@@ -91,7 +91,7 @@
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
       o.connect(g); g.connect(master);
       o.start(t0); o.stop(t0 + dur + 0.03);
-    } catch (e) { /* audio unavailable */ }
+    } catch (e) {   }
   }
   var sfx = {
     tick: function () { tone(1200, 0.035, 'square', 0, 0.06); },
@@ -102,7 +102,7 @@
     wild: function () { tone(660, 0.12, 'sine', 0, 0.35); tone(990, 0.16, 'sine', 0.07, 0.35); }
   };
 
-  /* Toast + sheet */
+   
 
   var toastTimer = null;
   function toast(msg) {
@@ -122,7 +122,7 @@
   }
   function closeSheet() { $('sheet').hidden = true; $('sheet').classList.remove('is-rules', 'is-confirm'); $('sheetBody').innerHTML = ''; lockScroll(false); }
 
-  /* Home */
+   
 
   function signedIn() { return !!(window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn()); }
   function firstVisit() {
@@ -151,7 +151,7 @@
     if (window.CastAccount && CastAccount.spot) CastAccount.spot();
   }
 
-  /* Draft */
+   
 
   function countUp(el, from, to, dur) {
     if (!el) return;
@@ -167,7 +167,7 @@
     requestAnimationFrame(step);
   }
 
-  var shownTotal = 0; // the scoreboard's total as last drawn (it counts up from there)
+  var shownTotal = 0; 
   function renderChrome(flashIdx) {
     var S = T.state(), total = T.total();
     $('scoreboard').innerHTML = R.scoreboard(S);
@@ -179,8 +179,8 @@
     $('pickCount').textContent = T.filledCount() + ' of ' + T.SLOTS.length;
   }
 
-  // Long surnames shrink to fit the tile on one line instead of being cut off; a long double-barrelled name goes over
-  // two lines, broken after its hyphen
+  
+  
   function fitNames() {
     Array.prototype.forEach.call(document.querySelectorAll('#pitch .slot-name'), function (el) {
       el.style.fontSize = ''; el.style.letterSpacing = ''; el.style.whiteSpace = ''; el.style.lineHeight = '';
@@ -203,8 +203,8 @@
   window.addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitNames, 120); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
 
-  // Team Full with a Remove Player in hand, and the SC Captain step: the right button drains over LOCK_SECS,
-  // then goes on by itself (Lock In; No Thanks, Finish)
+  
+  
   T.LOCK_SECS = 10;
   var lockTimer = null, lockLeft = null, resumeLock = null;
   function stopLockTimer() { if (lockTimer) { clearInterval(lockTimer); lockTimer = null; } }
@@ -227,23 +227,23 @@
     }, 1000);
   }
 
-  /* The pick clock (17 Oct 2026, the owner: "I thought we added a 20s timer for every classic 1000TRIES-equivalent mode"),
-     1000TRIES' own: every pick in Classic and the Daily Challenge is timed, T.PICK_SECS. A new offer starts it again (a
-     Reroll, a Remove Player, a Legends Pick's three once their reveal has closed). It runs on the wall clock, so a hidden
-     tab or another app never stops it: back on the page, a clock that ran out picks at once. It waits while the spin
-     lands, while a wildcard or the GOAT moment plays out, while Remove or Substitute is armed and while any pop-up is open
-     (the Shop, a confirm, a purchase, the Daily Challenge), so buying never costs a pick, and while it waits the offer
-     cards are covered, so a pause is never time to look anyone up. The phone's spot chooser is part of the pick, so it
-     never waits. Never the SC Captain step at the end (no offer then), a friend's Quick Draft or Team Full. Time up: the
-     season you tapped goes in, else the first card that fits, in the first open spot he plays. A draft brought back keeps
-     its seconds. GA: pick_timeout */
+  
+
+
+
+
+
+
+
+
+
   T.PICK_SECS = 20;
   T.CLOCK_MODES = ['plus', 'daily'];
   T.clockMode = function (S) { return !!S && !!S.mode && T.CLOCK_MODES.indexOf(S.mode.id) >= 0 && S.mode.source === 'roll' && !S.qd; };
   T.pickSecs = function () { return T.PICK_SECS; };
-  var clock = { offer: null, end: 0, last: 0, iv: null }, resumeClock = null; // resumeClock: the seconds a draft brought back still had
+  var clock = { offer: null, end: 0, last: 0, iv: null }, resumeClock = null; 
   function clockOn(S) { return T.clockMode(S) && !S.finished && !S.fullTime && !S.awaitingLock && !!S.offer && S.offer.players.length > 0 && document.body.getAttribute('data-screen') === 'draft'; }
-  // A pop-up over the draft: a sheet that isn't the spot chooser, a CAST panel (the Shop, a purchase), the Daily Challenge, a reveal
+  
   function popUpOpen() {
     var sh = $('sheet');
     if (sh && !sh.hidden && !$('sheetBody').querySelector('[data-place]')) return true;
@@ -252,17 +252,17 @@
       return d.id !== 'sheetBody' && !d.hidden && d.getClientRects().length > 0;
     });
   }
-  // Waiting with the cards covered (a long wait) or just held (the spin landing, a wildcard's moment, the GOAT moment)
+  
   function clockPaused(S) { return !!(S.tweakMode || S.subMode) || popUpOpen(); }
-  function clockHeld(S) { return busy || !!document.querySelector('.wc-burst, .cg') || clockPaused(S); } // .cg: the GOAT moment (js/cast-celebrate.js)
+  function clockHeld(S) { return busy || !!document.querySelector('.wc-burst, .cg') || clockPaused(S); } 
   function clockStart() {
     if (!clockOn(T.state())) { clockCover(false); return; }
     if (!clock.iv) { clock.last = Date.now(); clock.iv = setInterval(clockTick, 200); }
-    clockTick(); // a redraw shows the time left straight away
+    clockTick(); 
   }
   function clockStop() { if (clock.iv) { clearInterval(clock.iv); clock.iv = null; } }
   function clockCover(on) { var p = $('offerPanel'); if (p) p.classList.toggle('is-clock-paused', !!on); }
-  // What the offer panel draws (js/render.js): the seconds a pick gets and the time left on this offer
+  
   T.clockView = function (S) {
     var secs = T.pickSecs(S), left = clock.offer === S.offer && clock.iv ? Math.max(0, clock.end - Date.now()) : secs * 1000;
     return { secs: secs, left: left, paused: clock.offer === S.offer && clockPaused(S) };
@@ -271,8 +271,8 @@
     var S = T.state(), now = Date.now();
     if (!clockOn(S)) { clockStop(); clock.offer = null; clockCover(false); return; }
     var secs = T.pickSecs(S);
-    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : secs * 1000); resumeClock = null; } // a draft brought back keeps its seconds
-    else if (clockHeld(S)) clock.end += now - clock.last; // waiting: the clock doesn't move
+    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : secs * 1000); resumeClock = null; } 
+    else if (clockHeld(S)) clock.end += now - clock.last; 
     clock.last = now;
     var left = Math.max(0, clock.end - now), paused = clockPaused(S), el = document.querySelector('#offerPanel [data-pick-clock]');
     clockCover(paused);
@@ -283,26 +283,26 @@
       el.classList.toggle('is-low', left <= 5000 && !paused);
       el.classList.toggle('is-paused', paused);
     }
-    if (left <= 0 && !clockHeld(S) && !document.hidden) timeUp(S); // off the page: it picks the moment they're back
+    if (left <= 0 && !clockHeld(S) && !document.hidden) timeUp(S); 
   }
-  // Back on the page (another tab, another app): a clock that ran out while they were away picks at once
+  
   document.addEventListener('visibilitychange', function () { if (!document.hidden && clock.iv) clockTick(); });
   window.addEventListener('pageshow', function () { if (clock.iv) clockTick(); });
   function timeUp(S) {
     clockStop(); clock.offer = null; clockCover(false);
-    if (S.offer && S.offer.paid && !S.offer.taken) T.keepOffer(); // never spend a paid Pick for them
+    if (S.offer && S.offer.paid && !S.offer.taken) T.keepOffer(); 
     var list = S.offer ? S.offer.players.filter(function (p) { return !S.used[p.id] && T.openCodesFor(p).length > 0; }) : [];
     var chooser = $('sheet') && !$('sheet').hidden && $('sheetBody').querySelector('[data-place]');
     var tapped = placingId || (chooser && $('sheetBody').getAttribute('data-player')) || null;
     var p = tapped && T.byId[tapped] && list.indexOf(T.byId[tapped]) >= 0 ? T.byId[tapped] : list[0];
     closeSheet(); setPlacing(null);
-    if (!p) { nextOffer(); return; } // nobody on it fits an open spot: a fresh offer
+    if (!p) { nextOffer(); return; } 
     T.track('pick_timeout', { mode: S.mode.name, picks: S.picks, tapped: tapped ? 'yes' : 'no' });
     toast('\u23F1\uFE0F Time\u2019s up: ' + p.name + ' ' + p.year + ' goes in');
     place(p.id, T.openCodesFor(p)[0]);
   }
 
-  /* A tap right after the cards moved is ignored (as every draft game since 11 Oct 2026) */
+   
   var offerTop = null, offerKey = '', offerMovedAt = 0;
   function noteOffers() {
     var c = document.querySelector('#offerPanel [data-pick], #offerPanel [data-scout]');
@@ -325,11 +325,11 @@
     else if (S.offer) panel.innerHTML = R.offerRoll(S);
     else if (S.tweakMode) panel.innerHTML = R.removeMode(S);
     applyPlacing();
-    clockStart(); // the pick clock
+    clockStart(); 
     keepDraft();
   }
 
-  /* Desktop placing: pick a season, then click a glowing spot on the field. Phones keep the bottom-sheet chooser. */
+   
   var desktopMQ = window.matchMedia ? window.matchMedia('(min-width: 900px)') : null;
   function isDesktop() { return !!(desktopMQ && desktopMQ.matches); }
   var placingId = null;
@@ -365,7 +365,7 @@
     markSlots(c ? c.getAttribute('data-pick') : null, 'is-preview');
   });
 
-  // The Daily starts from js/daily.js (its draft for today's go), never as a plain game
+  
   T.play = function (modeId, opts) { closeSheet(); busy = false; startGame(modeId, opts); };
   function newGame(modeId) {
     if (modeId === 'daily') { if (T.dailyStart) T.dailyStart(); return; }
@@ -376,7 +376,7 @@
   }
   T.showScreen = show;
   function goHome() {
-    if (window.CG && window.CG.leave) { closeSheet(); busy = false; stopLockTimer(); window.CG.leave(); return; } // CAST Games: every mode is its own page (17 Oct 2026)
+    if (window.CG && window.CG.leave) { closeSheet(); busy = false; stopLockTimer(); window.CG.leave(); return; } 
     closeSheet();
     busy = false;
     stopLockTimer();
@@ -389,12 +389,12 @@
     dropDraft();
     stopLockTimer();
     T.newGame(modeId, opts);
-    // Wildcards by tier: guests none once the tiers are on, a CAST Profile 1 of each, CAST Pass 2 of each
+    
     var NS = T.state(), tierW = window.CastAccount && CastAccount.wildcardCount ? CastAccount.wildcardCount() : null;
     var extra = window.CastAccount && CastAccount.profileRerolls ? CastAccount.profileRerolls() : 0;
     if (NS.mode.wildcards && tierW !== null) setTierWildcards(NS, tierW);
     else if (NS.mode.wildcards && extra) { NS.wildcards.reroll += extra; NS.profileRerolls = extra; }
-    NS.subLeft = NS.mode.wildcards && window.CastAccount && CastAccount.hasPass && CastAccount.hasPass() ? 1 : 0; // Substitute: CAST Pass, 1 a game
+    NS.subLeft = NS.mode.wildcards && window.CastAccount && CastAccount.hasPass && CastAccount.hasPass() ? 1 : 0; 
     placingId = null;
     shownTotal = 0;
     busy = false;
@@ -411,9 +411,9 @@
     if (offer && offer.special) packIntro(renderDraft); else spinIn(offer);
   }
 
-  /* The spin (the owner, 17 Oct 2026: "spin a wheel: it gives 3 player-seasons"): three reels flash through club kits
-     and years and land one by one on the three seasons, then the cards come in. The offer is dealt first; the reels
-     are only theatre. A tap on them lands them at once; phones set to reduce motion skip them */
+  
+
+
   var spinTimer = null;
   function spinIn(offer, then) {
     var S = T.state();
@@ -458,8 +458,8 @@
     }, 55);
   }
 
-  /* A Legend Key's Legends Pick: the reveal the CAST draft games share (js/cast-intl.js), the three clubs' kits
-     flashing through and landing one by one, with the player and his season */
+  
+
   function packIntro(done) {
     var S0 = T.state();
     T.track('legends_pick_shown', { mode: S0.mode.name, paid: 'yes' });
@@ -501,7 +501,7 @@
     place(id, codes[0]);
   }
 
-  // Reveal: every season on the spin shows his SC points at once, each number counting up (nothing is picked)
+  
   function onScout() {
     var S = T.state();
     if (busy || !S) return;
@@ -534,8 +534,8 @@
         settle();
       }, reduceMotion ? 300 : 900);
     };
-    /* The GOAT picked (free deal or the GOAT item): the big GOAT moment every CAST draft game shares (js/cast-celebrate.js),
-       with this game's own headline for him (T.goatHeadline), then the gold ring on his spot; the game carries on after */
+    
+
     var CC = window.CastCelebrate;
     if (T.isGoat(p) && CC && CC.goat) {
       T.track('goat_moment', { mode: S.mode.name });
@@ -548,12 +548,12 @@
     go();
   }
 
-  // Team Full with no Remove Player left: a saved one, or one to buy (15+), can still swap a player out, so the lock-in
-  // choice and its countdown show with "Remove · $0.99" (or "2 left"). Classic only
+  
+  
   function removeStillOnSale(S) {
     return S.mode.wildcards && S.wildcards.tweak < 1 && !!(window.CastAccount && CastAccount.canBuyRemove && CastAccount.canBuyRemove());
   }
-  // After a pick or a Remove: Team Full (Remove Player or Lock In), full time, or the next spin
+  
   function settle() {
     var S = T.state();
     if (T.filledCount() === S.slots.length) {
@@ -575,11 +575,11 @@
     captainStep(T.outcome(true));
   }
 
-  /* The SC Captain (the owner, 17 Oct 2026: A$4.99, the upsell moment at the end, as Go Higher in 1000TRIES): with the 13
-     locked in, Classic asks for a Captain whose SC points count double, from the Vault or bought on the spot, with No
-     Thanks to finish (a 10 second countdown, which waits while a purchase is open). Never the Daily, a friend's challenge
-     or Quick Draft, and only once accounts are on for SC (a guest is asked to sign in free first). One a game; the game
-     saves d.cap (the Captain's place in the picks) and the server doubles him only with a Captain spent for it */
+  
+
+
+
+
   function capHave() { return window.CastAccount && CastAccount.itemSaved ? CastAccount.itemSaved('captain') : 0; }
   function capOn() { return !!(window.CastAccount && CastAccount.buyItem && CastAccount.tier && CastAccount.tier() !== null) && T.captainOffer(); }
   function captainStep(out) {
@@ -625,7 +625,7 @@
     renderCaptain(S);
   }
 
-  /* Wildcard theatre */
+   
   var WC_FX = {
     reroll: { ico: '🔄', title: 'Reroll!', sub: 'Back on the spinner' },
     scout:  { ico: '👀', title: 'Revealed', sub: 'All three seasons\u2019 SC points' },
@@ -646,7 +646,7 @@
     return true;
   }
   function markUsed(key) { var b = document.querySelector('#offerPanel .wc-' + key); if (b) b.classList.add('just-used'); }
-  // Reveal: the number counts up from zero
+  
   function countBadge(badge) {
     var strong = badge.querySelector('strong'), to = parseInt(strong.textContent.replace(/\D/g, ''), 10) || 0;
     badge.classList.add('is-popping');
@@ -735,13 +735,13 @@
     }
   }
 
-  /* Finish */
+   
 
-  /* The game's trophies (17 Oct 2026, proposals: their names, icons and lines go in the shared trophy list with the
-     accounts hookup). sc_goat the GOAT's season in your 13; sc_2000 a 2000+ SC season; sc_legend a Legend Key's season;
-     sc_vintage 5+ seasons from 2009 to 2014; sc_fresh all 13 from 2024 on; sc_oneclub 5+ seasons at one club;
-     sc_oneyear 4+ seasons from one year; sc_pb a new personal best; read Perfect Read; lucky; dailywin. The crown (the
-     #1 on a board, sc_king) is the server's, from the boards */
+  
+
+
+
+
   function trophiesFor(S, out) {
     var ids = [], players = S.slots.filter(function (x) { return x.player; }).map(function (x) { return x.player; });
     if (players.length !== S.slots.length) return ids;
@@ -754,14 +754,14 @@
     players.forEach(function (p) { club[p.club] = (club[p.club] || 0) + 1; year[p.year] = (year[p.year] || 0) + 1; });
     if (!S.daily && Object.keys(club).some(function (c) { return club[c] >= 5; })) ids.push('sc_oneclub');
     if (!S.daily && Object.keys(year).some(function (y) { return year[y] >= 4; })) ids.push('sc_oneyear');
-    if (S.pb && S.pbBefore > 0) ids.push('sc_pb'); // a best beaten, never just the first game
+    if (S.pb && S.pbBefore > 0) ids.push('sc_pb'); 
     if (S.slots.every(function (x) { return x.top; })) ids.push('read');
     if (T.luckPct() != null && T.luckPct() >= 30) ids.push('lucky');
     if (S.daily && out.reason === 'won') ids.push('dailywin');
     return ids;
   }
 
-  // Reveal stays paid whatever the tier (T.FREE_REVEALS)
+  
   function setTierWildcards(S, n) {
     ['reroll', 'tweak'].forEach(function (k) {
       var start = S.wcStart ? S.wcStart[k] : 1;
@@ -791,8 +791,8 @@
     };
   }
 
-  /* CAST account team sheets: club colours and SC points from the game's own seasons (records "Name YEAR",
-     Legends "Name YEAR (Legend)"). Attached once the page has loaded: the account config is set up after this script */
+  
+
   function sheetHooks() {
     if (!window.CAST_ACCOUNT) return;
     window.CAST_ACCOUNT.startChallenge = function (c) { return startChallenge(c); };
@@ -819,33 +819,33 @@
   function finish(out) {
     var S = T.state();
     S.finished = true; S.fullTime = true;
-    S.ftOut = out; // the result the Share button's words and cards use (it was only set by Quick Draft, so Share did nothing)
+    S.ftOut = out; 
     stopLockTimer();
     dropDraft();
     S.tweakMode = false; S.scoutMode = false;
     if (!S.qd) T.track('game_end', { mode: S.mode.name, result: out.reason, total: out.total });
-    try { localStorage.setItem('sc_played', '1'); } catch (e) { /* storage blocked */ }
-    // The personal best on this device (Classic): the chase is against your own best and the boards
+    try { localStorage.setItem('sc_played', '1'); } catch (e) {   }
+    
     if (!S.daily && !S.qd) {
       var pb = bestScore();
       S.pbBefore = pb; S.pb = out.total > pb;
-      if (S.pb) { try { localStorage.setItem(LS_BEST, String(out.total)); } catch (e) { /* storage blocked */ } }
+      if (S.pb) { try { localStorage.setItem(LS_BEST, String(out.total)); } catch (e) {   } }
     }
     $('results').innerHTML = R.results(S, out);
     if (window.CastAccount) {
       window.CastAccount.record({
         game: GAME, mode: S.mode.id, score: out.total, result: out.reason, win: out.win, top: false,
-        // each season by its record name ("Nathan Cleary 2023"; a Legend Key's "Name YEAR (Legend)"), in slot order
+        
         picks: S.slots.filter(function (s) { return s.player; }).map(function (s) { return s.player.record_name; }),
-        // sq: each pick's club and season year, and where it came from (G the GOAT, K a Legend Key), as the team sheet reads
-        // them ("panthers|2023", "manly|2021||G"); the picks are in slot order, so the sheet knows each SC position
+        
+        
         d: Object.assign({ sq: S.slots.filter(function (s) { return s.player; }).map(function (s) {
           var src = S.srcOf && S.srcOf[s.player.id];
           return s.player.club + '|' + s.player.year + (src ? '||' + src : '');
         }) },
           T.luckPct() != null ? { lk: T.luckPct() } : {}, T.wildcardsUsed() != null ? { wc: T.wildcardsUsed() } : {},
           S.seed ? { seed: S.seed } : {}, S.keyUsed ? { key: S.keyUsed } : {}, S.keysUsed ? { lks: S.keysUsed } : {}, S.qd ? { qd: 1 } : {}, S.goatUsed ? { goat: 1 } : {},
-          // the SC Captain: his place in the picks (the server doubles him only with a Captain spent for this game)
+          
           S.captain != null ? { cap: S.slots.filter(function (s) { return s.player; }).indexOf(S.slots[S.captain]) } : {},
           S.daily ? { daily: S.daily.n, date: S.daily.date, go: S.daily.go } : {})
       });
@@ -860,9 +860,9 @@
     if (S.daily && T.dailyDone) T.dailyDone(S, out);
     countUp($('rtNum'), 0, out.total);
   }
-  /* The leaderboard on the results (R.resBoard): Today first, This Week and All Time when tapped. One small read of the
-     public board per period (CastAccount.resultBoard keeps it a minute); a score outside the top rows asks the signed-in
-     player's own place once, after the server has had time to save the game. Only once CAST accounts are on for SC */
+  
+
+
   var rb = { S: null, period: 'today', score: 0, data: {}, own: {} };
   function resBoardOn() { var A = window.CastAccount; return !!(A && A.resultBoard && A.tier && A.tier() !== null); }
   function resBoardDraw() {
@@ -900,7 +900,7 @@
   var LS_BEST = 'sc_best_v1';
   function bestScore() { try { return +localStorage.getItem(LS_BEST) || 0; } catch (e) { return 0; } }
   T.bestScore = bestScore;
-  // The crown and the boards show once SC POINTS KING is launched (its accounts and leaderboards)
+  
   T.crownOn = function () { return !!(window.CastAccount && CastAccount.isLaunched && CastAccount.isLaunched(GAME)); };
 
   var shareCard = null;
@@ -913,7 +913,7 @@
     return score + '\nThink you can take the crown? \uD83D\uDC51';
   }
   function shareText() { var l = shareLine(); return l ? l + ' ' + gameUrl() : ''; }
-  // This page's address on CAST Games (its own page, CG.url), with the player's invite code when signed in
+  
   function shareUrl() {
     var u = window.CG && window.CG.url ? window.CG.url(T.GAME_SLUG + '/') : gameUrl() + '/', CA = window.CastAccount;
     return CA && CA.inviteLink ? CA.inviteLink(u) : u;
@@ -921,10 +921,10 @@
   function share() {
     var text = shareText();
     if (!text) return;
-    /* Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share),
-       called as the club Bingos do: CastAccount.sharePicker({ game, mode, title, text, url, file, render }), each renderer
-       a promise of a PNG Blob (js/share-card.js T.shareRenderers; the Story keeps the Stories safe zones clear). The cards
-       built as the results showed go in first; the sheet below is for a page whose account file is older */
+    
+
+
+
     var CA = window.CastAccount, S0 = T.state();
     if (CA && typeof CA.sharePicker === 'function' && T.shareRenderers && S0 && S0.ftOut) {
       var png = function (p) { return p.then(function (c) { return new Promise(function (ok, no) { c.toBlob(function (b) { if (b) ok(b); else no(new Error('no picture')); }, 'image/png'); }); }); };
@@ -967,7 +967,7 @@
     else toast(text);
   }
 
-  /* Events */
+   
 
   var rulesHtml = null;
   function openRules() {
@@ -1114,7 +1114,7 @@
   });
 
   document.addEventListener('keydown', function (e) {
-    // Desktop keys: 1, 2 and 3 pick that card; while choosing a spot, the same keys choose among the spots he can go into
+    
     var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
     if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
         $('sheet').hidden && !document.documentElement.classList.contains('ca-open')) {
@@ -1134,11 +1134,11 @@
   $('soundToggle').addEventListener('click', function () { setSound(!sound); if (sound) { unlockAudio(); sfx.pick(); } });
   $('startBtn').addEventListener('click', function () { if (T.players.length) newGame(selectedMode); });
 
-  /* A Daily Challenge link (?play=daily: the CAST Games home's Daily Challenge cards) can be read before js/daily.js and
-     the account have run, as the players often arrive first, and then the Daily never started (17 Oct 2026, the bug hunt:
-     the game's own card showed instead, for guests and signed-in players alike). It starts once both are there */
-  // and once the account knows who is playing and whether its game is launched, so a guest gets the Daily's sign-in rather
-  // than a go of the Daily (a first visit has no launch list yet: cast_launch_v1); after 8 s it starts anyway
+  
+
+
+  
+  
   var acctSeen = !window.CAST_ACCOUNT;
   window.addEventListener('cast-account', function (e) { var s = e.detail && e.detail.status; if (s === 'signed-in' || s === 'guest') acctSeen = true; });
   function launchKnown() { try { return !!localStorage.getItem('cast_launch_v1'); } catch (e) { return true; } }
@@ -1159,7 +1159,7 @@
   function homeAgain() { if (document.body.getAttribute('data-screen') === 'home') renderHome(); }
   window.addEventListener('cast:tier', homeAgain);
 
-  /* The Vault: the server takes a Legend Key, then this spin becomes a Legends Pick */
+   
   function useLegendKey() {
     var S = T.state();
     if (busy || !T.legendKeyFits() || !window.CastAccount || !CastAccount.useKey) return;
@@ -1173,7 +1173,7 @@
     }, function (err) { busy = false; toast((err && err.message) || 'The Vault did not open. Try again.'); renderDraft(); });
   }
 
-  /* A friend's challenge: the same mode and the same draft (seed) */
+   
   function startChallenge(c) {
     if (!c || !T.MODES[c.mode] || T.MODES[c.mode].off) return false;
     if (!T.players.length) { setTimeout(function () { startChallenge(c); }, 400); return true; }
@@ -1185,8 +1185,8 @@
     return true;
   }
 
-  /* Quick Draft (the owner's challenges): drafts the biggest 13 from the challenge's own seeded spins by searching ahead
-     in the real engine (a beam of the best few drafts, each finished greedily), then finishes it for real. Marked qd */
+  
+
   var QD_CAP = 40000;
   function qdOptions(snap) {
     T.restore(snap);
@@ -1275,9 +1275,9 @@
     }).then(function () { qdOn = false; }, function (e) { qdOn = false; busy = false; throw e; });
   }
 
-  /* Save the draft in progress (as every draft game since 9 Oct 2026): every change is kept on this phone, so a refresh
-     or a trip to the checkout and back offers it again. Not the Daily, Quick Draft or a friend's challenge. Dropped when
-     the game ends, when a new one starts, after a day, and never offered to a different account */
+  
+
+
   var LS_DRAFT = 'sc_draft_v1', DRAFT_MS = 24 * 3600000;
   var DRAFT_TAB = Math.random().toString(36).slice(2, 10);
   function draftWho() { return (window.CastAccount && CastAccount.uid && CastAccount.uid()) || 'guest'; }
@@ -1300,7 +1300,7 @@
       var clockLeft = clock.iv && clock.offer === S.offer ? Math.max(0, clock.end - Date.now()) : null;
       localStorage.setItem(LS_DRAFT, JSON.stringify({ v: 1, id: S.draftId, tab: DRAFT_TAB, who: me, at: Date.now(), ds: T.DATASET, sel: selectedMode,
         name: S.mode.name, picks: T.filledCount(), clock: clockLeft, lock: S.awaitingLock && lockTimer ? lockLeft : null, s: s }));
-    } catch (e) { /* storage full or blocked: no resume */ }
+    } catch (e) {   }
   }
   function draftTaken() {
     var S = T.state();
@@ -1316,7 +1316,7 @@
     try { d = JSON.parse(e.newValue || 'null'); } catch (x) { d = null; }
     if (S && !S.finished && S.draftId && d && d.id === S.draftId && d.tab !== DRAFT_TAB) draftTaken();
   });
-  function dropDraft() { try { localStorage.removeItem(LS_DRAFT); } catch (e) { /* storage blocked */ } }
+  function dropDraft() { try { localStorage.removeItem(LS_DRAFT); } catch (e) {   } }
   function savedDraft() {
     var d = null;
     try { d = JSON.parse(localStorage.getItem(LS_DRAFT) || 'null'); } catch (e) { d = null; }
@@ -1337,7 +1337,7 @@
     if (miss || !S || !S.mode || !Array.isArray(S.slots) || S.finished) { dropDraft(); toast('That draft could not be brought back. Sorry!'); return; }
     T.adopt(S);
     resumeClock = typeof d.clock === 'number' ? d.clock : null; resumeLock = typeof d.lock === 'number' ? d.lock : null;
-    try { localStorage.setItem(LS_DRAFT, JSON.stringify(Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now() }))); } catch (e) { /* storage blocked */ }
+    try { localStorage.setItem(LS_DRAFT, JSON.stringify(Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now() }))); } catch (e) {   }
     selectedMode = d.sel || S.mode.id;
     placingId = null; busy = false;
     T.track('draft_resume', { mode: S.mode.name, picks: T.filledCount() });
@@ -1346,10 +1346,10 @@
     if (S.fullTime) { S.fullTime = false; S.capStep = false; captainStep(T.outcome(true)); return; }
     if (!S.offer && !S.awaitingLock) nextOffer(); else renderDraft();
   }
-  /* Opened on a mode (?play=, or CAST Games' page for it, window.CG_MODE): straight into play, never the home first (17 Oct
-     2026, the owner). The same player's saved draft carries on, else a new game starts. A link that opens something else
-     (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it. When nothing could start (a
-     sign-in wall closed, not launched yet), CAST Games shows its own card for the game (CG.bootIdle), this site its home */
+  
+
+
+
   var bootMode = null;
   function bootOn() { return document.documentElement.classList.contains('play-boot'); }
   function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && window.CG.bootDone) window.CG.bootDone(); }
@@ -1364,7 +1364,7 @@
     try {
       new MutationObserver(soon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
       new MutationObserver(soon).observe($('sheet'), { attributes: true, attributeFilter: ['hidden'] });
-    } catch (e) { /* very old browser: the timers above */ }
+    } catch (e) {   }
   }
   function bootPlay(mode) {
     bootMode = mode;
@@ -1379,7 +1379,7 @@
       if (now && draftWho() === now.who) resumeDraft(now); else playMode(mode);
     };
     var signedBefore = false;
-    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) { /* storage blocked */ }
+    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) {   }
     if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { decide(); return; }
     var on = function (e) {
       var st = e.detail && e.detail.status;
@@ -1388,7 +1388,7 @@
       decide();
     };
     window.addEventListener('cast-account', on);
-    setTimeout(decide, 6000); // a page whose accounts are off never says
+    setTimeout(decide, 6000); 
   }
   function offerResume() {
     var d = savedDraft();
@@ -1402,7 +1402,7 @@
       $('sheet').classList.add('is-confirm');
     };
     var signedBefore = false;
-    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) { /* storage blocked */ }
+    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) {   }
     if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { setTimeout(ask, 400); return; }
     var on = function (e) {
       var st = e.detail && e.detail.status;
@@ -1416,7 +1416,7 @@
   document.addEventListener('visibilitychange', function () { if (document.hidden) keepDraft(); });
   window.addEventListener('pagehide', keepDraft);
 
-  /* Boot */
+   
 
   setSound(sound);
   checkImages();
@@ -1434,7 +1434,7 @@
     var play = /[?&]play=(plus|daily)(?=&|#|$)/.exec(location.search) || (window.CG_MODE ? [0, window.CG_MODE] : null);
     if (!play) offerResume();
     if (play) {
-      try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address */ }
+      try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) {   }
       bootPlay(play[1]);
     }
   }).catch(function () {

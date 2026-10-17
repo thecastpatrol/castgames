@@ -1,50 +1,50 @@
-/* CAST Games: the World Legend reveal (8 Oct 2026), for World Cup mode in both games. The owner: an International
-   Legend turns up with a reveal that flashes through the nations' looks, slows, and lands on the player's nation. The
-   nation's look is the star: gold is only an accent (the label, the landed badge's edge, its ring, shine and a few
-   sparkles), never all gold. Always "World Legend(s)". One full-screen moment, about 2 to 3 seconds plus a hold:
-     spin   each reel is a nation badge (CastNations.svg) turning through the looks about 12 a second, slowing over its
-            last second (27-0's quarter final draw reveal, wcReveal, is the model)
-     land   the reel lands on its own nation: a small pop, a gold ring and flash, a shine across the badge and the nation's
-            colour glowing behind it; then the nation's name, the player's name and the line under it come in. With three
-            reels the landings come 0.35 s apart, so it builds
-     hold   the landed state stays for hold ms, then it finishes by itself
-   A tap during the spin lands every reel at once; a tap on the landed state finishes (Escape does the same; the tap
-   layer is a real button, so Enter and Space work and the games' Every Tap Lands fix covers it). A phone set to reduce
-   motion gets the landed state straight away and it finishes after the hold; a hidden tab finishes straight away with
-   nothing shown (and a tab hidden part way through finishes then). Without cast-nations.js, or for a nation it doesn't
-   draw, a reel is a plain dark tile with the three-letter code. Anything that goes wrong removes the overlay and goes
-   straight on to done(). Timing runs on setTimeout and performance.now, never on requestAnimationFrame (it stops in a
-   hidden tab), so done() always comes, and only once.
-   CastIntl.reveal(o) returns { skip() }; skip() finishes at once (the overlay goes, done() fires if it hasn't yet)
-     sides    optional { key: { name, short, code, c1, c2, glow } }: faces that aren't nations (a club's jersey in its
-              colours) for the keys in reels and pool (the 1000TRIES Legends and Immortal Picks). draw(w, h), when
-              given, returns the face's <svg> itself: the other CAST Games pass the club's real kit (js/cast-kits.js),
-              with fill: true for one that fills the whole tile (CastKits.drawFill, 17 Oct 2026); without it the
-              drawing sits whole in the tile with room round it. An NRL club passed from JERSEYS draws its real jersey
-     reels    [{ nation, name, sub }], 1 to 3: 1 for a free World Legend in a spin or an offer, 3 for an
-              World Legend Pick's three. nation: a cast-nations key ('aus', 'gbr', 'leb', ...); sub: the line under
-              the name ('Halfback/Five-Eighth · 96'; with three reels its ' · ' parts stack, each on one line, so pass
-              short ones there: 'HB/FE · 96'). Optional nationName replaces
-              the nation's name
-     kicker   the gold label at the top (default 'World Legend')       title  an optional heading under it
-     sub      an optional line under the title
-     tone     'bronze' for 1000TRIES's Legends Pick (its Legend cards are bronze, 8 Oct 2026); gold otherwise
-     pool     the nation keys the reels turn through (default: the World Cup sides cast-nations.js draws)
-     hold     ms the landed state stays before it finishes (default 1400)
-     label    what a screen reader hears for the dialog (default: the title, else the kicker)
-     done()   called exactly once: after the hold, after a tap on the landed state or after skip() (the overlay is gone by
-              then), or straight away for a hidden tab or a failure; never before reveal() has returned
-   A new reveal while one is open finishes the open one first. Styles: .ci-* (in cast-account.css). Master copy:
-   shared/cast-account/ (tools/sync_shared.py copies it to both games). */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
-  // Reel 1 lands LAND ms in and each next one STAGGER later. Before a landing a reel's last gaps are TAIL (ms); before those
-  // it turns every FAST ms (about 12 a second). The last face settles over SETTLE; the words under a reel are in TEXT after
-  // it lands, and the hold starts then. A tap counts from ARM ms after opening (so the tap that opened it can't skip it)
-  // and, on the landed state, from READY ms after the landing (so a double tap on the spin doesn't skip the names too)
+  
+  
+  
+  
   var LAND = 1650, STAGGER = 350, FAST = 83, TAIL = [95, 112, 140, 180, 230, 300], SETTLE = 440, TEXT = 700, HOLD = 1400, ARM = 250, READY = 350;
   var POOL = ['aus', 'nzl', 'eng', 'gbr', 'fra', 'sam', 'ton', 'fij', 'png', 'leb', 'cok'];
-  // Each nation: its name, its name three across, its code, the colour that glows behind its badge once it lands
+  
   var NATION = {
     aus: ['Australia', 'Australia', 'AUS', '#00a651'],
     nzl: ['New Zealand', 'New Zealand', 'NZL', '#d9dee8'],
@@ -60,11 +60,11 @@
     leb: ['Lebanon', 'Lebanon', 'LEB', '#ed1c24'],
     cok: ['Cook Islands', 'Cook Islands', 'COK', '#2e9b3a']
   };
-  var active = null; // the reveal on screen (its handle)
-  /* Sides that aren't nations (8 Oct 2026, the owner: the 1000TRIES Legends Pick "to match this"): o.sides gives each key
-     its colours and words, { name, short, code, c1, c2, glow }, and its face is drawn from them (its jersey's design, or
-     its draw(w, h)). A side with no design is plain in its colours, never a guessed V (16 Oct 2026, the owner: "Don't just
-     assume always that they are a V-shaped jersey design"); a nation cast-nations.js draws shows its own look */
+  var active = null; 
+  
+
+
+
   var SIDES = null;
 
   function esc(s) {
@@ -72,9 +72,9 @@
   }
   function str(s) { return s == null ? '' : String(s).trim(); }
   function clock() { return window.performance && typeof window.performance.now === 'function' ? window.performance.now() : Date.now(); }
-  // Straight after the current code (a hidden tab holds timers back, a promise's turn isn't held)
+  
   function soon(fn) { if (window.Promise) window.Promise.resolve().then(fn); else setTimeout(fn, 0); }
-  function warn(e) { try { if (window.console && console.warn) console.warn('CastIntl:', e); } catch (x) { /* no console */ } }
+  function warn(e) { try { if (window.console && console.warn) console.warn('CastIntl:', e); } catch (x) {   } }
   function rgbOf(hex) {
     var m = /^#?([0-9a-f]{6})$/i.exec(str(hex));
     if (!m) return '138, 147, 166';
@@ -93,12 +93,12 @@
     var k = str(key).toLowerCase(), sd = SIDES && Object.prototype.hasOwnProperty.call(SIDES, k) ? SIDES[k] : null;
     if (sd) {
       var c1 = hex(sd.c1, '#1a1a2e'), c2 = hex(sd.c2, '#ffffff'), pat = str(sd.pattern), own = typeof sd.draw === 'function' ? sd.draw : null;
-      // An NRL club the game passed from JERSEYS (its base colour matches): its real design, filling the tile (17 Oct 2026)
+      
       var kit = !own && !pat && Object.prototype.hasOwnProperty.call(JERSEYS, k) && hex(sd.base, '') === JERSEYS[k].base ? JERSEYS[k] : null;
       if (kit) return { key: k, look: false, side: true, kit: kit, c1: c1, c2: c2, name: name || str(sd.name) || k, short: name || str(sd.short) || str(sd.name) || k,
         code: str(sd.code) || k.slice(0, 3).toUpperCase(), glow: hex(sd.glow, c1) };
       var cols = (Array.isArray(sd.colors) ? sd.colors : []).map(function (c) { return hex(c, ''); }).filter(Boolean);
-      // No design given: the nation's own look when cast-nations.js draws it, else plain with a collar in its second colour
+      
       var natLook = !own && !pat && drawn(k);
       if (!own && !pat && !natLook) { pat = 'plain'; if (!cols.length) cols = [c2]; }
       return { key: k, look: natLook, side: !natLook, draw: own, fill: !!sd.fill, c1: c1, c2: c2, name: name || str(sd.name) || k, short: name || str(sd.short) || str(sd.name) || k,
@@ -110,40 +110,40 @@
     var code = n ? n[2] : k.slice(0, 3).toUpperCase() || '?';
     return { key: k, look: drawn(k), name: name || (n ? n[0] : code), short: name || (n ? n[1] : code), code: code, glow: n ? n[3] : '#8a93a6' };
   }
-  // A face: the nation's look with its code in a pill (the way 27-0's big match plates show a side), or a plain dark tile
-  // with the code for a nation cast-nations.js doesn't draw (or when it isn't there)
+  
+  
   function face(nt, w, h) {
     var svg = '';
     if (nt.look) { try { svg = String(window.CastNations.svg(nt.key, w, h) || ''); } catch (e) { svg = ''; } }
-    if (nt.draw) { try { svg = String(nt.draw(w, h) || ''); } catch (e) { svg = ''; } } // the club's real kit (the game's own drawing)
+    if (nt.draw) { try { svg = String(nt.draw(w, h) || ''); } catch (e) { svg = ''; } } 
     if (nt.kit) svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true">' + nrlFill(nt.kit, w, h) + '</svg>';
     if (nt.side && !svg) svg = jersey(nt, w, h);
     var el = document.createElement('div');
-    // A drawn kit sits whole in the tile (is-kit), unless the game passed fill: its kit then fills the tile edge to edge as
-    // the NRL clubs' do (17 Oct 2026, the owner: "I prefer the full box filled as opposed to jersey outline")
+    
+    
     el.className = 'ci-face' + (svg ? ' has-look' : '') + (nt.draw && svg && !nt.fill ? ' is-kit' : '');
     el.innerHTML = svg + '<span class="ci-code">' + esc(nt.code) + '</span>';
     return el;
   }
-  /* A club's jersey from its design (o.sides: pattern, base, colors, sizes, count, dir), researched per club by the game
-     that passes them (JERSEYS below, 8 Oct 2026, the owner: "make the jerseys more accurate"):
-       hoops    bands across, colors[0] and colors[1] taking turns, count of them
-       bands    bands across in colors[] order, sizes[] their relative heights (equal when not given)
-       stripes  bands down, taking turns
-       v        a V from the shoulders in colors[0]
-       y        the same with a stripe on from its point to the hem (Adelaide)
-       v2       the shoulders and upper chest in colors[1] down to a V, a band of colors[0] along it, colors[2] a thin edge
-       sash     a diagonal band (dir 'right' starts at the right shoulder)
-       yoke     a band across the shoulders in colors[0], colors[1] a thin edge under it
-       sides    side panels in colors[0], colors[1] their edge
-       split    halves; plain: one colour, with a collar in colors[0] when given (collar 'big': a deep V-neck)
-     Any other design is drawn plain (never a V it wasn't given) */
+  
+
+
+
+
+
+
+
+
+
+
+
+
   function jersey(nt, w, h) {
     var c = nt.colors.length ? nt.colors : [nt.c2], n = nt.count, i, y, out = '';
     var r = function (n0) { return Math.round(n0 * 10) / 10; };
     var R = function (x, y0, a, b, f) { return '<rect x="' + r(x) + '" y="' + r(y0) + '" width="' + r(a) + '" height="' + r(b) + '" fill="' + f + '"/>'; };
     var P = function (pts, f) { return '<polygon points="' + pts.map(function (q) { return r(q[0]) + ',' + r(q[1]); }).join(' ') + '" fill="' + f + '"/>'; };
-    var side = h * 0.16, point = h * 0.56, m = w / 2; // a V: from the shoulders' edge down to the middle of the chest
+    var side = h * 0.16, point = h * 0.56, m = w / 2; 
     var vBand = function (off, t, f) { return P([[0, side + off], [m, point + off], [w, side + off], [w, side + off + t], [m, point + off + t], [0, side + off + t]], f); };
     out += R(0, 0, w, h, nt.base);
     if (nt.pattern === 'hoops' || nt.pattern === 'bands') {
@@ -159,7 +159,7 @@
       if (nt.pattern === 'y') out += R(m - t * 0.45, point, t * 0.9, h - point, c[0]);
       out += P([[0, 0], [t, 0], [m, point - side * 0.2], [w - t, 0], [w, 0], [w, t * 0.6], [m, point - side * 0.2 + t], [0, t * 0.6]], c[0]);
     } else if (nt.pattern === 'v2') {
-      out += P([[0, 0], [w, 0], [w, side], [m, point], [0, side]], c[1] || c[0]); // the shoulders, down to the V
+      out += P([[0, 0], [w, 0], [w, side], [m, point], [0, side]], c[1] || c[0]); 
       out += vBand(0, h * 0.13, c[0]);
       if (c[2]) out += vBand(h * 0.13, h * 0.04, c[2]);
     } else if (nt.pattern === 'sash') {
@@ -174,15 +174,15 @@
     } else if (nt.pattern === 'split') {
       out += R(m, 0, w - m, h, c[0]);
     } else if (nt.pattern === 'plain') {
-      // the collar; collar 'big' is a deep V-neck (the Raiders and the Jets: the owner, 8 Oct 2026)
+      
       if (nt.colors.length) out += nt.collar === 'big' ? P([[m - w * 0.3, 0], [m + w * 0.3, 0], [m, h * 0.46]], c[0]) : P([[m - w * 0.16, 0], [m + w * 0.16, 0], [m, h * 0.2]], c[0]);
     } else {
-      // A design this doesn't know: plain with a small collar, never a guessed V (16 Oct 2026)
+      
       out += P([[m - w * 0.16, 0], [m + w * 0.16, 0], [m, h * 0.2]], c[0]);
     }
     return '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true">' + out + '</svg>';
   }
-  // First names over the surname, split the way 27-0's cards find a surname (cardSurname): 'Hazem' over 'El Masri'
+  
   function nameParts(s) {
     var w = str(s).split(/\s+/), i = w.length - 1;
     if (!w[0]) return ['', ''];
@@ -191,22 +191,22 @@
     while (i > 1 && /^(de|da|di|du|del|le|la|van|von|el|te|ter|ah|yow)$/i.test(w[i - 1])) i--;
     return [w.slice(0, i).join(' '), w.slice(i).join(' ')];
   }
-  // Words with a hyphen stay whole (Five-Eighth, Puig-Aubert: the owner's rule) and a line may break after a slash
+  
   function words(s) {
     return str(s).split(/(\s+)/).map(function (w) {
       if (!w || /^\s+$/.test(w)) return w;
       return w.split('/').map(function (p) { p = esc(p); return p.indexOf('-') > 0 ? '<span class="ci-nb">' + p + '</span>' : p; }).join('/<wbr>');
     }).join('');
   }
-  // The line under a name, in its ' · ' parts (one line with one reel, stacked with three); a bare number (the rating)
-  // is picked out in white
+  
+  
   function subHtml(s) {
     return str(s).split(/\s+\u00b7\s+/).filter(function (x) { return str(x); }).map(function (x) {
       return '<span class="ci-seg' + (/^\d+(\.\d+)?$/.test(str(x)) ? ' is-num' : '') + '">' + words(x) + '</span>';
     }).join('');
   }
-  // Words kept to one line get smaller until they fit their column (a long name on a small phone); a title that still
-  // can't fit wraps instead (balanced)
+  
+  
   function fit(el, room, min, wrap) {
     if (!el || !(room > 0)) return;
     var w = el.scrollWidth;
@@ -215,7 +215,7 @@
     el.style.fontSize = Math.max(min, to) + 'px';
     if (to < min && wrap) el.style.whiteSpace = 'normal';
   }
-  // Badge sizes for the screen: one big badge, or two or three side by side across a phone (16px gutters)
+  
   function sizes(n) {
     var de = document.documentElement, vw = window.innerWidth || (de && de.clientWidth) || 375, vh = window.innerHeight || (de && de.clientHeight) || 700, w, h, gap = 12;
     if (n === 1) {
@@ -230,7 +230,7 @@
     }
     return { w: Math.round(w), h: Math.round(h), gap: gap };
   }
-  // When a reel changes face, from its first face (0) to its landing (land): every FAST ms, then the TAIL's slower gaps
+  
   function timesFor(land) {
     var t = land, back = [land];
     for (var j = TAIL.length - 1; j >= 0; j--) { t -= TAIL[j]; back.push(t); }
@@ -238,12 +238,12 @@
     back.push(0);
     return back.reverse();
   }
-  // The nations a reel turns through: never the same twice running, never one a reel beside it shows at the same moment
-  // (three of a kind would look like a result), not its own just before it lands, then its own
+  
+  
   function keysFor(times, target, pool, others) {
     var out = [], last = null, count = times.length;
     for (var i = 0; i < count - 1; i++) {
-      var busy = shownBetween(others, times[i] - 40, times[i + 1] + 40), opts = [], j; // (40 ms either side: timers run late)
+      var busy = shownBetween(others, times[i] - 40, times[i + 1] + 40), opts = [], j; 
       for (j = 0; j < pool.length; j++) if (pool[j] !== last && busy.indexOf(pool[j]) < 0 && (i < count - 2 || pool[j] !== target)) opts.push(pool[j]);
       if (!opts.length) for (j = 0; j < pool.length; j++) if (pool[j] !== last) opts.push(pool[j]);
       if (!opts.length) opts = pool;
@@ -253,7 +253,7 @@
     out.push(target);
     return out;
   }
-  // The nations the given reels show at any time from a to b (a landed reel keeps showing its own)
+  
   function shownBetween(others, a, b) {
     var out = [];
     others.forEach(function (r) {
@@ -261,8 +261,8 @@
     });
     return out;
   }
-  // The looks to turn through: those given (else the World Cup's) that cast-nations.js draws or o.sides gives (every club,
-  // not only the nations among them: 16 Oct 2026); without them, their codes
+  
+  
   function poolOf(p) {
     var keys = (Array.isArray(p) && p.length ? p : POOL).map(function (k) { return str(k).toLowerCase(); })
       .filter(function (k, i, a) { return k && a.indexOf(k) === i; });
@@ -275,12 +275,12 @@
 
   function reveal(o) {
     o = o || {};
-    if (active) active.skip(); // one at a time: an open reveal finishes first
+    if (active) active.skip(); 
     var called = false, closed = false, building = true, root = null, timer = 0, prevFocus = null, onKey = null, onVis = null;
     var reels = [], hit = null, hint = null, sr = null, t0 = clock(), landedAll = false, endAt = -1, readyAt = 0, calm = false, hold = HOLD, sz = null, seen = {};
     var handle = { skip: function () { close(); } };
 
-    // done() once; an error in it is the caller's, so it's reported on its own but can't stop the clean-up
+    
     function go() {
       if (called) return;
       called = true;
@@ -308,8 +308,8 @@
     }
     function info(k) { return seen[k] || (seen[k] = nationOf(k)); }
 
-    // Shows face idx of reel r. The face before slides down and out as the new one comes in from above, both at the same
-    // pace, so it reads as a reel turning; the last one settles with a little bounce. instant: no slide (a skip, calm)
+    
+    
     function show(r, idx, instant) {
       var last = idx === r.keys.length - 1, f = face(last ? r.nt : info(r.keys[idx]), sz.w, sz.h), old = r.face;
       var outs = r.win.querySelectorAll('.ci-face.is-out');
@@ -352,9 +352,9 @@
       hit.setAttribute('aria-label', 'Continue');
       readyAt = t + (calm ? ARM : READY);
       endAt = t + (quick ? 0 : TEXT) + hold;
-      if (calm) setTimeout(safe(announce), 120); else announce(); // the live region gets the names once they show
+      if (calm) setTimeout(safe(announce), 120); else announce(); 
     }
-    // The clock: lands each reel's faces on time (catching up when timers ran late) and ends after the hold
+    
     function pump() {
       timer = 0;
       var t = clock() - t0, next = Infinity;
@@ -368,7 +368,7 @@
         });
         if (reels.every(function (r) { return r.landed; })) allLanded(t, false);
       }
-      if (endAt >= 0 && t >= endAt) { close(); return; } // (endAt -1: not landed yet; a hold of 0 can end at 0)
+      if (endAt >= 0 && t >= endAt) { close(); return; } 
       reels.forEach(function (r) { if (!r.landed) next = Math.min(next, r.times[r.k + 1]); });
       if (endAt >= 0) next = Math.min(next, endAt);
       if (next < Infinity) timer = setTimeout(safe(pump), Math.max(0, next - (clock() - t0)));
@@ -413,7 +413,7 @@
         '<div class="ci-rays" aria-hidden="true"></div>' +
         '<div class="ci-stage" aria-hidden="true">' +
           '<div class="ci-kick"><span>' + esc(kicker) + '</span></div>' + (title ? '<div class="ci-title">' + words(title) + '</div>' : '') +
-          // o.sub: one line under the title (the Legends Pick, 17 Oct 2026: "Pick one of three all-time greats")
+          
           (str(o.sub) ? '<div class="ci-lead" style="max-width:100%;margin:8px 0 0;font-size:14px;font-weight:700;line-height:1.3;color:#c9c9d8;text-wrap:balance">' + esc(str(o.sub)) + '</div>' : '') +
           '<div class="ci-reels">' + reels.map(function (r) {
             var p = nameParts(r.name);
@@ -423,8 +423,8 @@
                 '<i class="ci-spark ci-spark-1"></i><i class="ci-spark ci-spark-2"></i><i class="ci-spark ci-spark-3"></i><i class="ci-spark ci-spark-4"></i>' +
               '</div>' +
               '<div class="ci-nation">' + words(n > 1 ? r.nt.short : r.nt.name) + '</div>' +
-              // Side by side, every column keeps every row (a one-word name keeps an empty first-name row),
-              // so the names, positions and ratings line up across (the owner, 8 Oct 2026: "not even ... pls fix")
+              
+              
               '<div class="ci-name">' + (p[0] || n > 1 ? '<span class="ci-first">' + (p[0] ? words(p[0]) : '&nbsp;') + '</span>' : '') + '<span class="ci-last">' + words(p[1]) + '</span></div>' +
               (r.sub ? '<div class="ci-sub">' + subHtml(r.sub) + '</div>' : '') +
             '</div>';
@@ -438,14 +438,14 @@
       hint = root.querySelector('.ci-hint');
       sr = root.querySelector('.ci-sr');
 
-      // The first faces (or, reducing motion, the landed state) are there from the first frame
+      
       if (calm) reels.forEach(function (r) { land(r, true); });
       else reels.forEach(function (r) { show(r, 0, false); });
       prevFocus = document.activeElement;
       document.body.appendChild(root);
       active = handle;
       var room = root.querySelector('.ci-stage').clientWidth, kick = root.querySelector('.ci-kick');
-      fit(kick.firstChild, room - 36, 9, false); // the label's words, leaving its gold rules a little room
+      fit(kick.firstChild, room - 36, 9, false); 
       if (kick.firstChild.style.fontSize) kick.style.fontSize = kick.firstChild.style.fontSize;
       fit(root.querySelector('.ci-title'), room, 18, true);
       reels.forEach(function (r) {
@@ -463,7 +463,7 @@
       onVis = safe(function () { if (document.hidden) close(); });
       document.addEventListener('keydown', onKey, true);
       document.addEventListener('visibilitychange', onVis);
-      try { hit.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+      try { hit.focus({ preventScroll: true }); } catch (e) {   }
       timer = setTimeout(safe(pump), calm ? hold : Math.max(0, reels[0].times[1]));
     }
 
@@ -472,10 +472,10 @@
     return handle;
   }
 
-  /* KITS-NRL:BEGIN (generated by ~/cast-dev/kits/tools/build_intl.py from nrl.json and cast-kits.js: edit there, not here).
-     Each club's jersey for a club reveal (the Legends and Immortal Picks: 1000TRIES js/app.js packIntro, 27-0 js/picks.js):
-     every NRL club's real 2026 home jersey and each old club's best-known one (17 Oct 2026), its design in fractions of
-     the shirt's front filling the whole tile. Sources, status and notes: ~/cast-dev/kits/nrl.json */
+  
+
+
+
   function nrlFill(k, w, h) {
     var r = function (v) { return Math.round(v * 10) / 10; };
     var R = function (x, y, a, b, f) { return '<rect x="' + r(x) + '" y="' + r(y) + '" width="' + r(a) + '" height="' + r(b) + '" fill="' + f + '"/>'; };
@@ -502,7 +502,7 @@
         out += R(0, 0, w, l.depth * h, l.color);
         if (l.edge) out += R(0, l.depth * h, w, l.edge[1] * h, l.edge[0]);
       } else if (l.t === 'sash') {
-        // Across the front at about 50 degrees, edges first so the colour sits on them
+        
         var sw = l.width || 0.24, right = l.dir !== 'left';
         var band = function (wd, col) {
           var hw = wd / 2, A = right ? [1.08, -0.08] : [-0.08, -0.08], B = right ? [-0.08, 1.08] : [1.08, 1.08];
@@ -524,7 +524,7 @@
         if (l.mirror) out += P(l.pts.map(function (q) { return [1 - q[0], q[1]]; }), l.color);
       }
     });
-    // A plain shirt (no design at all) shows its collar, so the box still reads as a jersey
+    
     if (!L.length && k.collar) out += P([[0.34, 0], [0.66, 0], [0.5, 0.2]], k.collar);
     return out;
   }
@@ -558,7 +558,7 @@
     stgeorge: {"base":"#FFFFFF","collar":"#FFFFFF","layers":[{"t":"poly","color":"#E2001A","pts":[[-0.02,-0.02],[0.3,-0.02],[0.5,0.46],[0.7,-0.02],[1.02,-0.02],[1.02,0.14],[0.5,0.67],[-0.02,0.14]],"mirror":false}]},
     wmagpies: {"base":"#111111","collar":"#FFFFFF","layers":[{"t":"v","top":0.02,"point":0.27,"bands":[["#FFFFFF",0.04],["#111111",0.04],["#FFFFFF",0.12]]}]}
   };
-  /* KITS-NRL:END */
-  // fill: a club's jersey filling a w x h box (NRL Bingo's tiles, 17 Oct 2026), the same drawing as the club reveal's
+   
+  
   window.CastIntl = { reveal: reveal, JERSEYS: JERSEYS, fill: nrlFill };
 })();

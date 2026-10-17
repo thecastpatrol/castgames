@@ -1,4 +1,4 @@
-/* ── Design tokens ── */
+
 :root {
   --gold: #f1c073;
   --gold-dark: #c9953a;
@@ -8,7 +8,7 @@
   --card2: #161625;
   --card3: #1d1d30;
   --text: #f0f0f0;
-  --muted: #a2a2b8; /* 1000TRIES' grey (4 Oct 2026): #6b7280 was 3.6 to 4:1 on the dark cards, under the 4.5:1 small text needs */
+  --muted: #a2a2b8; 
   --radius: 14px;
   --radius-sm: 10px;
   --accent: #7c5ce8;
@@ -20,14 +20,14 @@
   --shadow-sm: 0 2px 10px rgba(0,0,0,0.35);
 }
 
-/* ── Body ── */
+
 body {
   background: var(--bg);
   background-image: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(106,76,197,0.07) 0%, transparent 70%);
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Buttons ── */
+
 .btn {
   background: linear-gradient(145deg, #dfa040, #f1c073, #dfa040);
   background-size: 200% 200%;
@@ -72,7 +72,7 @@ body {
   letter-spacing: 0.8px;
 }
 
-/* ── Header ── */
+
 .header {
   background: linear-gradient(180deg, #0c0c1c 0%, #090913 100%);
   border-bottom: 1px solid var(--border-gold);
@@ -97,7 +97,7 @@ body {
   .header-title p { display: none; }
 }
 
-/* ── Setup screen ── */
+
 #setup { padding: 44px 24px 36px; }
 .setup-inner { max-width: 540px; }
 
@@ -117,7 +117,7 @@ body {
 }
 .game-tagline{font-size:13px;color:var(--muted);margin-bottom:10px}
 
-/* Team name input */
+
 #teamNameInput {
   background: var(--card2) !important;
   border: 1.5px solid rgba(255,255,255,0.08) !important;
@@ -133,8 +133,8 @@ body {
   box-shadow: 0 0 0 3px rgba(241,192,115,0.07) !important;
 }
 
-/* Toggle / era selector buttons */
-/* pill toggle */
+
+
 .rat-pill-wrap{display:flex;align-items:center;gap:10px;justify-content:center}
 .rat-pill-label{font-size:12px;font-weight:700;color:var(--muted);transition:color .2s;min-width:28px}
 .rat-pill-label.active{color:var(--text)}
@@ -144,10 +144,10 @@ body {
 .rat-pill.on .rat-pill-thumb{transform:translateX(24px);background:var(--gold)}
 #eraAll, #era2000, #era2010, #era2020 { border-radius: 10px !important; transition: all 0.2s ease !important; }
 
-/* How It Works */
-/* how-it-works styles moved to main CSS */
 
-/* ── Draft: NRL field ── */
+
+
+
 .nrl-field-wrap {
   background: linear-gradient(180deg, #163f23 0%, #1b5a2f 40%, #1b5a2f 60%, #163f23 100%);
 }
@@ -172,7 +172,7 @@ body {
 .fpos-circle.fp-blue  { box-shadow: 0 0 20px rgba(59,130,246,0.3) !important; }
 .fpos-circle.fp-silver{ box-shadow: 0 0 14px rgba(156,163,175,0.22) !important; }
 
-/* ── Spin zone ── */
+
 .spin-zone {
   background: var(--card);
   border-top: 1px solid var(--border);
@@ -195,7 +195,7 @@ body {
 .spin-slot-val { font-size: 17px; font-weight: 800; }
 .spin-x { color: rgba(255,255,255,0.14); font-size: 20px; font-weight: 300; }
 
-/* ── Player rows ── */
+
 .player-row {
   background: var(--card);
   border: 1px solid var(--border);
@@ -224,13 +224,13 @@ body {
 .pr-club { font-size: 11px; color: var(--muted); margin-top: 3px; }
 .ptag { font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 7px; letter-spacing: 0.3px; }
 
-/* Picked message */
+
 .spin-picked-msg {
   background: rgba(34,197,94,0.07);
   border: 1px solid rgba(34,197,94,0.22);
 }
 
-/* Refresh button */
+
 .btn-refresh {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.1);
@@ -242,7 +242,7 @@ body {
 }
 .btn-refresh:hover { border-color: var(--border-gold); color: var(--gold); }
 
-/* ── Modal ── */
+
 .modal-overlay { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(0,0,0,0.85); }
 .modal {
   background: var(--card);
@@ -274,7 +274,7 @@ body {
 }
 .modal-cancel:hover { border-color: rgba(255,255,255,0.16); color: var(--text); }
 
-/* ── Squad complete ── */
+
 .lineup-slot {
   background: var(--card);
   border: 1px solid var(--border);
@@ -318,7 +318,7 @@ body {
 }
 .sr-val { font-size: 24px; font-weight: 900; }
 
-/* ── Season ── */
+
 .game-row {
   background: var(--card);
   border: 1px solid var(--border);
@@ -342,7 +342,7 @@ body {
 .season-header { background: var(--card); border-bottom: 1px solid var(--border); }
 .season-controls { background: var(--card); border-bottom: 1px solid var(--border); }
 
-/* ── Results ── */
+
 .result-hero { margin-top: 28px; margin-bottom: 24px; }
 .result-hero .big-record {
   font-size: clamp(48px,12vw,76px);
@@ -400,7 +400,7 @@ body {
 }
 .results-section h3 { font-size: 11px; letter-spacing: 2px; margin-bottom: 12px; }
 
-/* 27-0 banner */
+
 .twentyseven-zero-banner {
   background: linear-gradient(135deg, #180f08, #28180a);
   border: 1.5px solid var(--gold);
@@ -410,16 +410,16 @@ body {
 }
 .twentyseven-zero-banner h2 { font-size: 48px; }
 
-/* ── Bracket ── */
+
 .bracket-game { background: var(--card2); border: 1px solid var(--border); border-radius: 9px; }
 .bracket-team { font-size: 10px; padding: 5px 8px; }
 
-/* ── Ladder ── */
+
 .ladder-row { padding: 5px 2px; font-size: 11px; }
 .ladder-row.my-team { background: rgba(241,192,115,0.07); border-radius: 6px; }
 .ladder-row.finals-line { border-bottom: 2px solid rgba(241,192,115,0.35); }
 
-/* ── Award cards ── */
+
 .award-card {
   background: var(--card2);
   border: 1px solid var(--border);
@@ -427,7 +427,7 @@ body {
   padding: 12px;
 }
 
-/* ── Share modal ── */
+
 #shareCardModal { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .sc-btn {
   background: var(--card2);
@@ -451,20 +451,20 @@ body {
 }
 .sc-close:hover { border-color: rgba(255,255,255,0.16); color: var(--text); }
 
-/* ── Social links ── */
+
 .soc-link { transition: opacity 0.2s, transform 0.2s; }
 .soc-link:hover { opacity: 1; transform: translateY(-2px); }
 
-/* ── Scrollbar ── */
+
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(241,192,115,0.4); }
 
-/* ── Footer ── */
+
 .footer-socials { padding: 24px; border-top: 1px solid var(--border); }
 
-/* ── Mobile improvements ── */
+
 @media (max-width: 600px) {
   .fpos-label { display: none; }
   .fpos { width: var(--fpos-size, 62px); }
@@ -486,7 +486,7 @@ body {
 
 }
 
-/* ── Club tag on player rows ── */
+
 .pr-right {
   display: flex;
   flex-direction: row;
@@ -516,7 +516,7 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.35);
 }
 
-/* ── Club tag on squad complete lineup ── */
+
 .ls-club-tag {
   display: inline-flex;
   align-items: center;
@@ -531,7 +531,7 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
-/* ── Club abbreviation on field circles ── */
+
 .fpos-club {
   display: inline-block;
   font-size: 5.5px;
@@ -550,7 +550,7 @@ body {
   .fpos-club { font-size: 7.5px; padding: 2px 5px; border-radius: 4px; }
 }
 
-/* ── Tablet refinements ── */
+
 @media (min-width: 768px) {
   .spin-zone { padding: 16px 20px; }
   .player-section { padding: 12px 16px 0; }
@@ -559,7 +559,7 @@ body {
 }
 
 
-/* ── Share Modal ── */
+
 #shareModal{display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.7);align-items:flex-end;justify-content:center;padding:0}
 #shareModal.open{display:flex}
 .sm-sheet{background:#0d0d18;border-top:2px solid var(--gold);border-radius:20px 20px 0 0;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;padding:16px 20px 40px;box-sizing:border-box}
@@ -584,7 +584,7 @@ body {
 .sm-soc-facebook{background:#1877f2;color:#fff}
 .sm-bottom-row{display:flex;gap:8px}
 .sm-copy-btn{flex:1;padding:12px;border-radius:10px;border:1.5px solid #2a2a4a;background:#12122a;color:#aaa;font-size:13px;font-weight:700;cursor:pointer}
-/* ── Pack Opening Animations ── */
+
 @keyframes packSlideIn{from{transform:translateY(110%) scale(.92);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
 @keyframes packShine{0%{left:-80%}100%{left:120%}}
 @keyframes packPulse{0%,100%{box-shadow:0 8px 40px rgba(241,192,115,.35)}50%{box-shadow:0 8px 60px rgba(241,192,115,.7),0 0 80px rgba(241,192,115,.25)}}
@@ -602,13 +602,13 @@ body {
 .pack-card-up{animation:packCardUp .4s cubic-bezier(.23,1,.32,1) both}
 @keyframes packCardUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
 #pack-opening.screen.active{overflow:hidden}
-/* pack-squad compact player rows */
+
 #packPlayerList .player-row{padding:7px 12px;margin-bottom:4px}
 #packPlayerList .pr-badge{width:40px;height:40px;font-size:16px;border-radius:8px}
 #packPlayerList .pr-name{font-size:13px}
 #packPlayerList .pr-club{font-size:11px;margin-top:1px}
 #packPlayerList .ptag{font-size:11px;padding:5px 9px}
-/* pack-squad footer only shows on mobile (stacked); on desktop it sits under the field */
+
 @media(min-width:768px){
   .ps-footer{background:#0d0d1f}
 }

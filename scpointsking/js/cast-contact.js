@@ -1,36 +1,36 @@
-/* CAST Games Contact Us and Report a Bug (17 Oct 2026, the owner's BUILD IT): one form in every CAST game, in place of
-   the plain email links, so every message is tracked and actioned in Admin > Inbox (js/cast-account.js).
-   MASTER COPY: edit shared/cast-account/ in the 1000TRIES repo, then copy it to each game's js/ folder.
 
-   On a page: <script src="js/cast-contact.js?v=..." data-site="1000tries"></script> in the <head> (early, so it also
-   catches the page's own errors), then any button with data-cast-contact opens the form:
-     <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button>
-     <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
-   (data-cast-contact: contact, bug, pay, account, idea or other). Or CastContact.open('bug'), or ?contact=bug in the address.
 
-   What it sends (shown on the form as "We'll also send: game, page, device"): the message, its type, the reply email,
-   which game and screen, the page address without anything secret after ?, the game's version (?v=), the browser and
-   device, the screen size and the last 5 script error messages on this page (messages only). The server adds who is
-   signed in. Self-contained: its own styles (ctc- prefix) and, on a page without js/cast-account.js (the policy pages),
-   its own small Firebase load, only when it is needed. Guests send nothing until they press Send. */
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   if (window.CastContact) return;
   var ME = document.currentScript;
   var FIREBASE = {
-    apiKey: 'AIzaSyC76_SWOqYJbwfqPWhx0eVX2WwruE5ryRU', // public by design; locked to our domains in Google Cloud
+    apiKey: 'AIzaSyC76_SWOqYJbwfqPWhx0eVX2WwruE5ryRU', 
     authDomain: 'cast-games-bd641.firebaseapp.com',
     projectId: 'cast-games-bd641',
     storageBucket: 'cast-games-bd641.firebasestorage.app',
     messagingSenderId: '49757572054',
     appId: '1:49757572054:web:8b5dff817d5de90fa3f277'
   };
-  var SDK = 'https://www.gstatic.com/firebasejs/12.19.0/'; // the same as js/cast-account.js, so both share one Firebase
+  var SDK = 'https://www.gstatic.com/firebasejs/12.19.0/'; 
   var EMU = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && /[?&]castemu=1(&|$)/.test(location.search);
   var TYPES = [['bug', '&#x1F41E;', 'Report a Bug'], ['pay', '&#x1F4B3;', 'Payment or Purchase'], ['account', '&#x1F464;', 'My Account'], ['idea', '&#x1F4A1;', 'Idea or Feedback'], ['other', '&#x1F4AC;', 'Something Else']];
   var MIN = 10, MAX = 2000, DOING = 300;
 
-  /* The last 5 script errors on this page (messages, the file and line, nothing else), for bug reports */
+   
   var ERRS = [];
   function keepErr(m) {
     m = String(m || '').replace(/\s+/g, ' ').trim().slice(0, 300);
@@ -40,7 +40,7 @@
   }
   window.addEventListener('error', function (e) {
     var t = e && e.target;
-    if (t && t !== window && t.tagName) { // a script or stylesheet that did not load (images are left out: too noisy)
+    if (t && t !== window && t.tagName) { 
       if (t.tagName === 'SCRIPT' || t.tagName === 'LINK') keepErr('Did not load: ' + String(t.src || t.href || '').split('?')[0].split('/').slice(-2).join('/'));
       return;
     }
@@ -65,7 +65,7 @@
     return 'castgames';
   }
   var SITE_NAMES = { '1000tries': '1000TRIES', '27-0': '27-0', '4000goals': '4000 GOALS', bigbash: '25000 RUNS', tests: '60000 RUNS', nfl: '777 TDS', racing: 'G1 WINNER SPINNER', epl: '650 GOALS', nba: '100000 POINTS', sc: 'SC POINTS KING', castgames: 'CAST Games' };
-  // Where in the game: the page's own hook, else the screen and mode the game marks on <body>, else the page's name
+  
   function screenNow() {
     var s = '';
     try { if (window.CAST_ACCOUNT && typeof window.CAST_ACCOUNT.contactScreen === 'function') s = String(window.CAST_ACCOUNT.contactScreen() || ''); } catch (e) { s = ''; }
@@ -77,7 +77,7 @@
     var ca = document.querySelector('.ca:not([hidden])');
     return (s + (ca ? ' + CAST pop-up' : '')).slice(0, 60);
   }
-  // The game's version: the ?v= on its main script (app.js and friends), else this file's
+  
   function version() {
     var list = document.querySelectorAll('script[src*="?v="]'), own = '';
     for (var i = 0; i < list.length; i++) {
@@ -97,7 +97,7 @@
     } catch (e) { keep = []; }
     return location.origin + location.pathname + (keep.length ? '?' + keep.join('&') : '');
   }
-  // The device line the form shows ("iPhone, Safari"); the full browser details go with the message
+  
   function devShort(ua) {
     var d = /iPad/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document) ? 'iPad' : /iPhone/.test(ua) ? 'iPhone' : /Android/.test(ua) ? 'Android' : /Mac OS X|Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /CrOS/.test(ua) ? 'Chromebook' : 'Computer';
     var b = /FBAN|FBAV|FB_IAB/.test(ua) ? 'Facebook app' : /Instagram/.test(ua) ? 'Instagram app' : /TikTok|musical_ly|Bytedance/.test(ua) ? 'TikTok app' : /Edg/.test(ua) ? 'Edge'
@@ -110,7 +110,7 @@
       scr: Math.round(window.innerWidth) + 'x' + Math.round(window.innerHeight) + '@' + dpr, errs: ERRS.slice() };
   }
 
-  /* Firebase, only on a page without js/cast-account.js (that page's account does the sending there) */
+   
   var fbP = null;
   function sdk() {
     if (fbP) return fbP;
@@ -120,14 +120,14 @@
       var auth = m[1].getAuth(app), fns = m[2].getFunctions(app, 'australia-southeast1');
       if (EMU && !app.__ctcEmu) {
         app.__ctcEmu = true;
-        try { m[2].connectFunctionsEmulator(fns, '127.0.0.1', 5001); m[1].connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true }); } catch (e) { /* already connected by the account */ }
+        try { m[2].connectFunctionsEmulator(fns, '127.0.0.1', 5001); m[1].connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true }); } catch (e) {   }
       }
       return { auth: auth, fns: fns, Fn: m[2], ready: auth.authStateReady ? auth.authStateReady() : Promise.resolve() };
     });
     fbP.catch(function () { fbP = null; });
     return fbP;
   }
-  // Who is signed in: { email, username } or null (a guest). Signed in on this site before (cast_signed_in): wait for it
+  
   function who() {
     var CA = window.CastAccount;
     if (CA && CA.contactWho) {
@@ -149,8 +149,8 @@
     if (CA && CA.contactSend) return CA.contactSend(data);
     return sdk().then(function (f) { return f.ready.then(function () { return f.Fn.httpsCallable(f.fns, 'contactSend')(data); }); }).then(function (r) { return r.data; });
   }
-  // A send that fails for any reason other than something the person can fix in the form (a message too short, say) also
-  // gives them our email address as plain text, so a message never goes nowhere if contactSend is down or unreachable
+  
+  
   var MAIL = 'cast@thecastpatrol.com.au';
   function errText(err) {
     var code = String((err && err.code) || '').replace(/^functions\//, '');
@@ -159,11 +159,11 @@
     return { t: 'Your message did not send. Check your connection and try again.', mail: true };
   }
 
-  /* The form */
+   
   var el = null, st = { type: null, msg: '', doing: '', email: '', who: null, loading: false, busy: false, err: '', sent: null }, lastFocus = null;
   var CSS = '' +
     '.ctc{--ctc-line:#2a2a44;--ctc-muted:#a9a9c1;--ctc-text:#f0f0f5;--ctc-bad:#f87171;position:fixed;inset:0;z-index:10090;display:flex;align-items:flex-end;justify-content:center;font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--ctc-text);padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;text-align:left}' +
-    '.ctc .ctc-panel:focus,.ctc .ctc-panel:focus-visible{outline:none}.ctc :focus-visible{outline:2px solid #fff;outline-offset:2px}' + // white focus rings, never the site's gold
+    '.ctc .ctc-panel:focus,.ctc .ctc-panel:focus-visible{outline:none}.ctc :focus-visible{outline:2px solid #fff;outline-offset:2px}' + 
     '.ctc[hidden]{display:none!important}html.ctc-open,html.ctc-open body{overflow:hidden}' +
     '.ctc *{box-sizing:border-box}.ctc h2,.ctc h3,.ctc button,.ctc label,.ctc small,.ctc summary,.ctc b{text-wrap:balance}.ctc p,.ctc li{text-wrap:pretty}' +
     '.ctc-backdrop{position:absolute;inset:0;background:rgba(5,5,10,.74)}' +
@@ -261,13 +261,13 @@
     body.scrollTop = y;
     foot.innerHTML = '<button type="button" class="ctc-send" data-ctc="send"' + (st.busy || !ready() ? ' disabled' : '') + '>' + (st.busy ? '<span class="ctc-spin" aria-hidden="true"></span>Sending' : 'Send Message') + '</button>';
   }
-  // Typing updates only the counter and the Send button, so the keyboard and caret never jump
+  
   function soft() {
     var c = document.getElementById('ctcCount'), b = el && el.querySelector('[data-ctc="send"]');
     if (c) { c.textContent = countText(); c.classList.toggle('is-bad', msgLen() > MAX); }
     if (b && !st.busy) b.disabled = !ready();
   }
-  function fit() { // keep the Send button above the phone's keyboard
+  function fit() { 
     if (!el || el.hidden) return;
     var vv = window.visualViewport, p = el.querySelector('.ctc-panel');
     if (vv && p && window.innerWidth < 720) { p.style.setProperty('--ctc-h', Math.max(260, vv.height - 12) + 'px'); el.style.height = vv.height + 'px'; el.style.top = vv.offsetTop + 'px'; }
@@ -314,11 +314,11 @@
       var p = el.querySelector('.ctc-panel'); if (p) p.focus();
     }, function (err) {
       st.busy = false; st.err = errText(err); render();
-      var e = el.querySelector('.ctc-err'); if (e && e.scrollIntoView) e.scrollIntoView({ block: 'nearest' }); // it sits under the fold on a phone
+      var e = el.querySelector('.ctc-err'); if (e && e.scrollIntoView) e.scrollIntoView({ block: 'nearest' }); 
     });
   }
   function track(ev, p) {
-    try { if (window.CAST_ACCOUNT && typeof window.CAST_ACCOUNT.track === 'function') window.CAST_ACCOUNT.track(ev, Object.assign({ game: site() }, p)); else if (typeof window.gtag === 'function') window.gtag('event', ev, Object.assign({ game: site() }, p)); } catch (e) { /* analytics blocked */ }
+    try { if (window.CAST_ACCOUNT && typeof window.CAST_ACCOUNT.track === 'function') window.CAST_ACCOUNT.track(ev, Object.assign({ game: site() }, p)); else if (typeof window.gtag === 'function') window.gtag('event', ev, Object.assign({ game: site() }, p)); } catch (e) {   }
   }
   function open(type, opts) {
     build();
@@ -341,17 +341,17 @@
     el.hidden = true;
     document.documentElement.classList.remove('ctc-open');
     if (st.sent) { st.sent = null; st.type = null; }
-    try { if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); } catch (e) { /* gone */ }
+    try { if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); } catch (e) {   }
   }
 
-  // Any data-cast-contact button on the page opens the form
+  
   document.addEventListener('click', function (e) {
     var t = e.target && e.target.closest ? e.target.closest('[data-cast-contact]') : null;
     if (!t) return;
     e.preventDefault();
     open(t.getAttribute('data-cast-contact') || 'contact', { msg: t.getAttribute('data-cast-contact-msg') || '' });
   });
-  // ?contact=bug (or contact, pay, account, idea, other) in the address opens it
+  
   function fromUrl() {
     var m = /[?&]contact=([a-z]{2,10})(&|$)/.exec(location.search);
     if (m) open(m[1]);

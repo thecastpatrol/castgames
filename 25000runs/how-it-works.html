@@ -2,8 +2,10 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>(function () { function inn(t) { var b = t.closest && t.closest('.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'); if (b) b.classList.add('is-in'); } document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; if (/\.webp(\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); t.src = t.src.replace(/\.webp(\?v=\w*)?/, '.png'); return; } inn(t); }, true); })();</script><style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=9d1d652119b3">
+<link rel="stylesheet" href="../shared/cg.css?v=e4b6e41dc635">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -11,9 +13,9 @@
 <!-- No automatic links on numbers, dates, places or units (7 Oct 2026: Chrome on iPhone underlined some players’ nation and rating) -->
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<script>(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy'; m.content = "upgrade-insecure-requests; object-src 'none'; base-uri 'self'"; document.head.appendChild(m); })();</script>
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=be30756c" data-site="bigbash"></script>
+<script src="js/cast-contact.js?v=76e04347" data-site="bigbash"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -38,16 +40,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=d6cf9e19">
+<link rel="stylesheet" href="css/main.css?v=0ed48e94">
 </head>
 <body>
 <script>window.CG_GAME = '25000runs'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=9d1d652119b3"></script>
+<script src="../shared/cg.js?v=e4b6e41dc635"></script>
+<script src="/shared/cg-speed.js?v=cef2eaf1" defer></script>
 
 
 <header class="site-header">
   <a class="brand" href="./" aria-label="25000 RUNS home">
-    <img class="brand-logo" src="assets/logos/cast-patrol.png" alt="The Cast Patrol" width="600" height="302" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+    <img loading="lazy" class="brand-logo" src="assets/logos/cast-patrol.png" alt="The Cast Patrol" width="600" height="302" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
     <span class="brand-fallback" hidden>THE CAST PATROL</span>
   </a>
   <nav class="header-nav">
@@ -142,6 +145,6 @@ document.querySelectorAll('.doc p, .doc li, .doc strong, .footer-legal').forEach
   Array.prototype.forEach.call(document.querySelectorAll('[data-cast-nowc]'), function (n) { n.hidden = on; });
 })();
 </script>
-<script src="js/analytics.js?v=de554f63"></script>
+<script src="js/analytics.js?v=d49bd1b0"></script>
 </body>
 </html>

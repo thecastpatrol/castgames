@@ -1,19 +1,19 @@
-/* global require */ // only on the server, where this file is loaded with require (see below)
-/* 650 GOALS Daily calendar (17 Oct 2026): the Premier League twin of the shared CAST Daily calendar (js/cast-daily.js,
-   loaded first), copied from 25000 RUNS' js/bbl-daily.js. It keeps the shared rewards, item names and streak ladder, and
-   swaps in Premier League days: club days taking turns through the clubs with the longest Premier League histories, a
-   derby day (North London, Merseyside, Manchester, Tyne-Wear), an era day (the 1990s, 2000s, 2010s, 2020s), and Sunday
-   as the hard club day, the same weekly pattern as 1000TRIES. Each player gets their own random draft within the theme.
-   The club facts come from the league's own records (tools/make_game_files.py writes them between the @facts lines).
+  
 
-   CAST_DAILY.day('YYYY-MM-DD') gives the same shape as the shared calendar:
-     { date, key, name, short, icon, title, story, who, hard, planned, onThisDay: null,
-       g1000: { target, only, years }, reward, rewardKind } */
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var shared = (typeof module !== 'undefined' && module.exports && typeof require === 'function') ? require('./cast-daily.js') : (root.CAST_DAILY || {});
 
-  // The names fans use on a club day (the owner's rule: the club's own name, never a nickname that sounds like a slogan)
+  
   var NICK = { arsenal: 'Arsenal', manutd: 'Man United', liverpool: 'Liverpool', chelsea: 'Chelsea', spurs: 'Spurs', mancity: 'Man City',
     everton: 'Everton', newcastle: 'Newcastle', villa: 'Aston Villa', westham: 'West Ham', southampton: 'Southampton', palace: 'Crystal Palace',
     fulham: 'Fulham', leicester: 'Leicester', blackburn: 'Blackburn', sunderland: 'Sunderland', boro: 'Middlesbrough', wolves: 'Wolves',
@@ -26,7 +26,7 @@
   var DERBY = { northlondon: 'North London Derby', merseyside: 'Merseyside Derby', manchester: 'Manchester Derby', tynewear: 'Tyne-Wear Derby' };
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
 
-  // @facts (tools/make_game_files.py: each club's top Premier League scorer, from the league's own records)
+  
   var FACTS = {
     bournemouth: ['Joshua King', 48], arsenal: ['Thierry Henry', 175], villa: ['Ollie Watkins', 91],
     barnsley: ['Neil Redfearn', 10], birmingham: ['Mikael Forssell', 29], blackburn: ['Alan Shearer', 112],
@@ -46,10 +46,10 @@
     watford: ['Troy Deeney', 47], westbrom: ['Peter Odemwingie', 30], westham: ['Michail Antonio', 68],
     wigan: ['Hugo Rodallega', 24], wimbledon: ['Dean Holdsworth', 58], wolves: ['Raúl Jiménez', 40]
   };
-  // @end
+  
 
-  /* Targets: [normal, hard (Sundays)] */
-  // @targets (tools/daily_targets.sh; rerun for the formations, the recognisable pool, loose back-three wide spots and the stricter wide and midfield spots, 17 Oct 2026)
+   
+  
   var TARGETS = {
     'club:arsenal': [455, 495], 'club:manutd': [610, 660], 'club:liverpool': [610, 650], 'club:mancity': [470, 510],
     'club:spurs': [515, 560], 'club:chelsea': [580, 625], 'club:palace': [315, 340], 'club:southampton': [415, 460],
@@ -61,9 +61,9 @@
     'city:northlondon': [505, 565], 'city:tynewear': [385, 420], 'city:merseyside': [560, 620],
     'era:e90s': [415, 470], 'era:e00s': [435, 485], 'era:e20s': [505, 575], 'era:e10s': [500, 570]
   };
-  // @end
-  /* From Sunday 18 October 2026 the themes whose results moved with the true-CM rule (only a true CM flexes to CDM or CAM)
-     have their targets set again: [normal, hard]. Every other theme, and every day before, keeps TARGETS */
+  
+  
+
   var CM_FROM = '2026-10-18';
   var TARGETS_CM = {
     'club:arsenal': [440, 480], 'club:liverpool': [595, 635], 'club:mancity': [470, 515], 'club:spurs': [500, 545],
@@ -77,16 +77,16 @@
   function tgt(key, hard, date) { var t = date >= CM_FROM && TARGETS_CM[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 330 : 300); }
 
   var REWARDS = { keys: { epl: { legend: 1 } }, wild: { epl: { reveals: 1 } }, freeze: { epl: { freezes: 1 } }, reroll: { epl: { left: 1 } } };
-  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
+  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; 
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  // The planned days (edit here): { key, name, short, icon, title, who, story, t (target), g1000: { only | years } }
+  
   var DAYS = {};
 
-  var WEEK = ['club', 'club', 'city', 'club', 'era', 'club', 'club']; // Sun ... Sat
+  var WEEK = ['club', 'club', 'city', 'club', 'era', 'club', 'club']; 
   var CITY_ORDER = ['northlondon', 'merseyside', 'manchester', 'tynewear'];
-  // Seasons are named by the year they start (1992 is 1992-93)
+  
   var ERAS = [['e90s', 'The 1990s', 1992, 1999, 'from Manchester United winning the first Premier League title in 1992-93 to the end of the decade'],
     ['e00s', 'The 2000s', 2000, 2009, 'when Arsenal went the whole of 2003-04 unbeaten'],
     ['e10s', 'The 2010s', 2010, 2019, 'when Leicester won the 2015-16 title and Manchester City reached 100 points in 2017-18'],
@@ -107,7 +107,7 @@
         story: 'How well do you remember ' + e[1].replace('The', 'the') + '? Every player you can draft today played in those seasons, ' + e[4] + '.',
         g1000: { years: [e[2], e[3]] } };
     }
-    // Club days: five a week, taking turns through the clubs
+    
     var slot = [0, 1, -1, 2, -1, 3, 4][wd], k = CLUBS[(week * 5 + slot) % CLUBS.length];
     return { key: 'club:' + k, name: dayName(k) + ' Day', short: dayName(k), icon: MASCOT[k] || '🏟️', title: dayName(k) + ' Players Only',
       who: dayName(k) + ' players',
@@ -133,7 +133,7 @@
     return t;
   }
 
-  // Where a reward item is used, in 650 GOALS' words
+  
   var ITEM_USE = { legend: 'Use it in 650+ to swap an offer for a Legends Pick.', reveals: 'Use it in your next draft to see the hidden goals.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh roll.', removes: 'Use it to take a player out of your XI.' };
   function useText(items) {
@@ -144,6 +144,6 @@
 
   var api = Object.assign({}, shared, { day: day, finals: [], nick: NICK, mascot: MASCOT, clubs: CLUBS, cities: CITIES,
     useText: useText, TARGETS: TARGETS, TARGETS_HARDER: TARGETS });
-  if (typeof module !== 'undefined' && module.exports) module.exports = api; // the server: its own copy, the shared one untouched
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; 
   else root.CAST_DAILY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,29 +1,29 @@
-/* 27-0 World Cup 8-0: the tournament engine. Pure maths, no DOM. Loaded by the page (window.WC) and by Node (module.exports).
 
-   The player's 13 ('you') takes France's place in Pool C of the men's 2026 Rugby League World Cup.
-   - Pool A (aus nzl fij cok) plays a round robin. Pools B and C become one table of six (you png ton sam eng leb)
-     that plays a full round robin, 5 games each. Tables rank by wins, then points difference, then a coin flip.
-   - Quarter-finals: A1 v BC4, A2 v BC3, BC1 v A4, BC2 v A3. SF1 = W(A1 v BC4) v W(BC2 v A3), Newcastle;
-     SF2 = W(A2 v BC3) v W(BC1 v A4), Allianz; Final at Suncorp. 5th or 6th in the B/C table is out after 5 games.
-   - Results come from winProb (the player's games) and pairProb (everyone else).
-   - Each run draws one fixed block of random numbers and every game reads its own slot of it, so runs with the same
-     seed at different ratings stay in step.
 
-   WC.setSquads(json)            squads from data/wc-squads.json (the page fetches it; nations without one use FALLBACK)
-   WC.strength(key)              best 13 by position with 27-0's slot weights
-   WC.road()                     the player's 8 games, knockout opponents null until known
-   WC.run(rating, rng, opt)      one whole tournament (run.pools: every pool game with its round, and the tie coins).
-                                 opt: {kick: the player's goal kicker's level (1 top, 2 good, 0 off the lists),
-                                 taken: the names in the player's 13 (a drafted kicker doesn't kick for his nation),
-                                 il: how many World Legends are in the player's 13 (a whole number, none when
-                                 missing; see LEGENDS)}
-   WC.kickLevel(name)            a goal kicker's level from data/wc-squads.json (0: not a listed kicker)
-   WC.nationKicker(key, taken)   a nation's goal kicker ({name, level}): its first listed one not in the player's 13
-   WC.standings(games, k, coins) a pool's ladder after round k (0: before a ball is kicked)
-   WC.stakes(bcGames, k)         what the player's round-k game can and can't decide, proved over every way it can go
-   WC.winProb(myR, oppR, oppKey, stage, unbeaten, il)   the player's chance in one game (stage 0 pool, 1 QF, 2 SF, 3 final;
-                                 il as in run's opt)
-   WC.sim(rating, n, seed)       n seeded runs */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
 
@@ -40,18 +40,18 @@
     png: {name: 'Papua New Guinea', short: 'PNG', code: 'PNG', pool: 'C'},
     ton: {name: 'Tonga', short: 'Tonga', code: 'TON', pool: 'C'}
   };
-  // Strength of a nation until its squad is loaded (the owner's numbers)
+  
   const FALLBACK = {aus: 93, nzl: 91, ton: 88, sam: 87, eng: 85, fij: 82, png: 78, leb: 77, cok: 75, fra: 74};
   const GIANTS = ['aus', 'nzl'];
   const CHALLENGERS = ['ton', 'sam', 'eng'];
   const CONTENDERS = GIANTS.concat(CHALLENGERS, [YOU]);
-  // Each side's tier: 2, 1 or 0
+  
   function tierOf(k) { return GIANTS.indexOf(k) >= 0 ? 2 : (CHALLENGERS.indexOf(k) >= 0 || k === YOU) ? 1 : 0; }
-  // Contender v contender (7 Oct 2026, the owner's call): each side's power, not its squad strength. The player's
-  // knockouts against Tonga, Samoa and England use it too
+  
+  
   const POWER = {aus: 90, nzl: 87.8, sam: 84.1, ton: 83.1, eng: 82.8};
 
-  // Tuning
+  
   const ODDS = {
     shift: 6,
     slope: 0.2,
@@ -68,7 +68,7 @@
     upsetBase: 0.12, upsetStep: 0.005, upsetMin: 0.12, upsetMax: 0.24
   };
 
-  // World Legends in the player's 13 (opt.il; notes in ~/cast-dev/private-notes)
+  
   const LEGENDS = {
     floorFrom: 3,
     giant: {3: 0.38, 4: 0.5, 5: 0.93},
@@ -76,7 +76,7 @@
     safe: 6, pool: 0.85, final: 0.55, perfectFinal: 0.10,
     allWon: 6
   };
-  // By the rating as shown (notes in ~/cast-dev/private-notes)
+  
   const SURE_RATING = 91, NEAR_SURE = 0.965, NEXT_SURE = 0.23;
 
   function clamp(x, lo, hi) { return x < lo ? lo : x > hi ? hi : x; }
@@ -97,8 +97,8 @@
     return stage === 3 ? p * ODDS.finalFactor : p;
   }
 
-  // The player's game. stage: 0 pool, 1 quarter final, 2 semi-final, 3 final. oppR null: the nation's own strength.
-  // unbeaten (optional): the player has not lost yet. il (optional): World Legends in the player's 13
+  
+  
   function winProb(myR, oppR, oppKey, stage, unbeaten, il) {
     const shown = Math.round(Number(myR) || 0);
     if (shown >= SURE_RATING) return 1;
@@ -106,7 +106,7 @@
     const q = n < LEGENDS.floorFrom ? p : withLegends(p, n, stage || 0, oppKey, unbeaten);
     return shown === SURE_RATING - 1 ? Math.max(q, NEAR_SURE) : shown === SURE_RATING - 2 ? Math.max(q, NEXT_SURE) : q;
   }
-  // How many World Legends: a whole number, none when missing or not a number
+  
   function legendsIn(x) { return typeof x === 'number' && x > 0 ? Math.floor(x) : 0; }
   function withLegends(p, n, stage, oppKey, unbeaten) {
     if (n >= LEGENDS.allWon) return 1;
@@ -119,7 +119,7 @@
     const f = (t === 2 ? LEGENDS.giant : LEGENDS.challenger)[n];
     return Math.max(p, stage === 3 ? Math.min(f, unbeaten ? LEGENDS.perfectFinal : LEGENDS.final) : f);
   }
-  // winProb without World Legends
+  
   function gameProb(myR, oppR, oppKey, stage, unbeaten) {
     stage = stage || 0;
     if (oppR == null) oppR = strength(oppKey);
@@ -131,7 +131,7 @@
     return t === 2 ? giantProb(k, stage) : challengerProb(k, stage, oppKey);
   }
 
-  // Nation a v nation b (neither is the player)
+  
   function pairProb(a, b, stage) {
     const ta = tierOf(a), tb = tierOf(b);
     if (ta && tb && POWER[a] != null && POWER[b] != null) return clamp(logistic((POWER[a] - POWER[b]) * ODDS.slope), 0.05, 0.95);
@@ -139,7 +139,7 @@
       const lim = ta ? ODDS.sameTop : ODDS.sameRest;
       return clamp(logistic((strength(a) - strength(b)) * ODDS.slope), lim[0], lim[1]);
     }
-    // Different tiers: the lower tier's side first, then turned round when a is the higher tier
+    
     const aLower = ta < tb;
     const gap = aLower ? strength(a) - strength(b) : strength(b) - strength(a);
     let up;
@@ -154,18 +154,18 @@
     return aLower ? up : 1 - up;
   }
 
-  // ============================================================
-  // SQUADS AND STRENGTH
-  // ============================================================
-  // 27-0's slots and weights (calcTeamRating): FB, W, W, C, C, FE, HB, P, HK, P, SR, SR, LK
+  
+  
+  
+  
   const TYPES = ['FB', 'W', 'C', 'FE', 'HB', 'P', 'HK', 'SR', 'LK'];
   const TYPE_CAP = [1, 2, 2, 1, 1, 2, 1, 2, 1];
   const TYPE_W = [1.3, 0.8, 0.9, 1.2, 1.5, 0.9, 1.1, 0.9, 1.0];
-  const W_SUM = TYPE_CAP.reduce((s, c, i) => s + c * TYPE_W[i], 0);   // 13.1
-  const OUT_OF_POSITION = 10;   // a player outside their positions counts this much lower (only when a squad is short)
+  const W_SUM = TYPE_CAP.reduce((s, c, i) => s + c * TYPE_W[i], 0);   
+  const OUT_OF_POSITION = 10;   
   const POS_ALIAS = {FB: 'FB', W: 'W', RW: 'W', LW: 'W', WG: 'W', C: 'C', RC: 'C', LC: 'C', CE: 'C', FE: 'FE', '5/8': 'FE',
     SO: 'FE', HB: 'HB', SH: 'HB', P: 'P', PR: 'P', FR: 'P', HK: 'HK', H: 'HK', SR: 'SR', '2R': 'SR', '2RF': 'SR', LK: 'LK', L: 'LK'};
-  // Best fit by dynamic programming over how many slots of each type are filled (2*3*3*2*2*3*2*3*2 = 1296 states)
+  
   const STRIDE = [];
   let NSTATE = 1;
   TYPE_CAP.forEach((c, i) => { STRIDE[i] = NSTATE; NSTATE *= c + 1; });
@@ -181,7 +181,7 @@
     return ok;
   }
 
-  // Weighted average of the best 13 (null when the squad has fewer than 13 rated players)
+  
   function bestThirteen(players) {
     const list = [];
     (players || []).forEach(p => {
@@ -193,7 +193,7 @@
     const dp = new Float64Array(NSTATE).fill(-1);
     dp[0] = 0;
     for (const p of list) {
-      for (let m = NSTATE - 1; m >= 0; m--) {   // high to low, so each player fills one slot at most
+      for (let m = NSTATE - 1; m >= 0; m--) {   
         const base = dp[m];
         if (base < 0) continue;
         for (let t = 0; t < TYPES.length; t++) {
@@ -207,7 +207,7 @@
   }
 
   let SQUAD_STRENGTH = {}, KICKERS = {};
-  // json: the parsed data/wc-squads.json (or its text). null resets every nation to its fallback (and no kickers).
+  
   function setSquads(json) {
     SQUAD_STRENGTH = {};
     KICKERS = {};
@@ -231,7 +231,7 @@
     return FALLBACK[key] != null ? FALLBACK[key] : null;
   }
   function hasSquad(key) { return SQUAD_STRENGTH[key] != null; }
-  // Goal kickers' levels: 1 top, 2 good, 0 for anyone off the lists
+  
   function kickLevel(name) {
     for (const k in KICKERS) for (const e of KICKERS[k]) if (e[0] === name) return e[1] === 1 ? 1 : 2;
     return 0;
@@ -242,9 +242,9 @@
     return e ? {name: e[0], level: e[1] === 1 ? 1 : 2} : null;
   }
 
-  // ============================================================
-  // FIXTURES
-  // ============================================================
+  
+  
+  
   const ROAD = [
     {g: 1, kind: 'pool', opp: 'sam', date: 'Fri 16 Oct', venue: 'CommBank Stadium', city: 'Parramatta', real: true},
     {g: 2, kind: 'pool', opp: 'png', date: 'Tue 20 Oct', venue: 'Santos National Football Stadium', city: 'Port Moresby', real: false},
@@ -252,8 +252,8 @@
     {g: 4, kind: 'pool', opp: 'ton', date: 'Wed 28 Oct', venue: 'Cbus Super Stadium', city: 'Gold Coast', real: false},
     {g: 5, kind: 'pool', opp: 'leb', date: 'Sun 1 Nov', venue: 'CommBank Stadium', city: 'Parramatta', real: true},
     {g: 6, kind: 'qf', opp: null, date: 'Wed 4 Nov', venue: 'Queensland Country Bank Stadium', city: 'Townsville', real: false},
-    // The player's semi is always the Sunday one in Sydney, whichever semi it is (7 Oct 2026, the owner: "just pick a date
-    // and stick to it"); the other semi takes the Saturday in Newcastle
+    
+    
     {g: 7, kind: 'sf', opp: null, date: 'Sun 8 Nov', venue: 'Allianz Stadium', city: 'Sydney', real: true},
     {g: 8, kind: 'final', opp: null, date: 'Sun 15 Nov', venue: 'Suncorp Stadium', city: 'Brisbane', real: true}
   ];
@@ -266,23 +266,23 @@
   const POOL_A = ['aus', 'nzl', 'fij', 'cok'];
   const POOL_A_GAMES = [['aus', 'nzl'], ['fij', 'cok'], ['aus', 'fij'], ['nzl', 'cok'], ['aus', 'cok'], ['nzl', 'fij']];
   const BC = [YOU, 'png', 'ton', 'sam', 'eng', 'leb'];
-  // The player's five first (in road order), then the other ten
+  
   const BC_GAMES = [[YOU, 'sam'], [YOU, 'png'], [YOU, 'eng'], [YOU, 'ton'], [YOU, 'leb'],
     ['png', 'ton'], ['sam', 'eng'], ['ton', 'leb'], ['png', 'sam'], ['eng', 'leb'],
     ['ton', 'sam'], ['png', 'eng'], ['sam', 'leb'], ['ton', 'eng'], ['png', 'leb']];
-  // The round each game is shown in (display only: the results come from the slots above).
-  // Every team plays once a round. Rounds 1 and 5 are the real World Cup's opening and closing weekends for Pools B and
-  // C (you in France's place); no order of the other ten fits all six of the real middle games, so rounds 2 to 4 don't.
+  
+  
+  
   const BC_ROUND = [1, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5, 5, 3, 1, 1];
-  // Pool A as drawn: AUS v NZL and FIJ v COK, then AUS v FIJ and NZL v COK, then AUS v COK and NZL v FIJ
+  
   const A_ROUND = [1, 1, 2, 2, 3, 3];
-  // Random number slots per run: 3 per game (result, winner's tries, loser's tries), then a coin per team, then one per
-  // game for its goals (7 Oct 2026: last, so the same draw still gives the same results and tries)
+  
+  
   const SLOT_A = 0, SLOT_BC = 6, SLOT_QF = 21, SLOT_SF = 25, SLOT_F = 27, N_GAMES = 28;
   const COIN_A = N_GAMES * 3, COIN_BC = COIN_A + POOL_A.length, KICK0 = COIN_BC + BC.length, N_RAND = KICK0 + N_GAMES;
 
-  // Tries like 27-0's resolveGame (winner 3 to 7, loser 1 to 4, winner always ahead, no draws),
-  // with bigger margins when the gap between the sides is big
+  
+  
   function tries(winStr, loseStr, u1, u2) {
     const gap = Math.max(0, winStr - loseStr);
     let w = 3 + Math.floor(u1 * 5) + Math.floor(gap / 6);
@@ -292,13 +292,13 @@
     return [w, l];
   }
 
-  /* Goals (7 Oct 2026, the owner: "4 points for a try and 2 points for the conversion ... assumes that every player kicks
-     the goal", and field goals: "if it's drawn scores with less than 10 minutes to go usually a team will kick a field
-     goal worth 1 point"; level or 6 ahead): a try is 4 and its conversion 2 when it's kicked, by the side's goal kicker
-     (CONV by level: off the lists, top, good), now and then a penalty goal (2), all from the game's own goal slot. The
-     winner always finishes ahead: while it's behind, a missed conversion of its turns into a kicked one (all of them
-     kicked beat the loser's best, as it has at least one try more). Level after that, its field goal (1) wins it; 6
-     ahead, it sometimes kicks one to go 7 up. Returns each side's conversions, penalty goals, field goals and points */
+  
+
+
+
+
+
+
   const CONV = [0.62, 0.8, 0.72], PEN1 = 0.35, PEN2 = 0.08, FG6 = 0.4;
   function goals(u, wT, lT, wk, lk) {
     const r = mulberry32(Math.floor(u * 4294967296) >>> 0);
@@ -312,14 +312,14 @@
     return {wc, lc, wp, lp, wf, ws: pts(wT, wc, wp) + wf, ls: pts(lT, lc, lp)};
   }
 
-  // ============================================================
-  // ONE TOURNAMENT
-  // ============================================================
+  
+  
+  
   function run(userRating, rng, opt) {
     const R = Number(userRating) || 0;
     const rand = typeof rng === 'function' ? rng : Math.random;
     const o = opt || {};
-    const myKick = o.kick === 0 || o.kick === 1 || o.kick === 2 ? o.kick : 2; // a good kicker when not told (sims, tests)
+    const myKick = o.kick === 0 || o.kick === 1 || o.kick === 2 ? o.kick : 2; 
     const kicks = {};
     Object.keys(NATIONS).forEach(k => { const n = nationKicker(k, o.taken); kicks[k] = n ? n.level : 0; });
     const kickOf = k => (k === YOU ? myKick : kicks[k] || 0);
@@ -382,11 +382,11 @@
         .map(r => ({key: r.key, w: r.w, l: r.l, pf: r.pf, pa: r.pa}));
     }
 
-    // Pool B/C first so the player's five games are played in road order
+    
     const logBC = [], logA = [];
     const bc = table(BC, BC_GAMES, SLOT_BC, COIN_BC, BC_ROUND, logBC);
     const poolA = table(POOL_A, POOL_A_GAMES, SLOT_A, COIN_A, A_ROUND, logA);
-    // By round, the player's game first in each (n: the game's place in its fixture list)
+    
     const byRound = (x, y) => (x.round - y.round) || (x.n - y.n);
     logBC.sort(byRound); logA.sort(byRound);
     const A = poolA.map(r => r.key), B = bc.map(r => r.key);
@@ -420,11 +420,11 @@
     };
   }
 
-  // ============================================================
-  // LADDERS AND STAKES (for the match-day screens; neither changes a result)
-  // ============================================================
-  // A pool's ladder counting rounds 1 to k: wins, then points difference, then the run's coin (the same order as run()'s
-  // tables, so after the last round it is exactly that table). Without coins a tie keeps the order teams first appear.
+  
+  
+  
+  
+  
   function standings(list, k, coins) {
     const row = {}, keys = [];
     (list || []).forEach(g => [g.a, g.b].forEach(t => { if (!row[t]) { row[t] = {key: t, p: 0, w: 0, l: 0, pf: 0, pa: 0}; keys.push(t); } }));
@@ -440,10 +440,10 @@
       ((c[x.key] != null && c[y.key] != null) ? c[x.key] - c[y.key] : order.indexOf(x.key) - order.indexOf(y.key)));
   }
 
-  // Before the player's game in round k of Pools B and C: what it can and can't decide. Every way the games from round k
-  // on can go is checked (2 to the power of how many are left: 32768 at most). Points difference is unknown, so a team
-  // level on wins counts against the player when proving they are through, and for them when proving they are out.
-  // Only what holds in every case is claimed: through, out (whatever happens), win.through, win.top (finish 1st), lose.out.
+  
+  
+  
+  
   function stakes(bcGames, k) {
     const teams = [], wins = {};
     bcGames.forEach(g => [g.a, g.b].forEach(t => { if (wins[t] == null) { wins[t] = 0; teams.push(t); } }));
@@ -469,9 +469,9 @@
     return out;
   }
 
-  // ============================================================
-  // TUNING
-  // ============================================================
+  
+  
+  
   function mulberry32(seed) {
     let a = seed >>> 0;
     return function () {
@@ -497,7 +497,7 @@
     return {n, perfect, p80: perfect / n, champs, stages: stages.map(s => s / n)};
   }
 
-  // Read-only data for the page (frozen so a screen cannot change the engine's tables by accident)
+  
   Object.keys(NATIONS).forEach(k => Object.freeze(NATIONS[k]));
   [NATIONS, FALLBACK, GIANTS, CHALLENGERS, CONTENDERS].forEach(o => Object.freeze(o));
   const api = {

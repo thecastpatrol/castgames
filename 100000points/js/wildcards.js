@@ -1,4 +1,4 @@
-/* 100000 POINTS wildcards: Reroll, Reveal Points, Remove Player (internally 'tweak'). One use each (not in Exactly 100000). */
+ 
 (function (T) {
   'use strict';
 
@@ -11,8 +11,8 @@
   T.canUse = function (key) {
     var S = T.state();
     if (!S || S.finished || !S.mode.wildcards || S.wildcards[key] < 1) return false;
-    if (key === 'scout') return !!(S.offer && S.offer.players.length && !S.offer.goat && !S.offer.paid && !S.offer.key); // a Pick, key or the GOAT shows its numbers already // the GOAT's and a bought Immortal Pick's offers stay
-    // a Legend Key's Legends Pick stays too: the key is spent once they're dealt (9 Oct 2026)
+    if (key === 'scout') return !!(S.offer && S.offer.players.length && !S.offer.goat && !S.offer.paid && !S.offer.key); 
+    
     if (key === 'reroll') return !!(S.offer && S.offer.players.length && !S.offer.goat && !S.offer.paid && !S.offer.key);
     if (key === 'tweak') return T.filledCount() > 0;
     return false;
@@ -22,11 +22,11 @@
     var S = T.state();
     if (!T.canUse('reroll')) return null;
     S.wildcards.reroll--;
-    T.setBoost(T.bestOnOffer() + 1); // the new offer can bring one who beats the best one binned (js/draft.js rollOffer)
+    T.setBoost(T.bestOnOffer() + 1); 
     return S.mode.source === 'spin' ? T.spinOffer() : T.rollOffer();
   };
 
-  // The most points on the offer in front of you (what a Reroll's new offer has to beat)
+  
   T.bestOnOffer = function () {
     var S = T.state();
     return S && S.offer ? S.offer.players.reduce(function (m, p) { return Math.max(m, p.tries_1998_plus || 0); }, 0) : 0;
@@ -40,7 +40,7 @@
     return true;
   };
 
-  // Tweak is two steps: arm it, then tap a filled slot. Cancelling does not spend it.
+  
   T.armTweak = function (on) {
     var S = T.state();
     if (on && !T.canUse('tweak')) return false;
@@ -48,8 +48,8 @@
     return S.tweakMode;
   };
 
-  /* Substitute (CAST Pass, 1 a game in the wildcard modes): move a player in your team into an open spot in another
-     position they play, to make room (a centre who plays wing moves out wide, and the centre spot opens up). */
+  
+
   T.subTargets = function (idx) {
     var S = T.state(), s = S && S.slots[idx];
     if (!s || !s.player) return [];
@@ -67,7 +67,7 @@
   T.subMove = function (from, to) {
     var S = T.state(), a = S.slots[from], b = S.slots[to];
     if (!a || !a.player || !b || b.player || T.subTargets(from).indexOf(to) === -1 || (S.subLeft || 0) < 1) return null;
-    b.player = a.player; b.club = a.club; b.year = a.year; b.top = a.top; // top: Perfect Read (js/draft.js)
+    b.player = a.player; b.club = a.club; b.year = a.year; b.top = a.top; 
     a.player = null; a.club = null; a.year = null; a.top = null;
     S.subLeft--; S.subUsed = (S.subUsed || 0) + 1; S.subMode = null;
     S.history.push({ type: 'sub', id: b.player.id, from: from, to: to });
@@ -79,7 +79,7 @@
     if (!S.tweakMode || S.wildcards.tweak < 1) return null;
     var p = T.removeAt(idx);
     if (!p) return null;
-    T.setBoost(p.tries_1998_plus + 1); // the next offer can bring one who beats him
+    T.setBoost(p.tries_1998_plus + 1); 
     S.wildcards.tweak--;
     S.tweakMode = false;
     return p;

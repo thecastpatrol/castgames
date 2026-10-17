@@ -1,13 +1,13 @@
-/* global require */ // only on the server, where this file is loaded with require (see below)
-/* SC Daily calendar (17 Oct 2026): the SC twin of the shared CAST Daily calendar (js/cast-daily.js, loaded first). It
-   keeps the shared rewards, item names and streak ladder, and swaps in SC days: club days taking turns through the
-   clubs, a season day (one season, 2015 on: the seasons with SC hookers), a derby day (two clubs), an era day, and
-   Sunday as the hard club day, the same weekly pattern as 1000TRIES. The spins are seeded, so everyone's go 1 is the
-   same draft. No Legend Key or GOAT in a Daily.
+  
 
-   CAST_DAILY.day('YYYY-MM-DD') gives the same shape as the shared calendar:
-     { date, key, name, short, lead, icon, title, story, who, hard, planned, onThisDay: null,
-       g1000: { target, only, years }, reward, rewardKind } */
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var shared = (typeof module !== 'undefined' && module.exports && typeof require === 'function') ? require('./cast-daily.js') : (root.CAST_DAILY || {});
@@ -17,18 +17,18 @@
     dragons: 'Dragons', roosters: 'Roosters', warriors: 'Warriors', tigers: 'Wests Tigers' };
   var MASCOT = { broncos: '🐎', raiders: '🟢', bulldogs: '🐶', sharks: '🦈', dolphins: '🐬', titans: '⚡', seaeagles: '🦅', storm: '⛈️',
     knights: '⚔️', cowboys: '🤠', eels: '🐍', panthers: '🐆', rabbitohs: '🐰', dragons: '🐉', roosters: '🐓', warriors: '🛡️', tigers: '🐯' };
-  // Club days in turn (the Dolphins, with four seasons, share theirs with the Broncos: Brisbane Day)
+  
   var CLUBS = ['rabbitohs', 'storm', 'broncos', 'panthers', 'roosters', 'eels', 'sharks', 'cowboys', 'dragons', 'raiders', 'seaeagles',
     'bulldogs', 'knights', 'warriors', 'titans', 'tigers'];
   var WITH = { broncos: ['broncos', 'dolphins'] };
   var DERBIES = [['rabbitohs', 'roosters', 'The Oldest Rivalry'], ['broncos', 'cowboys', 'The Queensland Derby'], ['storm', 'panthers', 'Grand Final Rivals'],
     ['eels', 'tigers', 'The Western Sydney Derby'], ['dragons', 'sharks', 'The Southern Sydney Derby'], ['bulldogs', 'eels', 'The Western Derby'],
     ['seaeagles', 'roosters', 'The Harbour Derby'], ['knights', 'raiders', 'The Country Clash']];
-  // The data's seasons (written by the data updater, ~/cast-dev/updates, when a new season's first round goes in): LAST
-  // the latest season; LATER the seasons that joined the season days after this calendar began, each [season, the
-  // calendar week it joins from] (so every day before it stays as it was played)
+  
+  
+  
   var LAST = 2026, LATER = [];
-  // Seasons with SC hookers (the position began in 2015): one season a day, in turn
+  
   var SEASONS = [2021, 2015, 2024, 2018, 2023, 2016, 2026, 2019, 2022, 2017, 2025, 2020];
   function seasonsAt(week) { return SEASONS.concat(LATER.filter(function (x) { return week >= x[1]; }).map(function (x) { return x[0]; })); }
   var ERAS = [['2015', '2015 to 2020', 2015, 2020, 'from Johnathan Thurston and Cameron Smith to Nathan Cleary and Jason Taumalolo'],
@@ -38,8 +38,8 @@
   function list(a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a.join(''); }
   function orList(a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' or ' + a[a.length - 1] : a.join(''); }
 
-  /* Targets: [normal, hard (Sundays)], set with the real-engine smart-fan simulator on each theme's own pool, no
-     wildcards, as the Daily deals (kept with the game's private notes) */
+  
+
   var TARGETS = {
     'club:broncos': [17250, 17800], 'club:bulldogs': [16350, 16800], 'club:cowboys': [17000, 17450], 'club:dragons': [16700, 17150], 'club:eels': [17150, 17700], 'club:knights': [15650, 16200], 'club:panthers': [17050, 17700], 'club:rabbitohs': [17000, 17700], 'club:raiders': [16750, 17150], 'club:roosters': [17600, 18050], 'club:seaeagles': [17000, 17550], 'club:sharks': [17150, 17650], 'club:storm': [17550, 18050], 'club:tigers': [16000, 16400], 'club:titans': [16200, 16700], 'club:warriors': [16000, 16450],
     'derby:broncos-cowboys': [17150, 17750], 'derby:bulldogs-eels': [16950, 17700], 'derby:dragons-sharks': [17050, 17650], 'derby:eels-tigers': [16650, 17400], 'derby:knights-raiders': [16250, 16750], 'derby:rabbitohs-roosters': [17800, 18300], 'derby:seaeagles-roosters': [17650, 18150], 'derby:storm-panthers': [17650, 18250],
@@ -49,14 +49,14 @@
   function tgt(key, hard) { var t = TARGETS[key]; return t && t[0] ? (hard ? t[1] : t[0]) : (hard ? 16500 : 15500); }
 
   var REWARDS = { keys: { sc: { legend: 1 } }, wild: { sc: { reveals: 1 } }, freeze: { sc: { freezes: 1 } }, reroll: { sc: { left: 1 } } };
-  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
+  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; 
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  // The planned days (edit here): { key, name, short, lead, icon, title, who, story, t (target), g1000: { only | years } }
+  
   var DAYS = {};
 
-  var WEEK = ['club', 'club', 'club', 'season', 'club', 'era', 'derby']; // Sun ... Sat
+  var WEEK = ['club', 'club', 'club', 'season', 'club', 'era', 'derby']; 
   function auto(date) {
     var n = dayNum(date), wd = weekday(date), kind = WEEK[wd], week = Math.floor((n + 3) / 7);
     if (kind === 'derby') {
@@ -78,8 +78,8 @@
         story: 'Every season you can draft today was played ' + (e[0] === '2021' ? 'since 2021' : 'from ' + e[1]) + ', ' + e[4] + '.',
         g1000: { years: [e[2], e[3]] } };
     }
-    // Club days: four a week, taking turns through the clubs (a week starts one club on, so a Sunday and the Monday
-    // after never share one)
+    
+    
     var slot = [0, 1, 2, -1, 3, -1, -1][wd], k = CLUBS[(week * 4 + slot) % CLUBS.length], clubs = WITH[k] || [k];
     var nick = clubs.length > 1 ? 'Brisbane' : NICK[k], whoN = clubs.map(function (c) { return NICK[c]; });
     return { key: 'club:' + k, name: nick + ' Day', short: nick, lead: 'With ', icon: MASCOT[k] || '🏉', title: (clubs.length > 1 ? list(whoN) : NICK[k]) + ' Seasons Only',
@@ -116,6 +116,6 @@
 
   var api = Object.assign({}, shared, { day: day, finals: [], nick: NICK, mascot: MASCOT, clubs: CLUBS, derbies: DERBIES, seasons: SEASONS, eras: ERAS,
     useText: useText, TARGETS: TARGETS, TARGETS_HARDER: TARGETS });
-  if (typeof module !== 'undefined' && module.exports) module.exports = api; // the server: its own copy, the shared one untouched
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; 
   else root.CAST_DAILY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

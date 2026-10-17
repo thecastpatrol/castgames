@@ -1,27 +1,27 @@
-/* Local currency prices (17 Oct 2026, the owner's BUILD IT): our own price lists for New Zealand (NZ$), the United States
-   (US$), the United Kingdom (£) and Papua New Guinea (K, Kina). Everyone else pays in A$, as before.
 
-   One file for the sites (js/cast-prices.js, read by js/cast-account.js and the games' buy buttons) and the server
-   (functions lib/cast-prices.js, which prices every checkout from these lists and never from the page). Master copy:
-   shared/cast-prices.js; tools/sync_shared.py copies it to both sites and tools/sync_functions_data.py to the server.
 
-   How the lists were made: today's A$ price at the 17 Oct 2026 exchange rate (RATES), rounded to the nearest natural
-   price: under 5 a price ending in .49 or .99, from 5 to 50 one ending in .99, from 50 to 100 one ending in 4.99 or
-   9.99, and from 100 one ending in 9.99. Never under Stripe's smallest charge (US$0.50, NZ$0.50, £0.30, and every
-   charge must come to at least A$0.50). The same A$ price is the same local price everywhere, except where a bigger
-   pack would have cost more per item than a smaller one (12 Remove Players in NZ$, US$ and K, one step down).
-   CAST Pass prices here are for new members only: members keep the price and currency they joined at.
-   The currency is picked from the phone's own region (its time zone, then its language), never the CAST Profile, and
-   a player can change it in the Shop (kept on this device). */
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var VERSION = 1;
   var LIST = ['aud', 'nzd', 'usd', 'gbp', 'pgk'];
-  // 1 A$ in each currency on 17 Oct 2026 (open.er-api.com, checked against the ECB): the lists below come from these,
-  // and a sale with no rate of its own (a CAST Pass renewal) goes back to A$ by them in Admin
+  
+  
   var RATES = { aud: 1, nzd: 1.2289, usd: 0.6946, gbp: 0.5214, pgk: 3.1308 };
   var RATES_ON = '2026-10-17';
-  // [symbol, the currency's name, the country, the code]
+  
   var NAMES = {
     aud: ['A$', 'Australian Dollars', 'Australia', 'AUD'],
     nzd: ['NZ$', 'New Zealand Dollars', 'New Zealand', 'NZD'],
@@ -31,8 +31,8 @@
   };
   var COUNTRY = { AU: 'aud', NZ: 'nzd', US: 'usd', GB: 'gbp', PG: 'pgk' };
 
-  // Every pack in A$ cents, by the server's pack key (functions index.js REROLL_PACKS and the rest, KEY_PACKS, RESTORE;
-  // js/cast-account.js PACKS). A test checks the three agree
+  
+  
   var AUD = {
     one: 99, five: 299, twelve: 599, remove1: 99, remove5: 299, remove12: 699, reveal1: 99, reveal5: 299,
     rib1: 99, rib3: 199, goat1: 999, wild1: 299, wild3: 699, freeze1: 299, freeze3: 199, cap1: 499,
@@ -40,7 +40,7 @@
     toty1: 399, toty3: 899, prem1: 399, prem3: 899, imm1: 499, imm3: 1199, wcp1: 399, wcp3: 899,
     ileg1: 499, ileg3: 1199, wch1: 599, wch3: 1499, restore: 499
   };
-  // The same packs in each currency (cents). freeze3 is no longer sold; it stays so an old checkout still reads
+  
   var PRICES = {
     nzd: {
       one: 99, five: 349, twelve: 699, remove1: 99, remove5: 349, remove12: 799, reveal1: 99, reveal5: 349,
@@ -71,8 +71,8 @@
       ileg1: 1599, ileg3: 3799, wch1: 1899, wch3: 4699, restore: 1599
     }
   };
-  // CAST Pass for new members, per currency (cents), and the Stripe lookup keys of those prices. The A$ ones are the
-  // server's own tier prices (lib/pass.js NEW); the others are Prices the owner makes in Stripe (live), one per plan
+  
+  
   var PASS = {
     aud: { monthly: 599, annual: 4999 },
     nzd: { monthly: 699, annual: 5999 },
@@ -81,8 +81,8 @@
     pgk: { monthly: 1899, annual: 15999 }
   };
   function passLookup(plan, cur) { return 'cast_pass_' + (plan === 'annual' ? 'annual_4999' : 'monthly_599') + '_' + cur; }
-  // The Gameday Bag's saving steps: [from (cents), % off], biggest first. A$10 and A$20 at home; round local amounts
-  // of about the same value elsewhere
+  
+  
   var BAG = {
     aud: [[2000, 10], [1000, 5]],
     nzd: [[2500, 10], [1200, 5]],
@@ -90,56 +90,56 @@
     gbp: [[1000, 10], [500, 5]],
     pgk: [[6000, 10], [3000, 5]]
   };
-  // Stripe's smallest charge in each currency (cents); Kina has none of its own, so it is A$0.50 converted
+  
   var MIN = { aud: 50, nzd: 50, usd: 50, gbp: 30, pgk: 157 };
 
   function ok(cur) { return LIST.indexOf(cur) >= 0; }
-  // A currency as sent by a page: one of ours, else A$
+  
   function clean(cur) { var c = String(cur || '').toLowerCase(); return ok(c) ? c : 'aud'; }
-  // A pack's price in a currency (cents), or null for a pack that isn't sold
+  
   function price(pack, cur) {
     var c = clean(cur), t = c === 'aud' ? AUD : PRICES[c];
     return t && Object.prototype.hasOwnProperty.call(t, pack) ? t[pack] : null;
   }
   function passPrice(plan, cur) { var p = PASS[clean(cur)]; return p ? p[plan === 'annual' ? 'annual' : 'monthly'] : null; }
   function bagTiers(cur) { return BAG[clean(cur)].map(function (x) { return x.slice(); }); }
-  // A$ for 1 of the currency (6 places), as recorded on each sale
+  
   function fx(cur) { var c = clean(cur); return c === 'aud' ? 1 : Math.round(1e6 / RATES[c]) / 1e6; }
-  // Cents in a currency to A$ cents: at the rate the sale recorded, else this list's own rate
+  
   function toAud(cents, cur, rate) {
     var c = clean(cur), r = Number(rate);
     if (c === 'aud') return Math.round(cents);
     return Math.round(cents * (r > 0 ? r : fx(c)));
   }
   function sym(cur, a) { var c = clean(cur); return c === 'aud' && !a ? '$' : NAMES[c][0]; }
-  // "NZ$6.99", "£0.49", "K18.99", "US$3.99", "$5.99" ("A$5.99" with a: where $ alone could be another country's).
-  // Plain digits, never a thousands comma. whole: no ".00" on a round amount ("NZ$25")
+  
+  
   function fmt(cents, cur, opts) {
     var o = opts || {}, n = Math.round(Number(cents) || 0), neg = n < 0, v = Math.abs(n) / 100;
     var s = o.whole && Math.abs(n) % 100 === 0 ? String(Math.round(v)) : v.toFixed(2);
     return (neg ? '-' : '') + sym(cur, o.a) + s;
   }
-  // One of n for a price: "60c", "30p", "NZ$1.20", "K1.75" (cents under a whole one in $ and £, two places otherwise)
+  
   function each(cents, n, cur, opts) {
     var c = clean(cur), e = (Number(cents) || 0) / Math.max(1, n || 1);
     if (e < 99.5 && c !== 'pgk') return Math.round(e) + (c === 'gbp' ? 'p' : 'c');
     return fmt(Math.round(e), c, opts);
   }
-  // How much a pack saves on buying its items one by one, in whole per cent (never rounded up)
+  
   function saving(pack, single, n, cur) {
     var p = price(pack, cur), s = price(single, cur);
     return p && s && n > 1 ? Math.max(0, Math.floor((1 - p / (s * n)) * 100 + 1e-9)) : 0;
   }
-  // The CAST Pass page's numbers for a currency: { mc, yc, m, y, yM (a year as a month), yW (a year as a week), mW (a
-  // month as a week), save (yearly on 12 months), x12 (12 months) }
+  
+  
   function passCopy(cur, opts) {
     var c = clean(cur), p = PASS[c], mc = p.monthly, yc = p.annual;
     return { cur: c, mc: mc, yc: yc, m: fmt(mc, c, opts), y: fmt(yc, c, opts), yM: fmt(Math.round(yc / 12), c, opts), yW: each(yc, 52, c, opts), mW: each(mc * 12, 52, c, opts),
       save: Math.floor((1 - yc / (mc * 12)) * 100 + 1e-9) + '%', x12: fmt(mc * 12, c, opts) };
   }
 
-  /* The phone's region: its time zone first (Pacific/Auckland is New Zealand whatever the language says: plenty of
-     Australian phones are set to US English), then the region in its languages (en-NZ). '' when neither says */
+  
+
   var TZ_US = /^(America\/(New_York|Detroit|Chicago|Denver|Boise|Phoenix|Los_Angeles|Anchorage|Juneau|Sitka|Metlakatla|Yakutat|Nome|Adak|Menominee|Indiana\/.+|Kentucky\/.+|North_Dakota\/.+)|Pacific\/Honolulu|US\/.+)$/;
   function tzRegion(tz) {
     var z = String(tz || '');
@@ -149,7 +149,7 @@
     if (TZ_US.test(z)) return 'US';
     if (/^(Europe\/(London|Belfast|Jersey|Guernsey|Isle_of_Man)|GB|GB-Eire)$/.test(z)) return 'GB';
     if (/^Pacific\/(Port_Moresby|Bougainville)$/.test(z)) return 'PG';
-    return 'XX'; // somewhere else: A$, with the A$ symbol
+    return 'XX'; 
   }
   function langRegion(langs) {
     var list = Array.isArray(langs) ? langs : langs ? [langs] : [];
@@ -162,7 +162,7 @@
   function regionOf(langs, tz) { var t = tzRegion(tz); return t && t !== 'XX' ? t : t === 'XX' ? (langRegion(langs) === 'AU' ? 'AU' : 'XX') : langRegion(langs); }
   function curOfRegion(r) { return COUNTRY[r] || 'aud'; }
 
-  // In a browser: the phone's region and the currency chosen on this device (the Shop's Change), kept per device
+  
   var LS = 'cast_cur_v1', seen = null;
   function phone() {
     if (seen) return seen;
@@ -177,15 +177,15 @@
   function current() { return chosen() || phone().cur; }
   function set(cur) {
     var c = clean(cur);
-    try { if (root.localStorage) { if (c === phone().cur) root.localStorage.removeItem(LS); else root.localStorage.setItem(LS, c); } } catch (e) { /* storage blocked: this visit only */ }
+    try { if (root.localStorage) { if (c === phone().cur) root.localStorage.removeItem(LS); else root.localStorage.setItem(LS, c); } } catch (e) {   }
     seen = Object.assign({}, phone(), { pick: c });
     return c;
   }
   function now() { var p = phone(); return p.pick || current(); }
-  // $ alone is fine for A$ on an Australian phone; anywhere else it says A$
+  
   function audAmbiguous() { return phone().region !== 'AU'; }
   function opts() { return { a: audAmbiguous() }; }
-  // A pack's price as this device shows it ("NZ$3.49"), for the Shop and the games' buy buttons; fallback: the A$ text
+  
   function label(pack, fallback) { var c = now(), p = price(pack, c); return p == null ? fallback || '' : fmt(p, c, opts()); }
 
   var api = {
