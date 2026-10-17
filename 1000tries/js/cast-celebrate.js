@@ -318,3 +318,235 @@
 
   window.CastCelebrate = { show: show };
 })();
+
+/* The GOAT moment (17 Oct 2026, the owner: using the GOAT should feel "like a feature on the pokies"). One full-screen moment
+   when the GOAT item is used, about 3 seconds, the same in every CAST draft game (its own greats on the reel, its own
+   colours): the screen dims, gold lightning, a reel of the game's greats spins, slows and locks on the GOAT, then his card
+   slams in with a shine and a burst of goats. A tap anywhere skips it, phones set to reduce motion get a calm version (the
+   card fades in), the game's own Sound On/Off is respected (the page hands over its tone()), and a phone that can buzz
+   buzzes as he locks in. Anything that goes wrong goes straight on to done(), so the game never waits on it.
+     CastCelebrate.goat(o)       o.tone(freq, dur, type, when, vol): the page's sound (it stays quiet when Sound is off);
+                                 o.done(): after it closes. The GOAT, his number and the greats come from the game (window.T)
+     CastCelebrate.goatLand(el, o)  as his card goes into its spot: a gold ring and a small burst of goats on that spot */
+(function () {
+  'use strict';
+  var CC = window.CastCelebrate = window.CastCelebrate || {};
+  var GOLD = '#f1c073', ROW = 56;
+  var CSS = [
+    '.cg{position:fixed;inset:0;z-index:99999;overflow:hidden;cursor:pointer;color:#fff;-webkit-tap-highlight-color:transparent;background:rgba(3,3,8,0);transition:background .25s ease,opacity .3s ease;font-family:var(--font,system-ui,-apple-system,sans-serif)}',
+    '.cg.is-on{background:rgba(3,3,8,.9)}',
+    '.cg.is-out{opacity:0}',
+    '.cg-glow{position:absolute;inset:-25%;background:radial-gradient(closest-side,rgba(var(--cg-rgb),.32),rgba(241,192,115,.1) 55%,transparent 75%);opacity:0;transition:opacity .45s ease;pointer-events:none}',
+    '.cg.is-on .cg-glow{opacity:1}',
+    '.cg-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 46%,rgba(255,240,190,.95),rgba(255,200,90,.28) 38%,transparent 70%);opacity:0;pointer-events:none}',
+    '.cg.is-bolt .cg-flash{animation:cgFlash .5s ease-out}',
+    '.cg.is-lock .cg-flash{animation:cgFlash .65s ease-out}',
+    '@keyframes cgFlash{0%{opacity:0}12%{opacity:1}30%{opacity:.25}45%{opacity:.8}100%{opacity:0}}',
+    '.cg-bolts{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0}',
+    '.cg-bolts path{fill:none;stroke:#fff7dc;stroke-width:3px;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 3px #ffd76a) drop-shadow(0 0 10px #f1c073)}',
+    '.cg.is-bolt .cg-bolts{animation:cgBolt .5s steps(1)}',
+    '.cg.is-lock .cg-bolts{animation:cgBolt .6s steps(1)}',
+    '@keyframes cgBolt{0%{opacity:1}16%{opacity:0}32%{opacity:1}50%{opacity:0}66%{opacity:.85}82%,100%{opacity:0}}',
+    '.cg-mid{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:min(320px,calc(100vw - 32px))}',
+    '.cg-kick{text-align:center;font-weight:900;letter-spacing:.2em;font-size:12px;color:#ffe3a0;margin-bottom:12px;opacity:0;transform:translateY(8px);transition:opacity .3s ease,transform .3s ease}',
+    '.cg.is-spin .cg-kick{opacity:1;transform:none}',
+    '.cg-reel{position:relative;height:' + (ROW * 3) + 'px;border-radius:16px;overflow:hidden;background:linear-gradient(#0c0c15,#17171f 50%,#0c0c15);box-shadow:0 0 0 2px rgba(241,192,115,.6),0 0 44px rgba(241,192,115,.22),inset 0 0 30px rgba(0,0,0,.85);opacity:0;transform:scale(.9);transition:opacity .25s ease,transform .25s ease}',
+    '.cg.is-spin .cg-reel{opacity:1;transform:none}',
+    '.cg-reel::before,.cg-reel::after{content:"";position:absolute;left:0;right:0;height:' + ROW + 'px;z-index:2;pointer-events:none}',
+    '.cg-reel::before{top:0;background:linear-gradient(#0b0b12,rgba(11,11,18,.15))}',
+    '.cg-reel::after{bottom:0;background:linear-gradient(rgba(11,11,18,.15),#0b0b12)}',
+    '.cg-win{position:absolute;left:8px;right:8px;top:' + ROW + 'px;height:' + ROW + 'px;border-radius:10px;border:2px solid ' + GOLD + ';box-shadow:0 0 18px rgba(241,192,115,.45);z-index:3;pointer-events:none}',
+    '.cg.is-lock .cg-win{animation:cgWin .7s ease-out}',
+    '@keyframes cgWin{30%{box-shadow:0 0 44px 10px rgba(255,215,106,.85);background:rgba(255,215,106,.16)}}',
+    '.cg-strip{position:absolute;left:0;right:0;top:0;will-change:transform}',
+    '.cg.is-spin .cg-strip{filter:blur(1px)}',
+    '.cg.is-lock .cg-strip{filter:none}',
+    '.cg-row{height:' + ROW + 'px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;font-weight:800;font-size:17px;white-space:nowrap}',
+    '.cg-row span{overflow:hidden;text-overflow:ellipsis;min-width:0}',
+    '.cg-row b{flex:none;font-variant-numeric:tabular-nums;font-size:15px;color:var(--cg-acc)}',
+    '.cg-row.is-goat{color:#ffe7a8}',
+    '.cg-row.is-goat b{color:#ffd76a}',
+    '.cg-card{position:absolute;left:50%;top:46%;width:min(270px,calc(100vw - 64px));box-sizing:border-box;padding:22px 18px 22px;border-radius:18px;text-align:center;overflow:hidden;color:var(--cg-ink,#fff);background:linear-gradient(160deg,var(--cg-club,#1a1a2e) 0%,#0c0c14 135%);border:2px solid ' + GOLD + ';box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 0 54px rgba(241,192,115,.5),0 22px 60px rgba(0,0,0,.6);opacity:0;transform:translate(-50%,-50%) scale(1.6);pointer-events:none}',
+    '.cg.is-card .cg-card{animation:cgSlam .42s cubic-bezier(.2,1.35,.4,1) forwards}',
+    '@keyframes cgSlam{0%{opacity:0;transform:translate(-50%,-50%) scale(1.7)}60%{opacity:1;transform:translate(-50%,-50%) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}',
+    '.cg.is-card .cg-mid{opacity:0;transform:translate(-50%,-50%) scale(.92);transition:opacity .2s ease,transform .2s ease}',
+    '.cg-tag{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.16em;padding:5px 11px;border-radius:999px;background:' + GOLD + ';color:#1a1204}',
+    '.cg-name{margin-top:12px;font-size:24px;font-weight:900;line-height:1.12;text-wrap:balance;overflow-wrap:anywhere}',
+    '.cg-num{margin-top:8px;font-size:52px;font-weight:900;line-height:1;color:#ffd76a;font-variant-numeric:tabular-nums;text-shadow:0 2px 0 rgba(0,0,0,.35)}',
+    '.cg-unit{margin-top:6px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.88}',
+    '.cg-shine{position:absolute;top:-20%;bottom:-20%;left:-60%;width:38%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-18deg);opacity:0}',
+    '.cg.is-card .cg-shine{animation:cgShine .85s .32s ease-out forwards}',
+    '@keyframes cgShine{0%{left:-60%;opacity:1}100%{left:135%;opacity:1}}',
+    '.cg-bits{position:absolute;left:50%;top:46%;width:0;height:0;pointer-events:none}',
+    '.cg-bit{position:absolute;left:0;top:0;font-size:28px;line-height:1;opacity:0;transform:translate(-50%,-50%)}',
+    '.cg-bit.is-dot{width:8px;height:12px;border-radius:2px;background:var(--c)}',
+    '.cg.is-card .cg-bit,.cg-lbits .cg-bit{animation:cgPop var(--t,1.3s) var(--d) cubic-bezier(.15,.7,.3,1) forwards}',
+    '@keyframes cgPop{0%{opacity:1;transform:translate(-50%,-50%) scale(.4) rotate(0deg)}70%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1) rotate(var(--r))}}',
+    '.cg.is-shake{animation:cgShake .34s linear}',
+    '@keyframes cgShake{20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(2px,-1px)}}',
+    '.cg-skip{position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.04em}',
+    '.cg.is-calm .cg-mid,.cg.is-calm .cg-bolts,.cg.is-calm .cg-bits,.cg.is-calm .cg-shine{display:none}',
+    '.cg.is-calm.is-card .cg-card{animation:cgFade .4s ease-out forwards}',
+    '@keyframes cgFade{from{opacity:0;transform:translate(-50%,-50%)}to{opacity:1;transform:translate(-50%,-50%)}}',
+    '.cg-ring{position:fixed;z-index:99998;pointer-events:none;border-radius:12px;animation:cgRing 1.1s ease-out forwards}',
+    '@keyframes cgRing{0%{box-shadow:0 0 0 0 rgba(255,215,106,.95),inset 0 0 0 2px rgba(255,215,106,.9)}40%{box-shadow:0 0 0 7px rgba(255,215,106,.45),0 0 34px 8px rgba(255,215,106,.55),inset 0 0 0 2px rgba(255,215,106,.9)}100%{box-shadow:0 0 0 14px rgba(255,215,106,0),inset 0 0 0 2px rgba(255,215,106,0)}}',
+    '.cg-lbits{position:fixed;z-index:99999;width:0;height:0;pointer-events:none}',
+    '@media (min-width:900px){.cg-mid{width:400px}.cg-row{font-size:19px}.cg-card{width:340px;padding:28px 22px}.cg-name{font-size:30px}.cg-num{font-size:68px}.cg-kick{font-size:14px}}'
+  ].join('\n');
+
+  function addCss() {
+    if (document.getElementById('cgoatCss')) return;
+    var s = document.createElement('style');
+    s.id = 'cgoatCss'; s.textContent = CSS;
+    (document.head || document.documentElement).appendChild(s);
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+  }
+  function calm() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  function hexRgb(h) {
+    var m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(h || '').trim());
+    if (!m) return null;
+    var x = m[1].length === 3 ? m[1].replace(/./g, function (c) { return c + c; }) : m[1], v = parseInt(x, 16);
+    return [v >> 16, (v >> 8) & 255, v & 255];
+  }
+  // The game's own colour (each page's --gold: 1000TRIES gold, 4000 GOALS red, G1 WINNER blue ...)
+  function accent() {
+    var a = '';
+    try { a = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim(); } catch (e) { /* no styles yet */ }
+    return hexRgb(a) ? a : GOLD;
+  }
+  function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) { /* not on this device */ } }
+  function name(p) { return String((p && (p.name || p.record_name)) || '').replace(/\s*\((goat|legend|immortal)\)$/i, ''); }
+  function num(p) { var T = window.T || {}, n = (p && p.tries_1998_plus) || 0; return T.fmt ? T.fmt(n) : String(n); }
+  // The game's greats for the reel: its biggest numbers, pack and Legends together, never the GOAT himself
+  function greats(g) {
+    var T = window.T || {}, seen = {}, gk = name(g).toLowerCase();
+    return (T.players || []).concat(T.LEGENDS || []).filter(function (p) {
+      if (!p || typeof p.tries_1998_plus !== 'number' || p === g || (T.isGoat && T.isGoat(p)) || p.id === T.GOAT_SRC || /^goat-/.test(p.id || '')) return false;
+      var k = name(p).toLowerCase();
+      if (!k || k === gk || seen[k]) return false;
+      seen[k] = 1;
+      return true;
+    }).sort(function (a, b) { return b.tries_1998_plus - a.tries_1998_plus; }).slice(0, 12);
+  }
+  function bits(n, emoji, spread, dot) {
+    var out = '';
+    for (var i = 0; i < n; i++) {
+      var a = Math.random() * Math.PI * 2, r = spread * (0.45 + Math.random() * 0.55), isDot = dot && i % 3 !== 0;
+      out += '<i class="cg-bit' + (isDot ? ' is-dot' : '') + '" style="--x:' + Math.round(Math.cos(a) * r) + 'px;--y:' + Math.round(Math.sin(a) * r * 0.85 + 30) + 'px;--r:' +
+        Math.round((Math.random() - 0.5) * 300) + 'deg;--d:' + Math.round(Math.random() * 140) + 'ms;--c:' + (i % 2 ? GOLD : '#fff3cf') + '">' + (isDot ? '' : emoji) + '</i>';
+    }
+    return out;
+  }
+
+  CC.goat = function (o) {
+    o = o || {};
+    var finished = false, root = null, timers = [];
+    function done() {
+      if (finished) return;
+      finished = true;
+      timers.forEach(clearTimeout);
+      if (root && root.parentNode) root.parentNode.removeChild(root);
+      if (typeof o.done === 'function') { try { o.done(); } catch (e) { /* the page's own step */ } }
+    }
+    try {
+      var T = window.T || {}, g = o.player || (T.goatPlayer && T.goatPlayer());
+      if (!g || !document.body) { done(); return; }
+      addCss();
+      var still = calm(), acc = accent(), accRgb = hexRgb(acc) || [241, 192, 115];
+      var club = T.club && T.lastClub ? T.club(T.lastClub(g)) : null;
+      var tone = typeof o.tone === 'function' ? o.tone : null;
+      function play(f, d, ty, v) { if (tone) { try { tone(f, d, ty, 0, v); } catch (e) { /* audio unavailable */ } } }
+      function later(ms, fn) { timers.push(setTimeout(function () { if (!finished) { try { fn(); } catch (e) { done(); } } }, ms)); }
+
+      // The reel: the greats shuffled, three times round, then the GOAT (and one more under him)
+      var gs = greats(g), list = [];
+      for (var k = 0; k < 3 && gs.length; k++) list = list.concat(gs.slice().sort(function () { return Math.random() - 0.5; }));
+      list = list.slice(0, 24);
+      var at = list.length;
+      list.push(g);
+      if (gs.length) list.push(gs[0]);
+      var rows = list.map(function (p, i) {
+        return '<div class="cg-row' + (i === at ? ' is-goat' : '') + '"><span>' + esc(name(p)) + (i === at ? ' &#x1F410;' : '') + '</span><b>' + esc(num(p)) + '</b></div>';
+      }).join('');
+      var unit = o.unit || T.TRY_LABEL || '';
+      var label = 'The GOAT: ' + name(g) + ', ' + num(g) + (unit ? ' ' + unit : '');
+
+      root = document.createElement('div');
+      root.className = 'cg' + (still ? ' is-calm' : '');
+      root.setAttribute('role', 'dialog');
+      root.setAttribute('aria-modal', 'true');
+      root.setAttribute('aria-label', label);
+      root.style.setProperty('--cg-acc', acc);
+      root.style.setProperty('--cg-rgb', accRgb.join(','));
+      if (club) { root.style.setProperty('--cg-club', club.primary); root.style.setProperty('--cg-ink', club.text || '#fff'); }
+      root.innerHTML = '<div class="cg-glow"></div><div class="cg-flash"></div>' +
+        '<svg class="cg-bolts" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+        '<path d="M16 0 L21 9 L17 10 L24 21 L19 22 L27 36 L22 37 L30 52"/><path d="M85 2 L80 12 L84 13 L77 25 L81 26 L73 40 L77 41 L70 55"/></svg>' +
+        '<div class="cg-mid" aria-hidden="true"><div class="cg-kick">&#x1F410; THE GOAT</div><div class="cg-reel"><div class="cg-strip">' + rows + '</div><div class="cg-win"></div></div></div>' +
+        '<div class="cg-card"><span class="cg-tag">&#x1F410; THE GOAT</span><div class="cg-name">' + esc(name(g)) + '</div>' +
+        '<div class="cg-num">' + esc(num(g)) + '</div>' + (unit ? '<div class="cg-unit">' + esc(unit) + '</div>' : '') + '<i class="cg-shine"></i></div>' +
+        '<div class="cg-bits" aria-hidden="true">' + (still ? '' : bits(26, '&#x1F410;', Math.min(window.innerWidth, 520) * 0.62, true)) + '</div>' +
+        '<div class="cg-skip">Tap to skip</div>';
+      document.body.appendChild(root);
+      root.addEventListener('click', function () {
+        if (finished) return;
+        root.classList.add('is-out');
+        timers.push(setTimeout(done, 160));
+      });
+      var strip = root.querySelector('.cg-strip');
+      later(5200, done); // never longer than this, whatever happens
+
+      if (still) {
+        later(30, function () { root.classList.add('is-on', 'is-card'); buzz(40); play(523, 0.2, 'triangle', 0.3); play(784, 0.4, 'triangle', 0.3); });
+        later(1900, function () { root.classList.add('is-out'); });
+        later(2250, done);
+        return;
+      }
+      var SPIN = 1650, LOCK = 260 + SPIN;
+      later(20, function () { root.classList.add('is-on', 'is-bolt'); buzz(15); play(98, 0.3, 'sawtooth', 0.12); });
+      later(260, function () {
+        root.classList.remove('is-bolt');
+        root.classList.add('is-spin');
+        strip.style.transition = 'transform ' + SPIN + 'ms cubic-bezier(.1,.62,.16,1)';
+        strip.style.transform = 'translateY(' + (-(at - 1) * ROW) + 'px)';
+      });
+      // The reel's clicks, slowing as it does
+      for (var i = 0; i < 16; i++) later(260 + Math.round(SPIN * Math.pow(i / 16, 1.9)), function () { play(1500, 0.025, 'square', 0.05); });
+      later(LOCK, function () {
+        root.classList.add('is-lock', 'is-shake');
+        buzz([25, 35, 25, 35, 80]);
+        play(110, 0.3, 'sine', 0.5);
+        [392, 523, 659, 784].forEach(function (f, n) { later(n * 75, function () { play(f, n === 3 ? 0.55 : 0.18, 'triangle', 0.32); }); });
+      });
+      later(LOCK + 380, function () { root.classList.remove('is-shake'); root.classList.add('is-card'); play(1046, 0.5, 'sine', 0.18); });
+      later(LOCK + 1500, function () { root.classList.add('is-out'); });
+      later(LOCK + 1820, done);
+    } catch (e) { done(); }
+  };
+
+  // His card going into its spot: a gold ring round the spot and a small burst of goats
+  CC.goatLand = function (el, o) {
+    try {
+      if (!el || !el.getBoundingClientRect || !document.body) return;
+      addCss();
+      var r = el.getBoundingClientRect();
+      if (!r.width) return;
+      var ring = document.createElement('div');
+      ring.className = 'cg-ring';
+      ring.style.cssText = 'left:' + Math.round(r.left) + 'px;top:' + Math.round(r.top) + 'px;width:' + Math.round(r.width) + 'px;height:' + Math.round(r.height) + 'px';
+      document.body.appendChild(ring);
+      setTimeout(function () { if (ring.parentNode) ring.parentNode.removeChild(ring); }, 1200);
+      buzz(30);
+      if (o && typeof o.tone === 'function') { try { o.tone(784, 0.14, 'triangle', 0, 0.3); o.tone(1175, 0.3, 'triangle', 0.09, 0.3); } catch (e) { /* audio unavailable */ } }
+      if (calm()) return;
+      var b = document.createElement('div');
+      b.className = 'cg-lbits';
+      b.style.cssText = 'left:' + Math.round(r.left + r.width / 2) + 'px;top:' + Math.round(r.top + r.height / 2) + 'px;--t:1s';
+      b.innerHTML = bits(12, '&#x1F410;', 90, true);
+      document.body.appendChild(b);
+      setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 1300);
+    } catch (e) { /* only a flourish */ }
+  };
+})();

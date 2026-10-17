@@ -60,7 +60,7 @@
      in the first hour). Rarer Legends and Immortal Picks and lifelines, and offers that favour big tryscorers less.
      The Daily, Team Spin, NRLW and Exactly 1000 keep the normal settings above. firstStar is the first offer's big
      tryscorer, kept at the normal setting. */
-  T.HARD = { weight: 110, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
+  T.HARD = { weight: 80, legends: 0.06, immortal: 0.02, lifeline: 0.08, firstStar: 0.7 };
   T.HARD_ON = true; // tools/simulate_engine.js switches it off to compare with the normal settings
   T.isHard = function (mode) { return T.HARD_ON && !!mode && mode.id === 'plus' && T.DATASET === 'nrl'; };
 
@@ -72,7 +72,8 @@
      draft, so a friend's challenge deals the same) a game is dealt with him as before. A Legend Key's Legends Pick, a
      bought Pick and the GOAT item itself are unchanged. A Daily follows it from T.GOAT_FROM, so a day's Daily never
      changes part way through the day, and a draft dealt before it (brought back on this phone) keeps its own deal */
-  T.GOAT_FREE = 0.05;
+  T.GOAT_FREE = 0.04;
+  T.GOAT_FREE_DAILY = 0.005; // the Daily's (its pools can hold him far more often)
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === (T.GOAT_SRC || T.GOAT_ID); };
 
@@ -145,7 +146,7 @@
     S.special = null; S.specialAt = 0; S.specialDone = false; S.lifelineRoll = null; S.lifelineUsed = false;
     S.luckExp = 0; S.luckGot = 0; // the luck of the draw, see noteLuck()
     S.hard = T.isHard(mode); // 1000+ only (T.HARD)
-    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < T.GOAT_FREE); // T.goatOut
+    S.goatOut = T.DATASET === 'nrl' && !(S.daily && S.daily.date < T.GOAT_FROM) && !(T.stream('goatfree')() < (S.daily ? T.GOAT_FREE_DAILY : T.GOAT_FREE)); // T.goatOut
     // Promos (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): 1000+, Exactly 1000 and NRLW 250+ games dealt
     // during one (the seed carries its mark, so a friend's challenge deals the same after it ends). Never the Daily, the
     // same for everyone. S.promoDef: the promo the seed was dealt in

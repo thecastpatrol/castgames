@@ -1846,3 +1846,6 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @media (hover: hover) { .footer-links a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
 .footer-legal a { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); color: #c9c9d8; font-weight: 700; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .footer-legal, .nf-sub { text-wrap: balance; } /* no word alone on the last line at 390px (audit T9) */
+
+/* The GOAT wears 1000TRIES' gold in every game, his free Legend card too (17 Oct 2026, the owner) */
+.pcard.is-goat, .reveal.is-goat, .slot.is-goat, .rrow.is-goat, .srow.is-goat, .chooser-card.is-goat { --gold: #f1c073; --gold-dark: #c9953a; }
