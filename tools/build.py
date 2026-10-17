@@ -4,9 +4,13 @@
 The games stay where they are (their own repos, still live on their own domains until the switch-over); this copies each
 one into its folder here and fits it to CAST Games, so there's only ever one version of a game to fix:
 
-    27-0 Game/27-0-nrl  -> 27-0/
-    1000TRIES Game      -> 1000tries/   (and six-again/, its Six Again page)
-    4000 GOALS Game     -> 4000goals/   (and play-on/, its Play On page)
+    27-0 Game/27-0-nrl  -> 27-0/        (27-0 CLASSIC; 27-0-pack/, 27-0-hard/ and world-cup-8-0/ are its other modes)
+    1000TRIES Game      -> 1000tries/   (1000TRIES; 1000tries-exactly/, nrlw-250/, world-cup-200/, higher-or-lower-nrl/ ...)
+    4000 GOALS Game     -> 4000goals/   (4000 GOALS; 4000goals-exactly/, aflw-750/, higher-or-lower-afl/ ...)
+
+Every mode is its own game with its own page (17 Oct 2026, the owner: "a box of games"): the game's page with <base>, opened
+straight into that mode (window.CG_MODE, the game's own boot), with its own title and share card. The list of cards and
+pages is shared/cg.js GAMES, read here with node, so a new mode is one entry there.
 
 For each copied page: the CAST Games bar (shared/cg.js, cg.css) at the top, the game's own header hidden, links to the
 other games' domains pointed at their folders here, and (until the switch-over) noindex so Google keeps the old domains.
@@ -58,11 +62,11 @@ GAMES = [
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
     # 777 TDS (16 Oct 2026, the NFL game; 700 TDS until 17 Oct 2026): developed in ~/cast-dev/nfl/game, copied to CAST Games/777 TDS Game.
     # Its cg.js id stays '700tds' (js/home.js reads it); the old /700tds/ address is a redirect (OLD_PATHS)
-    ('777tds', '777 TDS Game', '700tds', '.site-header',
+    ('777tds', '777 TDS Game', '777tds', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
     # 650 GOALS (17 Oct 2026, the Premier League game; 500 GOALS until the same day): developed in ~/cast-dev/epl/game,
     # copied to CAST Games/650 GOALS Game. Its cg.js id stays '500goals'; the old /500goals/ address is a redirect (OLD_PATHS)
-    ('650goals', '650 GOALS Game', '500goals', '.site-header',
+    ('650goals', '650 GOALS Game', '650goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
     ('4000goals', '4000 GOALS Game', '4000goals', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
@@ -71,7 +75,7 @@ GAMES = [
 DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '27-0'), ('https://1000tries.com.au', '1000tries'),
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
 SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus']}
-SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', 'NFL'), ('racing', 'Horse Racing'), ('epl', 'Premier League')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
+SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('racing', 'Horse Racing'), ('epl', 'Premier League'), ('nfl', 'NFL')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
 SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
@@ -153,12 +157,14 @@ def retitle(s, folder, fname):
     return s
 
 
-def fit_page(path, folder, gid, hide_css, play_js, base=None):
+def fit_page(path, folder, gid, hide_css, play_js, base=None, card=None):
     s = open(path, encoding='utf-8').read()
     fname = os.path.basename(path)
     if folder in EXPLAIN:
         s = re.sub(r'<p class="hero-pitch">From the makers of.*?</p>', lambda m: '<p class="hero-pitch">' + EXPLAIN[folder] + '</p>', s, count=1, flags=re.S)
     s = retitle(s, folder, fname)
+    if card:  # the folder's own page plays its main mode (17 Oct 2026): its card's title and share card
+        s = page_meta(s, card)
     s = s.replace('<meta property="og:site_name" content="The Cast Patrol">', '<meta property="og:site_name" content="CAST Games">')
     # A bare old address in the copy (not a link: those follow below): this game's folder here
     for dom in BARE:
@@ -172,6 +178,8 @@ def fit_page(path, folder, gid, hide_css, play_js, base=None):
     # Another game is on this site now: open it in the same tab (the point of one address)
     s = re.sub(r'(href="' + re.escape(SITE) + r'[^"]*")\s+target="_blank"(\s+rel="noopener")?', r'\1', s)
     head = GATE
+    if card:  # opened straight into its mode, before the game's own head script reads it (the game's index.html play-boot)
+        head += '<script>window.CG_MODE = %r;</script>\n' % card['mode']
     if base:
         head += '<base href="%s">\n' % base
     if not LIVE:
@@ -205,7 +213,7 @@ def fit_code(dst, folder):
 # On CAST Games every game logo drops its "created by cast" line (the owner, 15 Oct 2026: the whole site is CAST's). The
 # line is cleared rather than cut off, so each picture keeps its size and every page lays out as before
 LOGOS = ['assets/img/27-0-logo.png', 'assets/img/1000tries-logo.png', 'assets/img/4000goals-logo.png',
-         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/650goals.png']
+         'assets/logos/27-0.png', 'assets/logos/1000tries.png', 'assets/logos/4000goals.png', 'assets/logos/25000runs.png', 'assets/logos/60000runs.png', 'assets/logos/g1winner.png', 'assets/logos/777tds.png', 'assets/logos/650goals.png', 'assets/logos/100000points.png']
 
 
 def clear_byline(path):
@@ -231,103 +239,124 @@ def clear_byline(path):
             return
 
 
-# Each over/under page's own description and share card (audit B6, 16 Oct 2026: they carried their game's). The picture
-# stays the game's (no card of their own yet)
-OU_META = {
-    'six-again': ('NRL', 'Over or under? Call NRL players\' career tries before the clock runs out. A free NRL game from The Cast Patrol.'),
-    'play-on': ('AFL', 'Over or under? Call AFL players\' career goals before the clock runs out. A free AFL game from The Cast Patrol.'),
-    'free-hit': ('BBL', 'Over or under? Call Big Bash runs and wickets before the clock runs out. A free cricket game from The Cast Patrol.'),
-    'follow-on': ('Test', 'Over or under? Call Test runs and wickets before the clock runs out. A free cricket game from The Cast Patrol.'),
-    'two-point': ('NFL', 'Over or under? Call NFL career touchdowns before the clock runs out. A free NFL game from The Cast Patrol.'),
-    'extra-time': ('Premier League', 'Over or under? Call Premier League goals, assists and appearances before the clock runs out. A free football game from The Cast Patrol.'),
-    'photo-finish': ('Racing', 'Over or under? Call jockeys, big races and horses before the clock runs out. A free horse racing game from The Cast Patrol.'),
-}
+def registry():
+    """The cards (shared/cg.js GAMES): every mode's page comes from this one list. Read with node, in a pretend page"""
+    js = ("global.window = { addEventListener() {} }; global.location = { host: 'castgames.com.au' };"
+          "global.document = { currentScript: null, body: null, addEventListener() {}, querySelector() { return null; }, documentElement: { style: { setProperty() {} }, classList: { add() {}, remove() {} } } };"
+          "require(%s); process.stdout.write(JSON.stringify({ games: window.CG.GAMES, sports: window.CG.SPORTS }), () => process.exit(0));") % json.dumps(os.path.join(HERE, 'shared', 'cg.js'))
+    out = subprocess.run(['node', '-e', js], check=True, capture_output=True, text=True).stdout
+    return json.loads(out)
 
 
-def ou_meta(src, page, title):
-    line, desc = OU_META[page]
-    full = '%s | %s Over or Under | CAST Games' % (title, line)
-    tags = [(r'<meta name="description" content="[^"]*">', '<meta name="description" content="%s">' % desc),
-            (r'<link rel="canonical" href="[^"]*">', '<link rel="canonical" href="%s%s/">' % (SITE, page)),
-            (r'<meta property="og:url" content="[^"]*">', '<meta property="og:url" content="%s%s/">' % (SITE, page)),
-            (r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="%s">' % full),
-            (r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % desc),
-            (r'<meta name="twitter:title" content="[^"]*">', '<meta name="twitter:title" content="%s">' % full),
-            (r'<meta name="twitter:description" content="[^"]*">', '<meta name="twitter:description" content="%s">' % desc)]
+SMALL = {'a', 'an', 'the', 'and', 'or', 'of', 'to', 'in', 'on', 'for', 'vs', 'with', 'at', 'by'}
+
+
+def title_case(line):
+    words = line.split(' ')
+    return ' '.join(w if (i and w.lower() in SMALL) or not w[:1].isalpha() or w[1:2].isupper() else w[:1].upper() + w[1:] for i, w in enumerate(words))
+
+
+def plain(s):
+    """A card's name for a title or a meta tag: the ▲▼ entities as characters, no tags"""
+    import html
+    return html.unescape(re.sub(r'<[^>]+>', '', s))
+
+
+def page_meta(src, g):
+    """A mode's page: its own title, description and share card text ("<NAME> | <line> | CAST Games")"""
+    title = '%s | %s | CAST Games' % (plain(g['name']), title_case(plain(g['line'])))
+    desc = plain(g.get('long') or g['line'])
+    url = SITE + g['path']
+    esc = lambda t: t.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;')
+    src = re.sub(r'<title>[^<]*</title>', lambda m: '<title>%s</title>' % esc(title), src, count=1)
+    tags = [(r'<meta name="description" content="[^"]*">', '<meta name="description" content="%s">' % esc(desc)),
+            (r'<link rel="canonical" href="[^"]*">', '<link rel="canonical" href="%s">' % url),
+            (r'<meta property="og:url" content="[^"]*">', '<meta property="og:url" content="%s">' % url),
+            (r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="%s">' % esc(title)),
+            (r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % esc(desc)),
+            (r'<meta name="twitter:title" content="[^"]*">', '<meta name="twitter:title" content="%s">' % esc(title)),
+            (r'<meta name="twitter:description" content="[^"]*">', '<meta name="twitter:description" content="%s">' % esc(desc))]
     for pat, rep in tags:
         src = re.sub(pat, lambda m: rep, src, count=1)
     return src
 
 
-# An over/under page before its Launch (audit X7, 16 Oct 2026: /play-on/ showed the whole 4000 GOALS home): an Opens Soon
-# card instead, until CastAccount says it is on (the owner's Launch, or his private preview link). page: (the account's
-# check, its game's folder, its game, its sport's words)
-SOON = {'play-on': ('poOn', '4000goals', '4000 GOALS', 'Call AFL players\' career goals over or under before the clock runs out.')}
-SOON_CSS = ('<style>html.cg-soon-on body > *:not(.cg-bar):not(#cgSoon):not(script) { display: none !important; }'
-            '#cgSoon { display: grid; place-items: center; min-height: calc(100vh - var(--cg-bar-h, 112px)); min-height: calc(100dvh - var(--cg-bar-h, 112px)); padding: 32px 16px; box-sizing: border-box;'
-            ' background: radial-gradient(70% 50% at 50% 20%, rgba(var(--soon-rgb), .35), transparent 70%), #0a0a0f; color: #fff; font-family: Inter, -apple-system, system-ui, sans-serif; }'
-            '#cgSoon[hidden] { display: none; }'
-            '.cg-soon-box { width: 100%; max-width: 420px; display: grid; gap: 12px; justify-items: center; text-align: center; }'
-            '.cg-soon-mark { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 22px; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .14); font: 900 30px/1 Inter, sans-serif; }'
-            '.cg-soon-k { font: 900 11px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: #a2a2b8; }'
-            '#cgSoon h1 { margin: 0; font: 900 28px/1.15 Inter, sans-serif; text-wrap: balance; }'
-            '#cgSoon p { margin: 0; color: #c9c9d8; font: 600 15px/1.45 Inter, sans-serif; text-wrap: balance; }'
-            '.cg-soon-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 50px; margin-top: 8px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 15px/1 Inter, sans-serif; text-decoration: none; }'
-            '.cg-soon-alt { display: inline-flex; align-items: center; min-height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: #fff; font: 800 13px/1 Inter, sans-serif; text-decoration: none; }'
-            '</style>\n')
-
-
-def soon(src, page, title):
-    check, game, gname, pitch = SOON[page]
-    g = [x for x in GAMES if x[0] == game]
-    head = '<script>document.documentElement.classList.add("cg-soon-on");</script>\n' + SOON_CSS
-    src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + head, src, count=1)
-    box = ('<div id="cgSoon" style="--c1:#5a1a1a;--c2:#1c0b10;--soon-rgb:150,40,52"><div class="cg-soon-box"><span class="cg-soon-mark" aria-hidden="true">&#x25B2;&#x25BC;</span>'
-           '<span class="cg-soon-k">%s</span><h1>%s Opens Soon</h1><p>%s</p>'
-           '<a class="cg-soon-btn" href="/%s/">Play %s</a><a class="cg-soon-alt" href="/">All Games</a></div></div>\n'
-           '<script>(function () {\n'
-           '  var el = document.getElementById("cgSoon");\n'
-           '  function on() { var A = window.CastAccount; try { return !!(A && A.%s && A.%s()); } catch (e) { return false; } }\n'
-           '  function check() { var off = !on(); el.hidden = !off; document.documentElement.classList.toggle("cg-soon-on", off); }\n'
-           '  check(); document.addEventListener("DOMContentLoaded", check); window.addEventListener("load", check); window.addEventListener("cast:launch", check);\n'
-           '})();</script>\n') % ('Over or Under', title, pitch, game, gname, check, check)
-    i = src.rfind('</body>')  # the page's own end (an earlier '</body>' can sit inside a script's string)
-    return src[:i] + box + src[i:] if g and i > 0 else src
-
-
-# Old game addresses (17 Oct 2026: 700 TDS became 777 TDS): a tiny page that sends any old link on to the new folder,
-# keeping its query (?play=, a challenge) and its hash
-# (and 500 GOALS became 650 GOALS the same day): old folder -> (new folder, name, button colour, button text colour)
-OLD_PATHS = {'700tds': ('777tds', '777 TDS', '#36e27e', '#04120a'), '500goals': ('650goals', '650 GOALS', '#ff2d7a', '#ffffff')}
+# Old addresses (17 Oct 2026: 700 TDS became 777 TDS and 500 GOALS became 650 GOALS; the over/unders became HIGHER OR
+# LOWER games, and Free Hit and Follow On one cricket game): a tiny page that sends any old link on to the new one,
+# keeping its query (?play=, a challenge, a private preview link) and its hash. old folder -> (new page, its name, an
+# extra query for the new page or '')
+OLD_PATHS = {'700tds': ('777tds', '777 TDS', ''), '500goals': ('650goals', '650 GOALS', ''),
+             'six-again': ('higher-or-lower-nrl', 'HIGHER OR LOWER: NRL', ''), 'play-on': ('higher-or-lower-afl', 'HIGHER OR LOWER: AFL', ''),
+             'free-hit': ('higher-or-lower-cricket', 'HIGHER OR LOWER: CRICKET', 'cat=bblruns'),
+             'follow-on': ('higher-or-lower-cricket', 'HIGHER OR LOWER: CRICKET', 'cat=testruns'),
+             'two-point': ('higher-or-lower-nfl', 'HIGHER OR LOWER: NFL', ''), 'photo-finish': ('higher-or-lower-racing', 'HIGHER OR LOWER: RACING', ''),
+             'extra-time': ('higher-or-lower-premier-league', 'HIGHER OR LOWER: PREMIER LEAGUE', '')}
 KEEP_KEY = {'650goals': '500goals'}  # a renamed game keeps its saved data's old key
 REDIRECT = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             '<meta name="robots" content="noindex"><title>%s | CAST Games</title><link rel="canonical" href="%s%s/%s">'
-            '<script>location.replace("../%s/%s" + location.search + location.hash);</script></head>'
+            '<script>(function () { var q = location.search, x = %s; if (x && !/[?&]cat=/.test(q)) q += (q ? "&" : "?") + x;'
+            ' location.replace("../%s/%s" + q + location.hash); })();</script></head>'
             '<body style="margin:0;background:#0a0a0f;color:#fff;font-family:Inter,system-ui,sans-serif;text-align:center;padding:40px 16px">'
             '<p><a style="display:inline-block;padding:12px 20px;border-radius:999px;background:%s;color:%s;font-weight:800;text-decoration:none" href="../%s/%s">Play %s</a></p>'
             '</body></html>\n')
 
 
-def old_paths():
-    for old, (new, name, bg, ink) in OLD_PATHS.items():
+def old_paths(reg):
+    sports = dict((x['id'], x) for x in reg['sports'])
+    by_path = dict((g['path'].rstrip('/'), g) for g in reg['games'] if g.get('path'))
+    for old, (new, name, extra) in OLD_PATHS.items():
         out = os.path.join(HERE, old)
         if os.path.isdir(out):
             shutil.rmtree(out)
         os.makedirs(out)
-        # the home page and each other page (How It Works, Terms, Privacy) at its old address
-        for f in sorted(os.listdir(os.path.join(HERE, new))):
-            if f.endswith('.html') and f != '404.html':
-                page = '' if f == 'index.html' else f[:-5]
-                open(os.path.join(out, f), 'w', encoding='utf-8').write(REDIRECT % (name, SITE, new, page, new, page, bg, ink, new, page, name))
+        sp = sports.get((by_path.get(new) or {}).get('sport'), {})
+        bg, ink = sp.get('hex', '#ffffff'), sp.get('ink', '#0a0a0f')
+        pages = [f for f in sorted(os.listdir(os.path.join(HERE, new))) if f.endswith('.html') and f != '404.html']
+        # the old game folders' other pages (How It Works, Terms, Privacy) at their old addresses too
+        for f in pages:
+            page = '' if f == 'index.html' else f[:-5]
+            open(os.path.join(out, f), 'w', encoding='utf-8').write(REDIRECT % (name, SITE, new, page, json.dumps(extra if f == 'index.html' else ''), new, page, bg, ink, new, page, name))
         print('built', old, '->', new)
 
 
+def mode_pages(reg):
+    """Each mode's own page (every card that isn't its game's folder page): the folder's page with <base>, its own id
+    (window.CG_GAME), mode (window.CG_MODE) and title"""
+    folders = dict((x[0], x[2]) for x in GAMES)
+    for g in reg['games']:
+        if g.get('status') != 'live' or not g.get('folder') or not g.get('path') or g['path'] == g['folder'] + '/':
+            continue
+        slug = g['path'].rstrip('/')
+        out = os.path.join(HERE, slug)
+        if os.path.isdir(out):
+            shutil.rmtree(out)
+        os.makedirs(out)
+        src = open(os.path.join(HERE, g['folder'], 'index.html'), encoding='utf-8').read()
+        n = src.count("window.CG_GAME = '%s'" % folders[g['folder']]) + src.count('window.CG_MODE = ')
+        if n != 2:
+            raise SystemExit('%s: the folder page has no single CG_GAME and CG_MODE to replace' % slug)
+        src = src.replace("window.CG_GAME = '%s'" % folders[g['folder']], "window.CG_GAME = '%s'" % g['id'], 1)
+        src = re.sub(r"window\.CG_MODE = '[a-z]+'", "window.CG_MODE = '%s'" % g['mode'], src, count=1)
+        src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % g['folder'], src, count=1)
+        src = page_meta(src, g)
+        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(src)
+        print('built', slug, '(%s %s)' % (g['folder'], g['mode']))
+
+
+REG = None
+
+
 def main():
+    global REG
+    REG = registry()
     # The home page's own copies of the logos lose the byline too (16 Oct 2026: 777 TDS' home card still said created by cast)
     for rel in LOGOS:
         if os.path.exists(os.path.join(HERE, rel)):
             clear_byline(os.path.join(HERE, rel))
     for folder, src, gid, hide, play in GAMES:
+        main_card = [g for g in REG['games'] if g.get('path') == folder + '/']
+        if len(main_card) != 1:
+            raise SystemExit('%s: shared/cg.js has no single card for its folder page' % folder)
         dst = copy_game(folder, src)
         fit_code(dst, folder)
         for rel in LOGOS:
@@ -335,33 +364,11 @@ def main():
                 clear_byline(os.path.join(dst, rel))
         for f in os.listdir(dst):
             if f.endswith('.html'):
-                fit_page(os.path.join(dst, f), folder, gid, hide, play)
+                fit_page(os.path.join(dst, f), folder, gid, hide, play, card=main_card[0] if f == 'index.html' else None)
         print('built', folder)
-    old_paths()  # 17 Oct 2026: /700tds/ sends old links on to /777tds/, /500goals/ on to /650goals/
-    # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
-    for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On'),
-                                         # the newer games' over/unders, their own games too (16 Oct 2026, the owner)
-                                         ('free-hit', '25000runs', 'free-hit', 'ou', 'Free Hit'), ('follow-on', '60000runs', 'follow-on', 'ou', 'Follow On'),
-                                         ('two-point', '777tds', 'two-point', 'ou', 'Two Point'), ('photo-finish', 'g1winner', 'photo-finish', 'ou', 'Photo Finish'),
-                                         ('extra-time', '650goals', 'extra-time', 'ou', 'Extra Time')):
-        out = os.path.join(HERE, page)
-        os.makedirs(out, exist_ok=True)
-        src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
-        src = src.replace("window.CG_GAME = '%s'" % dict((x[0], x[2]) for x in GAMES).get(game, game), "window.CG_GAME = '%s'" % gid)  # its game's cg.js id (777tds keeps '700tds')
-        src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
-                          '<script>if (!/[?&](play=ou|%s=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash); document.documentElement.classList.add("ou-boot");</script>\n'
-                          # nothing of the game's home shows while it opens (17 Oct 2026: it showed for seconds first)
-                          '<style>html.ou-boot .screen:not(#screen-ou) { display: none !important; }</style>\n'
-                          '<script src="../shared/cg.js?v=%s"></script>\n'
-                          # its back arrow goes to the CAST Games home (on its own page there's no game home to go to)
-                          '<script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>' % (key, CGV), 1)
-        src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % game, src, count=1)
-        src = re.sub(r'<title>[^<]*</title>', '<title>%s | %s Over or Under | CAST Games</title>' % (title, OU_META[page][0]), src, count=1)
-        src = ou_meta(src, page, title)
-        if page in SOON:
-            src = soon(src, page, title)
-        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(src)
-        print('built', page)
+    # Every other mode's own page, then the old addresses (17 Oct 2026, the owner: every mode is its own game)
+    mode_pages(REG)
+    old_paths(REG)
     # Files the account code loads next to the page (assets/...): the home and sport pages need their own copy
     for rel in ['assets/cast-pass-logo.png']:
         shutil.copyfile(os.path.join(HERE, '1000tries', rel), os.path.join(HERE, rel))

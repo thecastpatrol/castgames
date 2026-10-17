@@ -43,14 +43,12 @@ html.cg-sheet-open, html.cg-sheet-open body { overflow: hidden; }
 .cg-sp-h b { font: 900 17px/1 Inter, sans-serif; }
 .cg-sp-h small { font: 700 12px/1 Inter, sans-serif; color: #a2a2b8; }
 .cg-sp-list { display: grid; gap: 8px; }
-.cg-sp-game { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 12px; height: 64px; padding: 0 12px; border-radius: 14px; background: linear-gradient(135deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .1); color: #fff; text-decoration: none; }
+.cg-sp-game { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 12px; min-height: 64px; padding: 8px 12px; box-sizing: border-box; border-radius: 14px; background: var(--c1, #141420); border: 1px solid rgba(255, 255, 255, .1); color: var(--ink, #fff); text-decoration: none; } /* its sport's colour (17 Oct 2026) */
 .cg-sp-game.is-on { border-color: #fff; }
-.cg-sp-game.is-wc { background: linear-gradient(135deg, #0f4c8a, #0a1f3d); } /* World Cup blue, as its home cards */
-.cg-sp-game.is-wc .cg-mark { font-size: 30px; }
 .cg-sp-game img { width: 76px; height: 44px; object-fit: contain; }
 .cg-sp-game .cg-mark { display: grid; place-items: center; font: 900 22px/1 Inter, sans-serif; }
 .cg-sp-game b { display: block; font: 900 15px/1.2 Inter, sans-serif; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
-.cg-sp-game small { display: block; font: 600 12px/1.3 Inter, sans-serif; color: rgba(255, 255, 255, .72); white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
+.cg-sp-game small { display: block; font: 600 12px/1.3 Inter, sans-serif; color: inherit; opacity: .82; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
 .cg-soon { margin: 0 0 4px; font: 700 12.5px/1.3 Inter, sans-serif; color: #7a7a92; }
 /* Friends is a tab already: the account's own Friends button stays out of the bar */
 .cg-acct [data-cast-friends] { display: none !important; }
@@ -105,3 +103,23 @@ html.cg-in-game [data-cast-shop]:not(.cg-bar *), html.cg-in-game [data-cast-admi
   .cg-right, .cg-acct { gap: 6px; }
 }
 @media (max-width: 400px) { .cg-logo img { height: 30px; } }
+
+/* The sport's colour as a 3px line under the bar on its game pages and sport page (17 Oct 2026, the owner: one colour per
+   sport, everywhere) */
+html.cg-has-sport .cg-bar { border-bottom: 3px solid var(--cg-sport); }
+
+/* A page for one mode that couldn't start by itself (cg.js bootIdle): the mode's card, Play and All Games, under the bar */
+.cg-idle { position: fixed; left: 0; right: 0; bottom: 0; top: var(--cg-bar-h, 112px); z-index: 50; display: grid; place-items: center; overflow-y: auto; padding: 24px 16px; box-sizing: border-box;
+  background: radial-gradient(80% 55% at 50% 20%, rgba(var(--cg-sport-rgb, 255, 255, 255), .28), transparent 70%), #0a0a0f; color: #fff; font-family: Inter, -apple-system, system-ui, sans-serif; }
+.cg-idle[hidden] { display: none; }
+.cg-idle-box { width: 100%; max-width: 420px; display: grid; gap: 10px; justify-items: center; text-align: center; }
+.cg-idle-art { display: grid; place-items: center; width: 220px; height: 130px; border-radius: 22px; background: var(--c1, #141420); color: var(--ink, #fff); border: 1px solid rgba(255, 255, 255, .14); }
+.cg-idle-art img { width: 190px; height: 110px; object-fit: contain; }
+.cg-idle-art .cg-mark { font: 900 44px/1 Inter, sans-serif; }
+.cg-idle-k { margin-top: 4px; font: 900 11px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: #a2a2b8; }
+.cg-idle h1 { margin: 0; font: 900 26px/1.15 Inter, sans-serif; text-wrap: balance; }
+.cg-idle p { margin: 0; color: #c9c9d8; font: 600 15px/1.45 Inter, sans-serif; text-wrap: balance; }
+.cg-idle-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 50px; margin-top: 8px; border: 0; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 15px/1 Inter, sans-serif; cursor: pointer; }
+.cg-idle-soon { display: inline-flex; align-items: center; min-height: 40px; margin-top: 8px; padding: 0 18px; border-radius: 999px; border: 1.5px dashed rgba(255, 255, 255, .35); color: #fff; font: 900 13px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; }
+.cg-idle-alt { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: #fff; font: 800 13px/1 Inter, sans-serif; text-decoration: none; }
+@media (hover: hover) { .cg-idle-btn:hover { background: #e9e9f2; } .cg-idle-alt:hover { border-color: rgba(255, 255, 255, .4); } }
