@@ -5,8 +5,8 @@ The games stay where they are (their own repos, still live on their own domains 
 one into its folder here and fits it to CAST Games, so there's only ever one version of a game to fix:
 
     27-0 Game/27-0-nrl  -> 27-0/        (27-0 CLASSIC; 27-0-pack/, 27-0-hard/ and world-cup-8-0/ are its other modes)
-    1000TRIES Game      -> 1000tries/   (1000TRIES; 1000tries-exactly/, nrlw-250/, world-cup-200/, higher-or-lower-nrl/, nrl-bingo/ ...)
-    4000 GOALS Game     -> 4000goals/   (4000 GOALS; 4000goals-exactly/, aflw-750/, higher-or-lower-afl/ ...)
+    1000TRIES Game      -> 1000tries/   (1000TRIES; 1000tries-team-spin/, nrlw-250/, world-cup-200/, higher-or-lower-nrl/, nrl-bingo/ ...)
+    4000 GOALS Game     -> 4000goals/   (4000 GOALS; 4000goals-team-spin/, aflw-750/, higher-or-lower-afl/ ...)
 
 Every mode is its own game with its own page (17 Oct 2026, the owner: "a box of games"): the game's page with <base>, opened
 straight into that mode (window.CG_MODE, the game's own boot), with its own title and share card. The list of cards and
@@ -44,6 +44,18 @@ def _ver(rel):
     return hashlib.md5(open(os.path.join(HERE, rel), 'rb').read()).hexdigest()[:8]
 
 
+def version_logos():
+    """Every card logo in shared/cg.js (L + 'name.png') carries its own content version (17 Oct 2026: the owner's phone kept
+    showing the old logos, because the same address never asked again). Written into cg.js before the bar's version is
+    worked out, so a new logo also makes a new cg.js"""
+    p = os.path.join(HERE, 'shared', 'cg.js')
+    s = open(p, encoding='utf-8').read()
+    t = re.sub(r"L \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "L + '%s?v=%s'" % (m.group(1), _ver('assets/logos/' + m.group(1))), s)
+    if t != s:
+        open(p, 'w', encoding='utf-8').write(t)
+
+
+version_logos()
 CGV = _ver('shared/cg.js') + _ver('shared/cg.css')[:4]  # the bar's version, so a change reaches every game page
 
 GAMES = [
@@ -294,13 +306,14 @@ def page_meta(src, g):
     # its own share picture and icons from the final logo set (17 Oct 2026): assets/og/<art>-og.png, assets/icons/<art>-*.png
     art = g.get('art')
     if art:
-        og = SITE + 'assets/og/%s-og.png' % art
+        og = SITE + 'assets/og/%s-og.png?v=%s' % (art, _ver('assets/og/%s-og.png' % art))  # a changed picture is fetched again
         src = re.sub(r'<meta property="og:image" content="[^"]*">', lambda m: '<meta property="og:image" content="%s">' % og, src, count=1)
         src = re.sub(r'<meta name="twitter:image" content="[^"]*">', lambda m: '<meta name="twitter:image" content="%s">' % og, src, count=1)
         src = re.sub(r'<meta property="og:image:width" content="[^"]*">', '<meta property="og:image:width" content="1200">', src)
         src = re.sub(r'<meta property="og:image:height" content="[^"]*">', '<meta property="og:image:height" content="630">', src)
-        icons = ('<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/%s-192.png">\n'
-                 '<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/%s-180.png">\n') % (art, art)
+        i192, i180 = 'assets/icons/%s-192.png' % art, 'assets/icons/%s-180.png' % art
+        icons = ('<link rel="icon" type="image/png" sizes="192x192" href="/%s?v=%s">\n'
+                 '<link rel="apple-touch-icon" sizes="180x180" href="/%s?v=%s">\n') % (i192, _ver(i192), i180, _ver(i180))
         src = re.sub(r'[ \t]*<link rel="(?:icon|apple-touch-icon)"[^>]*>\n?', '', src)
         src = re.sub(r'(<meta name="viewport"[^>]*>\n)', lambda m: m.group(1) + icons, src, count=1)
     return src
@@ -315,7 +328,12 @@ OLD_PATHS = {'700tds': ('777tds', '777 TDS', ''), '500goals': ('650goals', '650 
              'free-hit': ('higher-or-lower-cricket', 'HIGHER OR LOWER: CRICKET', 'cat=bblruns'),
              'follow-on': ('higher-or-lower-cricket', 'HIGHER OR LOWER: CRICKET', 'cat=testruns'),
              'two-point': ('higher-or-lower-nfl', 'HIGHER OR LOWER: NFL', ''), 'photo-finish': ('higher-or-lower-racing', 'HIGHER OR LOWER: RACING', ''),
-             'extra-time': ('higher-or-lower-premier-league', 'HIGHER OR LOWER: PREMIER LEAGUE', '')}
+             'extra-time': ('higher-or-lower-premier-league', 'HIGHER OR LOWER: PREMIER LEAGUE', ''),
+             # No EXACTLY modes on CAST Games (17 Oct 2026, the owner): their old pages open the game's main card
+             '1000tries-exactly': ('1000tries', '1000TRIES', ''), '4000goals-exactly': ('4000goals', '4000 GOALS', ''),
+             '25000runs-exactly': ('25000runs', '25000 RUNS', ''), '60000runs-exactly': ('60000runs', '60000 RUNS', ''),
+             '777tds-exactly': ('777tds', '777 TDS', ''), 'g1winner-exactly': ('g1winner', 'G1 WINNER SPINNER', ''),
+             '650goals-exactly': ('650goals', '650 GOALS', ''), '100000points-exactly': ('100000points', '100000 POINTS', '')}
 KEEP_KEY = {'650goals': '500goals'}  # a renamed game keeps its saved data's old key
 REDIRECT = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             '<meta name="robots" content="noindex"><title>%s | CAST Games</title><link rel="canonical" href="%s%s/%s">'
