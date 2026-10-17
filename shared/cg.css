@@ -85,3 +85,10 @@ html.cg-in-game [data-cast-shop]:not(.cg-bar *), html.cg-in-game [data-cast-admi
   html.cg-on .ca-backdrop, html.cg-on .cp-confirm-backdrop { background: #07070c; }
   html.cg-on .ca-panel:has(.ca-admin) { background: #121119; }
 }
+
+/* Mid-game New Game, top right next to the profile (17 Oct 2026) */
+.cg-new { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: #141420; color: #fff; font: 900 13px/1 Inter, sans-serif; cursor: pointer; white-space: nowrap; }
+.cg-new[hidden] { display: none; }
+.cg-new i { font-style: normal; font-size: 15px; }
+@media (hover: hover) { .cg-new:hover { border-color: rgba(255, 255, 255, .4); } }
+@media (max-width: 420px) { .cg-new { flex-direction: column; gap: 3px; height: auto; padding: 2px 4px; border: 0; background: none; font: 800 10px/1 Inter, sans-serif; color: #d6d6e4; } .cg-new i { font-size: 18px; line-height: 20px; } } /* phones: icon over its label, like 1000TRIES' own */

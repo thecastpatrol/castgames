@@ -7846,8 +7846,9 @@
      The tabs (7 Oct 2026, the owner after a play): Overview first, and Admin opens on it; four on the bar (Overview,
      Players, Fans, Flags), the rest under More, so the row never scrolls. A count on a tab under More (Reports) shows on
      the More button too */
-  var ADMIN_TABS = [['overview', 'Overview'], ['players', 'Players'], ['fans', 'Fans'], ['insights', 'Insights'], ['flags', 'Flags']];
-  var ADMIN_MORE = [['analytics', 'Analytics'], ['reports', 'Reports'], ['trends', 'Trends'], ['log', 'Log'], ['words', 'Words']];
+  var ADMIN_TABS = [['overview', 'Overview'], ['players', 'Players'], ['fans', 'Fans'], ['flags', 'Flags']];
+  // Insights (17 Oct 2026) heads the More list: a fifth tab on the bar does not fit a 390px phone
+  var ADMIN_MORE = [['insights', 'Insights'], ['analytics', 'Analytics'], ['reports', 'Reports'], ['trends', 'Trends'], ['log', 'Log'], ['words', 'Words']];
   function adminPage() {
     if (status !== 'signed-in' || !mod.admin) return '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
     return '<div class="ca-admin"><div class="ca-full-head"><h2 class="ca-full-title">Admin</h2></div>' +
@@ -9760,7 +9761,7 @@
         '<span class="ca-ins-top"><span class="ca-ins-name"><span aria-hidden="true">' + s.emoji + '</span> ' + esc(s.name) + '</span><span class="ca-lb-go" aria-hidden="true">&rsaquo;</span></span>' +
         '<span class="ca-ins-nums"><span><b>' + fmt(s.n) + '</b><small>Players</small></span><span><b>' + s.pct + '%</b><small>Of All</small></span><span><b>' + (S.spendOk ? money((s.cents || 0) / 100) : '&hellip;') + '</b><small>Spent</small></span></span>' +
         '<span class="ca-ins-act">' + esc(s.action) + '</span>' +
-        '<span class="ca-ins-foot">' + fmt(s.reach) + ' can be emailed &middot; Potential ' + fmt(s.pot) + ' on average' + (s.fav && s.fav[0] ? ' &middot; Mostly ' + esc((GAMES[s.fav[0][0]] || { name: s.fav[0][0] }).name) : '') + '</span></button>';
+        '<span class="ca-ins-foot">' + fmt(s.reach) + ' can be emailed &middot; Potential ' + fmt(s.pot) + ' on average' + (s.fav && s.fav[0] ? ' &middot; Mostly ' + esc((GAMES[s.fav[0].g] || { name: s.fav[0].g }).name) : '') + '</span></button>';
     }).join('') + '</div>';
     // The last 8 weeks (Monday to Sunday, Sydney time), one number at a time as bars
     var tk = INS_TREND.some(function (x) { return x[0] === mod.insTrend; }) ? mod.insTrend : 'active', tr = S.trend || [];

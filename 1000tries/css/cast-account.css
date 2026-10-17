@@ -3364,6 +3364,10 @@ html.cp-dual-open, html.cp-dual-open body { overflow: hidden; }
 @media (hover: hover) and (pointer: fine) {
   *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .ca-backdrop, .cp-confirm-backdrop { background: rgba(5, 5, 10, .86); }
+  /* 17 Oct 2026, the owner's HDMI monitor: the area round Admin flickered every other frame, the Mac or the monitor
+     dithering the see-through dark layer over the page. Solid colours there and on Admin's panel: nothing to dither */
+  .ca-backdrop, .cp-confirm-backdrop { background: #07070c; }
+  .ca-panel:has(.ca-admin) { background: #121119; }
 }
 /* The other game's World Cup in the home spot (11 Oct 2026, the owner: "more of a World Cup push with the correct
    branding"): the World Cup cards' blue, the ten nations' flags, and a Play button into that mode */
