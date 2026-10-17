@@ -372,8 +372,9 @@
   function nextDaily() {
     try {
       var p = {};
-      new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Sydney', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' }).formatToParts(new Date()).forEach(function (x) { p[x.type] = +x.value || x.value; });
-      var left = (24 * 60) - (p.hour * 60 + p.minute), h = Math.floor(left / 60), m = left % 60;
+      new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Sydney', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      // numbers, never strings (on the hour "00" made it "New in -1776h 0m", 17 Oct 2026)
+      var left = (24 * 60) - ((parseInt(p.hour, 10) || 0) * 60 + (parseInt(p.minute, 10) || 0)), h = Math.floor(left / 60), m = left % 60;
       return 'New in ' + (h ? h + 'h ' : '') + m + 'm';
     } catch (e) { return ''; }
   }
