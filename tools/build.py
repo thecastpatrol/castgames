@@ -118,6 +118,10 @@ GAMES = [
     # Game. On castgames only (never the old sites); its card waits for the owner's Launch ('sc', shared/cg.js launch)
     ('scpointsking', 'SC POINTS KING Game', 'scpointsking', '.site-header',
      "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
+    # SC POINTS KING: AFL (17 Oct 2026, the AFL SC spinner): developed in ~/cast-dev/sc-afl/game, copied to CAST Games/SC
+    # POINTS KING AFL Game. On castgames only; its card waits for the owner's Launch ('scafl', shared/cg.js launch)
+    ('scpointsking-afl', 'SC POINTS KING AFL Game', 'scpointsking-afl', '.site-header',
+     "var b = document.querySelector('[data-action=\"new-game\"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false;"),
     # 100000 POINTS (17 Oct 2026, the NBA game): developed in ~/cast-dev/nba/game, copied to CAST Games/100000 POINTS Game.
     # Its accounts open at the owner's Launch ('nba')
     ('100000points', '100000 POINTS Game', '100000points', '.site-header',
@@ -202,6 +206,7 @@ EXPLAIN = {
     '650goals': 'Draft a Premier League XI with their goals hidden. Can you reach <strong>650 Premier League goals</strong>?',
     'g1winner': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
     'scpointsking': 'Spin NRL player seasons from 2009 to 2026 and build the biggest SC 13. The top of the board wears the <strong>crown</strong>.',
+    'scpointsking-afl': 'Spin AFL player seasons from 2007 to 2026 and build the biggest SC 18. The top of the board wears the <strong>crown</strong>.',
     '100000points': 'Draft an NBA starting five with their points hidden. Can you reach <strong>100000 career points</strong>?',
 }
 
@@ -209,7 +214,7 @@ EXPLAIN = {
 # Every title in one pattern on CAST Games, "<GAME> | <short line> | CAST Games" (audit B8, 16 Oct 2026); the games' own
 # sites keep theirs. A game whose home title runs long gets a shorter line here
 NAMES = {'27-0': '27-0', '1000tries': '1000TRIES', '4000goals': '4000 GOALS', '25000runs': '25000 RUNS', '60000runs': '60000 RUNS',
-         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '650goals': '650 GOALS', 'scpointsking': 'SC POINTS KING', '100000points': '100000 POINTS'}
+         '777tds': '777 TDS', 'g1winner': 'G1 WINNER SPINNER', '650goals': '650 GOALS', 'scpointsking': 'SC POINTS KING', 'scpointsking-afl': 'SC POINTS KING: AFL', '100000points': '100000 POINTS'}
 HOME_LINE = {'27-0': 'Build an NRL 13 and Go Undefeated'}
 # The games' old homes, written out in their copy (the privacy pages' "available at", 27-0's install steps): their folder
 # here instead (audit T4, 16 Oct 2026)
@@ -498,7 +503,7 @@ def main():
     # contents, so a change reaches everyone at once instead of an old copy kept by the browser (15 Oct 2026)
     idx = os.path.join(HERE, 'index.html')
     hs = open(idx, encoding='utf-8').read()
-    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals|scpointsking|100000points)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
+    hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals|scpointsking-afl|scpointsking|100000points)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
     # and the bar's own files (17 Oct 2026: the home page kept an old cg.css, so a fix never reached it)
     hs2 = re.sub(r'shared/cg\.(css|js)\?v=[\w]*"', lambda m: 'shared/cg.%s?v=%s"' % (m.group(1), CGV), hs2)
     # and the home page's own script and styles (17 Oct 2026: they had fixed numbers, so changes waited in old copies)
