@@ -37,10 +37,10 @@
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', logo: 'assets/logos/4000goals.png', c1: '#5a1620', c2: '#1c0b10', status: 'live',
       line: 'Draft an AFL 18 and reach 4000 career goals.', short: 'Draft an 18 to 4000 goals', daily: true, stats: '4000goals' },
     // 25000 RUNS (15 Oct 2026): the Big Bash game, a BBL XI to 25000 career runs
-    { id: '25000runs', sport: 'cricket', name: '25000 RUNS', path: '25000runs/', logo: 'assets/logos/25000runs.png', c1: '#1a2148', c2: '#0b1022', status: 'live', badge: 'New',
+    { id: '25000runs', comp: 'Big Bash', cc: '#ff7a1a', ci: '#1a0b02', sport: 'cricket', name: '25000 RUNS', path: '25000runs/', logo: 'assets/logos/25000runs.png', c1: '#1a2148', c2: '#0b1022', status: 'live', badge: 'New',
       line: 'Draft a Big Bash XI and reach 25000 career BBL runs.', short: 'Draft a BBL XI to 25000 runs', daily: true },
     // 60000 RUNS (16 Oct 2026): the Test cricket game, a Test XI to 60000 career Test runs
-    { id: '60000runs', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
+    { id: '60000runs', comp: 'Test Cricket', cc: '#efe7cf', ci: '#0f2a1e', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', logo: 'assets/logos/60000runs.png', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
       line: 'Draft a Test XI from every Test since 1877 and reach 60000 career Test runs.', short: 'Draft a Test XI to 60000 runs', daily: true },
     // 777 TDS (16 Oct 2026; 777 with a 4th receiver since 17 Oct 2026): the NFL game, an offence of 10 to 777 career
     // touchdowns. Its id stays '700tds' (js/home.js and the game pages' CG_GAME use it); /700tds/ redirects to /777tds/
@@ -54,9 +54,9 @@
     { id: '500goals', sport: 'epl', name: '650 GOALS', path: '650goals/', logo: 'assets/logos/650goals.png', c1: '#3a0f2c', c2: '#12061a', status: 'live', badge: 'New',
       line: 'Draft a Premier League XI and reach 650 career goals.', short: 'Draft an XI to 650 goals', daily: true },
     // The newer games' over/unders (16 Oct 2026, the owner: separate games, not modes inside the draft games)
-    { id: 'free-hit', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
+    { id: 'free-hit', comp: 'Big Bash', cc: '#ff7a1a', ci: '#1a0b02', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
       line: 'Over or under? Call BBL runs and wickets before the clock runs out.', short: 'BBL over or under, vs the clock' },
-    { id: 'follow-on', sport: 'cricket', name: 'Follow On', path: 'follow-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
+    { id: 'follow-on', comp: 'Test Cricket', cc: '#efe7cf', ci: '#0f2a1e', sport: 'cricket', name: 'Follow On', path: 'follow-on/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#163327', c2: '#06140f', status: 'live', badge: 'New',
       line: 'Over or under? Call Test runs and wickets before the clock runs out.', short: 'Test over or under, vs the clock' },
     { id: 'two-point', sport: 'nfl', name: 'Two Point', path: 'two-point/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#123a26', c2: '#08131f', status: 'live', badge: 'New',
       line: 'Over or under? Call NFL career touchdowns before the clock runs out.', short: 'NFL over or under, vs the clock' },
@@ -203,7 +203,7 @@
       '<div class="cg-sw-list"><div class="cg-sp-list">' + gs.map(function (g) {
         // 27-0 and 1000TRIES go straight into their main mode now the World Cup modes have their own rows (16 Oct 2026, the owner)
         return '<a class="cg-sp-game' + (g.id === HERE ? ' is-on' : '') + '" href="' + url(g.path + (SW_PLAY[g.id] ? '?play=' + SW_PLAY[g.id] : '')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' +
-          (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + esc(g.short) + '</small></span></a>';
+          (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark">' + g.mark + '</span>') + '<span><b>' + esc(g.name) + '</b><small>' + (g.comp ? esc(g.comp) + ': ' : '') + esc(g.short) + '</small></span></a>';
       }).join('') + swModes() + '</div></div></div>';
   }
   /* The World Cup modes under NRL while the World Cup is on (16 Oct 2026, the owner: "very good modes and can be their own

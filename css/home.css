@@ -149,3 +149,9 @@ a { color: inherit; }
   .cg-dmini { flex-basis: 260px; }
   .cg-dgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* The competition above a cricket game's name (17 Oct 2026): Big Bash or Test Cricket at a glance */
+.cg-comp { display: block; width: fit-content; margin: 0 0 5px; padding: 3px 7px; border-radius: 6px; background: var(--cc); color: var(--ci); font: 900 10px/1.1 Inter, sans-serif; letter-spacing: .7px; text-transform: uppercase; white-space: nowrap; }
+/* a labelled tile gives its logo a little less height, so the label never pushes Play off the card */
+.cg-game-t:has(.cg-comp) { grid-template-rows: 60px auto auto 1fr; }
+.cg-game-t:has(.cg-comp) b { margin-top: 6px; }

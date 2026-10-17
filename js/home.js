@@ -16,6 +16,8 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
   function lsJson(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function art(g, cls) { return g.logo ? '<img class="' + (cls || 'cg-art') + '" src="' + esc(g.logo) + '" alt="' + esc(g.name) + '">' : '<span class="' + (cls || 'cg-art') + ' cg-mark">' + g.mark + '</span>'; }
+  // The competition above a game's name (Big Bash or Test Cricket), its own colours
+  function comp(g) { return g.comp ? '<span class="cg-comp" style="--cc:' + g.cc + ';--ci:' + g.ci + '">' + esc(g.comp) + '</span>' : ''; }
   function game(id) { for (var i = 0; i < CG.GAMES.length; i++) if (CG.GAMES[i].id === id) return CG.GAMES[i]; return null; }
 
   /* The featured banner slides (16 Oct 2026, the owner: "it's just there and doesn't offer anything"): the World Cup while
@@ -87,7 +89,7 @@
   // A game tile (Most Popular and the sport pages): the same size everywhere
   function tile(g) {
     return '<a class="cg-game-t" href="' + esc(CG.url(g.path)) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + (g.badge ? '<span class="cg-new">' + esc(g.badge) + '</span>' : '') + art(g) +
-      '<b' + (g.name.length > 14 ? ' class="is-long"' : '') + '>' + esc(g.name) + '</b><small>' + esc(g.line) + '</small><span class="cg-btn is-white">Play</span></a>';
+      '<b' + (g.name.length > 14 ? ' class="is-long"' : '') + '>' + comp(g) + esc(g.name) + '</b><small>' + esc(g.line) + '</small><span class="cg-btn is-white">Play</span></a>';
   }
   // A sport page (nrl/, afl/): its games, most popular first, an odd number made even with a More Coming tile
   function drawSport(id) {
@@ -128,20 +130,20 @@
   function dailyCard(g) {
     var x = dailyOf(g.id);
     return '<a class="cg-card cg-dcard" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g) +
-      '<span class="cg-card-t"><b>' + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
+      '<span class="cg-card-t"><b>' + comp(g) + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
       (x && x.reward ? '<small class="cg-dreward">' + esc(x.reward) + '</small>' : '') + '</span><span class="cg-cta">Play</span></a>';
   }
   var dAll = false; // the Daily grid is open (View All)
   function dailyMini(g) {
     var x = dailyOf(g.id);
     return '<a class="cg-dmini" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
-      '<b>' + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
+      '<b>' + comp(g) + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
       '<span class="cg-dfoot">' + (x && x.reward ? '<small class="cg-dreward">' + esc(x.reward) + '</small>' : '<i></i>') + '<span class="cg-cta">Play</span></span></a>';
   }
   function dailyTile(g) {
     var x = dailyOf(g.id);
     return '<a class="cg-dtile" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
-      '<b>' + esc(g.name) + '</b><small>' + esc(x ? x.head : 'New today') + '</small></a>';
+      '<b>' + comp(g) + esc(g.name) + '</b><small>' + esc(x ? x.head : 'New today') + '</small></a>';
   }
   function card(g, sub, cta, href, done) {
     return '<a class="cg-card" href="' + esc(href) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g) +
