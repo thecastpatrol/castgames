@@ -41,7 +41,7 @@
   // each game's app icon (assets/icons/<art>-192.png), for the switcher's group labels; tools/build.py adds the versions
   var IC = 'assets/icons/';
   var ICONS = { '1000tries': IC + '1000tries-192.png?v=129340d4', '27-0': IC + '27-0-192.png?v=e0f2e022', '4000goals': IC + '4000goals-192.png?v=5c5ca7ad', '25000runs': IC + '25000runs-192.png?v=a035ae9b',
-    '60000runs': IC + '60000runs-192.png?v=c8865039', '777tds': IC + '777tds-192.png?v=d19d259e', 'g1winner': IC + 'g1winner-192.png?v=82e093d7', '650goals': IC + '650goals-192.png?v=f82163a5',
+    '60000runs': IC + '60000runs-192.png?v=0cdf4153', '777tds': IC + '777tds-192.png?v=d19d259e', 'g1winner': IC + 'g1winner-192.png?v=82e093d7', '650goals': IC + '650goals-192.png?v=f82163a5',
     '100000points': IC + '100000points-192.png?v=8b5c9f6b', 'nrl-bingo': IC + 'nrl-bingo-192.png?v=17a4ff47', 'sc-points-king': IC + 'sc-points-king-192.png?v=07ddcb11', 'hol-nrl': IC + 'hol-nrl-192.png?v=69ddeb3b',
     'hol-afl': IC + 'hol-afl-192.png?v=a57a84e3', 'hol-cricket': IC + 'hol-cricket-192.png?v=20e936d7', 'hol-racing': IC + 'hol-racing-192.png?v=bff34f58', 'hol-epl': IC + 'hol-epl-192.png?v=76971d56',
     'hol-nfl': IC + 'hol-nfl-192.png?v=db581393', 'hol-nba': IC + 'hol-nba-192.png?v=7e704bde' };
@@ -51,11 +51,11 @@
       line: 'Draft 13 to 1000 tries', long: 'Draft 13 NRL players with their tries hidden and reach 1000 career tries.', of: 13, draft: '1000tries_draft_v1', board: '1000plus', daily: true, stats: '1000tries' },
     { id: '27-0', art: '27-0', sport: 'nrl', name: '27-0 CLASSIC', pill: '27-0 CLASSIC', path: '27-0/', folder: '27-0', mode: 'classic', logo: L + '27-0.png?v=6b59b335', status: 'live',
       line: 'Build a 13, go undefeated', long: 'Spin a club and season, draft a 13 from any NRL season since 1998 and go undefeated.', of: 13, draft: '270_draft_v1', board: '270best', daily: true, stats: '27-0' },
-    { id: '27-0-pack', art: '27-0-pack', sport: 'nrl', name: '27-0 PACK MODE', pill: '27-0 PACK', path: '27-0-pack/', folder: '27-0', mode: 'pack', logo: L + '27-0-pack.png?v=d9f12348', status: 'live',
+    { id: '27-0-pack', art: '27-0-pack', sport: 'nrl', name: '27-0 PACK MODE', pill: '27-0 PACK', path: '27-0-pack/', folder: '27-0', mode: 'pack', logo: L + '27-0-pack.png?v=7cd49f29', status: 'live',
       line: 'Rip open 7 packs, go 27-0', long: 'Rip open 7 packs of NRL players, build your 13 and go undefeated.', of: 13, draft: '270_draft_v1_pack', board: '270pack' },
     { id: '1000tries-team-spin', art: '1000tries-team-spin', sport: 'nrl', name: '1000TRIES TEAM SPIN', pill: 'TEAM SPIN', path: '1000tries-team-spin/', folder: '1000tries', mode: 'spin', logo: L + '1000tries-team-spin.png?v=42c59123', status: 'live',
       line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a club and season, and pick from that squad. Reach 1000 tries.', of: 13, draft: '1000tries_draft_v1_spin', board: '1000spin' },
-    { id: '27-0-hard', art: '27-0-hard', sport: 'nrl', name: '27-0 HARD', path: '27-0-hard/', folder: '27-0', mode: 'hard', logo: L + '27-0-hard.png?v=504b5e44', status: 'live',
+    { id: '27-0-hard', art: '27-0-hard', sport: 'nrl', name: '27-0 HARD', path: '27-0-hard/', folder: '27-0', mode: 'hard', logo: L + '27-0-hard.png?v=dffcfdbc', status: 'live',
       line: 'No ratings, paid wildcards', long: 'Classic 27-0 with the ratings hidden and paid wildcards only. Can you still go undefeated?', of: 13, draft: '270_draft_v1_hard', board: '270hard' },
     { id: 'nrlw-250', art: 'nrlw-250', sport: 'nrl', name: 'NRLW 250+', path: 'nrlw-250/', folder: '1000tries', mode: 'nrlw', logo: L + 'nrlw-250.png?v=91455665', status: 'live',
       line: 'Draft 13 NRLW stars to 250 tries', long: 'Draft 13 NRLW players with their tries hidden and reach 250 NRLW tries.', of: 13, draft: '1000tries_draft_v1_nrlw', board: 'nrlw' },
@@ -84,15 +84,17 @@
     { id: 'higher-or-lower-afl', art: 'hol-afl', sport: 'afl', name: 'HIGHER OR LOWER: AFL', pill: '&#x25B2;&#x25BC; AFL', path: 'higher-or-lower-afl/', folder: '4000goals', mode: 'ou', logo: L + 'hol-afl.png?v=ae3187ef', mark: '&#x25B2;&#x25BC;', status: 'live', launch: 'po', ou: true,
       line: 'Career goals, vs the clock', long: 'Higher or lower? Call AFL players’ career goals before the clock runs out.', board: '4000ou' },
     // Cricket
-    { id: '60000runs', art: '60000runs', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', folder: '60000runs', mode: 'plus', logo: L + '60000runs.png?v=7b374442', status: 'live',
+    // Cricket's colours (18 Oct 2026, the owner: "Both"): 60000 RUNS (Tests) Test amber and 25000 RUNS (Big Bash) lime, clearly
+    // apart (no orange, no gold); each game's extra modes (TEAM SPIN, HIGHER OR LOWER: CRICKET with 25000 RUNS) a shade darker
+    { id: '60000runs', art: '60000runs', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS', path: '60000runs/', folder: '60000runs', mode: 'plus', logo: L + '60000runs.png?v=cb301c59', bg: '#FFC107', bgInk: '#1a1400', status: 'live',
       line: 'Test XI to 60000 runs', long: 'Draft a Test XI from every Test since 1877 with their runs hidden and reach 60000 Test runs.', of: 11, draft: '60000runs_draft_v1', board: 'tsplus', daily: true },
     { id: '25000runs', art: '25000runs', comp: 'Big Bash', sport: 'cricket', name: '25000 RUNS', path: '25000runs/', folder: '25000runs', mode: 'plus', logo: L + '25000runs.png?v=56e235c6', bg: '#D4E83A', bgInk: '#1a1400', status: 'live',
       line: 'Big Bash XI to 25000 runs', long: 'Draft a Big Bash XI with their BBL runs hidden and reach 25000 BBL runs.', of: 11, draft: '25000runs_draft_v1', board: 'bbplus', daily: true },
-    { id: 'higher-or-lower-cricket', art: 'hol-cricket', sport: 'cricket', name: 'HIGHER OR LOWER: CRICKET', pill: '&#x25B2;&#x25BC; CRICKET', path: 'higher-or-lower-cricket/', folder: '25000runs', mode: 'ou', logo: L + 'hol-cricket.png?v=586518d9', mark: '&#x25B2;&#x25BC;', status: 'live', ou: true,
+    { id: 'higher-or-lower-cricket', art: 'hol-cricket', sport: 'cricket', name: 'HIGHER OR LOWER: CRICKET', pill: '&#x25B2;&#x25BC; CRICKET', path: 'higher-or-lower-cricket/', folder: '25000runs', mode: 'ou', logo: L + 'hol-cricket.png?v=586518d9', mark: '&#x25B2;&#x25BC;', bg: '#C1D335', bgInk: '#1a1400', status: 'live', ou: true,
       line: 'Test\u00a0and BBL\u00a0numbers, vs\u00a0the\u00a0clock', long: 'Higher or lower? Call Test and Big Bash runs and wickets before the clock runs out.', board: 'bbou' },
-    { id: '60000runs-team-spin', art: '60000runs-team-spin', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS TEAM SPIN', pill: 'TEAM SPIN', path: '60000runs-team-spin/', folder: '60000runs', mode: 'spin', logo: L + '60000runs-team-spin.png?v=e26c04f3', status: 'live',
+    { id: '60000runs-team-spin', art: '60000runs-team-spin', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS TEAM SPIN', pill: 'TEAM SPIN', path: '60000runs-team-spin/', folder: '60000runs', mode: 'spin', logo: L + '60000runs-team-spin.png?v=e26c04f3', bg: '#EBB206', bgInk: '#1a1400', status: 'live',
       line: 'Spin a nation and season, pick 1', long: 'Choose a position, spin a Test nation and season, and pick from that squad. Reach 60000 runs.', of: 11, draft: '60000runs_draft_v1_spin', board: 'tsspin' },
-    { id: '25000runs-team-spin', art: '25000runs-team-spin', comp: 'Big Bash', sport: 'cricket', name: '25000 RUNS TEAM SPIN', pill: 'TEAM SPIN', path: '25000runs-team-spin/', folder: '25000runs', mode: 'spin', logo: L + '25000runs-team-spin.png?v=05d0c547', bg: '#D4E83A', bgInk: '#1a1400', status: 'live',
+    { id: '25000runs-team-spin', art: '25000runs-team-spin', comp: 'Big Bash', sport: 'cricket', name: '25000 RUNS TEAM SPIN', pill: 'TEAM SPIN', path: '25000runs-team-spin/', folder: '25000runs', mode: 'spin', logo: L + '25000runs-team-spin.png?v=05d0c547', bg: '#C1D335', bgInk: '#1a1400', status: 'live',
       line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a BBL club and season, and pick from that squad. Reach 25000 runs.', of: 11, draft: '25000runs_draft_v1_spin', board: 'bbspin' },
     // Horse Racing
     { id: 'g1winner', art: 'g1winner', sport: 'racing', name: 'G1 WINNER SPINNER', pill: 'G1 WINNER', path: 'g1winner/', folder: 'g1winner', mode: 'plus', logo: L + 'g1winner.png?v=02b3481a', status: 'live',
