@@ -11,12 +11,12 @@
   /* Screens */
 
   function show(name) {
-    ['home', 'draft', 'results', 'ou'].forEach(function (n) {
+    ['home', 'draft', 'results', 'ou', 'bingo'].forEach(function (n) {
       $('screen-' + n).classList.toggle('is-active', n === name);
     });
     document.body.setAttribute('data-screen', name);
     // Mode skin: the mode's colour runs through the draft and results (see 'Mode skins' in main.css)
-    if (name === 'home') document.body.removeAttribute('data-mode'); else document.body.setAttribute('data-mode', selectedMode);
+    if (name === 'home') document.body.removeAttribute('data-mode'); else document.body.setAttribute('data-mode', name === 'bingo' ? 'bingo' : selectedMode); // NRL Bingo: its own lime (css/bingo.css)
     // Mid-draft, footer page links open in a new tab so the current team survives
     Array.prototype.forEach.call(document.querySelectorAll('.footer-links a[href$=".html"]'), function (a) {
       if (name === 'draft') { a.target = '_blank'; a.rel = 'noopener'; } else { a.removeAttribute('target'); }
@@ -334,6 +334,16 @@
     c.innerHTML = on ? R.ouCard() : '';
     if (d.nextSibling !== c) d.parentNode.insertBefore(c, d.nextSibling);
   }
+  // NRL Bingo's card (17 Oct 2026): straight under Six Again's (or the Daily's), once it's on
+  function placeBingo() {
+    var o = $('ouHome') || $('dailyCard'), c = $('bgHome');
+    if (!o) return;
+    if (!c) { c = document.createElement('div'); c.id = 'bgHome'; c.className = 'bg-home'; }
+    var on = !!(T.bingo && T.bingo.on());
+    c.hidden = !on;
+    c.innerHTML = on && R.bingoCard ? R.bingoCard() : '';
+    if (o.nextSibling !== c) o.parentNode.insertBefore(c, o.nextSibling);
+  }
   T.firstVisit = firstVisit;
   // World Cup 200+ (4 Oct 2026): on once the owner launches it (or ?castwc=1 for an admin's visit); signed-in players only
   function wcOn() { return !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive()); }
@@ -357,6 +367,7 @@
     placeModes(first);
     placeDaily();
     placeOu();
+    placeBingo();
     var ouB = document.querySelector('.spot-promo[data-ou-open]');
     if (ouB && !ouB.getAttribute('data-rich') && R.ouBanner) { ouB.innerHTML = R.ouBanner(); ouB.setAttribute('data-rich', '1'); ouB.classList.add('is-ou'); }
     if (window.CastAccount && CastAccount.spot) CastAccount.spot();
@@ -668,6 +679,7 @@
 
   T.showScreen = show; // Six Again's own screen (js/overunder.js)
   T.ouHome = function () { goHome(); };
+  T.bingoHome = function () { goHome(); }; // NRL Bingo's back arrow (js/bingo.js)
   function goHome() {
     closeSheet();
     busy = false;
@@ -1438,6 +1450,7 @@
       // they are in
       selectedMode = t.getAttribute('data-mode');
       if (selectedMode === 'ou') { if (T.ou) T.ou.open(); return; } // Six Again has its own screen (js/overunder.js)
+      if (selectedMode === 'bingo') { selectedMode = 'plus'; if (T.bingo) T.bingo.open(); return; } // NRL Bingo too (js/bingo.js)
       renderHome();
       if (T.players.length) newGame(selectedMode); else { startWhenReady = selectedMode; $('startBtn').hidden = false; }
       return;
@@ -1651,6 +1664,8 @@
     if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
     // Six Again (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
     if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
+    // NRL Bingo (js/bingo.js): Free Play, or its Daily ('bingod', a board's Play button)
+    if (modeId === 'bingo' || modeId === 'bingod') { var bm = modeId === 'bingod' ? 'daily' : 'free'; if (!T.bingo) T.bingoWanted = bm; else if (T.bingo.on()) T.bingo.open(bm); return; }
     if (!T.MODES[modeId]) return;
     if (!T.players.length) { startWhenReady = modeId; return; } // back from signing in on a phone before the players loaded
     var mid = document.body.getAttribute('data-screen') === 'draft' && !T.state().finished && T.filledCount() > 0;
@@ -1660,7 +1675,7 @@
   window.addEventListener('cast:play', function (e) { var d = e.detail || {}; if (d.game === '1000tries') playMode(d.mode); });
   // World Cup launched (or taken down), or a sign-in: the home page redraws its World Cup card
   function homeAgain() { if (document.body.getAttribute('data-screen') === 'home') renderHome(); }
-  window.addEventListener('cast:launch', function (e) { if (e.detail && e.detail.game === 'wc') { wcBits(); homeAgain(); } if (e.detail && e.detail.game === 'ou') homeAgain(); });
+  window.addEventListener('cast:launch', function (e) { if (e.detail && e.detail.game === 'wc') { wcBits(); homeAgain(); } if (e.detail && (e.detail.game === 'ou' || e.detail.game === 'bingo')) homeAgain(); });
   // The home FAQ's World Cup 200+ entry ([data-cast-wc]): shows once World Cup mode is on, like the How It Works notes
   function wcBits() {
     var on = !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive());
@@ -1952,6 +1967,9 @@
     btn.hidden = true;
     homeAgain(); // the account has loaded by now: World Cup's card (when it's on) and Sign In to Play
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
+    // NRL Bingo's links (?play=bingo, its Daily, the owner's private ?bingo=): it opens itself (js/bingo.js), never under the
+    // draft's resume pop-up
+    if (/[?&](play=(bingo|bingod|bingo-daily)|bingo=[a-z0-9]+)(?=&|#|$)/.test(location.search)) return;
     var play = /[?&]play=(plus|exact|spin|nrlw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]ou=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?ou=: the owner's private Six Again link
     if (!play) offerResume();
     if (play) {

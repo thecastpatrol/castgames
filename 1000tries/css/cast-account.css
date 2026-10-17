@@ -1755,6 +1755,17 @@ button.ca-photo { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .ca-rr.is-rm .ca-rr-pack em.is-quick { background: #fff; color: #111; }
 .ca-rr.is-rm .ca-rr-save { background: rgba(244, 114, 182, .18); color: #f9a8d4; }
 @media (hover: hover) { .ca-rr.is-rm .ca-rr-pack:hover { border-color: #f9a8d4; } }
+/* The Wild Tile sheet (.is-wild, NRL Bingo, 17 Oct 2026): Bingo's lime */
+.ca-rr.is-wild .ca-rr-kicker, .ca-rr.is-wild .ca-rr-pack small strong { color: #d9f99d; }
+.ca-rr.is-wild .ca-rr-badge { border-color: #a3e635 !important; box-shadow: 0 0 26px rgba(163, 230, 53, .35) !important; }
+.ca-rr.is-wild .ca-rr-hook { border-color: rgba(163, 230, 53, .45); background: rgba(163, 230, 53, .1); }
+.ca-rr.is-wild .ca-rr-pack { border-color: rgba(163, 230, 53, .35); background: linear-gradient(160deg, rgba(163, 230, 53, .12), rgba(255, 255, 255, .03)); }
+.ca-rr.is-wild .ca-rr-pack.is-best { border-color: #a3e635; background: linear-gradient(160deg, rgba(163, 230, 53, .26), rgba(163, 230, 53, .06)); box-shadow: 0 0 22px rgba(163, 230, 53, .28); }
+.ca-rr.is-wild .ca-rr-pack em { background: #a3e635; color: #142004; }
+.ca-rr.is-wild .ca-rr-pack em.is-quick { background: #fff; color: #111; }
+.ca-rr.is-wild .ca-rr-save { background: rgba(163, 230, 53, .18); color: #d9f99d; }
+@media (hover: hover) { .ca-rr.is-wild .ca-rr-pack:hover { border-color: #d9f99d; } }
+.ca-vl-chip.is-wild, .ca-vl-row.is-wild { --it: 163, 230, 53; --itl: #d9f99d; }
 /* The Streak Freeze sheet (.is-fz): ice blue */
 .ca-rr.is-fz .ca-rr-kicker, .ca-rr.is-fz .ca-rr-pack small strong { color: #7dd3fc; }
 .ca-rr.is-fz .ca-rr-badge { border-color: #38bdf8 !important; box-shadow: 0 0 26px rgba(56, 189, 248, .35) !important; }
@@ -2052,6 +2063,7 @@ button.ca-photo { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .ca-shop-it.is-key { --it: 251, 191, 36; --itc: #fbbf24; --itl: #fcd34d; --itd: #412402; }
 .ca-shop-it.is-rib { --it: 251, 146, 60; --itc: #fb923c; --itl: #fdba74; --itd: #431407; }
 .ca-shop-it.is-fz { --it: 56, 189, 248; --itc: #38bdf8; --itl: #7dd3fc; --itd: #06283d; }
+.ca-shop-it.is-wild { --it: 163, 230, 53; --itc: #a3e635; --itl: #d9f99d; --itd: #142004; } /* NRL Bingo's Wild Tile (17 Oct 2026): Bingo's lime */
 .ca-shop-it.is-toty { --it: 147, 197, 253; --itc: #bfdbfe; --itl: #bfdbfe; --itd: #0a1a45; border-color: rgba(191, 219, 254, .5); background: radial-gradient(120% 90% at 50% 0%, #17337c, #0a1230 75%); }
 .ca-shop-items { display: grid; gap: 10px; margin: 0 0 12px; }
 .ca-shop-it { padding: 12px; border-radius: 14px; border: 1px solid rgba(var(--it), .28); background: linear-gradient(160deg, rgba(var(--it), .09), rgba(255, 255, 255, .02)); }
@@ -4128,3 +4140,13 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-cr-code .ca-row { flex-wrap: wrap; }
 .ca-cr-code .ca-btn { width: auto; margin: 0; }
 /* ---------------- end of Invite a Mate v2 ---------------- */
+
+/* NRL Bingo's card on a team sheet (17 Oct 2026): the 20 tiles in their jerseys, the names that filled them */
+.ca-bg-sum { margin: 4px 0 10px; text-align: center; font: 900 15px/1.3 Inter, sans-serif; color: #d9f99d; }
+.ca-bg-card { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0 0 14px; }
+.ca-bg-tile { position: relative; display: block; aspect-ratio: 5 / 3.6; overflow: hidden; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+.ca-bg-tile svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ca-bg-tile.is-filled { box-shadow: inset 0 0 0 2px rgba(163, 230, 53, .85); }
+.ca-bg-tile.is-filled svg { filter: saturate(.55) brightness(.42); }
+.ca-bg-tile b { position: absolute; left: 3px; right: 3px; top: 22%; text-align: center; font: 900 10.5px/1.15 Inter, sans-serif; color: #fff; text-transform: uppercase; overflow-wrap: anywhere; text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
+.ca-bg-tile small { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 2px 4px; background: linear-gradient(180deg, transparent, rgba(4, 6, 10, .85) 55%); text-align: center; font: 800 10px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }

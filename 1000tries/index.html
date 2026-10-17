@@ -3,7 +3,7 @@
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=0f44a429cb25">
+<link rel="stylesheet" href="../shared/cg.css?v=8d285edacb25">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -59,12 +59,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css?v=20260927.87">
-<link rel="stylesheet" href="css/cast-account.css?v=20260927.214">
+<link rel="stylesheet" href="css/cast-account.css?v=20260927.215">
+<link rel="stylesheet" href="css/bingo.css?v=20261017.1">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = '1000tries'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=0f44a429cb25"></script>
+<script src="../shared/cg.js?v=8d285edacb25"></script>
 
 
 <header class="site-header">
@@ -224,6 +225,11 @@
     <div class="wrap" id="ouRoot"></div>
   </section>
 
+  <!-- NRL BINGO (17 Oct 2026, js/bingo.js) -->
+  <section id="screen-bingo" class="screen" aria-label="NRL Bingo">
+    <div class="wrap" id="bgRoot"></div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -266,19 +272,21 @@
 <script src="js/team-spin.js?v=20260927.12"></script>
 <script src="js/wildcards.js?v=20260927.20"></script>
 <script src="js/cast-nations.js?v=20261005.13"></script>
-<script src="js/cast-intl.js?v=20261008.24"></script>
+<script src="js/cast-intl.js?v=20261017.1"></script>
 <script src="js/render.js?v=20260927.91"></script>
 <script src="js/share-card.js?v=20260927.5"></script>
 <script src="js/cast-celebrate.js?v=20261008.6"></script>
-<script src="js/app.js?v=20261015.9"></script>
+<script src="js/app.js?v=20261017.1"></script>
 <script src="js/ou-engine.js?v=20261015.6"></script>
 <script src="js/overunder.js?v=20261015.16"></script>
+<script src="js/bingo-engine.js?v=20261017.1"></script>
+<script src="js/bingo.js?v=20261017.1"></script>
 <script src="js/cast-daily.js?v=20260929.17"></script>
 <script src="js/daily.js?v=20260927.31"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
-    inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; }, // a game in progress: sign-in keeps the pop-up (no reload)
+    inGame: function () { var s = document.body.getAttribute('data-screen'); return s === 'draft' || (s === 'bingo' && !!(window.T && T.bingo && T.bingo.playing())); }, // a game in progress (a draft, or an NRL Bingo card): sign-in keeps the pop-up (no reload), and pop-ups wait
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); }, // no game finished here yet (js/app.js): no spot for a guest
     // The promo pop-up (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): its button starts 1000+ (or NRLW 250+ from its NRLW tab), and each card shows the player's tries
@@ -289,7 +297,7 @@
 <script src="js/cast-upgrades.js?v=20261006.1"></script>
 <script src="js/cast-dual.js?v=20261014.3"></script>
 <script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=20260927.317"></script>
+<script src="js/cast-account.js?v=20260927.318"></script>
 <script src="js/cast-totw.js?v=20261015.1"></script>
 <script src="js/cast-wch.js?v=20261015.1"></script>
 </body>
