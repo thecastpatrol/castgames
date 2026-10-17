@@ -5446,6 +5446,7 @@
         // The Gameday Bag's steppers, Checkout and way back to the Shop
         else if (a === 'bag-inc' || a === 'bag-dec' || a === 'bag-set') bagChange(b.getAttribute('data-k'), a.slice(4), +b.getAttribute('data-q') || 0);
         else if (a === 'bag-pay') bagPay();
+        else if (a === 'bag-clear') bagClear();
         else if (a === 'bag-shop') { rrClose(); openShop('bag'); }
         else if (PACKS[a]) rrPay(a);
         else if (a === 'pass') { var bagWas = rr && rr.item === 'bag'; rrClose(); openPass(bagWas ? 'bag' : 'key-shop'); }
@@ -5698,8 +5699,10 @@
     } else if (rr.stage === 'err') {
       h = '<div class="ca-center"><div class="ca-badge" aria-hidden="true">&#x26A0;&#xFE0F;</div><p class="ca-text">' + esc(rr.err) + '</p><button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-rr="back">Try Again</button></div>';
     }
+    var fk = rr.item === 'bag' ? focusKey(body) : null;
     body.innerHTML = h;
     keepWhole(body);
+    if (fk) focusBack(body, fk);
     if ((rr.item === 'toty' || rr.item === 'prem' || rr.item === 'wch') && rr.stage === 'shop') dmCount(body); // the ratings count up to 95
   }
   /* A pack in the pop-up: quick (the $1 one, white tag), plain (no glow) or the best value; wide spans the row. Every pack
@@ -5740,6 +5743,7 @@
         if (!r.paid && tries++ < 6) { setTimeout(again, 1500); return; }
         if (!r.paid) { rrDestroyCo(); rr.stage = 'err'; rr.err = 'Your payment is still going through. It will be on your account in a minute.'; rrRender(); return; }
         if (mine.item === 'bag') { bagPaid(mine, r); return; } // the Gameday Bag: everything at once
+        gaOne(mine); // Google Analytics' purchase event, as for a bag
         // A key pack: into the Vault
         var KP = PACKS[mine.pack];
         if (KP && KP.key) {
@@ -8045,8 +8049,7 @@
       if (fzOn) rows.push('<li><div class="ca-vl-row is-fz is-pass"><span class="ca-vl-ico" aria-hidden="true">&#x1F9CA;</span><span class="ca-vl-txt"><b>This Month&rsquo;s Free Streak Freeze</b><small>' +
         (fzPass ? 'Ready: your CAST Pass freeze, used first' : 'Used this month') + '</small></span></div></li>');
     }
-    if (!rows.length) return '<section class="ca-vl" aria-label="Your Vault"><div class="ca-vl-h"><b>&#x1F510; Your Vault</b><small>Empty for now</small></div>' +
-      '<p class="ca-vl-empty">Items you buy, or win from the Daily Challenge and your streak, wait here until you use them in a game.</p></section>';
+    if (!rows.length) return '<section class="ca-vl is-empty" aria-label="Your Vault"><div class="ca-vl-strip"><b>&#x1F510; Your Vault</b><small>Empty for now</small></div></section>';
     // What's ready to use, per item: bought or won, plus a CAST Pass holder's ready keys, free freeze and free Pick
     var extra = pass ? { legend: dailyUsed('legend') ? 0 : 1, superstar: dailyUsed('superstar') ? 0 : 1, fz: fzOn && fzPass ? 1 : 0, toty: totyFreeNow() ? 1 : 0, prem: premFreeNow() ? 1 : 0, wcp: wcpFreeNow() ? 1 : 0, ileg: ilegFreeNow() ? 1 : 0, wch: wchFreeNow() ? 1 : 0 } : {};
     var chips = items.map(function (it) {
@@ -8055,226 +8058,502 @@
       return n ? '<i class="ca-vl-chip is-' + cls + '" role="img" title="' + name + '" aria-label="' + name + '"><span aria-hidden="true">' + it[1] + '</span>' + (fz ? 'Ready' : n) + '</i>' : '';
     }).join('');
     var total = items.reduce(function (t, it) { return t + (count[it[0]] || 0) + (extra[it[0]] || 0); }, 0);
-    return '<section class="ca-vl' + (vlOpen ? ' is-open' : '') + '" aria-label="Your Vault">' +
-      '<button type="button" class="ca-vl-h ca-vl-toggle" data-ca="vault-toggle" aria-expanded="' + vlOpen + '" aria-controls="caVlList">' +
-        '<b>&#x1F510; Your Vault</b><small>' + (vlOpen ? 'Hide' : total + (total === 1 ? ' Item' : ' Items')) + ' <span class="ca-vl-caret" aria-hidden="true">&#x25BE;</span></small></button>' +
-      (vlOpen ? '<ul class="ca-vl-list" id="caVlList">' + rows.join('') + '</ul>' : '<div class="ca-vl-chips" id="caVlList">' + chips + '</div>') + '</section>';
+    // Folded (Shop A2, 17 Oct 2026): one strip, what you have as chips beside the name; a tap opens the labelled list
+    if (!vlOpen) return '<section class="ca-vl is-strip" aria-label="Your Vault"><button type="button" class="ca-vl-strip ca-vl-toggle" data-ca="vault-toggle" aria-expanded="false" aria-controls="caVlList"' +
+      ' aria-label="Your Vault, ' + total + (total === 1 ? ' item' : ' items') + '. Show them"><b>&#x1F510; Your Vault</b><span class="ca-vl-chips" id="caVlList">' + chips + '</span>' +
+      '<span class="ca-vl-caret" aria-hidden="true">&#x25BE;</span></button></section>';
+    return '<section class="ca-vl is-open" aria-label="Your Vault">' +
+      '<button type="button" class="ca-vl-h ca-vl-toggle" data-ca="vault-toggle" aria-expanded="true" aria-controls="caVlList">' +
+        '<b>&#x1F510; Your Vault</b><small>Hide <span class="ca-vl-caret" aria-hidden="true">&#x25BE;</span></small></button>' +
+      '<ul class="ca-vl-list" id="caVlList">' + rows.join('') + '</ul></section>';
   }
-  function shopTab() {
-    if (status !== 'signed-in') return '';
-    var pass = hasPass(), young = !canBuyReroll();
-    var have = function (k) {
-      var x = k === 'wch' ? itemSaved('wch') + (wchFreeNow() ? 1 : 0) : k === 'wcp' ? itemSaved('wcp') + (wcpFreeNow() ? 1 : 0) : k === 'ileg' ? itemSaved('ileg') + (ilegFreeNow() ? 1 : 0) : k === 'toty' ? itemSaved('toty') + (totyFreeNow() ? 1 : 0) : k === 'prem' ? itemSaved('prem') + (premFreeNow() ? 1 : 0) : k === 'imm' ? itemSaved('imm') : k === 'goat' ? itemSaved('goat') : k === 'rr' ? rerollsSaved() : k === 'rm' ? removesSaved() : k === 'rv' ? itemSaved('reveal') : k === 'rib' ? itemSaved('rib') : k === 'wild' ? itemSaved('wild') : k === 'cap' ? itemSaved('captain') : k === 'fz' ? fzOwned : keysOwned(k);
-      if (k === 'fz') return '<strong class="ca-shop-badge' + (x ? '' : ' is-none') + '">' + (x ? 'Ready' : 'None yet') + '</strong>'; // one at a time: no count
-      return '<strong class="ca-shop-badge' + (x ? '' : ' is-none') + '">' + (x ? 'You have ' + x : 'None yet') + '</strong>';
-    };
-    var off = young ? ' disabled' : '', bag = function (k) { return young ? '' : bagAddBtn(k, off); };
-    // The biggest pack: the big button, with what each one costs and the saving
-    var big = function (id) {
-      var P = PACKS[id], tag = P.tag || (P.key && pass ? '+1 Bonus Key' : 'Best Value'), each = P.key ? (pass ? 'Just $1.25 each' : 'Just $1.66 each') : (P.what || '').split(',')[0];
-      return '<button type="button" class="ca-shop-big" data-ca="shop-buy" data-v="' + id + '"' + off + '><em>' + tag + '</em><span class="ca-shop-big-n">' + packLabel(id) + '</span>' +
-        '<span class="ca-shop-big-p">' + P.price + '</span><small>' + (P.sub || each + ' &middot; ' + (P.key ? (pass ? 'Save 37%' : 'Save 16%') : P.chip)) + '</small></button>';
-    };
-    var mid = function (id) {
-      var P = PACKS[id];
-      return '<button type="button" class="ca-shop-mid" data-ca="shop-buy" data-v="' + id + '"' + off + '><b>' + P.n + ' for ' + P.price + '</b><i>' + P.chip + '</i></button>';
-    };
-    var one = function (id) { return '<button type="button" class="ca-shop-one" data-ca="shop-buy" data-v="' + id + '"' + off + '>or 1 for ' + PACKS[id].price + '</button>'; };
-    /* Two packs side by side (the Team of the Year Pick, the owner's calls on 1 Oct 2026): the single on the left, the best
-       value on the right, both built the same way (tag, short name, price, and a chip held to the foot) so the boxes are
-       even with no empty space, like the payment pop-up's packs */
-    var pair = function (single, best) {
-      var box = function (id, tag, cls) {
-        var P = PACKS[id];
-        return '<button type="button" class="ca-shop-big is-half' + cls + '" data-ca="shop-buy" data-v="' + id + '"' + off + ' aria-label="' + esc(packLabel(id) + ', ' + P.price) + '"><em>' + tag + '</em>' +
-          '<span class="ca-shop-big-n">' + (P.short || packLabel(id)) + '</span><span class="ca-shop-big-p">' + P.price + '</span><i class="ca-shop-chip">' + P.chip + '</i></button>';
-      };
-      return '<div class="ca-shop-pair">' + box(single, 'Single', ' is-single') + box(best, 'Best Value', '') + '</div>';
-    };
-    var h = pass ? '<p class="ca-shop-passline">' + PASS_SVG + '<span>Your CAST Pass keys are used first' + (fzOn ? ', a free Streak Freeze comes each month' : '') + ', and 3-key packs come with a bonus key.</span></p>'
-      : '<button type="button" class="ca-shop-passrow" data-ca="pass-info" data-from="shop">' + PASS_SVG + '<span><b>Best Value: CAST Pass</b><small>2 of every wildcard, every game, plus a Legend Key and a Superstar Key every day. From ' + PR().yM + ' a month.</small></span><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button>';
-    h += vaultList() + bagTip();
-    if (young) h += '<p class="ca-muted ca-center">Packs are for players 15 and over. Anything you win still goes in your Vault.</p>';
-    // Every item on every game's page, the same order everywhere, but the special ones only where they work (SHOP_ONLY,
-    // 16 Oct 2026). Ones already owned still show in the Vault on every site
-    h += '<div class="ca-shop-items">' + shopList().filter(function (it) { return soldHere(it[0]); }).map(function (it) {
-      var cls = it[0] === 'legend' || it[0] === 'superstar' ? 'key' : it[0], packs = it[5];
-      return '<section class="ca-shop-it is-' + cls + '" id="caShop-' + it[0] + '" aria-label="' + it[2] + '"><div class="ca-shop-ith"><span class="ca-shop-iti" aria-hidden="true">' + it[1] + '</span>' +
-        '<span class="ca-shop-itt"><b>' + it[2] + '</b></span><span class="ca-shop-its">' + have(it[0]) + '</span></div>' +
-        '<p class="ca-shop-what">' + it[3] + '</p>' + (it[0] === 'ileg' ? natStrip() + '<button type="button" class="ca-ileg-meet" data-ca="ileg-sell">Meet the World Legends &rsaquo;</button>' : '') +
-        // The Team of the Year Pick: its two packs, then where and until when as small print underneath (the owner, 1 Oct 2026)
-        // The Gameday Bag (17 Oct 2026): Add to Bag under each card's own Buy buttons (bag), which stay as they were
-        shopTag(it[0]) + (it[0] === 'fz' && fzOwned > 0 ? '<p class="ca-shop-ready">&#x1F9CA; Your Streak Freeze is applied and ready, just in case you miss a day.</p>' :
-        (it[0] === 'toty' || it[0] === 'prem') && dmLast() ? pair(packs[1], packs[0]) + bag(it[0]) + '<p class="ca-shop-fine ca-shop-last" data-dm-final>&#x23F3; Last 24 hours: ends in <span data-dm-clock>' + dmClock(dmLeft()) + '</span>. Any left then become 3 Superstar Keys each.</p>' :
-        // World Champions' last 24 hours: its clock (js/cast-wch.js keeps every data-wch-clock ticking)
-        it[0] === 'wch' && wchLast() ? pair(packs[1], packs[0]) + bag(it[0]) + '<p class="ca-shop-fine ca-shop-last" data-wch-final>&#x23F3; Last 24 hours: ends in <span data-wch-clock>' + dmClock((wchNow() || { until: 0 }).until - Date.now()) + '</span>. Unused Picks expire when World Champions ends.</p>' :
-        it[0] === 'toty' || it[0] === 'prem' || it[0] === 'imm' || it[0] === 'wcp' || it[0] === 'ileg' || it[0] === 'wch' ? pair(packs[1], packs[0]) + bag(it[0]) + '<p class="ca-shop-fine">' + shopWhere(it) + '</p>' : big(packs[0]) +
-        (packs.length > 1 ? '<div class="ca-shop-more">' + (packs.length > 2 ? mid(packs[1]) : '') + one(packs[packs.length - 1]) + '</div>' : '') + bag(it[0]) + (it[4] ? '<p class="ca-shop-fine">' + it[4] + '</p>' : '')) + '</section>';
-    }).join('') + '</div>';
-    return h + '<p class="ca-small ca-center">Everything you buy stays on your CAST Profile until you use it, one Vault for every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
+  /* ---------------- The Shop, design A2 (17 Oct 2026, the owner's pick and BUILD IT) ----------------
+     One scrolling list in four groups (Wildcards, Picks, Specials, Streak) under sticky headings, with a jump bar on top
+     that follows the scroll. One compact row per item: emoji, name, one short line, its bundle chips and where it works,
+     the price and − 0 + steppers. Every + goes straight into the Gameday Bag: there is no Buy Now on this page, one
+     Checkout pays for it all (the games' own pop-ups stay one tap). Bundle prices apply by themselves as the count rises,
+     and a small nudge says when a few cents more (or less) gets a bundle. A free profile sees a CAST Pass card first (gold
+     is only ever the Pass), then the Vault strip; the Gameday Bag bar is pinned at the foot with the savings bar in
+     dollars (never a percentage). Rows come from SHOP_ITEMS and PACKS, so a new item there slots in by itself: its group
+     from SHOP_CAT (Specials when it has none), its short line from SHOP_LINE (else the first sentence of what it does), its
+     tag from SHOP_TAG (else SHOP_ONLY), NEW beside its name from SHOP_NEW, and the most one bag holds from BAG_MAX (else
+     30). The server needs the item in lib/bag.js too, or its checkout says it is not in the Shop. */
+  var SHOP_CATS = [['cards', 'Wildcards'], ['picks', 'Picks'], ['specials', 'Specials'], ['streak', 'Streak']];
+  var SHOP_CAT = { rr: 'cards', rm: 'cards', rv: 'cards', rib: 'cards', wch: 'picks', prem: 'picks', toty: 'picks', ileg: 'picks', wcp: 'picks', legend: 'picks', imm: 'picks',
+    superstar: 'picks', goat: 'specials', wild: 'specials', cap: 'specials', fz: 'streak' };
+  var SHOP_LINE = { rr: 'A fresh offer of players', rm: 'Undo a pick you regret', rv: 'See the hidden numbers first', rib: 'Another go at a near miss',
+    wch: 'Choose a World Champion', prem: 'Choose a 2026 premier', toty: 'Choose a Team of the Year player', ileg: 'Choose a World Legend', wcp: 'Choose an 88+ player',
+    legend: 'Choose from three greats', imm: 'Choose an Immortal', superstar: 'Your next spin has a 95+ player', goat: 'The #1 of any game you play',
+    wild: 'Fill any open Bingo tile', cap: 'Your captain scores double', fz: 'Keeps your streak alive' };
+  var SHOP_TAG = { legend: 'Every Draft Game', goat: 'Every Draft Game', superstar: '27-0 Only', imm: '27-0 and 1000TRIES', ileg: 'World Cup Modes', wcp: 'World Cup 8-0',
+    cap: 'SC POINTS KING', fz: 'One at a Time' };
+  // NEW beside the name until then (midnight, Sydney). cap: SC POINTS KING's SC Captain, from its own build
+  var SHOP_NEW = { wild: Date.parse('2026-10-31T13:00:00Z'), cap: Date.parse('2026-11-07T13:00:00Z') };
+  function shopCat(k) { return SHOP_CAT[k] || 'specials'; }
+  function shopLine(it) { return SHOP_LINE[it[0]] || String(it[3] || '').replace(/([.?!])\s[\s\S]*$/, '$1').replace(/[.]$/, ''); }
+  // Where a special item works ("27-0 Only", "NRL Bingo"), or when a promo Pick ends ("Ends Sun 22 Nov", its clock on the last day)
+  function shopWhereTag(k) {
+    if (k === 'wch') { var w = wchNow(); return !w ? '' : wchLast() ? '&#x23F3; Ends in <span data-wch-clock>' + dmClock(w.until - Date.now()) + '</span>' : 'Ends ' + esc(wchEndText().replace(/^\S+\s/, '')); }
+    if ((k === 'toty' || k === 'prem') && dmLast()) return '&#x23F3; Ends in <span data-dm-clock>' + dmClock(dmLeft()) + '</span>';
+    if (k === 'prem') { var pe = premCopy(); return pe ? 'Ends ' + esc(String(pe).replace(/^\S+\s/, '')) : 'Limited Time'; }
+    if (k === 'toty') return 'Limited Time';
+    if (SHOP_TAG[k]) return SHOP_TAG[k];
+    var o = SHOP_ONLY[k];
+    if (!o) return '';
+    if (SHOP_ONLY_WORDS[k]) return SHOP_ONLY_WORDS[k];
+    var names = o.map(function (g) { return (GAMES[g] || {}).name || g; });
+    return names.length === 1 ? names[0] + ' Only' : andList(names);
   }
-  // The Shop on its own (the top bar's Shop button): a short header, then the Shop
-  function shopPage() {
-    var h = '<div class="ca-full-head"><h2 class="ca-full-title">&#x1F6D2; Shop and Vault</h2>' +
-      (named() ? '<p class="ca-me-line">Buying as <b>' + esc(profile.username) + '</b>' + tick(profile.verified) + passTick(hasPass()) + '</p>' : '') + '</div>';
-    if (status === 'loading') return h + '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
-    if (status !== 'signed-in') return h + signInCard(['The Shop Comes With a Free CAST Profile', 'Sign in to buy rerolls, reveals, keys and more. They stay on your profile, for every CAST game.', 'Free CAST Profile']);
-    return h + shopTab() + bagDock();
+  // A Pick bought now but used later: what happens to any left (the bag's line says it before paying)
+  function shopFine(k) {
+    if (k === 'wch') return 'Use by ' + wchEndText() + '. Unused Picks expire then.';
+    if (k === 'toty' || k === 'prem') return 'Any left when the promo ends become 3 Superstar Keys each.';
+    return '';
   }
-  /* ---------------- The Gameday Bag (17 Oct 2026, the owner's BUILD IT) ----------------
-     Every Shop card keeps its own Buy buttons and gets Add to Bag beside them; a pinned Gameday Bag button at the foot of
-     the Shop opens the bag (steppers, line prices, total, You Save) and one pinned Checkout pays for it all in the same
-     Stripe pop-up as a single buy, each item its own line. Shop only: the games' quick buys stay single taps. Prices here
-     are the server's rules (functions lib/bag.js): each item at the cheapest mix of its own packs, then 5% off from $10
-     and 10% off from $20, and a CAST Pass member another 5% once a bag discount applies. The server prices it again from
-     the item list at checkout (this page's numbers are only for show). The bag is kept on this device, per account. */
-  var LS_BAG = 'cast_bag_v1', BAG_TIERS = [[2000, 10], [1000, 5]], BAG_PASS = 5;
+
+  /* ---------------- The Gameday Bag's prices: the server's own rules (BAG-RULES-START) ----------------
+     A line-for-line copy of functions lib/bag.js combo, tierOf, nextTier and quote: each item at the cheapest exact mix of
+     its own packs (ties: more bonus packs, then fewer packs), the bag discount on the subtotal, and a CAST Pass member's
+     extra once a bag discount applies, every amount rounded the same way, so every number on this page is the one Stripe
+     charges. offAt is the Gameday Bag Saving at a threshold ("Add $2.40 more and save $0.50"). firebase/functions/test/
+     bagrules.test.js checks the copy against lib/bag.js on every item and quantity and on thousands of random bags, and
+     that the packs and prices here are the server's: change the two together. Pure (no page state). */
+  var BAG_RULES = (function () {
+    var TIERS = [[2000, 10], [1000, 5]], PASS_PCT = 5;
+    function combo(packs, q) {
+      var list = Object.keys(packs || {}).filter(function (k) { return packs[k] && packs[k].sold !== false && packs[k].n > 0; })
+        .map(function (k) { return { k: k, n: packs[k].n, a: packs[k].amount, b: packs[k].bonus ? 1 : 0 }; });
+      if (!list.length || !(q >= 1)) return null;
+      var best = [{ cents: 0, bonus: 0, count: 0, use: {} }];
+      for (var u = 1; u <= q; u++) {
+        var b = null;
+        for (var i = 0; i < list.length; i++) {
+          var p = list[i], prev = u >= p.n ? best[u - p.n] : null;
+          if (!prev) continue;
+          var c = { cents: prev.cents + p.a, bonus: prev.bonus + p.b, count: prev.count + 1, p: p, from: u - p.n };
+          if (!b || c.cents < b.cents || (c.cents === b.cents && (c.bonus > b.bonus || (c.bonus === b.bonus && c.count < b.count)))) b = c;
+        }
+        if (b) { b.use = Object.assign({}, best[b.from].use); b.use[b.p.k] = (b.use[b.p.k] || 0) + 1; delete b.p; delete b.from; }
+        best[u] = b;
+      }
+      var r = best[q];
+      return r ? { cents: r.cents, use: r.use, bonus: r.bonus } : null;
+    }
+    function tierOf(sub) { var t = TIERS.filter(function (x) { return sub >= x[0]; })[0]; return t ? t[1] : 0; }
+    function nextTier(sub) { var t = TIERS.slice().reverse().filter(function (x) { return sub < x[0]; })[0]; return t ? { at: t[0], pct: t[1], need: t[0] - sub } : null; }
+    // lines: [{ id, q }]; packsOf: { id: packs }; isKey(id): its 3-packs bring a CAST Pass member a bonus key
+    function quote(lines, packsOf, pass, isKey) {
+      var out = lines.map(function (l) {
+        var c = combo(packsOf[l.id], l.q);
+        if (!c) throw new Error('no packs for ' + l.id);
+        var bonus = pass && isKey(l.id) ? c.bonus : 0;
+        return { id: l.id, q: l.q, n: l.q + bonus, bonus: bonus, use: c.use, cents: c.cents };
+      });
+      var sub = out.reduce(function (t, l) { return t + l.cents; }, 0), tier = tierOf(sub), passPct = pass && tier ? PASS_PCT : 0, pct = tier + passPct;
+      var off = Math.round(sub * pct / 100), tierOff = Math.round(sub * tier / 100), passOff = off - tierOff;
+      return { lines: out, sub: sub, tier: tier, passPct: passPct, pct: pct, tierOff: tierOff, passOff: passOff, off: off, total: sub - off,
+        units: out.reduce(function (t, l) { return t + l.n; }, 0) };
+    }
+    function offAt(at) { return Math.round(at * tierOf(at) / 100); }
+    // lib/bag.js split: a payment's cents shared between its lines in proportion to their prices, to the cent (the last
+    // line takes what is left). prices: each line's cents, in the server's order. -> each line's share
+    function split(prices, cents) {
+      var tot = prices.reduce(function (t, c) { return t + c; }, 0), left = cents;
+      return prices.map(function (c, i) {
+        var share = i === prices.length - 1 ? left : tot ? Math.round(cents * c / tot) : Math.round(cents / prices.length);
+        left -= share;
+        return share;
+      });
+    }
+    return { TIERS: TIERS, PASS_PCT: PASS_PCT, combo: combo, tierOf: tierOf, nextTier: nextTier, quote: quote, offAt: offAt, split: split };
+  })();
+  /* BAG-RULES-END */
+
+  /* The Gameday Bag (17 Oct 2026, the owner's BUILD IT; the Shop A2 layout the same day). The Shop's steppers fill it;
+     the pinned bar shows the savings and opens the bag (lines, steppers, quick adds to the next saving, the totals) and
+     one Checkout pays for it all in the same Stripe pop-up as a single buy, each item its own line. The server prices it
+     again from the item list at checkout; this page's numbers come from BAG_RULES, the server's own. The bag is kept on
+     this device, per account. Shop only: the games' quick buys stay single taps. */
+  var LS_BAG = 'cast_bag_v1';
   var BAG_MAX = { rr: 60, rm: 60, rv: 60, legend: 30, superstar: 30, rib: 30, goat: 5, fz: 1, imm: 12, ileg: 12, wcp: 12, wch: 12, prem: 12, toty: 12, wild: 30, cap: 10 };
+  function bagItem(k) { return SHOP_ITEMS.filter(function (it) { return it[0] === k; })[0] || null; }
+  function bagMax(k) { return BAG_MAX[k] || (bagItem(k) ? 30 : 0); }
   function bagGet() {
     var uid = user && user.uid;
     try { var b = JSON.parse(lsGet(LS_BAG) || 'null'); return b && b.uid === uid && b.q && typeof b.q === 'object' ? b.q : {}; } catch (e) { return {}; }
   }
   function bagPut(q) {
     var uid = user && user.uid, keep = {};
-    Object.keys(q || {}).forEach(function (k) { if (BAG_MAX[k] && q[k] > 0) keep[k] = Math.min(BAG_MAX[k], Math.floor(q[k])); });
+    Object.keys(q || {}).forEach(function (k) { if (bagMax(k) && q[k] > 0) keep[k] = Math.min(bagMax(k), Math.floor(q[k])); });
     lsSet(LS_BAG, uid && Object.keys(keep).length ? JSON.stringify({ uid: uid, q: keep, at: Date.now() }) : null);
   }
   function priceCents(p) { return Math.round(parseFloat(String(p || '').replace(/[^\d.]/g, '')) * 100) || 0; }
-  function bagItem(k) { return SHOP_ITEMS.filter(function (it) { return it[0] === k; })[0] || null; }
-  // The cheapest mix of an item's packs for exactly q of it (ties: more 3-key packs, as each brings a CAST Pass bonus key)
-  function bagMix(k, q) {
-    var it = bagItem(k), packs = it ? it[5].map(function (id) { var P = PACKS[id]; return { n: P.n, c: priceCents(P.price), b: P.key && P.n === 3 ? 1 : 0 }; }) : [], best = [{ c: 0, b: 0, k: 0 }];
-    for (var u = 1; u <= q; u++) {
-      var top = null;
-      packs.forEach(function (p) {
-        var prev = u >= p.n ? best[u - p.n] : null;
-        if (!prev) return;
-        var x = { c: prev.c + p.c, b: prev.b + p.b, k: prev.k + 1 };
-        if (!top || x.c < top.c || (x.c === top.c && (x.b > top.b || (x.b === top.b && x.k < top.k)))) top = x;
-      });
-      best[u] = top;
-    }
-    return best[q] || null;
+  // An item's packs as the server has them (BAG_PACKS): { packKey: { n, amount, bonus } }, smallest first like index.js
+  function bagPacks(k) {
+    var it = bagItem(k), o = {};
+    (it ? it[5] : []).filter(function (id) { return PACKS[id]; }).sort(function (a, b) { return PACKS[a].n - PACKS[b].n; })
+      .forEach(function (id) { var P = PACKS[id]; o[id] = { n: P.n, amount: priceCents(P.price), bonus: !!P.key && P.n > 1 }; });
+    return o;
   }
+  function bagIsKey(k) { return k === 'legend' || k === 'superstar'; }
+  function bagOne(k) { var c = BAG_RULES.combo(bagPacks(k), 1); return c ? c.cents : 0; }
   // Whether an item can go in the bag here and now: on sale in this game's Shop, and a Streak Freeze only when none is held
   function bagSold(k) {
-    if (!BAG_MAX[k] || !soldHere(k) || !shopList().some(function (it) { return it[0] === k; })) return false;
+    if (!bagMax(k) || !soldHere(k) || !shopList().some(function (it) { return it[0] === k; })) return false;
     return k !== 'fz' || !(fzOwned > 0);
   }
-  // The bag priced: { lines: [{ k, it, q, n, bonus, c }], sub, tier, passPct, tierOff, passOff, off, total, units, next }
-  function bagQuote() {
-    var q = bagGet(), pass = hasPass();
-    var lines = SHOP_ITEMS.filter(function (it) { return q[it[0]] > 0 && bagSold(it[0]); }).map(function (it) {
-      var k = it[0], n = Math.min(q[k], BAG_MAX[k]), m = bagMix(k, n), bonus = pass && (k === 'legend' || k === 'superstar') ? m.b : 0;
-      return { k: k, it: it, q: n, n: n + bonus, bonus: bonus, c: m.c };
-    });
-    var sub = lines.reduce(function (t, l) { return t + l.c; }, 0), t = BAG_TIERS.filter(function (x) { return sub >= x[0]; })[0], tier = t ? t[1] : 0;
-    var passPct = pass && tier ? BAG_PASS : 0, off = Math.round(sub * (tier + passPct) / 100), tierOff = Math.round(sub * tier / 100);
-    var nx = BAG_TIERS.slice().reverse().filter(function (x) { return sub < x[0]; })[0];
-    return { lines: lines, sub: sub, tier: tier, passPct: passPct, tierOff: tierOff, passOff: off - tierOff, off: off, total: sub - off, units: lines.reduce(function (s, l) { return s + l.n; }, 0),
-      next: lines.length && nx ? { pct: nx[1], need: nx[0] - sub } : null };
+  /* Every number the Shop, the bar and the bag show, from one place: the server's quote (BAG_RULES) for this bag (or a
+     what-if q), plus each line's price at singles (full) and its bundle saving, the next saving up (need, and the Gameday
+     Bag Saving at it), and for a free profile what CAST Pass would take off as well (passExtra) */
+  function bagMath(q0, pass0) {
+    var q = q0 || bagGet(), pass = pass0 === undefined ? hasPass() : !!pass0, packsOf = {};
+    var lines = SHOP_ITEMS.filter(function (it) { return q[it[0]] > 0 && bagSold(it[0]); }).map(function (it) { return { id: it[0], q: Math.min(q[it[0]], bagMax(it[0])) }; });
+    lines.forEach(function (l) { packsOf[l.id] = bagPacks(l.id); });
+    var Q = BAG_RULES.quote(lines, packsOf, pass, bagIsKey);
+    Q.lines.forEach(function (l) { var one = bagOne(l.id); l.k = l.id; l.it = bagItem(l.id); l.full = one ? one * l.q : l.cents; l.saved = Math.max(0, l.full - l.cents); });
+    Q.bundleSaved = Q.lines.reduce(function (t, l) { return t + l.saved; }, 0);
+    var nx = BAG_RULES.nextTier(Q.sub);
+    Q.next = Q.lines.length && nx ? { at: nx.at, need: nx.need, save: BAG_RULES.offAt(nx.at) } : null;
+    Q.pass = pass;
+    Q.passExtra = pass ? Q.passOff : Q.tier ? BAG_RULES.quote(lines, packsOf, true, bagIsKey).passOff : 0;
+    return Q;
   }
   function cents$(c) { return money(c / 100); }
-  // "50c each" or "$4.00 each"
-  function bagEach(c, q) { var e = c / q; return e < 99.5 ? Math.round(e) + 'c each' : cents$(Math.round(e)) + ' each'; }
+  // "$6" for a round amount to add, "$9.05" otherwise; "1c" under a dollar (the nudges)
+  function centsW(c) { return c % 100 ? cents$(c) : '$' + Math.round(c / 100); }
+  function centsC(c) { return c < 100 ? c + 'c' : cents$(c); }
   function bagName(l) { var v = VAULT_NAME[l.k] || [l.it[2], l.it[2]]; return l.k === 'fz' ? 'Streak Freeze' : l.k === 'goat' && l.q === 1 ? 'The GOAT' : countName(l.q, v[l.q === 1 ? 0 : 1]); }
-  // The amount Add to Bag puts in: the item's Best Value pack (12 Rerolls, 3 Picks, 1 GOAT)
-  function bagStep(k) { var it = bagItem(k); return it ? PACKS[it[5][0]].n : 1; }
-  // The Add to Bag button on a Shop card (beside its own Buy buttons): once in, it says how many and opens the bag
-  function bagAddBtn(k, off) {
-    if (!BAG_MAX[k] || !bagSold(k)) return '';
-    var n = bagGet()[k] || 0, s = bagStep(k);
-    return n ? '<button type="button" class="ca-bag-add is-in" data-ca="bag-open"' + off + '><span aria-hidden="true">&#x1F392;</span> ' + n + ' in Your Bag</button>'
-      : '<button type="button" class="ca-bag-add" data-ca="bag-add" data-v="' + k + '"' + off + '><span aria-hidden="true">&#x1F392;</span> ' + (s > 1 ? 'Add ' + s + ' to Bag' : 'Add to Bag') + '</button>';
+  /* The nudge on a row or a bag line: the next amount where a bundle kicks in, when it costs at most one single more
+     ("1c more gets you 3 for $1.99"; 4 Rerolls at $3.96: "97c less gets you 5 for $2.99"). -> { q, cents, d } or null */
+  function bagNudge(k, q) {
+    var packs = bagPacks(k), cur = q > 0 ? BAG_RULES.combo(packs, q) : null, one = bagOne(k), max = bagMax(k);
+    if (!cur || !one) return null;
+    var big = Math.max.apply(null, Object.keys(packs).map(function (id) { return packs[id].n; }));
+    for (var x = q + 1; x <= Math.min(max, q + big); x++) {
+      var m = BAG_RULES.combo(packs, x);
+      if (!m) continue;
+      var d = m.cents - cur.cents;
+      if (d < (x - q) * one && d <= one) return { q: x, cents: m.cents, d: d };
+    }
+    return null;
   }
-  // The pinned Gameday Bag button at the foot of the Shop: how many items and the total (and the saving)
-  function bagDock() {
+  function nudgeText(nd) { return (nd.d > 0 ? centsC(nd.d) + ' more gets you ' : nd.d < 0 ? centsC(-nd.d) + ' less gets you ' : 'No extra cost for ') + nd.q + ' for ' + cents$(nd.cents); }
+  // The little gold Pass Card beside a CAST Pass line
+  var PASS_CHIP = '<span class="ca-passchip" aria-hidden="true">PASS</span>';
+  // The savings bar: $0 to the top saving, a mark at each saving (a tick once reached)
+  function bagProgress(Q) {
+    var T = BAG_RULES.TIERS, top = T[0][0], w = Math.min(100, Q.sub / top * 100);
+    return '<div class="ca-bagp" role="progressbar" aria-label="Gameday Bag savings" aria-valuemin="0" aria-valuemax="' + (top / 100) + '" aria-valuenow="' + (Math.min(Q.sub, top) / 100).toFixed(2) + '" aria-valuetext="' + cents$(Q.sub) + ' in your bag">' +
+      '<span class="ca-bagp-track"></span><span class="ca-bagp-fill" style="width:' + w.toFixed(2) + '%"></span>' +
+      T.slice().reverse().map(function (t) {
+        var on = Q.sub >= t[0], at = t[0] / top * 100, end = at >= 100 ? ' is-end' : '';
+        return '<span class="ca-bagp-mark' + (on ? ' is-on' : '') + end + '" style="--at:' + at + '%" aria-hidden="true">' + (on ? '&#x2713;' : '') + '</span>' +
+          '<span class="ca-bagp-lbl' + (on ? ' is-on' : '') + end + '" style="--at:' + at + '%">' + centsW(t[0]) + '</span>';
+      }).join('') + '</div>';
+  }
+  // The line under the savings bar, in dollars
+  function bagLine(Q) {
+    var first = BAG_RULES.TIERS[BAG_RULES.TIERS.length - 1][0];
+    if (!Q.lines.length) return 'Tap + on anything and pay once. <b class="is-save">Savings start at ' + centsW(first) + '.</b>';
+    if (!Q.tierOff) return 'Add ' + centsW(Q.next.need) + ' more and <b class="is-save">save ' + cents$(Q.next.save) + '</b>';
+    if (Q.next) return '<b class="is-save">You&rsquo;re saving ' + cents$(Q.tierOff) + '</b>, add ' + centsW(Q.next.need) + ' more to save ' + cents$(Q.next.save);
+    return '<b class="is-save">You&rsquo;re saving ' + cents$(Q.tierOff) + ' &#x1F389;</b>';
+  }
+  /* The gold CAST Pass line: a member's own extra saving; a free profile what the Pass would add, with Join (on the bar
+     once the top saving is reached, in the bag once any saving applies). act: the Join button's attribute */
+  function bagPassLine(Q, where, act) {
+    if (Q.pass) return Q.passOff ? '<p class="ca-bag-pl">' + PASS_CHIP + '<span>+ ' + cents$(Q.passOff) + ' extra Pass saving</span></p>' : '';
+    if (!Q.passExtra || (where === 'bar' && Q.next)) return '';
+    return '<div class="ca-bag-pj">' + PASS_CHIP + '<span>+ ' + cents$(Q.passExtra) + ' extra Pass saving with CAST Pass</span><button type="button" class="ca-bag-join" ' + act + ' aria-label="Join CAST Pass">Join</button></div>';
+  }
+  // The pinned Gameday Bag bar at the foot of the Shop (signed in, 15 and over), empty or not
+  function bagBar() {
     if (status !== 'signed-in' || !canBuyReroll()) return '';
-    var Q = bagQuote();
-    if (!Q.lines.length) return '';
-    return '<div class="ca-bag-dock"><button type="button" class="ca-bag-btn" data-ca="bag-open" aria-label="Gameday Bag, ' + Q.units + (Q.units === 1 ? ' item, ' : ' items, ') + cents$(Q.total) + '">' +
-      '<span class="ca-bag-ico" aria-hidden="true">&#x1F392;</span><span class="ca-bag-t"><b>Gameday Bag</b><small>' + Q.units + (Q.units === 1 ? ' Item' : ' Items') +
-      (Q.off ? ' &middot; You Save ' + cents$(Q.off) : Q.next ? ' &middot; ' + Q.next.pct + '% off from ' + cents$(Q.sub + Q.next.need) : '') + '</small></span>' +
-      '<strong>' + cents$(Q.total) + '</strong><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button></div>';
+    var Q = bagMath(), n = Q.units, empty = !Q.lines.length;
+    return '<div class="ca-bagbar' + (empty ? ' is-empty' : '') + '"><div class="ca-bagbar-in">' + bagProgress(Q) +
+      '<p class="ca-bag-msg">' + bagLine(Q) + '</p>' + bagPassLine(Q, 'bar', 'data-ca="pass-info" data-from="bag-bar"') +
+      '<div class="ca-bagbar-row"><button type="button" class="ca-bagbar-bag" data-ca="bag-open" aria-label="Open the Gameday Bag' + (empty ? ', empty' : ', ' + n + (n === 1 ? ' item' : ' items')) + '">' +
+        '<span class="ca-bagbar-ico" aria-hidden="true">&#x1F392;</span><span class="ca-bagbar-t"><b>Gameday Bag</b><small>' + (empty ? 'Empty for now' : n + (n === 1 ? ' Item' : ' Items') + ' &#x25B2;') + '</small></span></button>' +
+        '<button type="button" class="ca-bagbar-go" data-ca="bag-go"' + (empty ? ' disabled' : '') + '>Checkout' + (empty ? '' : ' &middot; ' + cents$(Q.total)) + '</button></div></div></div>';
   }
-  // The line at the top of the Shop that says what the bag is (and the CAST Pass member's extra, in gold)
-  function bagTip() {
-    if (!canBuyReroll()) return '';
-    return '<p class="ca-bag-tip"><span aria-hidden="true">&#x1F392;</span><span><b>Gameday Bag:</b> add a few things and pay once. 5% off from $10, 10% off from $20' +
-      (hasPass() ? '. <em class="is-pass">Your CAST Pass takes another 5% off.</em>' : '. <em class="is-pass">CAST Pass members save another 5%.</em>') + '</span></p>';
+  // One item's row: what it is, its bundles, the price for the amount in the bag and the steppers
+  function shopItemRow(it, q, young) {
+    var k = it[0], packs = bagPacks(k), one = bagOne(k), max = bagMax(k), held = k === 'fz' && fzOwned > 0, pass = hasPass();
+    var c = q ? BAG_RULES.combo(packs, q) : null, bonus = c && pass && bagIsKey(k) ? c.bonus : 0;
+    var bundles = Object.keys(packs).filter(function (id) { return packs[id].n > 1; });
+    var chips = bundles.map(function (id) { var on = !!(c && c.use[id]); return '<span class="ca-sr-chip' + (on ? ' is-on' : '') + '">' + (on ? '&#x2713; ' : '') + packs[id].n + ' for ' + cents$(packs[id].amount) + '</span>'; }).join('');
+    var tag = shopWhereTag(k);
+    if (tag) chips += '<span class="ca-sr-chip is-tag">' + tag + '</span>';
+    var full = one * q, price = c ? (c.cents < full ? '<s>' + cents$(full) + '</s>' : '') + '<b>' + cents$(c.cents) + '</b>' : '<b>' + cents$(one) + '</b>' + (bundles.length ? '<small>each</small>' : '');
+    var nd = q ? bagNudge(k, q) : null, note = '';
+    if (held) note = '<p class="ca-sr-note is-ready">&#x1F9CA; Your Streak Freeze is applied and ready, just in case you miss a day.</p>';
+    else if (nd) note = '<div class="ca-sr-note is-nudge"><span>&#x1F4A1; ' + nudgeText(nd) + '</span><button type="button" class="ca-sr-make" data-ca="shop-make" data-k="' + k + '" data-q="' + nd.q + '"' + (young ? ' disabled' : '') + '>Make It ' + nd.q + '</button></div>';
+    else if (c && c.cents < full) note = '<p class="ca-sr-note is-save">&#x1F389; Bundle price applied, you save ' + cents$(full - c.cents) + '</p>';
+    if (bonus) note += '<p class="ca-sr-note is-pass">' + PASS_CHIP + '<span>+' + bonus + ' CAST Pass Bonus Key' + (bonus === 1 ? '' : 's') + ' with your Pass</span></p>';
+    var nw = SHOP_NEW[k] && Date.now() < SHOP_NEW[k];
+    var step = held ? '<span class="ca-sr-ready">&#x2713; Ready</span>' :
+      '<div class="ca-step' + (q ? ' is-on' : '') + '" role="group" aria-label="How many ' + esc(it[2]) + '">' +
+      '<button type="button" class="ca-step-b is-dec" data-ca="shop-step" data-k="' + k + '" data-d="-1" aria-label="' + (q === 1 ? 'Take out of the bag' : 'One less') + '"' + (!q || young ? ' disabled' : '') + '>&minus;</button>' +
+      '<output>' + q + '</output>' +
+      '<button type="button" class="ca-step-b is-inc" data-ca="shop-step" data-k="' + k + '" data-d="1" aria-label="One more"' + (q >= max || young ? ' disabled' : '') + '>+</button></div>';
+    return '<div class="ca-sr' + (q ? ' is-in' : '') + (held ? ' is-held' : '') + '" id="caShop-' + k + '">' +
+      '<span class="ca-sr-ico" aria-hidden="true">' + it[1] + '</span>' +
+      '<div class="ca-sr-t"><div class="ca-sr-nm"><b>' + it[2] + '</b>' + (nw ? '<i class="ca-sr-new">New</i>' : '') + '</div><p class="ca-sr-l">' + esc(shopLine(it)) + '</p>' +
+        (chips ? '<div class="ca-sr-chips">' + chips + '</div>' : '') + '</div>' +
+      '<div class="ca-sr-buy"><div class="ca-sr-p">' + price + '</div>' + step + '</div>' + note + '</div>';
   }
-  function bagAdd(k) {
+  function shopTab() {
+    if (status !== 'signed-in') return '';
+    var pass = hasPass(), young = !canBuyReroll(), q = young ? {} : bagGet();
+    var h = pass ? '<p class="ca-shop-passline">' + PASS_SVG + '<span>Your CAST Pass keys are used first' + (fzOn ? ', a free Streak Freeze comes each month' : '') + ', 3-key packs come with a bonus key, and your Gameday Bag saves extra.</span></p>'
+      : '<button type="button" class="ca-shop-pcard" data-ca="pass-info" data-from="shop">' + '<span class="ca-passchip is-big" aria-hidden="true">PASS</span>' +
+        '<span class="ca-shop-pcard-t"><em>CAST Pass</em><b>Double Wildcards, Every Game</b><small>Plus daily keys and extra Gameday Bag savings. From ' + PR().yM + ' a month.</small></span>' +
+        '<span class="ca-shop-pcard-go">Join</span></button>';
+    h += vaultList();
+    if (young) h += '<p class="ca-muted ca-center ca-shop-young">Packs are for players 15 and over. Anything you win still goes in your Vault.</p>';
+    // Every item on every game's page, the same order everywhere, but the special ones only where they work (SHOP_ONLY,
+    // 16 Oct 2026); ones already owned still show in the Vault on every site
+    var items = shopList().filter(function (it) { return soldHere(it[0]); });
+    var cats = SHOP_CATS.map(function (c) { return [c[0], c[1], items.filter(function (it) { return shopCat(it[0]) === c[0]; })]; }).filter(function (c) { return c[2].length; });
+    h += '<nav class="ca-jump" aria-label="Shop sections"><div class="ca-jump-in">' + cats.map(function (c, i) {
+      return '<button type="button" class="ca-jump-b is-' + c[0] + (i ? '' : ' is-on') + '" data-ca="shop-cat" data-v="' + c[0] + '"' + (i ? '' : ' aria-current="true"') + '><i aria-hidden="true"></i>' + c[1] + '</button>';
+    }).join('') + '</div></nav>';
+    h += cats.map(function (c) {
+      var n = c[2].length, inBag = c[2].reduce(function (t, it) { return t + (bagSold(it[0]) ? Math.min(q[it[0]] || 0, bagMax(it[0])) : 0); }, 0);
+      return '<section class="ca-sh is-' + c[0] + '" id="caShopCat-' + c[0] + '" aria-labelledby="caShopH-' + c[0] + '"><div class="ca-sh-h"><span class="ca-sh-bar" aria-hidden="true"></span>' +
+        '<h3 class="ca-sh-t" id="caShopH-' + c[0] + '">' + c[1] + '</h3><small>' + n + (n === 1 ? ' Item' : ' Items') + '</small>' + (inBag ? '<span class="ca-sh-in">&#x1F392; ' + inBag + ' in Bag</span>' : '') + '</div>' +
+        '<div class="ca-sh-list">' + c[2].map(function (it) { return shopItemRow(it, bagSold(it[0]) ? Math.min(q[it[0]] || 0, bagMax(it[0])) : 0, young); }).join('') + '</div></section>';
+    }).join('');
+    return h + '<p class="ca-small ca-center ca-shop-foot">Everything you buy stays in your Vault, for every CAST game. Secure payment by Stripe. Prices in AUD.</p>';
+  }
+  // The Shop on its own (the top bar's Shop button): a short header, then the Shop and the pinned Gameday Bag bar
+  function shopPage() {
+    var h = '<div class="ca-full-head"><h2 class="ca-full-title">&#x1F6D2; Shop and Vault</h2>' +
+      (named() ? '<p class="ca-me-line">Buying as <b>' + esc(profile.username) + '</b>' + tick(profile.verified) + passTick(hasPass()) + '</p>' : '') + '</div>';
+    if (status === 'loading') return h + '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
+    if (status !== 'signed-in') return h + signInCard(['The Shop Comes With a Free CAST Profile', 'Sign in to buy rerolls, reveals, keys and more. They stay on your profile, for every CAST game.', 'Free CAST Profile']);
+    return h + shopTab() + bagBar();
+  }
+  // A Shop stepper: one more or less of an item in the bag (the bar and the row redraw; nothing is bought until Checkout)
+  var bagBump = 0;
+  function shopStep(k, d, to) {
     if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
     if (!bagSold(k)) return;
-    var q = bagGet();
-    q[k] = Math.min(BAG_MAX[k], (q[k] || 0) + bagStep(k));
+    var q = bagGet(), was = q[k] || 0, n = Math.max(0, Math.min(bagMax(k), to !== undefined ? to : was + d));
+    if (n === was) return;
+    if (n) q[k] = n; else delete q[k];
     bagPut(q);
-    track('bag_add', { game: CFG.game, item: k, q: q[k] });
+    track(to !== undefined ? 'shop_make' : 'shop_step', { game: CFG.game, item: k, q: n });
+    if (n > was) bagBump = Date.now();
     render();
-    var Q = bagQuote(), l = Q.lines.filter(function (x) { return x.k === k; })[0];
-    if (l) toast('🎒 ' + bagName(l) + ' in your Gameday Bag.');
+  }
+  // The jump bar: straight to a group, its heading under the bar
+  function shopJump(cat) {
+    var pn = el && el.querySelector('.ca-panel'), s = document.getElementById('caShopCat-' + cat), bar = pn && pn.querySelector('.ca-jump');
+    if (!pn || !s) return;
+    track('shop_jump', { game: CFG.game, to: cat });
+    var y = pn.scrollTop + s.getBoundingClientRect().top - pn.getBoundingClientRect().top - (bar ? bar.offsetHeight : 0);
+    shopSpyHold = Date.now() + 900; shopSpySet(cat);
+    try { pn.scrollTo({ top: Math.max(0, y), behavior: 'smooth' }); } catch (e) { pn.scrollTop = Math.max(0, y); }
+  }
+  // The jump bar follows the scroll: the group whose heading has reached the bar (the last one at the very end)
+  var shopSpyHold = 0, shopSpyRaf = 0;
+  function shopSpySet(cat) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ca-jump-b'), function (b) {
+      var on = b.getAttribute('data-v') === cat;
+      b.classList.toggle('is-on', on);
+      if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  }
+  function shopSpy() {
+    shopSpyRaf = 0;
+    var pn = el && el.querySelector('.ca-panel'), bar = pn && pn.querySelector('.ca-jump');
+    if (!bar || view !== 'shop') return;
+    // Stuck to the top (its top at the panel's, under any notch): room for the close button beside it
+    var pr = pn.getBoundingClientRect(), safe = (parseFloat(getComputedStyle(pn).paddingTop) || 18) - 18;
+    bar.classList.toggle('is-stuck', bar.getBoundingClientRect().top <= pr.top + safe + 1);
+    var line = bar.getBoundingClientRect().bottom + 8, secs = pn.querySelectorAll('.ca-sh'), cur = secs[0];
+    Array.prototype.forEach.call(secs, function (s) { if (s.getBoundingClientRect().top <= line) cur = s; });
+    if (secs.length && pn.scrollTop + pn.clientHeight >= pn.scrollHeight - 2 && pn.scrollTop > 0) cur = secs[secs.length - 1];
+    if (cur && Date.now() >= shopSpyHold) shopSpySet(cur.id.replace('caShopCat-', ''));
+  }
+  // After each Shop render: the jump bar's place, and the bag icon's little bump when something went in
+  function shopAfter(panel) {
+    if (!panel.getAttribute('data-ca-spy')) {
+      panel.setAttribute('data-ca-spy', '1');
+      panel.addEventListener('scroll', function () { if (view === 'shop' && !shopSpyRaf) shopSpyRaf = requestAnimationFrame(shopSpy); }, { passive: true });
+    }
+    shopSpy();
+    if (bagBump && Date.now() - bagBump < 600) {
+      var ic = panel.querySelector('.ca-bagbar-ico');
+      if (ic) { ic.classList.add('is-bump'); setTimeout(function () { ic.classList.remove('is-bump'); }, 450); }
+    }
+    bagBump = 0;
   }
   function bagOpen() {
     if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
-    track('bag_open', { game: CFG.game, items: bagQuote().lines.length });
+    track('bag_open', { game: CFG.game, items: bagMath().lines.length });
     rrShop(CFG.game, null, 'shop', null, 'bag');
   }
-  // A stepper in the bag: one more or less, or straight to a quantity (the "Make It 5" nudge)
+  // The bar's own Checkout: straight to payment (Back there shows the bag)
+  function bagGo() {
+    if (!canBuyReroll()) { if (status !== 'signed-in') requireSignIn(null, 'wildcards'); return; }
+    if (!bagMath().lines.length) return;
+    rrShop(CFG.game, null, 'shop', null, 'bag');
+    bagPay('bar');
+  }
+  // A stepper in the bag: one more or less, or straight to a quantity (the nudges and the quick adds)
   function bagChange(k, how, to) {
     var q = bagGet();
-    if (!BAG_MAX[k]) return;
+    if (!bagMax(k) || !bagSold(k)) return;
     var n = how === 'set' ? to : (q[k] || 0) + (how === 'inc' ? 1 : -1);
-    q[k] = Math.max(0, Math.min(BAG_MAX[k], n));
+    q[k] = Math.max(0, Math.min(bagMax(k), n));
     if (!q[k]) delete q[k];
     bagPut(q);
+    if (how === 'set') track('bag_set', { game: CFG.game, item: k, q: q[k] || 0 });
     if (rr && rr.item === 'bag') rrRender();
     render();
   }
-  // The smallest bigger amount of an item that costs no more (4 Rerolls are $3.96; 5 are $2.99): [q, cents] or null
-  function bagCheaper(l) {
-    var it = l.it, most = Math.max.apply(null, it[5].map(function (id) { return PACKS[id].n; }));
-    for (var x = l.q + 1; x <= Math.min(BAG_MAX[l.k], l.q + most - 1); x++) { var m = bagMix(l.k, x); if (m && m.c <= l.c) return [x, m.c]; }
-    return null;
+  /* Quick adds in the bag: one tap each to reach the next saving, from what is on sale here. Each item's smallest pack
+     whose extra cost gets the bag there (or its biggest when none does), the cheapest first, things not yet in the bag
+     before more of the same; never a second Streak Freeze. -> up to 2 of { k, q (the new amount), step, inc } */
+  function bagQuick(Q) {
+    if (!Q.next) return [];
+    var q = bagGet(), need = Q.next.need, out = [];
+    shopList().forEach(function (it) {
+      var k = it[0], cur = q[k] || 0, packs = bagPacks(k), base = cur ? BAG_RULES.combo(packs, cur).cents : 0, best = null, most = null;
+      if (k === 'fz' || !bagSold(k)) return;
+      Object.keys(packs).forEach(function (id) {
+        var st = packs[id].n;
+        if (cur + st > bagMax(k)) return;
+        var m = BAG_RULES.combo(packs, cur + st), inc = m ? m.cents - base : 0;
+        if (!m) return;
+        var x = { k: k, q: cur + st, step: st, inc: inc, in: cur > 0, at: out.length };
+        if (inc >= need && (!best || inc < best.inc)) best = x;
+        if (!most || inc > most.inc) most = x;
+      });
+      if (best || most) out.push(best || most);
+    });
+    // Ones that get there, the cheapest first; then the biggest of the rest (closest to it)
+    var tie = function (a, b) { return (a.in - b.in) || (a.at - b.at); };
+    var reach = out.filter(function (x) { return x.inc >= need; }).sort(function (a, b) { return (a.inc - b.inc) || tie(a, b); });
+    var rest = out.filter(function (x) { return x.inc < need; }).sort(function (a, b) { return (b.inc - a.inc) || tie(a, b); });
+    return reach.concat(rest).slice(0, 2);
   }
-  // The bag itself, in the Stripe pop-up's sheet
+  // The bag itself, in the Stripe pop-up's sheet (the approved bag drawer)
   function bagSheet() {
-    var Q = bagQuote();
-    var h = '<div class="ca-center ca-rr-top"><div class="ca-badge ca-rr-badge" aria-hidden="true">&#x1F392;</div><div class="ca-kicker ca-rr-kicker">Gameday Bag</div>' +
-      '<h2 class="ca-title">Your Gameday Bag</h2></div>';
+    var Q = bagMath(), n = Q.units;
+    var h = '<div class="ca-bag-head"><span class="ca-bag-hi" aria-hidden="true">&#x1F392;</span><div class="ca-bag-ht"><h2 class="ca-title">Your Gameday Bag</h2>' +
+      '<div class="ca-bag-hs"><small>' + (Q.lines.length ? n + (n === 1 ? ' Item' : ' Items') + ', one payment' : 'Empty for now') + '</small>' +
+      (Q.lines.length ? '<button type="button" class="ca-bag-clear" data-rr="bag-clear">Clear Bag</button>' : '') + '</div></div></div>';
     if (!Q.lines.length) {
-      return h + '<p class="ca-text ca-center">Your bag is empty. Tap Add to Bag on anything in the Shop.</p>' +
+      return h + '<p class="ca-text ca-center ca-bag-empty">Tap + on anything in the Shop and pay once. Savings start at ' + centsW(BAG_RULES.TIERS[BAG_RULES.TIERS.length - 1][0]) + '.</p>' +
         '<button type="button" class="ca-btn ca-btn-ghost ca-btn-block ca-bag-back" data-rr="bag-shop">Back to the Shop</button>';
     }
     h += '<ul class="ca-bag-list">' + Q.lines.map(function (l) {
-      var cls = l.k === 'legend' || l.k === 'superstar' ? 'key' : l.k, ch = bagCheaper(l), max = l.q >= BAG_MAX[l.k];
-      var small = l.bonus ? '+' + l.bonus + ' CAST Pass Bonus Key' + (l.bonus === 1 ? '' : 's') : l.q > 1 ? bagEach(l.c, l.q) : l.it[2] === 'The GOAT' ? 'Any game\u2019s #1' : '';
-      return '<li class="ca-bag-row is-' + cls + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span><b class="ca-bag-rn">' + bagName(l) + '</b>' +
-        '<strong class="ca-bag-rp">' + cents$(l.c) + '</strong><small class="ca-bag-rs' + (l.bonus ? ' is-pass' : '') + '">' + small +
-        (ch ? (small ? ' ' : '') + '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + ch[0] + '">Make It ' + ch[0] + ' for ' + cents$(ch[1]) + '</button>' : '') + '</small>' +
-        '<span class="ca-bag-q" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-bag-st" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out' : 'One less') + '">' + (l.q === 1 ? '&#x2715;' : '&minus;') + '</button>' +
-        '<output>' + l.q + '</output><button type="button" class="ca-bag-st" data-rr="bag-inc" data-k="' + l.k + '" aria-label="One more"' + (max ? ' disabled' : '') + '>+</button></span></li>';
+      var cat = shopCat(l.k), nd = bagNudge(l.k, l.q), max = l.q >= bagMax(l.k), fine = shopFine(l.k);
+      var small = l.saved ? '<span class="is-save"><span class="ca-nw">Bundle price applied</span><br>You save ' + cents$(l.saved) + ' &#x1F389;</span>'
+        : nd ? '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + nd.q + '">' + nudgeText(nd) + '</button>'
+        : '<span>' + (l.k === 'goat' ? 'Any game’s #1, in every CAST draft game' : esc(shopLine(l.it))) + '</span>';
+      if (l.saved && nd) small += '<button type="button" class="ca-bag-nudge" data-rr="bag-set" data-k="' + l.k + '" data-q="' + nd.q + '">' + nudgeText(nd) + '</button>';
+      if (l.bonus) small += '<span class="is-pass">+' + l.bonus + ' CAST Pass Bonus Key' + (l.bonus === 1 ? '' : 's') + '</span>';
+      if (fine) small += '<span class="is-fine">' + esc(fine) + '</span>';
+      return '<li class="ca-bag-row is-' + cat + '"><span class="ca-bag-ri" aria-hidden="true">' + l.it[1] + '</span>' +
+        '<div class="ca-bag-rt"><b class="ca-bag-rn">' + bagName(l) + '</b><small class="ca-bag-rs">' + small + '</small></div>' +
+        '<div class="ca-bag-rb"><div class="ca-bag-rp">' + (l.saved ? '<s>' + cents$(l.full) + '</s>' : '') + '<b>' + cents$(l.cents) + '</b></div>' +
+        '<div class="ca-step is-on" role="group" aria-label="How many ' + esc(l.it[2]) + '"><button type="button" class="ca-step-b is-dec" data-rr="bag-dec" data-k="' + l.k + '" aria-label="' + (l.q === 1 ? 'Take out of the bag' : 'One less') + '">&minus;</button>' +
+        '<output>' + l.q + '</output><button type="button" class="ca-step-b is-inc" data-rr="bag-inc" data-k="' + l.k + '" aria-label="One more"' + (max ? ' disabled' : '') + '>+</button></div></div></li>';
     }).join('') + '</ul>';
+    // The savings: the bar, the line, and quick adds to the next saving
+    var top = BAG_RULES.TIERS[0][0], quick = bagQuick(Q);
+    h += '<div class="ca-bag-box"><div class="ca-bag-boxh"><b>Bag Savings</b><small>' + (Q.sub < top ? cents$(Q.sub) + ' of ' + cents$(top) : '&#x2713; Top Saving Reached') + '</small></div>' + bagProgress(Q) +
+      '<p class="ca-bag-msg">' + bagLine(Q) + '</p>' +
+      (quick.length ? '<div class="ca-bag-quick">' + quick.map(function (x) {
+        var it = bagItem(x.k), v = VAULT_NAME[x.k] || [it[2], it[2]];
+        return '<button type="button" class="ca-bag-qa" data-rr="bag-set" data-k="' + x.k + '" data-q="' + x.q + '" data-quick="1"><span aria-hidden="true">' + it[1] + '</span>+ ' + (x.k === 'goat' && x.step === 1 ? 'The GOAT' : countName(x.step, v[x.step === 1 ? 0 : 1])) + ' &middot; ' + cents$(x.inc) + '</button>';
+      }).join('') + '</div>' : '') + '</div>';
+    // The totals: subtotal (bundle prices in it), the Gameday Bag Saving, the Pass line, the total
+    var keys = Q.lines.filter(function (l) { return l.bonus; });
     h += '<div class="ca-bag-sum"><p><span>Subtotal</span><b>' + cents$(Q.sub) + '</b></p>' +
-      (Q.tierOff ? '<p class="is-off"><span>Gameday Bag ' + Q.tier + '% Off</span><b>&minus;' + cents$(Q.tierOff) + '</b></p>' : '') +
-      (Q.passOff ? '<p class="is-pass"><span>CAST Pass ' + Q.passPct + '% Off</span><b>&minus;' + cents$(Q.passOff) + '</b></p>' : '') +
-      '<p class="is-total"><span>Total</span><b>' + cents$(Q.total) + '</b></p>' +
-      (Q.off ? '<p class="ca-bag-save">&#x1F389; You Save ' + cents$(Q.off) + '</p>'
-        : Q.next ? '<p class="ca-bag-next">Add ' + cents$(Q.next.need) + ' more and save ' + Q.next.pct + '%' + (hasPass() ? ', plus 5% with your CAST Pass' : '') + '.</p>' : '') + '</div>' +
-      (Q.off && Q.next ? '<p class="ca-bag-next">Add ' + cents$(Q.next.need) + ' more and save ' + (Q.next.pct + Q.passPct) + '%.</p>' : '') +
-      // A free profile: what CAST Pass would take off this bag (the natural spot to show it)
-      (Q.tier && !hasPass() ? '<button type="button" class="ca-bag-passup" data-rr="pass">' + PASS_SVG + '<span>With CAST Pass, this bag is another ' + cents$(Math.round(Q.sub * (Q.tier + BAG_PASS) / 100) - Q.off) + ' off.</span><span class="ca-shop-go" aria-hidden="true">&rsaquo;</span></button>' : '');
-    return h + '<p class="ca-small ca-center">Each item shows on its own line in Stripe, with the bag discount as one line. Everything goes in your Vault, for every CAST game. Secure payment by Stripe. Prices in AUD.</p>' +
-      '<div class="ca-sticky-actions"><button type="button" class="ca-bag-go" data-rr="bag-pay">Checkout &middot; ' + cents$(Q.total) + '</button></div>';
+      (Q.bundleSaved ? '<p class="is-note">Bundle prices included, you save ' + cents$(Q.bundleSaved) + '</p>' : '') +
+      (Q.tierOff ? '<p class="is-off"><span>Gameday Bag Saving</span><b>&minus;' + cents$(Q.tierOff) + '</b></p>' : '') +
+      (Q.pass && Q.passOff ? '<p class="is-pass"><span>' + PASS_CHIP + '+ ' + cents$(Q.passOff) + ' extra Pass saving</span><b>&minus;' + cents$(Q.passOff) + '</b></p>' : '') +
+      (Q.pass ? keys.map(function (l) { return '<p class="is-passnote">' + bagName(l) + ' come with ' + (l.bonus === 1 ? 'a ' + ordinal(l.q + 1) + ': their CAST Pass Bonus Key.' : l.bonus + ' more: their CAST Pass Bonus Keys.') + '</p>'; }).join('') : bagPassLine(Q, 'bag', 'data-rr="pass"')) +
+      '<p class="is-total"><span>Total</span><b>' + cents$(Q.total) + '</b></p></div>';
+    return h + '<div class="ca-sticky-actions ca-bag-foot"><button type="button" class="ca-bag-go" data-rr="bag-pay">Checkout &middot; ' + cents$(Q.total) + '</button>' +
+      '<p class="ca-small ca-center">Secure payment by Stripe. Prices in AUD.</p></div>';
+  }
+  /* Clear Bag (the owner, 17 Oct 2026, from trying the bag on his phone): everything out in one tap and the bar back to
+     empty, with a few seconds to undo it in the toast instead of an "are you sure" pop-up. Undo puts it all back (on top
+     of anything added since) and opens the bag again */
+  function bagClear() {
+    var was = bagGet();
+    if (!Object.keys(was).length) return;
+    bagPut({});
+    track('bag_clear', { game: CFG.game, items: Object.keys(was).length });
+    rrClose(); render();
+    toastUndo('\uD83C\uDF92 Bag Cleared', function () {
+      var q = bagGet();
+      Object.keys(was).forEach(function (k) { q[k] = Math.max(q[k] || 0, was[k]); });
+      bagPut(q);
+      track('bag_clear_undo', { game: CFG.game });
+      render();
+      if (view === 'shop' && el && !el.hidden && canBuyReroll()) bagOpen();
+    });
+  }
+  // A toast with an Undo button for 5 seconds, above the Shop's bag bar when it is on screen
+  function toastUndo(msg, undo) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ca-toast.is-undo'), function (x) { if (x.parentNode) x.parentNode.removeChild(x); });
+    var t = document.createElement('div'), s = document.createElement('span'), b = document.createElement('button'), done = false;
+    t.className = 'ca-toast is-undo'; t.setAttribute('role', 'status');
+    s.textContent = whole(String(msg)); b.type = 'button'; b.className = 'ca-toast-undo'; b.textContent = 'Undo';
+    t.appendChild(s); t.appendChild(b);
+    var bar = document.querySelector('.ca:not([hidden]) .ca-bagbar'), r = bar ? bar.getBoundingClientRect() : null;
+    if (r && r.top > 0 && r.top < innerHeight) t.style.bottom = Math.round(innerHeight - r.top + 10) + 'px';
+    var gone = function () { t.classList.add('is-out'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 600); };
+    b.addEventListener('click', function () { if (done) return; done = true; gone(); undo(); });
+    document.body.appendChild(t);
+    setTimeout(function () { done = true; gone(); }, 5000);
+  }
+  function ordinal(n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+  /* Google Analytics' own purchase event (17 Oct 2026, the owner: each item of a bag in its items array). One per payment:
+     transaction_id is the checkout, value what was paid; each item has its units and its price after its share of the
+     bag and CAST Pass savings (lib/bag.js split, the Admin's own sharing), so GA's item revenue adds up to the value */
+  function r4(x) { return Math.round(x * 10000) / 10000; }
+  function gaItem(id, units, cents, gross) {
+    var it = bagItem(id), cat = SHOP_CATS.filter(function (c) { return c[0] === shopCat(id); })[0];
+    var o = { item_id: id, item_name: it ? it[2] : id === 'restore' ? 'Streak Restore' : id, item_category: id === 'restore' ? 'Streak' : cat ? cat[1] : 'Specials', quantity: units, price: r4(cents / units / 100) };
+    if (gross > cents) o.discount = r4((gross - cents) / units / 100);
+    return o;
+  }
+  function gaPurchase(id, total, items, coupon) {
+    if (!id || !items.length) return;
+    track('purchase', Object.assign({ transaction_id: id, value: total / 100, currency: 'AUD', items: items, game: CFG.game }, coupon ? { coupon: coupon } : {}));
+  }
+  // A bag, from the server's own quote (its lines in the server's order)
+  function gaBag(id, Q) {
+    if (!Q || !Q.lines || !Q.lines.length) return;
+    var shares = BAG_RULES.split(Q.lines.map(function (l) { return l.cents; }), Q.total);
+    gaPurchase(id, Q.total, Q.lines.map(function (l, i) { return gaItem(l.id, l.n, shares[i], l.cents); }), Q.off ? (Q.passOff ? 'Gameday Bag + CAST Pass Saving' : 'Gameday Bag Saving') : '');
+  }
+  // A single buy (a Shop pack, an in-game pop-up, a Streak Restore): one item
+  function gaOne(mine) {
+    var P = PACKS[mine.pack];
+    if (!P) return;
+    var id = P.key || (P.kind === 'restore' ? 'restore' : P.kind), c = priceCents(P.price);
+    gaPurchase(mine.session, c, [gaItem(id, mine.n || P.n, c, c)]);
   }
   // Checkout: the server prices the bag again from the item list, then the same Stripe pop-up as a single buy
-  function bagPay() {
-    var mine = rr, Q = bagQuote();
+  function bagPay(from) {
+    var mine = rr, Q = bagMath();
     if (!Q.lines.length) return;
     rr.stage = 'starting'; rr.pack = null; rrRender();
-    track('bag_checkout', { game: CFG.game, items: Q.lines.length, units: Q.units, value: Q.total / 100 });
+    track('bag_checkout', { game: CFG.game, items: Q.lines.length, units: Q.units, value: Q.total / 100, from: from || 'bag' });
     callFn('rerollShop', { act: 'bag', items: Q.lines.map(function (l) { return { id: l.k, q: l.q }; }), site: CFG.game }).then(function (r) {
       if (rr !== mine) return null;
       rr.session = r.id; rr.bagQuote = r.quote || null;
+      // The page's numbers are the server's rules (BAG_RULES); if they ever differ, the server's are what Stripe shows
+      if (r.quote && r.quote.total !== Q.total) track('bag_price_differs', { game: CFG.game, page: Q.total, server: r.quote.total });
       return loadStripeJs().then(function (S) {
         var st = S(r.pk), open = st.initEmbeddedCheckout || st.createEmbeddedCheckoutPage;
         if (!open) throw new Error('Stripe could not open the payment form.');
@@ -8294,10 +8573,23 @@
     if (typeof r.freezes === 'number') { fzOwned = r.freezes; fzOn = true; }
     rrSeq++; rrFresh = (Q && Q.lines.some(function (l) { return l.id === 'rr'; })) || rrFresh;
     track('bag_bought', { game: mine.game, items: Q ? Q.lines.length : 0, value: Q ? Q.total / 100 : 0 });
+    gaBag(mine.session, Q);
     bagPut({});
     rrClose(); rrChanged(); render();
     try { window.dispatchEvent(new CustomEvent('cast:keys')); } catch (e) { /* very old browser */ }
     toast('✅ Gameday Bag added' + (said.length ? ': ' + andList(said) : '') + '. It’s all in your Vault.');
+  }
+  // Steppers redraw the whole list: the keyboard keeps its place on the same button (by its data attributes)
+  function focusKey(root) {
+    var a = document.activeElement;
+    if (!a || !root || a === document.body || !root.contains(a)) return null;
+    var key = ['data-ca', 'data-rr', 'data-k', 'data-d', 'data-v'].map(function (n) { var v = a.getAttribute(n); return v === null ? '' : '[' + n + '="' + String(v).replace(/["\\]/g, '') + '"]'; }).join('');
+    return key || null;
+  }
+  function focusBack(root, key) {
+    if (!key || !root) return;
+    var b = root.querySelector(key);
+    if (b && !b.disabled) { try { b.focus({ preventScroll: true }); } catch (e) { b.focus(); } }
   }
   function vaultCard() {
     if (status !== 'signed-in') return '';
@@ -8942,9 +9234,11 @@
     h += head('CAST Profiles', 'CAST Profiles (Signed In)') + list([['New in Last Hour', d.newH, 'newH'], ['New in 7 Days', d.new7, 'new7'], ['Usernames', d.names, 'names'],
       ['Email Opt-ins', d.optIn, 'optIn'], ['Partner Opt-ins', d.partner, 'partner'], ['Verified', d.verified, 'verified'], ['Hidden by You', d.modHidden, 'modHidden'], ['Hidden Themselves', d.selfHidden, 'selfHidden']]);
     // Sales: three totals, then a table of every item (money, purchases underneath), HIGHER OR LOWER: NRL its own row
+    // Each item's money (a Gameday Bag's share in its items' lines), purchases and units: how many went out (17 Oct 2026)
     var per = (rev && rev.per) || {}, pk = function (name, k, all, buysAll) {
-      var p = per[k] || { d: 0, w: 0, nd: 0, nw: 0 };
-      return [name, money(p.d || 0) + (p.nd ? ' (' + p.nd + ')' : ''), money(p.w || 0) + (p.nw ? ' (' + p.nw + ')' : ''), money(all || 0) + (buysAll ? '<small>' + fmt(buysAll) + ' bought</small>' : ''), sk(k), SALE_HEADS[k]];
+      var p = per[k] || { d: 0, w: 0, nd: 0, nw: 0 }, un = rev && rev.units ? rev.units[k] || 0 : 0;
+      return [name, money(p.d || 0) + (p.nd ? ' (' + p.nd + ')' : ''), money(p.w || 0) + (p.nw ? ' (' + p.nw + ')' : ''),
+        money(all || 0) + (buysAll ? '<small>' + fmt(buysAll) + ' bought' + (un ? ' &middot; ' + fmt(un) + ' units' : '') + '</small>' : ''), sk(k), SALE_HEADS[k]];
     };
     var ITEMS_K = [['rerolls', 'Rerolls', 'rerollBuys'], ['removes', 'Remove Players', 'removeBuys'], ['reveals', 'Reveals', 'revealBuys'], ['keys', 'Keys', 'keyBuys'], ['ribs', 'Run It Backs', 'ribBuys'],
       ['freezes', 'Streak Freezes', 'freezeBuys'], ['restores', 'Streak Restores', 'restoreBuys'], ['wilds', 'Wild Tiles', 'wildBuys'], ['caps', 'SC Captains', 'capBuys']];
@@ -9026,6 +9320,16 @@
   }
   /* Every sale (the owner's tap on Total Collected, or on one kind of sale): newest first, with who bought it, what, in
      which game and when, and the amount after refunds. Tap a buyer to open them in Players. */
+  /* A Gameday Bag's items, one line each at its share of the money after the bag and CAST Pass savings (the Sales list
+     and a player's Purchases, 17 Oct 2026, the owner: never just "Gameday Bag $27.96") */
+  function admBagLines(lines) {
+    if (!lines || !lines.length) return '';
+    return '<ul class="ca-adm-baglines">' + lines.map(function (l) {
+      var it = SHOP_ITEMS.filter(function (x) { return x[0] === l.id; })[0], v = VAULT_NAME[l.id] || [it ? it[2] : l.id, it ? it[2] : l.id];
+      var name = l.id === 'goat' && l.n === 1 ? 'The GOAT' : countName(l.n, v[l.n === 1 ? 0 : 1]), net = l.paid - (l.refunded || 0);
+      return '<li><span>' + (it ? '<i aria-hidden="true">' + it[1] + '</i>' : '') + esc(name) + '</span><b' + (l.refunded >= l.paid && l.paid > 0 ? ' class="is-refunded"' : '') + '>' + money(l.refunded >= l.paid ? l.paid : net) + '</b></li>';
+    }).join('') + '</ul>';
+  }
   var SALE_KINDS = { pass: 'CAST Pass', rerolls: 'Rerolls', removes: 'Remove Players', reveals: 'Reveals', keys: 'Keys', ribs: 'Run It Back', freezes: 'Streak Freezes', goats: 'The GOAT', totys: 'Team of the Year Picks', prems: 'Premiers Picks', imms: 'Immortal Picks', wcps: '88+ Picks', ilegs: 'World Legend Picks', wchs: 'World Champions Picks', wilds: 'Wild Tiles', caps: 'SC Captains', restores: 'Streak Restores', bag: 'Gameday Bag', other: 'Other' };
   var SALE_HEADS = { pass: 'CAST Pass Sales', rerolls: 'Reroll Sales', removes: 'Remove Player Sales', reveals: 'Reveal Sales', keys: 'Key Sales', ribs: 'Run It Back Sales', freezes: 'Streak Freeze Sales', goats: 'GOAT Sales', totys: 'Team of the Year Pick Sales', prems: 'Premiers Pick Sales', imms: 'Immortal Pick Sales', wcps: '88+ Pick Sales', ilegs: 'World Legend Pick Sales', wchs: 'World Champions Pick Sales', wilds: 'Wild Tile Sales', caps: 'SC Captain Sales', restores: 'Streak Restore Sales', bag: 'Gameday Bag Sales', other: 'Other Payments' };
   function admSalesView() {
@@ -9055,7 +9359,8 @@
       var tag = s.refunded > 0 || rv ? '<span class="ca-adm-tags is-under">' + (s.refunded > 0 ? '<span class="ca-mod-tag is-refund">' + (s.refunded >= s.paid ? 'Refunded' : 'Part Refunded') + '</span>' : '') + rvTag + '</span>' +
         (rv ? '<small class="ca-adm-rev">' + esc(rv.text) + '</small>' : '') : '';
       return '<li' + (tap ? ' class="is-tap" role="button" tabindex="0" data-ca="adm-find-name" data-n="' + esc(w.n) + '"' : '') + '>' + badge(w && w.c) +
-        '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag + '</span>' +
+        '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag +
+        (s.kind === 'bag' && !s.part ? admBagLines(s.lines) : '') + '</span>' +
         (s.refunded >= s.paid ? '<b class="ca-adm-sale is-refunded">' + money(s.paid) + '</b>' : '<b class="ca-adm-sale">' + money(s.paid - s.refunded) + '</b>') + '</li>';
     }).join('') + '</ul>' + (d.more ? '<p class="ca-small">Showing the latest 1000.</p>' : '');
   }
@@ -10121,6 +10426,14 @@
         : mod.fanAsk ? '<span class="ca-adm-fanask">Make ' + esc(u.name) + ' the CAST Player of the Week? Their prize (5 of each wildcard and 5 World Legend Picks) goes straight into their Vault. <button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="adm-fan">Yes</button>' +
         '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-cancel">Cancel</button></span>' : '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-fan-ask">&#x1F3C6; Make Player of the Week</button>') +
       (!(mod.trophy && mod.trophy.name === u.name) ? '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-trophy-open">&#x1F3C5; Give Trophy</button>' : '')) + trophyGiveAdmin(u) : '');
+    // Purchases (17 Oct 2026, the owner): their latest payments, each once; a Gameday Bag with its items as lines
+    var pu = r.purchases;
+    h += pu && pu.list && pu.list.length ? sec('Purchases', '<ul class="ca-adm-list ca-adm-buys">' + pu.list.map(function (x) {
+      var gone = x.refunded >= x.paid && x.paid > 0;
+      return '<li><span class="ca-adm-pn"><b>' + (x.kind === 'bag' ? '&#x1F392; ' : '') + esc(x.what) + '</b><small>' + esc(joinedAt(x.at) + (x.site === '27-0' ? ' · 27-0' : x.site === '1000tries' ? ' · 1000TRIES' : '')) +
+        (gone ? ' · Refunded' : x.refunded > 0 ? ' · Part Refunded' : '') + '</small>' + (x.kind === 'bag' ? admBagLines(x.lines) : '') + '</span>' +
+        '<b class="ca-adm-sale' + (gone ? ' is-refunded' : '') + '">' + money(gone ? x.paid : x.paid - x.refunded) + '</b></li>';
+    }).join('') + '</ul>' + (pu.n > pu.list.length ? '<p class="ca-small">The latest ' + pu.list.length + ' of ' + fmt(pu.n) + '.</p>' : '')) : '';
     // Give Items (the owner only; the server checks it's the owner too): anything from the Vault, a pop-up tells them
     h += mod.owner ? sec('Give Wildcards', giveItemsAdmin(r)) : ''; // Wildcards, not Items, everywhere in Admin (the owner, 15 Oct 2026)
     // Details: who they are and how they play, and (the owner) correcting a date of birth typed wrong at sign-up
@@ -11297,9 +11610,12 @@
     panel.classList.toggle('is-steps', view === 'age' || view === 'name' || (view === 'sports' && !!spDraft)); // the sign-up steps (and Your Sports): one sheet height, the button pinned
     if (tm) { panel.style.setProperty('--t1', tm.c1); panel.style.setProperty('--t2', tm.c2); }
     if (view !== lastView) { panel.scrollTop = 0; lastView = view; }
+    var fk = view === 'shop' ? focusKey(body) : null;
+    el.classList.toggle('is-shop', view === 'shop'); // the Shop's own look (Shop A2, 17 Oct 2026)
     body.innerHTML = h;
     keepWhole(body);
     fitRows(body);
+    if (view === 'shop') { focusBack(body, fk); shopAfter(panel); }
   }
 
   function onClick(e) {
@@ -11650,8 +11966,11 @@
       case 'streak-open': open('streak'); break;
       case 'streak-back': open('stats'); break;
       case 'shop-buy': shopBuy(t.getAttribute('data-v')); break;
-      case 'bag-add': bagAdd(t.getAttribute('data-v')); break;
+      case 'shop-step': shopStep(t.getAttribute('data-k'), +t.getAttribute('data-d') || 0); break;
+      case 'shop-make': shopStep(t.getAttribute('data-k'), 0, +t.getAttribute('data-q') || 0); break;
+      case 'shop-cat': shopJump(t.getAttribute('data-v')); break;
       case 'bag-open': bagOpen(); break;
+      case 'bag-go': bagGo(); break;
       case 'vault-toggle': vlOpen = !vlOpen; track('vault_toggle', { game: CFG.game, open: vlOpen ? 1 : 0 }); render(); break;
       case 'shop-jump': { var sj = document.getElementById('caShop-' + t.getAttribute('data-v')); if (sj) sj.scrollIntoView({ behavior: 'smooth', block: 'center' }); break; }
       case 'lb-board': lb.reportOpen = false; lb.reportMsg = ''; lb.board = t.getAttribute('data-v'); lb.period = BOARDS.filter(function (b) { return b.id === lb.board; })[0].periods[0]; render(); break;
@@ -13178,7 +13497,8 @@
     imm: ['Immortal Pick', 'Choose one of three Immortals for your 13, career tries and all.', 'Choose one of three Immortals for your 13. He joins at 99.'],
     ileg: ['World Legend Pick', 'Choose one of three World Legends for World Cup 200+, Test tries and all.', 'Choose one of three World Legends for your World Cup 8-0 13.'],
     wcp: ['88+ Pick', 'Choose one of three 88+ rated players from the 2026 World Cup squads for your World Cup 8-0 13.'],
-    goat: GOAT_HERE ? ['The GOAT: ' + GOAT_HERE[0], GOAT_HERE[1] + ' ' + GOAT_HERE[2] + (GOAT_HERE[3] ? (/^at /.test(GOAT_HERE[3]) ? ' ' : ', ') + GOAT_HERE[3] : '') + ', straight into your ' + TEAM_N + '.'] : null,
+    // The GOAT is one item for every CAST game, so its card never names a player (17 Oct 2026, the owner)
+    goat: GOAT_HERE ? ['The GOAT', 'The all-time number one, straight into your ' + TEAM_N + '. One GOAT works in every CAST game.'] : null,
     rr: ['Bad Roll? Roll Again.', 'A fresh three players whenever the offer’s a dud.', 'A fresh spin whenever the club or season’s a dud.'],
     rm: ['Undo That Pick', 'Remove a player from your ' + TEAM_N + ' and go again.'],
     rib: ['Run It Back', 'Run your season back and your closest loss becomes a win.'],
@@ -14040,6 +14360,8 @@
     },
     contactSend: function (data) { return callFn('contactSend', data); }
   };
+  // The emulator's checks read the Shop's own numbers (a what-if bag: { item: how many }, CAST Pass or not); local tests only
+  if (EMU) window.CastAccount.__bagMath = function (q, pass) { return bagMath(q, pass); };
 
   // A scroll lock must never outlive its pop-up: a page left locked can't scroll (in 27-0, down to the players).
   // Every account pop-up is a .ca element, so unlock whenever none of them is showing.
