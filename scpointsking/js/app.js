@@ -819,6 +819,7 @@
   function finish(out) {
     var S = T.state();
     S.finished = true; S.fullTime = true;
+    S.ftOut = out; // the result the Share button's words and cards use (it was only set by Quick Draft, so Share did nothing)
     stopLockTimer();
     dropDraft();
     S.tweakMode = false; S.scoutMode = false;
@@ -904,24 +905,33 @@
 
   var shareCard = null;
   function gameUrl() { return 'https://castgames.com.au/' + T.GAME_SLUG; }
-  function shareText() {
+  function shareLine() {
     var S = T.state(), out = S && S.ftOut;
     if (!S || !out) return '';
     var score = S.daily ? 'My ' + T.GAME_NAME + ' Daily Challenge: ' + T.fmt(out.total) + ' SC points' + (out.win ? ' \u2705' : '')
       : 'I just scored ' + T.fmt(out.total) + ' SC points on ' + T.GAME_NAME + ' \uD83C\uDFC9';
-    return score + '\nThink you can take the crown? \uD83D\uDC51 ' + gameUrl();
+    return score + '\nThink you can take the crown? \uD83D\uDC51';
+  }
+  function shareText() { var l = shareLine(); return l ? l + ' ' + gameUrl() : ''; }
+  // This page's address on CAST Games (its own page, CG.url), with the player's invite code when signed in
+  function shareUrl() {
+    var u = window.CG && window.CG.url ? window.CG.url(T.GAME_SLUG + '/') : gameUrl() + '/', CA = window.CastAccount;
+    return CA && CA.inviteLink ? CA.inviteLink(u) : u;
   }
   function share() {
     var text = shareText();
     if (!text) return;
-    // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share);
-    // the sheet below is for a page whose account file is older
-    var CA = window.CastAccount;
-    if (CA && CA.sharePick && T.buildShareCard) {
-      var S0 = T.state(), made = null, card = function () { var S = S0; return made || (made = T.buildShareCard(S, S && S.ftOut)); };
-      CA.sharePick({ title: 'Share Your Team', text: shareText, name: ((shareCard && shareCard.post && shareCard.post.name) || 'my-team').replace(/\.png$/, ''), where: 'results',
-        images: shareCard ? { portrait: shareCard.post, story: shareCard.story } : null,
-        render: function (size) { return card().then(function (c) { return c && (size === 'story' ? c.story : c.post); }); } });
+    /* Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share),
+       called as the club Bingos do: CastAccount.sharePicker({ game, mode, title, text, url, file, render }), each renderer
+       a promise of a PNG Blob (js/share-card.js T.shareRenderers; the Story keeps the Stories safe zones clear). The cards
+       built as the results showed go in first; the sheet below is for a page whose account file is older */
+    var CA = window.CastAccount, S0 = T.state();
+    if (CA && typeof CA.sharePicker === 'function' && T.shareRenderers && S0 && S0.ftOut) {
+      var png = function (p) { return p.then(function (c) { return new Promise(function (ok, no) { c.toBlob(function (b) { if (b) ok(b); else no(new Error('no picture')); }, 'image/png'); }); }); };
+      CA.sharePicker({ game: GAME, mode: 'results', title: 'Share Your Team', text: shareLine(), url: shareUrl(),
+        file: T.GAME_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+        images: shareCard && shareCard.post && shareCard.story ? { portrait: shareCard.post.blob, story: shareCard.story.blob } : null,
+        render: { portrait: function () { return png(T.shareRenderers.portrait(S0, S0.ftOut)); }, story: function () { return png(T.shareRenderers.story(S0, S0.ftOut)); } } });
       return;
     }
     var post = shareCard && shareCard.post, story = shareCard && shareCard.story;
@@ -938,7 +948,7 @@
     }
     openSheet('<div class="sheet-grab" aria-hidden="true"></div>' +
       '<h2 class="sheet-title center">Share Your 13</h2>' +
-      '<div class="share-opts">' + opt(story, 'story', 'Story', 'Instagram, Facebook, TikTok') + opt(post, 'post', 'Post', 'Feed and group chats') + '</div>' +
+      '<div class="share-opts">' + opt(story, 'story', 'Story', 'Instagram, Facebook, TikTok') + opt(post, 'post', 'Portrait', 'Feed and group chats') + '</div>' +
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="copy-share">&#x1F4CB; Copy Message</button>' +
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="close-sheet">Done</button>');
   }

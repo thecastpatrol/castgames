@@ -714,7 +714,8 @@
   if (/[?&]castsametab=1(&|$)/.test(location.search)) lsSet('cast_same_tab', '1');
   if (/[?&]castsametab=0(&|$)/.test(location.search)) lsSet('cast_same_tab', null);
   var SAME_TAB_SIGNIN = SAME_TAB_ALL || lsGet('cast_same_tab') === '1';
-  var SELF_AUTH_HOSTS = { '27-0.thecastpatrol.com.au': 1, '1000tries.com.au': 1, '4000goals.com.au': 1 }; // 4000goals.com.au: add it to Firebase Auth's authorized domains at launch
+  // castgames.com.au (17 Oct 2026): one /__/auth/ at its root serves every game's folder there (tools/build.py copies it)
+  var SELF_AUTH_HOSTS = { '27-0.thecastpatrol.com.au': 1, '1000tries.com.au': 1, '4000goals.com.au': 1, 'castgames.com.au': 1, 'www.castgames.com.au': 1 };
   if (SAME_TAB_SIGNIN && SELF_AUTH_HOSTS[location.hostname]) FIREBASE.authDomain = location.hostname;
   var LS_REDIRECT = 'cast_signin_redirect';
   var touchDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);

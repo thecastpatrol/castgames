@@ -98,11 +98,13 @@
     return t + '…';
   }
 
-  // Story (1080x1920) has its own full-height layout: big Cast logo, bigger total and rows.
-  // Instagram covers roughly the top 220px and bottom 250px with its buttons, so text avoids those.
+  // Story (1080x1920) has its own full-height layout: the Cast Patrol | game lockup, a big total and rows, all inside the
+  // Stories safe zones (17 Oct 2026): Instagram and TikTok cover about the top 250px and the bottom 330px with their own
+  // buttons, so nothing is drawn there but the background (SAFE_TOP, SAFE_BOTTOM)
+  var SAFE_TOP = 260, SAFE_BOTTOM = 340;
   var LAYOUT = {
     post: { H: 1350, logoW: 320, top: 60, modeSize: 26, totalSize: 180, badgeSize: 34, rowH: 50, rowMax: 64, gap: 7, footerSize: 34 },
-    story: { H: 1920, lockH: 170, logoW: 300, top: 170, modeSize: 30, totalSize: 210, badgeSize: 38, rowH: 66, rowMax: 74, gap: 10, footerSize: 38 }
+    story: { H: 1920, lockH: 130, logoW: 300, top: SAFE_TOP + 10, modeSize: 28, totalSize: 180, badgeSize: 34, rowH: 58, rowMax: 74, gap: 9, footerSize: 36 }
   };
   var castImg = null;
   function loadCast() {
@@ -200,8 +202,10 @@
     var best = null;
     S.slots.forEach(function (sl) { if (sl.player && sl.player.tries_1998_plus > 0 && (!best || sl.player.tries_1998_plus > best.tries_1998_plus)) best = sl.player; });
     var x0 = 70, rowW = W - 140, rowH = L.rowH, gap = L.gap;
-    var footerTop = story ? H - 150 : H - 110;
+    var footerTop = story ? H - SAFE_BOTTOM - 110 : H - 110;
     var avail = footerTop - y;
+    // A Story with more than 13 (an AFL 18): two columns, so the rows stay big enough to read on a phone
+    if (story && S.slots.length > 13) { gridRows(ctx, S, M, F, ACC, best, y, footerTop); footer(ctx, M, F, L, H, story); return c; }
     // Rows fill the space down to the footer (up to rowMax), so there is no dead space either way
     rowH = Math.min(L.rowMax, Math.floor(avail / S.slots.length) - gap); k = rowH / 50;
     // in the field's order (js/render.js T.FIELD_ORDER: the hooker first, the fullback last), the Captain doubled
@@ -254,17 +258,59 @@
       ctx.fillText(T.fmt(p.tries_1998_plus * (cap ? 2 : 1)), x0 + rowW - 20, ry + rowH / 2 + 11 * k);
     });
 
-    // Footer
+    footer(ctx, M, F, L, H, story);
+    return c;
+  }
+
+  // The footer: above the Story's bottom safe zone, along the Portrait's foot
+  function footer(ctx, M, F, L, H, story) {
     ctx.textAlign = 'center';
-    ctx.fillStyle = ACC; ctx.font = '900 ' + L.footerSize + 'px ' + F;
+    ctx.fillStyle = M.a; ctx.font = '900 ' + L.footerSize + 'px ' + F;
     if (story) {
-      ctx.fillText('CAN YOU BEAT IT?', W / 2, H - 100);
+      ctx.fillText('CAN YOU BEAT IT?', W / 2, H - SAFE_BOTTOM - 62);
       ctx.fillStyle = '#ffffff'; ctx.font = '900 ' + (L.footerSize + 6) + 'px ' + F;
-      ctx.fillText('CASTGAMES.COM.AU', W / 2, H - 50);
+      ctx.fillText('CASTGAMES.COM.AU', W / 2, H - SAFE_BOTTOM - 12);
     } else {
       ctx.fillText('CAN YOU BEAT IT?  CASTGAMES.COM.AU', W / 2, H - 46);
     }
-    return c;
+  }
+
+  /* The Story's list for a big team (an AFL 18): two columns in the lines' order (T.FIELD_ORDER), down the left then down
+     the right, each row two lines: the position and club chip, the name (the Captain marked), then the year and club,
+     and the SC points (doubled for the Captain) on the right; the top season outlined */
+  function gridRows(ctx, S, M, F, ACC, best, top, bottom) {
+    var order = T.FIELD_ORDER || S.slots.map(function (x, n) { return n; }), per = Math.ceil(order.length / 2), gap = 9, colGap = 18;
+    var colW = (W - 140 - colGap) / 2, rowH = Math.min(96, Math.floor((bottom - top) / per) - gap), k = rowH / 76;
+    order.forEach(function (si, i) {
+      var sl = S.slots[si], p = sl.player, cap = S.captain === si, col = i < per ? 0 : 1, r = i % per;
+      var x = 70 + col * (colW + colGap), ry = top + r * (rowH + gap);
+      roundRect(ctx, x, ry, colW, rowH, 10);
+      ctx.fillStyle = '#17172a'; ctx.fill();
+      ctx.fillStyle = p && T.isGoat(p) ? 'rgba(255,255,255,.14)' : 'rgba(' + M.rgb + ',.07)'; ctx.fill();
+      if (p && p === best) { ctx.strokeStyle = ACC; ctx.lineWidth = 3; ctx.stroke(); }
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#8a8aa0'; ctx.font = '800 ' + Math.round(17 * k) + 'px ' + F;
+      ctx.fillText(T.posLabel ? T.posLabel(sl.code) : sl.code, x + 12, ry + 26 * k);
+      if (!p) { ctx.fillStyle = '#5c5c72'; ctx.font = '700 ' + Math.round(22 * k) + 'px ' + F; ctx.fillText('Not picked', x + 92 * k, ry + rowH / 2 + 8); return; }
+      var club = T.club(T.slotClub(sl)), cx = x + 12, cy = ry + 36 * k, cw = 62 * k, ch = rowH - 36 * k - 10 * k;
+      ctx.save(); roundRect(ctx, cx, cy, cw, ch, 6); ctx.clip();
+      ctx.fillStyle = club.primary; ctx.fillRect(cx, cy, cw, ch);
+      ctx.fillStyle = club.accent; ctx.fillRect(cx, cy, 5 * k, ch);
+      ctx.restore();
+      ctx.fillStyle = club.text; ctx.font = '900 ' + Math.round(16 * k) + 'px ' + F; ctx.textAlign = 'center';
+      ctx.fillText(club.abbr, cx + cw / 2 + 2, cy + ch / 2 + 6 * k);
+      var px = x + colW - 14, nx = cx + cw + 14, nameMax = px - 96 * k - nx;
+      ctx.textAlign = 'right'; ctx.fillStyle = p === best ? ACC : '#ffffff'; ctx.font = '900 ' + Math.round(28 * k) + 'px ' + F;
+      ctx.fillText(T.fmt(p.tries_1998_plus * (cap ? 2 : 1)), px, ry + rowH / 2 + 10 * k);
+      ctx.textAlign = 'left';
+      var nm = p.name + (cap ? ' (C)' : '') + (T.isGoat(p) ? ' 🐐' : ''), nsz = 25;
+      ctx.font = '800 ' + Math.round(nsz * k) + 'px ' + F;
+      while (ctx.measureText(nm).width > nameMax && nsz > 18) { nsz--; ctx.font = '800 ' + Math.round(nsz * k) + 'px ' + F; }
+      ctx.fillStyle = T.isGoat(p) ? GOLD : '#f0f0f0';
+      ctx.fillText(fitText(ctx, nm, nameMax), nx, ry + rowH / 2 - 2 * k);
+      ctx.fillStyle = '#b8b8cc'; ctx.font = '700 ' + Math.round(19 * k) + 'px ' + F;
+      ctx.fillText(fitText(ctx, p.year + ' \u00B7 ' + club.nick + (p === best ? ' \u00B7 Top Season' : ''), nameMax), nx, ry + rowH / 2 + 24 * k);
+    });
   }
 
   function toCard(canvas, name) {
@@ -278,6 +324,16 @@
       }, 'image/png');
     });
   }
+
+  /* Both sizes for the shared share picker (17 Oct 2026, the owner: every Share offers Portrait and Story): each renderer
+     takes the finished game (S, out) and resolves to its canvas, Portrait 1080x1350 and Story 1080x1920 (the Stories safe
+     zones kept clear). js/app.js share() hands them to CastAccount.sharePicker once the shared code has it */
+  function ready() { return Promise.all([loadLogo(), loadCast(), fontsReady()]); }
+  T.shareRenderers = {
+    portrait: function (S, out) { return ready().then(function () { return draw(S, out, false); }); },
+    story: function (S, out) { return ready().then(function () { return draw(S, out, true); }); }
+  };
+  T.SHARE_SIZES = { portrait: [W, LAYOUT.post.H], story: [W, LAYOUT.story.H] };
 
   // Build both cards for the current result: { post, story }, each { file, blob, url, name } (or null)
   T.buildShareCard = function (S, out) {
