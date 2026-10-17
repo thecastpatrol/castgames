@@ -57,6 +57,10 @@
     // goals. Its id stays '500goals' (js/home.js and the game pages' CG_GAME use it); /500goals/ redirects to /650goals/
     { id: '500goals', sport: 'epl', name: '650 GOALS', path: '650goals/', logo: 'assets/logos/650goals.png', c1: '#3a0f2c', c2: '#12061a', status: 'live', badge: 'New',
       line: 'Draft a Premier League XI and reach 650 career goals.', short: 'Draft an XI to 650 goals', daily: true },
+    // SC POINTS KING (17 Oct 2026): the NRL SC spinner, a 13 of player seasons in SC positions, no target (the biggest total
+    // wins, each board's #1 wears the crown). castgames only; shows once the owner presses Launch ('sc')
+    { id: 'scpointsking', sport: 'nrl', name: 'SC POINTS KING', path: 'scpointsking/', logo: 'assets/logos/scpointsking.png', c1: '#0d3a2a', c2: '#060d18', status: 'live', launch: 'sc', badge: 'New',
+      line: 'Spin NRL player seasons and build the biggest SC 13. Take the crown.', short: 'Spin seasons, chase the crown', daily: true, stats: 'sc' },
     // The newer games' over/unders (16 Oct 2026, the owner: separate games, not modes inside the draft games)
     { id: 'free-hit', comp: 'Big Bash', cc: '#ff7a1a', ci: '#1a0b02', sport: 'cricket', name: 'Free Hit', path: 'free-hit/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#3a2410', c2: '#140c06', status: 'live', badge: 'New',
       line: 'Over or under? Call BBL runs and wickets before the clock runs out.', short: 'BBL over or under, vs the clock' },
