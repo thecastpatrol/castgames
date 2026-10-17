@@ -163,6 +163,25 @@ def copy_game(folder, src):
     return dst
 
 
+def sign_in_pages():
+    """Firebase's sign-in helper pages at this site's root, /__/auth/handler and /__/auth/iframe (17 Oct 2026, before the
+    launch): with them a phone signs in to Google in the same tab here, from any game's folder, as on the games' own sites
+    (cast-account.js SELF_AUTH_HOSTS). The same files as 1000TRIES's /__/auth/ (from the project's firebaseapp.com), as
+    committed there. The game folders never get a copy (SKIP): Firebase only ever asks for them at the root"""
+    src, dst = os.path.join(GAMES_DIR, '1000TRIES Game'), os.path.join(HERE, '__')
+    if os.path.isdir(dst):
+        shutil.rmtree(dst)
+    if os.path.isdir(os.path.join(src, '.git')):
+        arc = subprocess.run(['git', '-C', src, 'archive', '--format=tar', 'HEAD', '__/auth'], check=True, capture_output=True).stdout
+        subprocess.run(['tar', '-x', '-C', HERE], input=arc, check=True)
+    else:
+        shutil.copytree(os.path.join(src, '__'), dst)
+    for f in ('handler.html', 'handler.js', 'iframe.html', 'iframe.js', 'experiments.js'):
+        if not os.path.isfile(os.path.join(dst, 'auth', f)):
+            raise SystemExit('__/auth/%s is missing: sign-in on castgames.com.au would break' % f)
+    print('built __/auth')
+
+
 def rewrite_links(text, in_js):
     # Data and pictures from another game: from its folder on this site (root-relative, so a phone fetches it from here);
     # anything else (a link, a share): the full CAST Games address
@@ -471,6 +490,7 @@ def main():
     # Every other mode's own page, then the old addresses (17 Oct 2026, the owner: every mode is its own game)
     mode_pages(REG)
     old_paths(REG)
+    sign_in_pages()  # /__/auth/ at the root, for same-tab sign-in on phones
     # Files the account code loads next to the page (assets/...): the home and sport pages need their own copy
     for rel in ['assets/cast-pass-logo.png']:
         shutil.copyfile(os.path.join(HERE, '1000tries', rel), os.path.join(HERE, rel))
