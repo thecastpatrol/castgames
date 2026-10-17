@@ -1,23 +1,23 @@
-/* CAST Kits (16 Oct 2026, the owner: "For team jerseys you really need to make sure that they are accurate to what they
-   actually are. This applies in all the modes except NRL." and "Don't just assume they are always a V-shaped jersey design.")
-   Each club's real current home kit drawn in code from kits.json: colours and design only, never logos, badges, sponsors
-   or wordmarks. Nothing defaults to a V: a V is drawn only where the real design has one (a few AFL guernseys), and a club
-   with no researched design is drawn plain in its colours.
-     CastKits.setData(json)                   the kits.json object (kits-data.js sets window.CAST_KITS_DATA, read when first needed)
-     CastKits.drawKit(sport, clubId, opts)    an <svg> string, or '' for an unknown sport
-       sport: 'afl' (a sleeveless guernsey), 'nfl' (a jersey with sleeve stripes), 'bbl' (a coloured-clothing shirt),
-              'tests' (the Test cap above whites with the nation's trim)
-       opts: { w, h }  the size (default 200 x 150; 64 x 48 and 200 x 150 are the sizes it is drawn for)
-             number    NFL: true for '10', or a string, on the chest
-             helmet    NFL: true to set the helmet beside the jersey
-             fallback  { base, accent } colours for a club with no kit data (drawn plain)
-     CastKits.drawFill(sport, clubId, opts)   the same kit filling the whole w x h box edge to edge, zoomed in on the front
-                                              (17 Oct 2026, the Legends reveal's tiles; see the filled box below)
-       sport: also 'nrl' (a rugby league jersey; design in fractions of the front, shared with cast-intl.js) and 'racing'
-              (jockey silks: the jacket, sleeves and cap, from racing.json)
-     CastKits.helmet(clubId, opts)            NFL helmet side view as an <svg> (opts.w, opts.h; default 120 x 100)
-     CastKits.has(sport, clubId)              whether a researched kit exists
-     CastKits.info(sport, clubId)             its data (name, status, note, sources) or null */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var DATA = (root && root.CAST_KITS_DATA) || null, uid = 0;
@@ -33,7 +33,7 @@
   function hex(c) { return '#' + c.map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join('').toUpperCase(); }
   function shade(h, t) { var c = rgb(h); return hex(c.map(function (v) { return t < 0 ? v * (1 + t) : v + (255 - v) * t; })); }
   function lum(h) { var c = rgb(h); return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; }
-  // An outline that shows on light and dark kits alike
+  
   function edgeFor(base) { return lum(base) > 0.6 ? 'rgba(0,0,0,.45)' : 'rgba(0,0,0,.55)'; }
   function wrap(inner, vw, vh, opts, label) {
     var w = (opts && opts.w) || vw, h = (opts && opts.h) || vh;
@@ -41,14 +41,14 @@
       '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="' + esc(label || 'Kit') + '" focusable="false">' + inner + '</svg>';
   }
   function clipDef(id, d) { return '<defs><clipPath id="' + id + '"><path d="' + d + '"/></clipPath></defs>'; }
-  // The data, read when first needed, so kits-data.js may load before or after this file
+  
   function get(sport, id) {
     var D = DATA || (root && root.CAST_KITS_DATA) || null;
     return D && D[sport] && Object.prototype.hasOwnProperty.call(D[sport], id) ? D[sport][id] : null;
   }
 
-  /* AFL: a sleeveless guernsey. Body fractions: x 0 at the left armhole side (44) to 1 (156); y 0 at the shoulders (6) to 1
-     at the hem (146) */
+  
+
   var AFL = {
     body: 'M64,10 L84,6 Q100,24 116,6 L136,10 Q138,40 156,50 L152,144 Q100,149 48,144 L44,50 Q62,40 64,10 Z',
     X: function (f) { return 44 + f * 112; }, Y: function (f) { return 6 + f * 140; }
@@ -60,7 +60,7 @@
       for (i = 0; i < L.count; i++) s += rect(44 + i * bw, 0, bw + 0.4, 150, L.colors[i % L.colors.length]);
     } else if (L.t === 'hoops') {
       var y0 = Y(L.from || 0), y1 = Y(L.to == null ? 1 : L.to), bh = (y1 - y0) / L.count;
-      if (!L.from) y0 = 0; // the first hoop runs up over the shoulders
+      if (!L.from) y0 = 0; 
       for (i = 0; i < L.count; i++) { var top = i ? Y(L.from || 0) + i * bh : y0; s += rect(30, top, 140, (Y(L.from || 0) + (i + 1) * bh) - top + 0.4, L.colors[i % L.colors.length]); }
     } else if (L.t === 'bands') {
       L.bands.forEach(function (b) { s += rect(30, Y(b[1]), 140, Y(b[2]) - Y(b[1]), b[0]); });
@@ -68,7 +68,7 @@
       var tot = L.sizes.reduce(function (a, b) { return a + b; }, 0), x = 44;
       L.colors.forEach(function (c, j) { var w = 112 * L.sizes[j] / tot; s += rect(j ? x : 20, 0, (j ? w : w + 24) + (j === L.colors.length - 1 ? 24 : 0.4), 150, c); x += w; });
     } else if (L.t === 'sash') {
-      // From the viewer's right shoulder to the left hip ('right'), or the mirror
+      
       var a = L.from === 'left' ? [56, 2] : [146, 2], b = L.from === 'left' ? [160, 136] : [40, 136];
       var dx = b[0] - a[0], dy = b[1] - a[1], len = Math.sqrt(dx * dx + dy * dy), hw = L.width * 140 / 2, nx = -dy / len * hw, ny = dx / len * hw;
       var ex = dx / len * 30, ey = dy / len * 30;
@@ -77,13 +77,13 @@
       var d = Y(L.depth);
       if (L.shape === 'v') s += poly([[20, 0], [180, 0], [180, d], [100, Y(L.point)], [20, d]], L.color);
       else if (L.shape === 'sails') {
-        // The lower edge cut in points of different lengths (the Opera House sails)
+        
         var e = [[20, 0], [180, 0], [180, d - 6]], drops = [0.05, -0.02, 0.07, -0.01, 0.09, 0, 0.06, -0.02, 0.08, 0.01, 0.04];
         for (i = 0; i < drops.length; i++) e.push([156 - i * (112 / (drops.length - 1)), d + drops[i] * 140 - (i % 2 ? 0 : 2)]);
         e.push([20, d - 6]);
         s += poly(e, L.color);
       } else if (L.shape === 'wings') {
-        // Gold shoulders sweeping down each side, the body colour up the middle to the neck
+        
         s += poly([[20, 0], [86, 0], [97, Y(0.36)], [72, Y(0.4)], [44, Y(L.depth)], [20, Y(L.depth)]], L.color) +
           poly([[180, 0], [114, 0], [103, Y(0.36)], [128, Y(0.4)], [156, Y(L.depth)], [180, Y(L.depth)]], L.color);
       } else s += rect(20, 0, 160, d, L.color);
@@ -94,7 +94,7 @@
         s += poly([[50, t0], [100, t0 + dp], [150, t0], [150, t1], [100, t1 + dp], [50, t1]], L.color);
       }
     } else if (L.t === 'vee') {
-      // A real V (only where the design has one): bands stacked down from the shoulders to a point on the chest
+      
       var off = 0;
       L.bands.forEach(function (b) {
         var o0 = off * 140, o1 = (off + b[1]) * 140;
@@ -115,13 +115,13 @@
     return wrap(s, 200, 150, opts, label);
   }
 
-  /* NFL: a short-sleeved jersey. The left sleeve (viewer's) runs from the shoulder seam to the cuff A to B; the right one is
-     its mirror */
+  
+
   var NFL = {
     body: 'M78,8 Q100,30 122,8 L150,14 L180,40 L170,72 L150,64 L148,142 L52,142 L50,64 L30,72 L20,40 L50,14 Z',
     A: [20, 40], B: [30, 72]
   };
-  // Bands across the sleeve, from offset d (in from the cuff) for each [colour, width]
+  
   function sleeveBands(list, at, base) {
     var K = 1.3, A = NFL.A, B = NFL.B, ux = B[0] - A[0], uy = B[1] - A[1], L = Math.sqrt(ux * ux + uy * uy), tx = ux / L, ty = uy / L, nx = ty, ny = -tx, s = '', d = (at || 0) * K;
     var a = [A[0] - tx * 30, A[1] - ty * 30], b = [B[0] + tx * 10, B[1] + ty * 10];
@@ -145,7 +145,7 @@
     }
     if (sh.t === 'horn') return path('M62,13 C32,14 18,46 34,70 L40,68 C30,48 40,26 64,21 Z', sh.color);
     if (sh.t === 'over') {
-      // Stripes running from the collar over the shoulder and down the sleeve
+      
       var s = '', cs = sh.colors, w = 3.4, P = [84, 9], Q = [24, 60], dx = Q[0] - P[0], dy = Q[1] - P[1], L = Math.sqrt(dx * dx + dy * dy), nx = -dy / L, ny = dx / L;
       cs.forEach(function (c, i) {
         var o = (i - (cs.length - 1) / 2) * w;
@@ -175,8 +175,8 @@
     return wrap(s, 200, 150, opts, label);
   }
 
-  /* An NFL helmet from the side, facing left (120 x 100). A centre stripe shows as bands along the top of the shell:
-     an odd list nests from the outside in (white, red, white: red edged in white), an even list sits side by side */
+  
+
   var SHELL = 'M24,66 C14,34 38,10 70,10 C98,10 116,32 112,62 C111,72 106,78 98,80 L66,80 C60,80 56,76 54,72 L40,70 C34,74 26,74 24,66 Z';
   function helmetInner(h) {
     var id = 'ck' + (++uid), s = clipDef(id, SHELL) + '<g clip-path="url(#' + id + ')">' + rect(0, 0, 120, 100, h.base);
@@ -190,7 +190,7 @@
     if (h.horn) s += path('M50,16 C80,6 112,24 104,58 C100,72 86,76 78,68 C92,62 96,46 86,36 C78,28 62,26 50,30 Z', h.horn);
     if (h.wings) s += path('M40,40 C56,18 90,14 112,24 C96,26 84,30 74,38 C88,36 98,38 106,42 C88,46 74,48 60,56 Z', h.wings);
     s += '</g>' + path(SHELL, 'none', ' stroke="' + edgeFor(h.base) + '" stroke-width="2" stroke-linejoin="round"');
-    // Ear hole and the facemask bars
+    
     s += '<circle cx="70" cy="56" r="5" fill="' + shade(h.base, -0.45) + '"/>';
     var m = h.mask || '#A5ACAF';
     s += stroke('M40,62 L10,62 L8,82 L30,86 L56,82 M10,72 L48,72 M24,62 L22,86 M40,62 L40,84', m, 4.2, ' stroke-linejoin="round" stroke-linecap="round"');
@@ -203,7 +203,7 @@
     return wrap(helmetInner(k.helmet), 120, 100, { w: (opts && opts.w) || 120, h: (opts && opts.h) || 100 }, k.name + ' helmet');
   }
 
-  /* BBL: cricket coloured clothing, a V-neck shirt with black side panels (the BBL|15 New Balance cut) */
+   
   var BBL = { body: 'M80,8 Q100,26 120,8 L148,14 L178,44 L166,62 L148,52 L148,142 L52,142 L52,52 L34,62 L22,44 L52,14 Z' };
   function bblLayer(L, k) {
     var s = '', i;
@@ -219,7 +219,7 @@
       for (i = 0; i < 10; i++) { var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; p.push([cx + rr * Math.cos(a), cy + rr * Math.sin(a)]); }
       s += poly(p, L.color);
     } else if (L.t === 'topo') {
-      // Marbled swirls (a topographic map of red dirt), not bands
+      
       var o = ' opacity="0.85"';
       s += path('M46,30 C62,18 84,40 74,52 C66,62 82,72 70,84 C58,94 44,80 52,68 C58,58 40,48 46,30 Z', L.color, o) +
         path('M108,22 C128,14 150,30 140,44 C132,54 112,46 106,58 C100,70 118,82 108,92 C96,100 88,84 94,72 C100,58 88,30 108,22 Z', L.color, o) +
@@ -240,15 +240,15 @@
     return wrap(s, 200, 150, opts, label);
   }
 
-  /* Test cricket: whites are white for everyone, so the nation is its Test cap, set above a white shirt with its trim
-     on the V-neck, the cuffs and the hem */
+  
+
   function capArt(c) {
     var base = c.base, dark = shade(base, -0.28), seam = shade(base, -0.4), hi = shade(base, 0.12), s = '';
     var dome = c.baggy ? 'M54,56 C48,14 152,14 146,56 Z' : 'M58,56 C56,20 144,20 142,56 Z';
     s += path(dome, base) + path(c.baggy ? 'M70,30 C80,20 96,18 108,20 C92,24 80,30 74,40 Z' : 'M72,32 C82,24 96,22 106,24 C92,27 82,32 76,42 Z', hi, ' opacity="0.55"');
     s += stroke('M100,' + (c.baggy ? 22 : 26) + ' L100,56 M100,24 C86,30 78,42 76,56 M100,24 C114,30 122,42 124,56', seam, 1.1, ' opacity="0.8"');
     s += '<circle cx="100" cy="' + (c.baggy ? 22 : 25) + '" r="3.2" fill="' + seam + '"/>';
-    // The peak, out to the front and a little to the right
+    
     s += path('M56,54 Q100,62 146,54 Q160,58 160,64 Q126,76 92,72 Q66,70 54,62 Z', dark) + stroke('M56,55 Q100,63 146,55', seam, 1.4);
     s += path(dome, 'none', ' stroke="rgba(0,0,0,.45)" stroke-width="1.4"');
     return s;
@@ -256,7 +256,7 @@
   function drawTest(k, opts, label) {
     var id = 'ck' + (++uid), body = 'M80,64 Q100,82 120,64 L140,68 L162,86 L154,104 L140,98 L139,148 L61,148 L60,98 L46,104 L38,86 L60,68 Z';
     var tr = k.trim && k.trim.length ? k.trim : ['#999999'], s = clipDef(id, body) + '<g clip-path="url(#' + id + ')">' + rect(0, 0, 200, 150, '#F7F5EE');
-    // Cable-knit hint, then the trim: nested on the V-neck (outside in), and bands at the cuffs and the hem
+    
     for (var x = 70; x < 136; x += 12) s += stroke('M' + x + ',84 L' + x + ',148', '#E4E0D4', 1.4);
     var W = 7;
     tr.forEach(function (c, i) { s += stroke('M80,64 Q100,82 120,64', c, W - i * (W / tr.length) + 0.2); });
@@ -271,22 +271,22 @@
     return wrap(s, 200, 150, opts, label);
   }
 
-  /* ------------------------------------------------------------------------------------------------------------------
-     NRL (17 Oct 2026): each club's design in fractions of the shirt's front, x 0 to 1 across, y 0 to 1 from the collar to
-     the hem, so one design draws the full jersey and the filled box alike. tools/build_intl.py copies the block between
-     the NRL-FILL marks into the shared cast-intl.js (1000TRIES and 27-0 draw their reveal with it), so edit it here only.
-       hoops     { colors, count, from, to }      bands across taking turns, from y 'from' to 'to'
-       bands     { bands: [[colour, y0, y1]] }   bands across where given
-       stripes   { colors, count, from, to }      bands down taking turns, from x 'from' to 'to'
-       cols      { cols: [[colour, x0, x1]] }     bands down where given
-       v         { bands: [[colour, depth]], point, top, above }  a real V: bands stacked down from the shoulders (y top at
-                 the sides) to a point at y 'point' in the middle; 'above' fills the shoulders above it
-       yoke      { color, depth, edge: [colour, depth] }
-       sash      { color, width, dir: 'right' (from the viewer's right shoulder) or 'left', edge: [colour, width] }
-       sides     { color, width, edge: [colour, width] }   side panels
-       chevrons  { color, top, width, gap, depth, count }  V-shaped bands pointing down
-       poly      { color, pts: [[x, y]], mirror }  a shape where nothing above fits (mirror: its mirror image too) */
-  // NRL-FILL:BEGIN
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   function nrlFill(k, w, h) {
     var r = function (v) { return Math.round(v * 10) / 10; };
     var R = function (x, y, a, b, f) { return '<rect x="' + r(x) + '" y="' + r(y) + '" width="' + r(a) + '" height="' + r(b) + '" fill="' + f + '"/>'; };
@@ -313,7 +313,7 @@
         out += R(0, 0, w, l.depth * h, l.color);
         if (l.edge) out += R(0, l.depth * h, w, l.edge[1] * h, l.edge[0]);
       } else if (l.t === 'sash') {
-        // Across the front at about 50 degrees, edges first so the colour sits on them
+        
         var sw = l.width || 0.24, right = l.dir !== 'left';
         var band = function (wd, col) {
           var hw = wd / 2, A = right ? [1.08, -0.08] : [-0.08, -0.08], B = right ? [-0.08, 1.08] : [1.08, 1.08];
@@ -335,14 +335,14 @@
         if (l.mirror) out += P(l.pts.map(function (q) { return [1 - q[0], q[1]]; }), l.color);
       }
     });
-    // A plain shirt (no design at all) shows its collar, so the box still reads as a jersey
+    
     if (!L.length && k.collar) out += P([[0.34, 0], [0.66, 0], [0.5, 0.2]], k.collar);
     return out;
   }
-  // NRL-FILL:END
+  
 
-  /* NRL: a rugby league jersey, short tight sleeves. The body's design is nrlFill in the torso box (54..146, 8..142); the
-     sleeves are k.sleeves { c, bands: [[colour, width]] from the cuff, body: true to carry the body's hoops or stripes } */
+  
+
   var NRL = {
     body: 'M80,8 Q100,26 120,8 L146,12 L172,34 L160,58 L146,50 L146,142 L54,142 L54,50 L40,58 L28,34 L54,12 Z',
     torso: 'M80,8 Q100,26 120,8 L146,12 L146,142 L54,142 L54,12 Z',
@@ -353,8 +353,8 @@
   }
   function drawNrl(k, opts, label) {
     var id = 'ck' + (++uid), s = clipDef(id, NRL.body) + '<g clip-path="url(#' + id + ')">', sl = k.sleeves || {};
-    // Sleeves first (the body goes over their inner edge): their colour, the body's hoops or stripes when they carry them,
-    // then the cuff bands across, from the cuff in
+    
+    
     var one = rect(0, 0, 60, 150, sl.c || k.base);
     if (sl.body) { var hz = (k.layers || []).filter(function (l) { return l.t === 'hoops' || l.t === 'bands'; }); if (hz.length) one = nested(nrlFill({ base: sl.c || k.base, layers: hz }, 92, 134), 0, 8, 60, 134, 92, 134); }
     if (sl.bands) {
@@ -373,10 +373,10 @@
     return wrap(s, 200, 150, opts, label);
   }
 
-  /* ------------------------------------------------------------------------------------------------------------------
-     Racing silks (17 Oct 2026): ~/cast-dev/kits/racing.json, read from each horse's registered colours (tools/build_silks.py):
-     body, pattern { t, c, c2, fill }, pattern2 (a sash, band or stripe over it), emblem { t, c }, epaulettes, sides,
-     sleeves { c, t, c2, cs }, armbands, cap { c, t, c2 } */
+  
+
+
+
   var EMB = {
     'letter-m': 'M5 35V5h8l7 13.5L27 5h8v30h-7V17.5l-6 11.5h-4l-6-11.5V35z',
     star: 'M20 3l4.9 10.1 11.1 1.5-8.1 7.7 2 11L20 28l-9.9 5.3 2-11L4 14.6l11.1-1.5z',
@@ -393,7 +393,7 @@
     if (e.t === 'disc') return g + '<circle cx="20" cy="20" r="14"/></g>';
     return EMB[e.t] ? g + '<path d="' + EMB[e.t] + '"/></g>' : '';
   }
-  // A repeating pattern as a <pattern> in its own defs, t its tile (sz units), on colour a with b
+  
   function tile(t, a, b, sz) {
     var id = 'ck' + (++uid), u = sz / 24, inner = '';
     if (t === 'stars') inner = '<path transform="scale(' + n(u * 100) / 100 + ')" d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z" fill="' + b + '"/>';
@@ -405,17 +405,17 @@
     else if (t === 'chevrons') inner = poly([[0, sz * 0.25], [sz / 2, sz * 0.58], [sz, sz * 0.25], [sz, sz * 0.5], [sz / 2, sz * 0.83], [0, sz * 0.5]], b);
     return { def: '<defs><pattern id="' + id + '" width="' + n(sz) + '" height="' + n(sz) + '" patternUnits="userSpaceOnUse">' + rect(0, 0, sz, sz, a) + inner + '</pattern></defs>', fill: 'url(#' + id + ')' };
   }
-  // The silks' body design in a W x H box (the jacket's front)
+  
   function silkBody(k, W, H) {
     var p = k.pattern || {}, a = k.body, c = p.c || a, s = rect(0, 0, W, H, a), t = p.t, i, T;
-    var tw = H / 4; // a pattern's tile: four across the height
+    var tw = H / 4; 
     if (t === 'hoops') { var cs = p.c2 ? [a, c, p.c2] : [a, c], nh = 7; for (i = 0; i < nh; i++) s += rect(0, i * H / nh, W, H / nh + 0.3, cs[i % cs.length]); }
     else if (t === 'band') s += rect(0, H * 0.4, W, H * 0.2, c);
     else if (t === 'stripes') { var sw = H / 8, x0 = W / 2 - sw / 2; for (var x = x0; x < W; x += 2 * sw) s += rect(x, 0, sw, H, c); for (x = x0 - 2 * sw; x > -sw; x -= 2 * sw) s += rect(x, 0, sw, H, c); if (p.c2) for (x = x0 + sw; x < W; x += 4 * sw) s += rect(x, 0, sw, H, p.c2); }
     else if (t === 'stripe') s += rect(W / 2 - H * 0.08, 0, H * 0.16, H, c);
     else if (t === 'diagonal-stripes') { for (i = -12; i < 12; i++) s += poly([[W / 2 + i * H * 0.24, 0], [W / 2 + i * H * 0.24 + H * 0.12, 0], [W / 2 + i * H * 0.24 + H * 0.12 - H, H], [W / 2 + i * H * 0.24 - H, H]], i % 2 && p.c2 ? p.c2 : c); }
     else if (t === 'sash' || t === 'cross-sashes') {
-      // From the viewer's right shoulder down to the left hip (the mirror too for crossed sashes), a fifth of the height wide
+      
       var band = function (flip) { var hw = H * 0.13, dx = Math.min(W * 0.42, H * 0.55), q = [[W / 2 + dx - hw, -2], [W / 2 + dx + hw, -2], [W / 2 - dx + hw, H + 2], [W / 2 - dx - hw, H + 2]]; if (flip) q = q.map(function (v) { return [W - v[0], v[1]]; }); return q; };
       var fillOf = function () { if (p.fill) { T = tile(p.fill, c, p.c2 || a, tw * 0.6); s += T.def; return T.fill; } return c; };
       s += poly(band(false), fillOf());
@@ -447,7 +447,7 @@
     if (k.emblem) s += emblem(k.emblem, W / 2, H * 0.5, H * 0.56);
     return s;
   }
-  // A sleeve's design in a box L long (from the shoulder at 0 to the cuff at L) and D across
+  
   function silkSleeve(k, L, D) {
     var sv = k.sleeves || {}, c = sv.c || k.body, s = rect(0, 0, L, D, c), i, T;
     if (sv.t === 'hoops') { var cs = sv.cs || [c, sv.c2 || k.body], nb = 7; for (i = 0; i < nb; i++) s += rect(i * L / nb, 0, L / nb + 0.3, D, cs[i % cs.length]); }
@@ -458,7 +458,7 @@
     return s;
   }
   function silkCap(c, x, y, sc) {
-    // A jockey's skull cap from the front: a dome and a short peak, cx 0, sitting on y (sc: its size)
+    
     c = c || {};
     var base = c.c || '#5A6270', id = 'ck' + (++uid), dome = 'M-30,0 C-30,-38 30,-38 30,0 Z', s = '', T;
     s += clipDef(id, dome) + '<g clip-path="url(#' + id + ')">' + rect(-32, -40, 64, 42, base);
@@ -471,14 +471,14 @@
     s += '<circle cx="0" cy="-30" r="2.4" fill="' + shade(base, -0.4) + '"/>';
     return '<g transform="translate(' + n(x) + ',' + n(y) + ') scale(' + sc + ')">' + s + '</g>';
   }
-  /* The full silks: the jacket from the front, arms out and down, and the cap above it (200 x 150) */
+   
   var SILK = {
     body: 'M86,40 Q100,50 114,40 L132,44 L136,146 L64,146 L68,44 Z',
     sleeveL: 'M68,44 L46,52 L16,118 L34,126 L62,74 Z'
   };
   function drawRacing(k, opts, label) {
     var s = '', id = 'ck' + (++uid), sid = 'ck' + (++uid);
-    // Sleeves: the sleeve box laid along the arm, shoulder (68,44) to cuff (25,122)
+    
     var ax = 68 - 25, ay = 44 - 122, len = Math.sqrt(ax * ax + ay * ay), ang = Math.atan2(122 - 48, 25 - 66) * 180 / Math.PI;
     var sleeve = '<g transform="translate(66,48) rotate(' + n(ang) + ') translate(0,-14)">' + silkSleeve(k, len + 8, 28) + '</g>';
     s += clipDef(sid, SILK.sleeveL) + '<g clip-path="url(#' + sid + ')">' + sleeve + '</g>';
@@ -493,32 +493,32 @@
     return wrap(s, 200, 150, opts, label);
   }
 
-  /* ------------------------------------------------------------------------------------------------------------------
-     The filled box (17 Oct 2026, the owner: "I prefer the full box filled as opposed to jersey outline ... zoom the nfl and
-     afl ones in pls and horse racing so all modes like the nrl but just make the designs of the zoom in accurate").
-     CastKits.drawFill(sport, id, { w, h, number, fallback }) fills the whole w x h box with the front of the kit, edge to
-     edge: the guernsey, shirt or jersey's body design zoomed in, the sleeves' colours and stripes in the two top corners
-     where a sleeved kit shows them (NFL and racing silks), a collar only on a kit with no design at all. Kits drawn in
-     their own coordinates (AFL, BBL) are cropped to a window on the chest at the same scale across and down, so nothing
-     is squashed; k.fill.top (a fraction of the body's height) moves that window down for a design low on the body.
-     NRL fills its whole front into the box, as the NRL reveal always has. */
+  
+
+
+
+
+
+
+
+
   function fillWrap(inner, W, H, opts, label) {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="' + n(opts.w) + '" height="' + n(opts.h) + '" viewBox="0 0 ' + n(W) + ' ' + n(H) +
       '" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + esc(label) + '" focusable="false">' + inner + '</svg>';
   }
-  // A window on drawing coordinates: x0..x0+span across, from y (clamped to yMin..yMax at the bottom)
+  
   function windowOn(inner, W, H, x0, span, y, yMax) {
     var sc = W / span, vis = H / sc, top = Math.max(0, Math.min(y, yMax - vis));
     return '<g transform="scale(' + n(sc * 1000) / 1000 + ') translate(' + n(-x0) + ',' + n(-top) + ')">' + inner + '</g>';
   }
-  // A sleeve in the top left corner (mirrored for the right): the corner beyond a seam from (CW, 0) to (0, CH)
-  var CW = 38, CH = 78; // big enough to read past the tile's rounded corners
+  
+  var CW = 38, CH = 78; 
   function corner(W, art) {
     var id = 'ck' + (++uid), tri = 'M0,0 L' + CW + ',0 L0,' + CH + ' Z';
     var one = clipDef(id, tri) + '<g clip-path="url(#' + id + ')">' + art + '</g>';
     return one + '<g transform="translate(' + n(W) + ',0) scale(-1,1)">' + one.replace(new RegExp(id, 'g'), id + 'm') + '</g>';
   }
-  // Bands across the sleeve, parallel to the seam: [colour, width] from the cuff (the corner's point) in, from 'at'
+  
   function cornerBands(list, at, scale, base) {
     var L = Math.sqrt(CW * CW + CH * CH), nx = CH / L, ny = CW / L, d = (at || 0) * scale, s = '';
     list.forEach(function (q) {
@@ -546,7 +546,7 @@
     return windowOn(s, W, H, 40, 120, top, 142);
   }
   function fillTest(k, W, H) {
-    // The whites' V-neck, zoomed in: cream, its knit, and the nation's trim nested on the V
+    
     var tr = k.trim && k.trim.length ? k.trim : ['#999999'], s = rect(0, 0, W, H, '#F7F5EE'), cx = W / 2, x;
     for (x = cx - 6; x > 0; x -= 14) s += stroke('M' + n(x) + ',0 V' + H, '#E6E2D6', 2);
     for (x = cx + 6; x < W; x += 14) s += stroke('M' + n(x) + ',0 V' + H, '#E6E2D6', 2);
@@ -559,9 +559,9 @@
   function fillNfl(k, W, H, opts) {
     var j = k.jersey, s = rect(0, 0, W, H, j.base), art = rect(0, 0, CW, CH, j.base), sh = j.shoulder;
     if (j.sides) s += rect(0, H * 0.5, 9, H * 0.5, j.sides) + rect(W - 9, H * 0.5, 9, H * 0.5, j.sides);
-    if (j.sleeve) art += cornerBands(j.sleeve, (j.sleeveAt || 0) + 6, 1.05, j.base); // in from the point, clear of the tile's rounded corner
+    if (j.sleeve) art += cornerBands(j.sleeve, (j.sleeveAt || 0) + 6, 1.05, j.base); 
     if (sh) {
-      var up = function (x) { return '<g transform="scale(' + n(CW / 30 * 100) / 100 + ',' + n(CH / 64 * 100) / 100 + ')">' + x + '</g>'; }; // drawn for a 30 x 64 corner
+      var up = function (x) { return '<g transform="scale(' + n(CW / 30 * 100) / 100 + ',' + n(CH / 64 * 100) / 100 + ')">' + x + '</g>'; }; 
       if (sh.t === 'tiger') art += up(poly([[6, 0], [12, 0], [0, 26], [0, 14]], sh.color) + poly([[18, 0], [24, 0], [4, 44], [0, 44], [0, 40]], sh.color) + poly([[28, 4], [30, 8], [8, 56], [4, 54]], sh.color));
       else if (sh.t === 'sweep') { art += cornerBands([[sh.colors[1], 3], [sh.colors[0], 10]], 18, 1, j.base); }
       else if (sh.t === 'bolt') art += up(poly([[22, 0], [12, 0], [2, 22], [9, 21], [0, 44], [17, 15], [10, 16]], sh.color, sh.edge ? ' stroke="' + sh.edge + '" stroke-width="1.6" stroke-linejoin="round"' : ''));
@@ -580,7 +580,7 @@
   }
   function fillRacing(k, W, H) {
     var s = silkBody(k, W, H), sv = k.sleeves, art = '';
-    // The sleeves in the corners only where they differ from the body (a coloured or patterned sleeve, armbands)
+    
     if (sv || k.armbands || k.epaulettes) {
       art = sv || k.armbands ? silkSleeveCorner(k) : '';
       if (k.epaulettes) art += poly([[0, 0], [CW, 0], [CW * 0.62, 15], [0, 15]], k.epaulettes);
@@ -588,8 +588,8 @@
     }
     return s;
   }
-  // A sleeve seen in the top left corner: its colour, its hoops as bands parallel to the seam (as the cuff runs), a tiled
-  // pattern, halves split along the arm, a seam line, then the armband across
+  
+  
   function silkSleeveCorner(k) {
     var sv = k.sleeves || {}, c = sv.c || k.body, s = rect(0, 0, CW, CH, c), T, i;
     if (sv.t === 'hoops') { var cs = sv.cs || [c, sv.c2 || k.body], list = []; for (i = 0; i < 9; i++) list.push([cs[i % cs.length], 3.2]); s += cornerBands(list, 0, 1, c); }
@@ -599,13 +599,13 @@
     if (k.armbands) s += cornerBands([[k.armbands, 5]], 13, 1, c);
     return s;
   }
-  /* An NBA jersey (17 Oct 2026, the NBA game): a sleeveless top, so the front fills the box with its armholes curving in
-     at the two top corners (the trim colours banded along each edge, the dark beyond) and the neck's trim at the top
-     centre, round or a V. k.jersey: { base, trim: [colours from the edge in], neck: 'round' | 'v', sides } */
+  
+
+
   function fillNba(k, W, H) {
     var j = k.jersey || {}, base = j.base || '#5A6270', tr = j.trim && j.trim.length ? j.trim : [shade(base, -0.35)], s = rect(0, 0, W, H, base);
     if (j.sides) s += rect(0, H * 0.42, 8, H * 0.58, j.sides) + rect(W - 8, H * 0.42, 8, H * 0.58, j.sides);
-    var arm = function (x0, dir) { // an armhole: from the top edge down the side, cut out of the corner
+    var arm = function (x0, dir) { 
       var x1 = x0 + dir * 30, d = 'M' + n(x1) + ',0 C' + n(x1) + ',30 ' + n(x0 + dir * 18) + ',54 ' + n(x0) + ',62';
       var out = path(d + ' L' + n(x0) + ',0 Z', '#0b0907');
       tr.forEach(function (c, i) { out += stroke(d, c, 7 - i * (6 / tr.length), ''); });
@@ -641,7 +641,7 @@
     return fillWrap(s, W, H, opts, label);
   }
 
-  // A club with no researched kit: plain in its colours (never a guessed V)
+  
   function plain(sport, fb, opts, label) {
     var base = (fb && fb.base) || '#5A6270', trim = (fb && fb.accent) || shade(base, -0.3);
     if (sport === 'afl') return drawAfl({ base: base, trim: trim, layers: [] }, opts, label);

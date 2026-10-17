@@ -1,41 +1,41 @@
-/* 27-0 Daily Challenge draft extras (Daily, and Hard mode's list tools; pick a spot on the pitch also works in Classic).
-   - Ratings are hidden in the squad list (they show on the pitch once a player is placed)
-   - Sort the squad by Position or Surname A-Z
-   - 1000TRIES-style wildcards, one each per go: Reroll, Reveal Ratings, Remove Player
-   - Classic seasons get them too once the CAST tiers are on: 1 of each with a free CAST Profile, 2 with CAST Pass.
-     Reveal Ratings only shows when ratings are hidden. A guest sees them locked: a tap asks them to sign in free,
-     and they unlock in the same season. A wildcard that can't be used yet explains when it can, instead of doing nothing
-   - Substitute (CAST Pass, Classic, 1 a season): move a player already in your 13 into another open spot they can play
-     (Arrow from lock to the second row, so Fittler can go in at lock). A free profile sees it with the CAST Pass tag
-   - Squad full with Remove Player unused: remove one, or lock in (auto locks in after 10 seconds). In Classic, a player 15+
-     with none left gets the same choice with a saved or bought one (Remove Player packs, like rerolls)
-   - Pick a spot: tap an empty spot on the pitch and the squad list shows who can play there (Classic, Daily, Hard) */
+
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
-  // A pack's price as this device shows it (local currency, 17 Oct 2026: "NZ$0.99"; CastAccount.price), else the A$ words
+  
   function px(pack, aud) { return window.CastAccount && CastAccount.price ? CastAccount.price(pack, aud) : aud; }
   var ORDER = ['FB', 'W', 'C', 'FE', 'HB', 'HK', 'P', 'SR', 'LK'];
   var LOCK_SECS = 10;
 
   function on() { return !!(window.CastDaily && CastDaily.isActive && CastDaily.isActive()) && document.getElementById('draft'); }
   function tierNow() { return window.CastAccount && CastAccount.tier ? CastAccount.tier() : null; }
-  /* A Classic season once the tiers are on (not the Daily, Pack or Hard Mode). World Cup 8-0 (js/world-cup.js) gets the
-     same wildcards (the owner's 'wildcards only' for World Cup), all but the Superstar Key, which needs club seasons */
+  
+
   function classicOn() { return !on() && tierNow() !== null && !!document.getElementById('draft') && typeof STATE !== 'undefined' && !!STATE && (STATE.gameMode === 'classic' || STATE.gameMode === 'wc'); }
-  /* Hard Mode (29 Sep 2026, the owner's call): wildcards, but only paid ones. One of each a season (Reroll, Reveal Ratings,
-     Remove Player), from the Vault or bought on the spot, for everyone (CAST Pass too); no Substitute or Superstar Key */
+  
+
   function hardOn() { return !on() && tierNow() !== null && !!document.getElementById('draft') && typeof STATE !== 'undefined' && !!STATE && STATE.gameMode === 'hard'; }
   function wild() { return !!on() || classicOn() || hardOn(); }
   function locked() { return (classicOn() || hardOn()) && tierNow() === 'guest'; }
-  // Of each kind: 1 in the Daily for everyone; in Classic 1 with a profile, 2 with CAST Pass (0 for a guest: locked); none free in Hard
+  
   function allowed() { if (on()) return 1; if (hardOn()) return 0; var n = window.CastAccount && CastAccount.wildcardCount ? CastAccount.wildcardCount() : 0; return n || 0; }
-  // Hard Mode: this season's paid one of that kind is used
+  
   function hardUsed(k) { return hardOn() && !!(W().hardUsed || {})[k]; }
-  // A saved or bought one can be offered: Classic; the Daily once its free one is used (30 Sep 2026, the owner's call; not a
-  // replay of a past Daily); Hard until that kind's one is used
+  
+  
   function replay() { return !!(window.CastDaily && CastDaily.isReplay && CastDaily.isReplay()); }
   function payOn(k) { return classicOn() || (!!on() && !replay()) || (hardOn() && !hardUsed(k)); }
-  // Saved Rerolls, Reveals or Remove Players this game can use once its own are gone (0 when none, or not in this mode)
+  
   function savedFor(k) {
     var A = window.CastAccount;
     if (!A || !A.canUseSaved || !A.canUseSaved() || !payOn(k) || hardOn()) return 0;
@@ -43,15 +43,15 @@
     return n > 0 ? n : 0;
   }
   function ratingsHidden() { return !!on() || !STATE.showRatings; }
-  // Substitute: CAST Pass only, 1 a Classic season ('pass' when they have it, 'profile' or 'guest' see it locked)
-  // Substitute: CAST Pass, with a free profile seeing it locked; never shown to a guest, as in every draft game (17 Oct 2026)
+  
+  
   function subTier() { var t = classicOn() ? tierNow() : null; return t === 'guest' ? null : t; }
   function W() { if (!STATE.__wc) STATE.__wc = { hardUsed: {}, revealN: 0, removeN: 0, subN: 0, sub: null, arming: false, revealSpin: null, sort: 'pos', dir: 1, q: '', qSpin: null, searching: false, slot: null }; return STATE.__wc; }
-  // The squad list tools (sort, search, pick a spot) run in the Daily and in Hard mode
+  
   function tools() { return !!document.getElementById('draft') && (on() || STATE.gameMode === 'hard') && STATE.gameMode !== 'pack'; }
-  // Pick a spot on the pitch: every spin mode (Classic, Daily and Hard); Pack has its own
+  
   function spots() { return !!document.getElementById('draft') && !!STATE && STATE.gameMode !== 'pack'; }
-  // The spot picked on the pitch, while it is still empty
+  
   function pickedSlot() {
     var w = STATE && STATE.__wc;
     if (!w || w.slot == null) return null;
@@ -60,7 +60,7 @@
     return s;
   }
   function fits(p, s) { return p.positions.some(function (pos) { return (ELIGIBLE_SLOTS[pos] || [pos]).indexOf(s.type) >= 0; }); }
-  // A picked spot names its position without left or right ("Centre", "Wing"): both spots of it light up
+  
   function posName(s) { return String(s.label).replace(/^(Left|Right)\s+/i, ''); }
   function spinOn() { return !!(STATE.currentSpin && STATE.currentSpin.players && STATE.currentSpin.players.length && !STATE.spinPickedThisSpin); }
   function filled() { return STATE.team.filter(function (p) { return p; }).length; }
@@ -68,10 +68,10 @@
   function after(name, fx) {
     var orig = window[name];
     if (typeof orig !== 'function') return;
-    window[name] = function () { var out = orig.apply(this, arguments); try { fx.apply(this, arguments); } catch (e) { /* cosmetic */ } return out; };
+    window[name] = function () { var out = orig.apply(this, arguments); try { fx.apply(this, arguments); } catch (e) {   } return out; };
   }
 
-  // Wildcard moment, same look as 1000TRIES / the 27-0 reroll burst
+  
   function burst(kind, ico, title, sub) {
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var el = document.createElement('div');
@@ -84,7 +84,7 @@
     setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
   }
 
-  /* ---------- Wildcard bar ---------- */
+   
   function bar() {
     var b = document.getElementById('cpWild');
     if (!b) {
@@ -105,53 +105,53 @@
     var b = bar();
     if (!b) return;
     var show = wild() && STATE.gameMode !== 'pack';
-    document.body.classList.toggle('cpw-classic', show && (classicOn() || hardOn())); // the bar replaces Classic's lone Reroll button
+    document.body.classList.toggle('cpw-classic', show && (classicOn() || hardOn())); 
     if (!show) { b.hidden = true; return; }
     b.hidden = false;
-    if (classicOn() && STATE.__cpExtra === undefined && typeof updateRerollBtn === 'function') updateRerollBtn(); // theme-fx.js settles this season's rerolls
+    if (classicOn() && STATE.__cpExtra === undefined && typeof updateRerollBtn === 'function') updateRerollBtn(); 
     var w = W(), n = allowed(), lock = locked();
-    // Reroll: the base one plus any extras (theme-fx.js: CAST Pass adds one); when they're gone the YouTube bonus can add one
+    
     var rrLeft = STATE.__tierLocked ? 0 : (STATE.rerollUsed ? 0 : 1) + (classicOn() ? STATE.__cpExtra || 0 : 0);
     var bonus = classicOn() && !lock && !rrLeft && window.CastAccount && CastAccount.bonusState && CastAccount.bonusState() !== 'none';
     var items = [['reroll', '&#x1F504;', 'Reroll', rrLeft, rrLeft && spinOn(), 'Spin first, then Reroll swaps the squad you get.']];
-    // Reveal Ratings: bought ones used this season add to it (w.revealExtra)
+    
     var rvN = n + (w.revealExtra || 0);
     if (ratingsHidden()) items.push(['reveal', '&#x1F440;', 'Reveal', Math.max(0, rvN - w.revealN), rvN - w.revealN > 0 && spinOn() && !revealedNow(),
       revealedNow() ? 'Every rating in this squad is already showing.' : 'Spin first, then reveal every rating in the squad.']);
-    // Remove Player works any time there is someone in your 13, even with a squad showing (like 1000TRIES); bought ones
-    // used this season add to it (w.removeExtra)
+    
+    
     var rmN = n + (w.removeExtra || 0);
     items.push(['remove', '&#x274C;', 'Remove', Math.max(0, rmN - w.removeN), rmN - w.removeN > 0 && filled() > 0, 'Place a player first, then you can remove one.']);
     var st = subTier(), canMove = st === 'pass' ? movable().length : 0;
     if (st) items.push(['sub', '&#x1F501;', 'Substitute', st === 'pass' ? Math.max(0, 1 - w.subN) : 1, st === 'pass' && 1 - w.subN > 0 && canMove > 0,
       filled() >= 13 ? 'Your 13 is full. Substitute moves a player into an open spot.' : !filled() ? 'Place a player first, then you can move them to another spot they play.'
         : 'Nobody in your 13 can move yet: they need an open spot in another position they play.']);
-    // The Vault's Superstar Key (CAST Pass): Classic only, not in a friend's challenge; a free profile sees it locked
+    
     var kv = classicOn() && STATE.gameMode === 'classic' && !STATE.__ch && window.CastAccount && CastAccount.vault ? CastAccount.vault('superstar') : null;
     if (kv) items.push(['key', '&#x1F511;', 'Superstar Key', 1, true, 'No 95+ player fits your open spots in this era.']);
-    /* The Picks (js/picks.js: a promo's Pick, then the Immortal Pick), last and only when they can be used. With
-       one the bar is rows of three (six make two full rows) and the last row shares its width evenly, so no row has a
-       gap and two Picks side by side get half each (8 Oct 2026: "World Cup Pick" wrapped in a third) */
+    
+
+
     var picks = window.cpPicks && window.cpPicks.bars ? window.cpPicks.bars() : [], pk = {};
     picks.forEach(function (p) { pk[p.k] = p; items.push([p.k, p.ico, p.name, 1, true, '']); });
-    /* The draft games' layout (17 Oct 2026, the owner: identical wildcards in every game): rows of three, four as two rows
-       of two, the last row sharing its width evenly; from five tiles the icon sits above the name (css/theme.css) */
-    var tiles = items.length; // tiles on the bar
+    
+
+    var tiles = items.length; 
     b.classList.toggle('has-pick', picks.length > 0);
     b.classList.toggle('is-stack', tiles >= 5);
-    // One name a tile, the same in every game: Reroll, Reveal, Remove, Substitute, Superstar Key, then the Picks' own names
+    
     var lab = function (it) { return '<span class="cpw-label"><span class="cpw-ico" aria-hidden="true">' + it[1] + '</span> ' + it[2] + '</span>'; };
     b.innerHTML = items.map(function (it) {
       var armed = (it[0] === 'remove' && w.arming) || (it[0] === 'sub' && !!w.sub), isBonus = it[0] === 'reroll' && bonus;
       var tp = pk[it[0]];
       if (tp) return '<button type="button" class="cpw cpw-' + tp.k + (tp.have ? ' is-have' : ' is-buy') + (tp.fresh ? ' ca-rr-fresh' : '') + '" data-w="' + tp.k + '"' +
         '>' + lab(it) + '<span class="cpw-left">' + tp.left + '</span>' +
-        (tp.ends ? '<span class="cpw-ends" data-dm-hours>' + tp.ends + '</span>' : '') + '</button>'; // the promo's last 24 hours: hours left
+        (tp.ends ? '<span class="cpw-ends" data-dm-hours>' + tp.ends + '</span>' : '') + '</button>'; 
       var passLock = it[0] === 'sub' && st === 'profile';
       if (passLock) return '<button type="button" class="cpw cpw-sub is-pass" data-w="sub">' + lab(it) + '<span class="cpw-left">CAST Pass</span></button>';
       if (it[0] === 'key') {
-        // No key to use (no CAST Pass, or today's is gone): a player 15+ can buy one for $1.99 (CastAccount.buyKey). Since
-        // 8 Oct 2026 (the owner: match 1000TRIES's Legend Key) a key works again in the same season and never says Used
+        
+        
         if ((kv === 'pass' || kv === 'used') && !STATE.__superNext && !lock && CastAccount.buyKey && CastAccount.canBuyKey && CastAccount.canBuyKey()) {
           var kok = !!(window.cpSuperstarReady && window.cpSuperstarReady());
           return '<button type="button" class="cpw cpw-key is-buy' + (kok ? '' : ' is-wait') + '" data-w="key"' + (kok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) + '<span class="cpw-left">Buy &middot; ' + px('superstar1', '$1.99') + '</span></button>';
@@ -161,28 +161,28 @@
         return '<button type="button" class="cpw cpw-key ' + ks + '" data-w="key"' + (ks === 'is-spent' ? ' disabled' : '') + (ks === 'is-wait' ? ' data-hint="' + it[5] + '"' : '') +
           '>' + lab(it) + '<span class="cpw-left">' + kt + '</span></button>';
       }
-      // Out of rerolls in Classic: a saved one ("2 saved") or one to buy, in a pop-up over the game (CastAccount.buyReroll)
+      
       var isBuy = it[0] === 'reroll' && !it[3] && !lock && !isBonus && payOn('reroll') && window.CastAccount && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.rerollsSaved() > 0));
       if (isBuy) {
-        // Just bought: "N ready", glowing, so they tap it and watch the roll
+        
         var sv = CastAccount.rerollsSaved(), live = spinOn(), fresh = !!(sv && CastAccount.rerollsFresh && CastAccount.rerollsFresh());
         return '<button type="button" class="cpw cpw-reroll is-buy' + (live ? '' : ' is-wait') + (fresh ? ' ca-rr-fresh' : '') + '" data-w="reroll"' + (live ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) +
           '<span class="cpw-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; ' + px('one', '$0.99')) + '</span></button>';
       }
-      // Out of Reveals in Classic (ratings hidden): a saved one or one to buy, the same way (CastAccount.buyItem('reveal'))
+      
       if (it[0] === 'reveal' && !it[3] && !lock && payOn('reveal') && window.CastAccount && CastAccount.buyItem && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.itemSaved('reveal') > 0))) {
         var vs = CastAccount.itemSaved('reveal'), vok = spinOn() && !revealedNow(), vfresh = !!(vs && CastAccount.itemFresh('reveal'));
         return '<button type="button" class="cpw cpw-reveal is-buy' + (vok ? '' : ' is-wait') + (vfresh ? ' ca-rr-fresh' : '') + '" data-w="reveal"' + (vok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) +
           '<span class="cpw-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('reveal1', '$0.99')) + '</span></button>';
       }
-      // Out of Remove Players in Classic: a saved one or one to buy, the same way (CastAccount.buyRemove)
+      
       if (it[0] === 'remove' && !it[3] && !lock && payOn('remove') && window.CastAccount && CastAccount.canBuyRemove && (CastAccount.canBuyRemove() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.removesSaved() > 0))) {
         var rs = CastAccount.removesSaved(), rok = filled() > 0 && !w.sub, rfresh = !!(rs && CastAccount.removesFresh && CastAccount.removesFresh());
         return '<button type="button" class="cpw cpw-remove is-buy' + (rok ? '' : ' is-wait') + (rfresh ? ' ca-rr-fresh' : '') + '" data-w="remove"' + (rok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) +
           '<span class="cpw-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('remove1', '$0.99')) + '</span></button>';
       }
-      // The game's own and the saved ones as one total from the first pick ("13 left"), so a bought pack is never out of sight
-      // (11 Oct 2026: a player thought his 12 Remove Players were gone)
+      
+      
       var svN = !lock && !armed && it[3] ? savedFor(it[0]) : 0;
       var sub = lock ? '&#x1F512; Sign in free' : it[0] === 'sub' && w.sub ? (w.sub.from == null ? 'Tap a player' : 'Tap a spot') : armed ? 'Tap a player' : isBonus ? (CastAccount.bonusState() === 'signin' ? '+1: sign in' : '&#x25B6; +1 free') : it[3] ? (it[3] + svN) + ' left' : hardOn() && !hardUsed(it[0]) ? '15+ to buy' : 'Used';
       var state = lock ? ' is-lock' : armed ? ' is-armed' : isBonus ? ' is-bonus' : !it[3] ? ' is-spent' : it[4] ? '' : ' is-wait';
@@ -190,8 +190,8 @@
         (state === ' is-wait' ? ' data-hint="' + it[5] + '"' : '') + '>' + lab(it) +
         '<span class="cpw-left">' + sub + '</span></button>';
     }).join('');
-    // Six columns: two each, four as two rows of two, and the last row's tiles share all six (one: the row, two: half each).
-    // A tile across the whole row keeps its icon beside the name, as 1000TRIES' seventh tile does
+    
+    
     var bs = b.children, r = tiles - 3 * Math.floor((tiles - 1) / 3);
     for (var j = 0; j < bs.length; j++) {
       var span = tiles === 4 ? 3 : j >= tiles - r ? 6 / r : 2;
@@ -206,19 +206,19 @@
     displaySpin(STATE.currentSpin.cid, STATE.currentSpin.year, STATE.currentSpin.players);
     wcEvent('reveal');
   }
-  // Out of Reveals (Classic, players 15+): a saved one, or one to buy. Once one is ready it adds to this season's count
-  // (w.revealExtra) and reveals the squad showing, if it still needs it
+  
+  
   function buyReveal() {
     var st = STATE;
     CastAccount.buyItem('reveal', '27-0', function () {
       if (STATE !== st) return;
       var w = W(); w.revealExtra = (w.revealExtra || 0) + 1;
-      if (hardOn()) w.hardUsed.reveal = true; // Hard: one a season
+      if (hardOn()) w.hardUsed.reveal = true; 
       if (spinOn() && !revealedNow()) reveal();
       renderBar();
     }, { title: 'See Their Ratings First', line: 'Show every rating in this squad, then pick the right player for your 13.' });
   }
-  // Not usable yet: a short note under the bar says when it will be
+  
   function hint(text) {
     var b = bar();
     if (!b || !text) return;
@@ -244,7 +244,7 @@
       return;
     }
     if (t.classList.contains('is-pass')) { if (typeof gtag !== 'undefined') gtag('event', 'wildcard_locked_tap', { wildcard: k, mode: STATE.gameMode === 'wc' ? 'wc' : 'classic' }); if (window.CastAccount && CastAccount.openPass) CastAccount.openPass(k === 'key' ? 'vault' : 'substitute'); return; }
-    if (k === 'toty' || k === 'prem' || k === 'imm' || k === 'wcp' || k === 'ileg' || k === 'wch') { if (window.cpPicks) window.cpPicks.tap(k); return; } // js/picks.js: the price, or the choice
+    if (k === 'toty' || k === 'prem' || k === 'imm' || k === 'wcp' || k === 'ileg' || k === 'wch') { if (window.cpPicks) window.cpPicks.tap(k); return; } 
     if (k === 'key') {
       if (t.classList.contains('is-wait')) { hint(t.getAttribute('data-hint')); return; }
       if (t.classList.contains('is-buy')) {
@@ -273,8 +273,8 @@
       var hook27 = { title: 'You\u2019re One Good Spin Away', line: (rtg ? 'Rated ' + rtg + ' with ' : '') + left13 + ' spot' + (left13 === 1 ? '' : 's') + ' to fill. The right spin could make this a 27-0 team.' };
       CastAccount.buyReroll('27-0', function () {
         if (STATE !== st1) return;
-        STATE.__cpExtra = (STATE.__cpExtra || 0) + 1; // theme-fx.js's Reroll spends it
-        if (hardOn()) { W().hardUsed.reroll = true; STATE.__hardPaidRR = true; } // Hard: one a season, let through by hard-mode.js
+        STATE.__cpExtra = (STATE.__cpExtra || 0) + 1; 
+        if (hardOn()) { W().hardUsed.reroll = true; STATE.__hardPaidRR = true; } 
         renderBar(); useReroll(); wcEvent('reroll');
       }, hook27);
       return;
@@ -289,15 +289,15 @@
     }
     renderBar();
   }
-  // js/picks.js redraws it; js/world-cup.js draws it at the start of a World Cup (make: even before the bar is there)
+  
   window.cpWildRender = function (make) { if (typeof STATE !== 'undefined' && STATE && (make || document.getElementById('cpWild'))) renderBar(); };
-  // Signed in (or got CAST Pass) mid-season: the wildcards unlock in this same season
+  
   window.addEventListener('cast:tier', function () { if (typeof STATE !== 'undefined' && STATE && document.getElementById('cpWild')) setTimeout(renderBar, 0); });
   window.addEventListener('cast:rerolls', function () { if (typeof STATE !== 'undefined' && STATE && document.getElementById('cpWild')) setTimeout(renderBar, 0); });
-  // Midnight in Sydney: a new Superstar Key (the tile was counting down to it)
+  
   window.addEventListener('cast:keys', function () { if (typeof STATE !== 'undefined' && STATE && document.getElementById('cpWild')) setTimeout(renderBar, 0); });
 
-  /* ---------- Remove Player: tap a player on the pitch ---------- */
+   
   function armUI() {
     var w = W(), field = document.getElementById('nrlField'), sec = document.getElementById('playerSection');
     if (field) field.classList.toggle('cpw-arming', !!w.arming);
@@ -323,13 +323,13 @@
     var idx = keys[cells.indexOf(cell)];
     var p = STATE.team[idx];
     if (!p) return;
-    var hadSpin = spinOn(); // a squad still showing stays up, and the opened spot can be filled from it
+    var hadSpin = spinOn(); 
     STATE.team[idx] = null;
     STATE.takenNames.delete(p.name);
     w.arming = false; w.removeN++; lockPending = false;
     stopLock();
-    // Stronger wildcards (js/theme-fx.js cpBoost): 7 times in 10 the next spin quietly has 1 player rated above him. A
-    // mechanic only, never in the copy
+    
+    
     if (window.cpBoost) window.cpBoost((p.rating || 0) + 1);
     burst('remove', '&#x274C;', 'Player removed', p.name + ' is back in the pool');
     renderField();
@@ -346,15 +346,15 @@
     wcEvent('remove');
   }, true);
 
-  /* ---------- Substitute (CAST Pass): tap a player in your 13, then an open spot they can play ---------- */
+   
   function slotAt(cell) {
     var cells = Array.prototype.slice.call(document.querySelectorAll('#nrlField .fpos'));
     var keys = Object.keys(FIELD_POSITIONS).map(Number).sort(function (a, b) { return a - b; });
     return keys[cells.indexOf(cell)];
   }
-  // Open spots (other than where they are) that this player can play
+  
   function subTargets(p, from) { return SLOTS.filter(function (s) { return s.i !== from && !STATE.team[s.i] && fits(p, s); }); }
-  // Spots holding a player who can move somewhere open
+  
   function movable() { return SLOTS.filter(function (s) { var p = STATE.team[s.i]; return p && subTargets(p, s.i).length; }).map(function (s) { return s.i; }); }
   function posList(list) { var seen = {}; return list.map(posName).filter(function (n) { if (seen[n]) return false; seen[n] = 1; return true; }).join(' or '); }
   function subUI() {
@@ -369,8 +369,8 @@
         var i = slotAt(c), picking = !!w.sub && w.sub.from == null;
         c.classList.toggle('cpw-sub-to', to.indexOf(i) >= 0);
         c.classList.toggle('cpw-sub-from', !!w.sub && w.sub.from === i);
-        c.classList.toggle('cpw-sub-can', picking && can.indexOf(i) >= 0);           // can move: lit up
-        c.classList.toggle('cpw-sub-no', picking && !!STATE.team[i] && can.indexOf(i) < 0); // one position (or nowhere open): dimmed
+        c.classList.toggle('cpw-sub-can', picking && can.indexOf(i) >= 0);           
+        c.classList.toggle('cpw-sub-no', picking && !!STATE.team[i] && can.indexOf(i) < 0); 
       });
     }
     if (!w.sub || !sec) return;
@@ -411,19 +411,19 @@
     wcEvent('sub');
   }, true);
 
-  /* ---------- Pick a spot: tap an empty spot on the pitch and the squad list shows who can play there ---------- */
+   
   document.addEventListener('click', function (e) {
     if (!STATE || !spots()) return;
     var w = W();
-    if (w.arming || w.sub) return; // Remove Player or Substitute is choosing instead
+    if (w.arming || w.sub) return; 
     var cell = e.target.closest('#nrlField .fpos[data-slot]');
     if (!cell) return;
     var idx = +cell.getAttribute('data-slot');
-    if (STATE.team[idx]) return; // filled spots stay as they are
+    if (STATE.team[idx]) return; 
     w.slot = w.slot === idx ? null : idx;
     renderField();
     if (spinOn()) displaySpin(STATE.currentSpin.cid, STATE.currentSpin.year, STATE.currentSpin.players);
-    // On phones the list sits under the pitch: bring it into view
+    
     var sec = document.getElementById('playerSection');
     if (w.slot != null && spinOn() && sec && window.innerWidth < 900) {
       var r = sec.getBoundingClientRect();
@@ -432,11 +432,11 @@
     if (typeof gtag !== 'undefined' && w.slot != null) gtag('event', 'draft_pick_spot', { mode: STATE.gameMode, slot: SLOTS[idx] ? SLOTS[idx].type : '' });
   });
 
-  /* ---------- Squad list: hidden ratings, sort, reveal ---------- */
+   
   after('displaySpin', function () {
     renderBar();
-    if (!spots()) return; // pick a spot: Classic, Daily and Hard mode (Pack has its own)
-    var list = tools();   // sort, search and hidden ratings: Daily and Hard mode only
+    if (!spots()) return; 
+    var list = tools();   
     var sec = document.getElementById('playerSection'), w = W();
     var rows = Array.prototype.slice.call(sec.querySelectorAll('.player-row'));
     if (!rows.length) { armUI(); return; }
@@ -447,7 +447,7 @@
       var p = byName[(r.querySelector('.pr-name') || {}).textContent];
       r.__p = p;
       var badge = r.querySelector('.pr-badge');
-      // Classic with ratings off hides them itself; Reveal Ratings shows this squad's
+      
       if (!badge || !p || !(list || (revealed && classicOn()))) return;
       badge.removeAttribute('style');
       if (revealed) { badge.className = 'pr-badge cpw-badge is-shown ' + ratingClass(p.rating); badge.textContent = p.rating; }
@@ -455,7 +455,7 @@
     });
     var sb = null;
     if (list) {
-      // Sort: tap the active option again to flip it (FB to LK / LK to FB, A to Z / Z to A)
+      
       rows.sort(function (a, b) {
         var pa = a.__p, pb = b.__p;
         if (!pa || !pb) return 0;
@@ -467,7 +467,7 @@
         return surname(pa.name).localeCompare(surname(pb.name)) * w.dir;
       });
       rows.forEach(function (r) { sec.appendChild(r); });
-      // Search within this squad (cleared on each new spin)
+      
       if (w.qSpin !== STATE.currentSpin) { w.q = ''; w.searching = false; w.qSpin = STATE.currentSpin; }
       var arrow = function (k) { return w.sort === k ? ' <span class="cpw-arrow" aria-hidden="true">' + (w.dir > 0 ? '&darr;' : '&uarr;') + '</span>' : ''; };
       var lbl = function (k) { return k === 'pos' ? 'Position' : (w.sort === k && w.dir < 0 ? 'Surname Z to A' : 'Surname A to Z'); };
@@ -481,7 +481,7 @@
         (revealed ? '' : '<span class="cpw-sort-hint">Ratings hidden</span>');
       sec.insertBefore(sb, sec.firstChild);
     }
-    // Pick a spot: only players who can play the empty spot picked on the pitch (and are free to pick)
+    
     var slot = pickedSlot(), open = STATE.team.filter(function (x) { return !x; }).length;
     var sl = document.createElement('div');
     sl.className = 'cpw-slotbar' + (slot ? ' is-on' : '');
@@ -537,38 +537,38 @@
     var w = STATE && STATE.__wc, f = document.getElementById('nrlField');
     if (!f) return;
     f.classList.toggle('cpw-arming', !!(w && w.arming && wild()));
-    f.classList.toggle('cpw-spots', spots()); // empty spots can be tapped to pick a spot
+    f.classList.toggle('cpw-spots', spots()); 
     var s = spots() ? pickedSlot() : null;
     Array.prototype.forEach.call(f.querySelectorAll('.fpos[data-slot]'), function (c) {
       var i = +c.getAttribute('data-slot'), same = !!s && SLOTS[i] && SLOTS[i].type === s.type && !STATE.team[i];
-      c.classList.toggle('cpw-spot-on', same); // both empty spots of the picked position (both centres, both wings...)
+      c.classList.toggle('cpw-spot-on', same); 
     });
   });
   after('finalSpin', renderBar);
   after('startSelectedMode', function () { setTimeout(renderBar, 50); });
   after('resetGame', function () { lockPending = false; stopLock(); var b = document.getElementById('cpWild'); if (b) b.hidden = true; });
-  after('startGame', function () { lockPending = false; stopLock(); }); // a new season never inherits a lock-in countdown (the review, 9 Oct 2026)
+  after('startGame', function () { lockPending = false; stopLock(); }); 
 
-  /* ---------- Out of Remove Players (Classic, players 15+): a saved one, or one to buy ----------
-     CastAccount.buyRemove uses a saved one straight away, or opens the pop-up. Once one is ready it adds to this season's
-     count (w.removeExtra) and arms Remove Player: tap who goes. A squad-full countdown stops while they choose. */
+  
+
+
   function buyRemove() {
     var st = STATE, got = filled(), rtg = got && typeof calcTeamRating === 'function' ? calcTeamRating() : 0;
     var hook = got >= 13 ? { title: 'Not Sold on This 13?', line: (rtg ? 'Rated ' + rtg + '. ' : '') + 'Swap one player out and spin that spot again before the season starts.' }
       : { title: 'Swap Out Your Weakest Pick', line: (rtg ? 'Rated ' + rtg + ' with ' : '') + (13 - got) + ' spot' + (13 - got === 1 ? '' : 's') + ' to fill. Take one player out and spin that spot again.' };
     stopLock();
-    var secs = document.getElementById('cpwSecs'); if (secs) secs.remove(); // the countdown has stopped: plain "Lock in"
+    var secs = document.getElementById('cpwSecs'); if (secs) secs.remove(); 
     CastAccount.buyRemove('27-0', function () {
       if (STATE !== st) return;
       var w = W(); w.removeExtra = (w.removeExtra || 0) + 1;
-      if (hardOn()) w.hardUsed.remove = true; // Hard: one a season
+      if (hardOn()) w.hardUsed.remove = true; 
       if (w.sub) { w.sub = null; subUI(); }
       w.arming = true; armUI(); renderBar();
     }, hook);
   }
 
-  /* ---------- Squad full: Remove Player or lock in (10 second countdown) ----------
-     With no Remove Player left, a player who can buy one (Classic, 15+) gets the same choice at $1, or "2 saved". */
+  
+
   var baseComplete = window.showSquadComplete, lockPending = false, lockTimer = null;
   function stopLock() { if (lockTimer) { clearInterval(lockTimer); lockTimer = null; } }
   function lockIn() { stopLock(); lockPending = false; baseComplete(); }
@@ -584,7 +584,7 @@
           : '<p>Swap one player out and spin that spot again for <b>' + px('remove1', '$0.99') + '</b>, or lock in this 13.</p>') +
       '<div class="cpw-decide-row"><button type="button" class="cpw-btn cpw-btn-remove" data-d="' + (paid ? 'buy' : 'remove') + '"><span>&#x274C; Remove' + (paid ? ' &middot; ' + (rs ? rs + ' left' : px('remove1', '$0.99')) : ' player') + '</span></button>' +
       '<button type="button" class="cpw-btn cpw-btn-lock" data-d="lock"><span class="cpw-fill" aria-hidden="true"></span><span class="cpw-lbl">&#x1F512; Lock in <b id="cpwSecs">' + LOCK_SECS + '</b></span></button></div>' +
-      // Still holding the season's own Remove Player: a way to stock up on more (the packs pop-up; nothing is used)
+      
       (!paid && removeOnSale() && CastAccount.shopRemoves ? '<button type="button" class="cpw-more" data-d="more">&#x2795; Get More Remove Players</button>' : '') + '</div>';
     sec.querySelector('.cpw-decide').addEventListener('click', function (e) {
       var b = e.target.closest('[data-d]');
@@ -594,7 +594,7 @@
       else if (d === 'buy') buyRemove();
       else if (d === 'more') {
         stopLock();
-        var secs = document.getElementById('cpwSecs'); if (secs) secs.remove(); // the countdown has stopped: plain "Lock in"
+        var secs = document.getElementById('cpwSecs'); if (secs) secs.remove(); 
         CastAccount.shopRemoves('27-0', { kicker: 'Stock Up', title: 'Stock Up on Remove Players', line: 'Save them for the seasons where one swap is the difference. They work in 27-0 Classic and 1000TRIES.' });
       } else { stopLock(); W().arming = true; armUI(); renderBar(); }
     });
@@ -617,10 +617,10 @@
   }
 })();
 
-/* A tap right after the squad list moved is ignored (11 Oct 2026, both games; a 1000TRIES World Cup player tapped one player
-   and got the one above: a wildcard row arrived late above the list and pushed it down as he tapped). Anything above the
-   list changing height (the spin box, the wildcard bar) marks the list as moved; a player tap within 0.7 s does nothing,
-   so the next tap lands where the eye is. Only taps are held back, never the game's own picks */
+
+
+
+
 (function () {
   if (typeof ResizeObserver !== 'function') return;
   var movedAt = 0, heights = new WeakMap();
@@ -628,7 +628,7 @@
     es.forEach(function (e) { var h = Math.round(e.target.getBoundingClientRect().height), was = heights.get(e.target); if (was !== undefined && Math.abs(h - was) > 8) movedAt = Date.now(); heights.set(e.target, h); });
   });
   function watch() { var z = document.querySelector('#draft .spin-zone'); if (z && !heights.has(z)) { heights.set(z, Math.round(z.getBoundingClientRect().height)); ro.observe(z, { box: "border-box" }); } }
-  // Never a Quick Draft's own picks (the review, 11 Oct 2026: they run inside its click and must not be held)
+  
   function held() { var ev = window.event; return !(typeof STATE !== 'undefined' && STATE && STATE.__qd) && !!ev && (ev.type === 'click' || ev.type === 'touchend') && Date.now() - movedAt < 700; }
   ['selectPlayer', 'placePlayer'].forEach(function (name) {
     var orig = window[name];

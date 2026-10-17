@@ -1,29 +1,29 @@
-/* NBA draft game data layer (17 Oct 2026, from the 1000TRIES engine via 777 TDS): player pack, franchise maps, slot template.
-   Career NBA regular-season points from the NBA's own stats (stats.nba.com all-time totals; ABA points never count),
-   checked against Basketball-Reference, which also gives each player's positions and teams by season. */
+
+
+
 (function (T) {
   'use strict';
 
-  T.TARGET = 100000; // set with the real-engine smart-fan simulator (kept out of this repo)
+  T.TARGET = 100000; 
 
-  // The starting five in draft order (the owner, 17 Oct 2026): a point guard, shooting guard, small forward, power
-  // forward and centre. A player can fill up to 2 of these, his real ones
-  // The over/under game is a separate page on CAST Games; this home shows no card for it
+  
+  
+  
   T.OU_SEPARATE = true;
 
   T.SLOTS = ['PG', 'SG', 'SF', 'PF', 'C'];
 
   T.POS_NAMES = { PG: 'Point Guard', SG: 'Shooting Guard', SF: 'Small Forward', PF: 'Power Forward', C: 'Centre' };
-  // What the spots and chips show. The codes are also what the games save and the server checks, so they never change
+  
   T.POS_SHORT = { PG: 'PG', SG: 'SG', SF: 'SF', PF: 'PF', C: 'C' };
   T.posLabel = function (code) { return T.POS_SHORT[code] || code; };
-  T.FLEX_OF = []; // no FLEX spot in a starting five
+  T.FLEX_OF = []; 
 
-  // Seasons are kept by the year they tipped off (2025 = the 2025-26 season) and shown as "2025-26"
+  
   T.seasonLabel = function (y) { y = +y; return isFinite(y) && y > 1900 ? y + '-' + String((y + 1) % 100).padStart(2, '0') : String(y || '?'); };
 
-  // The 30 franchises, each named as it is today (one slug per franchise: the Seattle SuperSonics are 'thunder', the
-  // Charlotte Hornets and Bobcats 'hornets', the New Orleans Hornets 'pelicans', as the NBA keeps their histories)
+  
+  
   T.CLUBS = {
     hawks: { name: 'Atlanta Hawks', from: 1949, to: 2025 },
     celtics: { name: 'Boston Celtics', from: 1946, to: 2025 },
@@ -58,15 +58,15 @@
   };
   T.TEST_SIDES = {};
 
-  // The broadcast abbreviations
+  
   T.CLUB_ABBR = { hawks: 'ATL', celtics: 'BOS', nets: 'BKN', hornets: 'CHA', bulls: 'CHI', cavaliers: 'CLE', mavericks: 'DAL', nuggets: 'DEN', pistons: 'DET', warriors: 'GSW', rockets: 'HOU', pacers: 'IND', clippers: 'LAC', lakers: 'LAL', grizzlies: 'MEM', heat: 'MIA', bucks: 'MIL', timberwolves: 'MIN', pelicans: 'NOP', knicks: 'NYK', thunder: 'OKC', magic: 'ORL', '76ers': 'PHI', suns: 'PHX', blazers: 'POR', kings: 'SAC', spurs: 'SAS', raptors: 'TOR', jazz: 'UTA', wizards: 'WAS' };
 
-  // Team colours (each club's main colour, then a second one that reads on it)
+  
   T.CLUB_COLORS = { hawks: '#C8102E', celtics: '#007A33', nets: '#000000', hornets: '#1D1160', bulls: '#CE1141', cavaliers: '#860038', mavericks: '#00538C', nuggets: '#0E2240', pistons: '#C8102E', warriors: '#1D428A', rockets: '#CE1141', pacers: '#002D62', clippers: '#1D428A', lakers: '#552583', grizzlies: '#5D76A9', heat: '#98002E', bucks: '#00471B', timberwolves: '#0C2340', pelicans: '#0C2340', knicks: '#006BB6', thunder: '#007AC1', magic: '#0077C0', '76ers': '#006BB6', suns: '#1D1160', blazers: '#E03A3E', kings: '#5A2D81', spurs: '#000000', raptors: '#CE1141', jazz: '#3E2680', wizards: '#002B5C' };
   T.CLUB_SECONDARY = { hawks: '#FDB927', celtics: '#FFFFFF', nets: '#FFFFFF', hornets: '#00788C', bulls: '#000000', cavaliers: '#FDBB30', mavericks: '#B8C4CA', nuggets: '#FEC524', pistons: '#1D42BA', warriors: '#FFC72C', rockets: '#C4CED4', pacers: '#FDBB30', clippers: '#C8102E', lakers: '#FDB927', grizzlies: '#12173F', heat: '#F9A01B', bucks: '#EEE1C6', timberwolves: '#78BE20', pelicans: '#C8102E', knicks: '#F58426', thunder: '#EF3B24', magic: '#C4CED4', '76ers': '#ED174C', suns: '#E56020', blazers: '#000000', kings: '#63727A', spurs: '#C4CED4', raptors: '#A1A1A4', jazz: '#FFFFFF', wizards: '#E31837' };
   T.CLUB_THIRD = {};
 
-  // Each franchise's names by season ([from, to, name], to null: today), so a 1990 spin says Seattle SuperSonics
+  
   T.CLUB_ERAS = {
     hawks: [[1949, 1950, 'Tri-Cities Blackhawks'], [1951, 1954, 'Milwaukee Hawks'], [1955, 1967, 'St. Louis Hawks'], [1968, null, 'Atlanta Hawks']],
     celtics: [[1946, null, 'Boston Celtics']],
@@ -99,7 +99,7 @@
     jazz: [[1974, 1978, 'New Orleans Jazz'], [1979, null, 'Utah Jazz']],
     wizards: [[1961, 1961, 'Chicago Packers'], [1962, 1962, 'Chicago Zephyrs'], [1963, 1972, 'Baltimore Bullets'], [1973, 1973, 'Capital Bullets'], [1974, 1996, 'Washington Bullets'], [1997, null, 'Washington Wizards']]
   };
-  // Today's divisions (the Daily's division days)
+  
   T.CLUB_DIVISION = { celtics: 'Atlantic', nets: 'Atlantic', knicks: 'Atlantic', '76ers': 'Atlantic', raptors: 'Atlantic', bulls: 'Central', cavaliers: 'Central', pistons: 'Central', pacers: 'Central', bucks: 'Central', hawks: 'Southeast', hornets: 'Southeast', heat: 'Southeast', magic: 'Southeast', wizards: 'Southeast', nuggets: 'Northwest', timberwolves: 'Northwest', thunder: 'Northwest', blazers: 'Northwest', jazz: 'Northwest', warriors: 'Pacific', clippers: 'Pacific', lakers: 'Pacific', suns: 'Pacific', kings: 'Pacific', mavericks: 'Southwest', rockets: 'Southwest', grizzlies: 'Southwest', pelicans: 'Southwest', spurs: 'Southwest' };
   T.clubNameIn = function (slug, year) {
     var e = (T.CLUB_ERAS[slug] || []).filter(function (x) { return x[0] <= year && (x[1] == null || year <= x[1]); })[0];
@@ -111,11 +111,11 @@
     return (0.299 * r + 0.587 * g + 0.114 * b) > 140 ? '#111111' : '#FFFFFF';
   }
 
-  // Everything the UI needs to paint a club: strong primary block, accent bar, readable text
+  
   T.club = function (slug) {
     var primary = T.CLUB_COLORS[slug] || '#1a1a2e';
     var secondary = T.CLUB_SECONDARY[slug] || '#FFFFFF';
-    // Secondary that matches the primary (or is too close to the dark page) falls back to the text colour
+    
     var accent = secondary.toLowerCase() === primary.toLowerCase() ? textOn(primary) : secondary;
     return {
       slug: slug,
@@ -124,13 +124,13 @@
       primary: primary,
       secondary: secondary,
       accent: accent,
-      third: T.CLUB_THIRD[slug] || null, // nations only
+      third: T.CLUB_THIRD[slug] || null, 
       text: textOn(primary)
     };
   };
 
-  // Positions a player can fill: positions_played (1 or 2 of PG, SG, SF, PF, C: his own, from where he played his
-  // minutes), falling back to draft_role then position
+  
+  
   T.positionsOf = function (p) {
     if (p._pos) return p._pos;
     var list = (p.positions_played && p.positions_played.length) ? p.positions_played.slice(0, 2)
@@ -143,17 +143,17 @@
     return T.positionsOf(p).indexOf(code) !== -1;
   };
 
-  // Played for club in that season (Team Spin), or in any season when there is no year (a themed Daily's club)
+  
   T.playedFor = function (p, club, year) {
     return !!club && (p.club_years || []).some(function (cy) {
       return cy.club === club && (year == null || (cy.from <= year && year <= cy.to));
     });
   };
 
-  // Club a player last played for (latest season, then latest start). Drives all club colours.
+  
   T.lastClub = function (p) {
     if (p._last) return p._last;
-    if (p.tier) return (p._last = p.primary_club); // Legends and Immortals wear the club they are remembered for
+    if (p.tier) return (p._last = p.primary_club); 
     var best = null;
     (p.club_years || []).forEach(function (cy) {
       if (!best || cy.to > best.to || (cy.to === best.to && cy.from >= best.from)) best = cy;
@@ -162,27 +162,27 @@
     return p._last;
   };
 
-  // Club colours for a player sitting in a slot: Team Spin picks keep the club they were
-  // spun from (slot.club); a themed Daily shows the club from the day's pool (T.showClub, js/draft.js);
-  // every other mode uses the club they last played for.
+  
+  
+  
   T.slotClub = function (slot) {
     return (slot && slot.club) || (T.showClub ? T.showClub(slot.player) : T.lastClub(slot.player));
   };
 
-  /* Each club's kit for the Legends and Immortal Pick reveal: its real current home kit, drawn by js/cast-kits.js from
-     js/kits-data.js (16 Oct 2026, the owner: "Don't just assume always that they are a V-shaped jersey design"; the data
-     is researched in ~/cast-dev/kits). CastIntl.JERSEYS in js/cast-intl.js is the NRL clubs' only */
+  
 
-  /* Legends (the main mode only): the Legends Pick. data/legends.json lists the retired players with 25000+ NBA points,
-     with their career points. None of them are in the normal pool: 'replaces' names any pool players who moved across. */
+
+
+  
+
   T.LEGENDS = [];
-  T.LEGEND_ODDS = { legends: 0.25, immortal: 0.08 }; // data/legends.json odds win once loaded
+  T.LEGEND_ODDS = { legends: 0.25, immortal: 0.08 }; 
   T.isImmortal = function (p) { return !!p && p.tier === 'immortal'; };
-  /* World Legends (World Cup 200+, 8 Oct 2026, the owner's calls; data/wc-legends.json "1000tries", a copy of
-     shared/wc-legends.json): greats already in the World Cup pack, with their Test goals. They leave the normal offers
-     (js/draft.js T.eligible) and come only as a free one now and then or with a World Legend Pick. "show" is
-     the name on his card (Sir Billy Boston) while results keep his own name (record_name); "positions" are the spots
-     he plays and "nation" the side he wears (Nigel Vagana: Samoa), the same in both games */
+  
+
+
+
+
   T.isIntlLegend = function (p) { return !!p && !!p.il; };
   T.WC_IL = [];
   T.markIntlLegends = function (pool, list) {
@@ -214,17 +214,17 @@
     return T._legends;
   };
 
-  /* The GOAT (one Shop item for every CAST draft game, 16 Oct 2026, the owner: "THE GOAT IS UNIVERSAL"): here LeBron James
-     (the owner, 17 Oct 2026), the NBA's career points leader. Like Alex Johnston in 1000TRIES he is a pack player, so he
-     stays in the normal offers too and the GOAT item brings his own card (T.goatCard keeps a pack player as he is); he
-     always wears the goat (T.GOAT_ID). Michael Jordan stays one of the Legends */
+  
+
+
+
   T.GOAT_SRC = 'lebron-james';
   T.GOAT_ID = 'lebron-james';
   T.isGoat = function (p) {
     return !!p && (p.tier === 'goat' || (!!T.GOAT_ID && p.id === T.GOAT_ID));
   };
   T.goatCard = function (src) {
-    if (!src || !src.tier) return src || null; // a pack player is the GOAT himself (as Alex Johnston in 1000TRIES)
+    if (!src || !src.tier) return src || null; 
     var c = {};
     Object.keys(src).forEach(function (k) { c[k] = src[k]; });
     c.id = 'goat-' + String(src.id).replace(/^legend-/, ''); c.tier = 'goat';
@@ -232,8 +232,8 @@
     return c;
   };
 
-  /* The surname on the court tiles: a club tag in brackets (Eddie Johnson (Kings)) and a nickname in quotes go, and the
-     names whose last name is two words are spelt out */
+  
+
   var SURNAME_OF = {
     'Metta World Peace': 'World Peace', 'Nick Van Exel': 'Van Exel', 'Keith Van Horn': 'Van Horn', 'Dick Van Arsdale': 'Van Arsdale',
     'Tom Van Arsdale': 'Van Arsdale', 'Luc Mbah a Moute': 'Mbah a Moute', 'Kiki VanDeWeghe': 'VanDeWeghe', 'Fred VanVleet': 'VanVleet',
@@ -244,19 +244,19 @@
     var n = String(name).replace(/\s*\([^)]*\)\s*$/, '').replace(/[\u201C"][^\u201D"]*[\u201D"]\s*/g, '').trim();
     if (SURNAME_OF[n]) return SURNAME_OF[n];
     var parts = n.split(/\s+/), rest = parts.slice(1);
-    // middle initials go too (16 Oct 2026): "M. J. K. Smith" read "J. K. Smith" on the tile
+    
     while (rest.length > 1 && /^(?:[A-Z]\.)+$|^[A-Z]$/.test(rest[0])) rest.shift();
     return rest.length ? rest.join(' ') : parts[0];
   };
 
   T.fmt = function (n) {
-    return Number(n).toLocaleString('en-AU', { useGrouping: false }); // no commas in numbers (the owner, 16 Oct 2026)
+    return Number(n).toLocaleString('en-AU', { useGrouping: false }); 
   };
 
   T.players = [];
   T.byId = {};
 
-  // World Cup match days (shared code from 1000TRIES; never on here: there is no data/nations-nrl.json)
+  
   T.NAT = null;
   T.loadNat = function () {
     if (T.NAT) return Promise.resolve(T.NAT);
@@ -269,11 +269,11 @@
   };
   T.nationsOf = function (p) { return (T.NAT && p && T.NAT[p.record_name || p.name]) || []; };
 
-  // Player packs. Career NBA points is the only one (key kept as 'nrl': the main pack everywhere in the code); the second
-  // pack slot (key 'nrlw', the NRLW mode's twin) is never live. tries_1998_plus holds each player's career NBA points
+  
+  
   T.DATASETS = {
     nrl:  { file: 'data/players.json', target: 100000, weight: 6000, label: 'career points', era: 'Career Points', only: 'NBA regular season only, never ABA', who: 'NBA' },
-    // World Cup mode: never on here (kept so the shared mode code finds it)
+    
     wc: { file: 'data/players.json', target: 100000, weight: 6000, label: 'points', era: 'Points', only: 'Points', who: 'NBA' },
     nrlw: { live: false, file: 'data/players.json', target: 100000, weight: 6000, label: 'career points', era: 'Career Points', only: 'NBA regular season only', who: 'NBA' }
   };
@@ -281,7 +281,7 @@
   T.TRY_LABEL = 'career points';
   T.ERA_LABEL = 'Career Points';
 
-  // Only rows with a numeric tries_1998_plus are playable
+  
   T.loadDataset = function (name) {
     var d = T.DATASETS[name];
     if (d.pool) return Promise.resolve(d.pool);
@@ -298,8 +298,8 @@
         var byId = {};
         players.forEach(function (p) {
           byId[p.id] = p;
-          // Namesakes are tagged in the data ("Ben Jones (Raiders)") so the leaderboard server can tell them
-          // apart: show the plain name, and keep the tagged one as the name results are saved under
+          
+          
           var m = / \([^)]+\)$/.exec(p.name);
           if (m && !p.record_name) { p.record_name = p.name; p.name = p.name.slice(0, m.index); }
         });
@@ -310,7 +310,7 @@
     return d.loading;
   };
 
-  // Big scorers (top 5% of a pack) for the first offer. Cached per pack.
+  
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {
@@ -320,7 +320,7 @@
     return d.starCut;
   };
 
-  // Switch the live pack (call only between games)
+  
   T.useDataset = function (name) {
     var d = T.DATASETS[name];
     if (!d || !d.pool) return false;
@@ -343,7 +343,7 @@
       if (!pool.legendsApplied) {
         pool.players = pool.players.filter(function (p) { return !gone[p.id]; });
         T.LEGENDS.forEach(function (p) { pool.byId[p.id] = p; });
-        var gsrc = T.GOAT_SRC && pool.byId[T.GOAT_SRC]; // the GOAT item's card, so a pick or a draft brought back finds him
+        var gsrc = T.GOAT_SRC && pool.byId[T.GOAT_SRC]; 
         T.GOAT_CARD = gsrc && gsrc.tier ? T.goatCard(gsrc) : null;
         if (T.GOAT_CARD) pool.byId[T.GOAT_CARD.id] = T.GOAT_CARD;
         pool.legendsApplied = true;

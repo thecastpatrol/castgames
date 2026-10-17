@@ -1,10 +1,10 @@
-/* 60000 RUNS Team Spin: 27-0 style year + nation spin (a nation's Test squad in one calendar year). */
+ 
 (function (T) {
   'use strict';
 
-  var MIN_YEAR = 1877; // 60000 RUNS: the first Test, March 1877
-  var MAX_YEAR = 2026; // Test years are calendar years (a year with no Tests for a nation is skipped by the spin)
-  T.SPIN_LIFT = 0; // see spinOffer
+  var MIN_YEAR = 1877; 
+  var MAX_YEAR = 2026; 
+  T.SPIN_LIFT = 0; 
 
   function clubsInYear(year) {
     return Object.keys(T.CLUBS).filter(function (slug) {
@@ -13,44 +13,44 @@
     });
   }
 
-  // Unused players from that nation and year who can play the chosen position
-  // (or any open slot, if no position has been chosen)
+  
+  
   T.spinSquad = function (club, year, pos) {
     var S = T.state();
     return T.players
       .filter(function (p) { return !S.used[p.id] && !T.goatOut(p) && T.playedFor(p, club, year) && (pos ? T.canFill(p, pos) : T.fitsEmpty(p)); })
-      .sort(function (a, b) { return a.name.localeCompare(b.name); }); // alphabetical so order leaks nothing
+      .sort(function (a, b) { return a.name.localeCompare(b.name); }); 
   };
 
-  /* How many of the squad a spin shows (12 Oct 2026): a spin shows SPIN_SHOW players from the squad who can play that
-     spot (a little under a 1000TRIES spin), drawn the same way for
-     everyone with the same draft. keep: players who must be among them (the first spin's big run scorer, a Respin's) */
+  
+
+
   T.SPIN_SHOW = 4;
-  /* A spin for a batter's spot shows one more (17 Oct 2026, the owner: with one batter's spot now the All-Rounder's, Team
-     Spin keeps playing as it did before) */
+  
+
   T.SPIN_SHOW_POS = { B: 5 };
   function showN() { var S = T.state(); return (S && S.spinPos && T.SPIN_SHOW_POS[S.spinPos]) || T.SPIN_SHOW; }
-  // and the first spin of a game lands on a big run scorer a little more often than the first offer of the other modes
+  
   T.SPIN_FIRST_STAR = 0.8;
   function shown(squad, R, keep, low) {
     var n = showN();
     if (squad.length <= n) return squad;
     var must = (keep || []).filter(function (p) { return squad.indexOf(p) >= 0; }).slice(0, n);
     var rest = squad.filter(function (p) { return must.indexOf(p) < 0; });
-    // a Respin's other cards come from below its bar when enough are left, so it shows one better, not more
+    
     if (low) { var under = rest.filter(low); if (under.length >= n - must.length) rest = under; }
     for (var i = rest.length - 1; i > 0; i--) { var j = Math.floor(R() * (i + 1)), t = rest[i]; rest[i] = rest[j]; rest[j] = t; }
     return must.concat(rest.slice(0, n - must.length)).sort(function (a, b) { return a.name.localeCompare(b.name); });
   }
 
-  // Spin until a combo has someone eligible. Returns the offer plus how many empty spins were skipped.
+  
   T.spinOffer = function () {
     var S = T.state();
     var pos = S.spinPos || null;
     var skipped = 0;
-    var R = T.stream ? T.stream('spin' + (S.spinNo = (S.spinNo || 0) + 1)) : Math.random; // seeded: a challenge gets the same spins
-    // A boosted Respin or Remove Player (js/draft.js S.boost): a nation and year with just 1 player for this
-    // position who beats the best of the last squad (or the player removed), else one with more, else a normal spin
+    var R = T.stream ? T.stream('spin' + (S.spinNo = (S.spinNo || 0) + 1)) : Math.random; 
+    
+    
     var boost = S.boost; S.boost = null;
     if (boost) {
       var best = [];
@@ -73,11 +73,11 @@
         return S.offer;
       }
     }
-    // First spin of a game: often land on a nation and year with a big run scorer in that position
+    
     var first = !S.firstOfferDone;
     S.firstOfferDone = true;
-    // Now and then a later spin lands the same way (T.SPIN_LIFT, on its own seeded stream, so the other spins are dealt as
-    // before): Team Spin set again on 17 Oct 2026, when the GOAT became rare in free play, so it stays as hard as it was
+    
+    
     var lift = !first && T.SPIN_LIFT > 0 && T.stream('spinlift' + S.spinNo)() < T.SPIN_LIFT;
     if ((first && R() < T.SPIN_FIRST_STAR) || lift) {
       var stars = T.players.filter(function (p) {
@@ -113,7 +113,7 @@
       }
       skipped++;
     }
-    // Pool is nearly dry: pick straight from the combos that still have someone eligible
+    
     var combos = [];
     for (var y = MIN_YEAR; y <= MAX_YEAR; y++) {
       clubsInYear(y).forEach(function (c) {
@@ -121,7 +121,7 @@
         if (sq.length) combos.push({ year: y, club: c, players: sq });
       });
     }
-    if (!combos.length) return null; // nobody left anywhere for this position
+    if (!combos.length) return null; 
     var pickC = combos[Math.floor(R() * combos.length)];
     S.offer = { kind: 'spin', year: pickC.year, club: pickC.club, pos: pos, players: shown(pickC.players, R), skipped: skipped };
     S.revealed = {};

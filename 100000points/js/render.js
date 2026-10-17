@@ -1,12 +1,12 @@
-/* 100000 POINTS render: builds HTML for each screen piece. No game logic here. */
+ 
 (function (T) {
   'use strict';
-  // A pack's price as this device shows it (local currency, 17 Oct 2026: "NZ$0.99"; CastAccount.price), else the A$ words
+  
   function px(pack, aud) { return window.CastAccount && CastAccount.price ? CastAccount.price(pack, aud) : aud; }
 
   var R = T.render = {};
 
-  // What the total counts: career points, Legends included (every player counts his whole career, so one label does)
+  
   T.totalLabel = function () { return T.ERA_LABEL; };
 
   var esc = R.esc = function (s) {
@@ -22,54 +22,54 @@
 
   var GOAT = ' <span class="goat" role="img" aria-label="GOAT">&#x1F410;</span>';
 
-  // Player name, plus the goat for AJ
+  
   var nameHtml = R.nameHtml = function (p, text) {
     return esc(text == null ? p.name : text) + (T.isGoat(p) ? GOAT : '');
   };
 
-  // The GOAT, Hall of Famers and Legends each get their own look wherever a player is drawn
+  
   function goatCls(p) {
-    // Promos: Dally M platinum, or a premier in his club's colours with the silver edge (is-prem); the medal winner gold
+    
     var pm = T.promoTier ? T.promoTier(p) : '', prem = pm && T.promoKind && T.promoKind() === 'prem';
-    if (T.isIntlLegend && T.isIntlLegend(p)) return ' is-ileg'; // World Legends: his nation's look with gold edges
+    if (T.isIntlLegend && T.isIntlLegend(p)) return ' is-ileg'; 
     return T.isGoat(p) ? ' is-goat' : T.isImmortal(p) ? ' is-immortal' : T.isLegend(p) ? ' is-legend' : pm ? (prem ? ' is-prem' : ' is-plat') + (pm === 'medal' ? ' is-medal' : '') : '';
   }
-  /* Nation looks (5 Oct 2026, the owner's calls; js/cast-nations.js draws them, as in 27-0): a World Cup 200+ card's
-     band, the team tiles and the home card's chips. 100000 POINTS has no World Cup mode, and the shared looks are rugby league
-     jerseys, so every franchise shows its own colours instead (T.NO_LOOKS). The GOAT, Hall of Famers, Legends and promo cards keep their own looks */
+  
+
+
   T.NO_LOOKS = true;
   function look(slug, w, h, level, p) {
     var N = window.CastNations;
-    if (T.NO_LOOKS || !N || !N.has(slug) || (p && goatCls(p) && !T.isIntlLegend(p))) return ''; // a World Legend keeps his nation's look
+    if (T.NO_LOOKS || !N || !N.has(slug) || (p && goatCls(p) && !T.isIntlLegend(p))) return ''; 
     return '<span class="wc-look" aria-hidden="true">' + N.svg(slug, w, h, level ? { level: level } : null) + '</span>';
   }
   var TIER_LABEL = { immortal: 'Hall of Famer', legend: 'Legend' };
-  // Promos: a medal after a medal winner's name and a trophy after a premier's (the owner's calls)
+  
   function medalMark(p) { var lk = T.promoLook ? T.promoLook(p) : null; return lk && lk.mark ? lk.mark : ''; }
   function tierTag(p) {
-    // A World Legend's card says Legend, so his nation's name still fits beside it (the owner, 8 Oct 2026)
+    
     if (T.isIntlLegend && T.isIntlLegend(p)) return '<span class="pcard-tier pcard-il">&#x1F451; Legend</span>';
     if (p && p.tier) return '<span class="pcard-tier">' + (T.isGoat(p) ? '&#x1F410; GOAT' : (p.tier === 'immortal' ? '&#x1F410; ' : '&#x2B50; ') + TIER_LABEL[p.tier]) + '</span>';
     var lk = T.promoLook ? T.promoLook(p) : null;
     return lk ? '<span class="pcard-tier pcard-pm">' + esc(lk.label) + '</span>' : '';
   }
 
-  // His one or two positions
+  
   function posChips(p) {
     return T.positionsOf(p).map(function (c) {
       return '<span class="chip" title="' + esc(T.POS_NAMES[c] || c) + '">' + esc(T.posLabel(c)) + '</span>';
     }).join('');
   }
 
-  // World Cup 200+ (5 Oct 2026, the owner's calls): Tests played and the years, and a badge for every nation a player
-  // played Tests for when there's more than one, in the order they first played (Alex Johnston: Australia then PNG; Tyson
-  // Frizell: Wales too). Other nations come with their own colours (tools/build_wc.py)
-  // The years: "2009 to 2019", or one year once ("2026")
+  
+  
+  
+  
   function years(p) {
     var y = String(p.career_span || '').split('-');
     return !y[0] ? '' : !y[1] || y[1] === y[0] ? esc(y[0]) : esc(y[0] + ' to ' + y[1]);
   }
-  // World Cup 200+ shows the Tests and the years (the owner: "so you know what era they were from")
+  
   function span(p) {
     if (p.tests) return p.tests + ' Test' + (p.tests === 1 ? '' : 's') + (years(p) ? ' &middot; ' + years(p) : '');
     return years(p);
@@ -85,34 +85,34 @@
     }).join('') + '</span>';
   }
 
-  /* HOME */
+   
 
   var MODE_CARD = {
     exact: { ico: '&#x1F3AF;', line: 'Hit ' + T.TARGET + ' on the dot. Not ' + (T.TARGET - 1) + ', not ' + (T.TARGET + 1), chips: ['Roll 3, Pick 1', '15s a Pick', 'Paid Wildcards'] },
     plus:  { ico: '&#x1F3C0;', line: 'Get to ' + T.TARGET + ' or more', chips: ['Roll 3, Pick 1', '20s a Pick', '3 Wildcards'] },
     spin:  { ico: '&#x1F3B0;', line: 'Pick a position, then spin', chips: ['Spin, Pick 1', '3 Wildcards'] },
-    nrlw:  { ico: '&#x2B50;', line: 'Get to ' + T.DATASETS.nrlw.target + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] }, // the hidden second pack
+    nrlw:  { ico: '&#x2B50;', line: 'Get to ' + T.DATASETS.nrlw.target + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] }, 
     wc:    { ico: '&#x1F30F;', line: 'Get to ' + T.DATASETS.wc.target + ' points or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] },
-    ou:    { ico: '&#x2195;&#xFE0F;', line: 'More or fewer? Call it before the clock runs out' } // HIGHER OR LOWER: NBA
+    ou:    { ico: '&#x2195;&#xFE0F;', line: 'More or fewer? Call it before the clock runs out' } 
   };
 
-  /* Home modes (29 Sep 2026, the user's call): 100000+ is the main mode, one big card with a clear Play button; the others
-     are three small buttons in a row under it (each keeps its colour and one tag). A tap on any of them starts it. */
+  
+
   var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Rosters', nrlw: 'Second Pack', wc: 'World Cup', ou: 'New &middot; Beat the Clock' };
-  /* HIGHER OR LOWER: NBA's home card (as HIGHER OR LOWER: AFL's, 15 Oct 2026, the owner: "lower, under the Daily, it shouldn't take away from the other modes"):
-     its own full-width card under the Daily Challenge (js/app.js placeOu), not in More Modes */
+  
+
   R.ouCard = function () {
-    // A small live look at the game (the owner, 15 Oct 2026: "more exciting, actual visuals"): two mini player cards in
-    // their team's colours, one number showing (no comma, as on the HIGHER OR LOWER: NBA cards) and one hidden, the Over and Under arrows pulsing between them, and NEW
+    
+    
     var mini = function (club, nm, num) {
-      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; // the player's name in his club's colours (the owner)
+      return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; 
     };
     return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play HIGHER OR LOWER: NBA">' +
       '<span class="oup-new">New</span>' +
       '<span class="oup-pair" aria-hidden="true">' + mini('chargers', 'Tomlinson', '162') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('vikings', 'Moss', '') + '</span>' +
       '<span class="oup-t"><b>HIGHER OR LOWER:&nbsp;NBA</b><small>More career points or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
   };
-  // The same live look for its banner in the home slider (the owner, 15 Oct 2026: "more enticing, like the card below")
+  
   R.ouBanner = function () {
     var mini = function (club, nm, num) {
       return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
@@ -120,11 +120,11 @@
     return '<span class="oup-pair" aria-hidden="true">' + mini('chargers', 'Tomlinson', '162') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('vikings', 'Moss', '') + '</span>' +
       '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>HIGHER OR LOWER:&nbsp;NBA</b><small>More career points or fewer? Beat the clock.</small></span><span class="oup-play" aria-hidden="true">&#x25B6;</span>';
   };
-  /* World Cup 200+ (4 Oct 2026, the owner's call; never on in 100000 POINTS): once launched, a big card the same size as 100000+ until the final on
-     15 Nov, in the World Cup nations' colours (flags when the owner's designs arrive), then a small one with the others.
-     opt.wc: 'top', 'under' (a guest's first visit keeps 100000+ first), 'mini' or null; opt.guest: Sign In to Play */
+  
+
+
   var WC_NATIONS = ['aus', 'nzl', 'eng', 'fra', 'sam', 'ton', 'fij', 'png', 'leb', 'cok'];
-  R.wcCard = function (selected, guest, free) { // free: a guest's free World Cup today (Play Free)
+  R.wcCard = function (selected, guest, free) { 
     var m = T.MODES.wc, c = MODE_CARD.wc;
     var strip = WC_NATIONS.map(function (k) {
       var cl = T.club(k);
@@ -153,7 +153,7 @@
       '<span class="mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>' +
       '</button>';
     var wc = opt.wc === 'top' || opt.wc === 'under' ? R.wcCard(selected, opt.guest, opt.free) : '';
-    // HIGHER OR LOWER: NBA (1000TRIES's HIGHER OR LOWER: NRL for the NBA): first in More Modes once it's on (launched, or the private link)
+    
     var more = (opt.ou ? ['ou'] : []).concat(['exact', 'spin', 'nrlw']).concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
       var mm = T.MODES[id] || { name: 'HIGHER OR LOWER: NBA' };
       return '<button type="button" class="mode-mini is-' + id + (id === selected ? ' is-on' : '') + '" data-mode="' + id + '" aria-label="Play ' + esc(mm.name) + '">' +
@@ -162,7 +162,7 @@
     return (opt.wc === 'top' ? wc + main : main + wc) + '<div class="mode-more-kicker">More Modes</div><div class="mode-more" style="--n:' + (more.length - (opt.ou ? 1 : 0)) + '">' + more.join('') + '</div>';
   };
 
-  /* DRAFT */
+   
 
   R.helper = function (S) {
     var total = T.total();
@@ -192,30 +192,30 @@
         '<span class="sb-help ' + h.cls + '">' + esc(h.text) + '</span>' +
       '</div>' +
       '<div class="sb-bar" id="sbBar"><div class="sb-fill" id="sbFill"></div><span class="sb-gain" id="sbGain"></span></div>' +
-      // A Daily go: today's challenge, always in view (the scoreboard stays at the top); a tap opens the whole challenge
+      
       (S.daily && S.daily.task ? '<button type="button" class="sb-daily" data-dly="remind" aria-label="See today&rsquo;s Daily Challenge">' +
         '<span class="sb-daily-k">' + (S.daily.icon || '&#x1F4C5;') + ' Daily Challenge &middot; Go ' + S.daily.go + ' of ' + (S.daily.of || 3) + '</span>' +
         '<span class="sb-daily-t">' + S.daily.task + '</span><span class="sb-daily-i" aria-hidden="true">&#x24D8;</span></button>' : '') +
       '</div>';
   };
 
-  // Progress bar heats up as the total closes in on the target
+  
   R.barLook = function (S, total) {
     var k = total / T.TARGET;
     if (S.mode.rule === 'exact' && total > T.TARGET) return { color: '#f87171', glow: 'rgba(248,113,113,.6)', stage: 'bust' };
     if (k >= 1) return { color: '#4ade80', glow: 'rgba(74,222,128,.65)', stage: 'hit' };
     if (k >= 0.9) return { color: '#ff5a36', glow: 'rgba(255,90,54,.65)', stage: 'hot' };
     if (k >= 0.75) return { color: '#fb923c', glow: 'rgba(251,146,60,.55)', stage: 'warm' };
-    if (k >= 0.5) return { color: '#ff6a13', glow: 'rgba(255,106,19,.5)', stage: 'mid' }; // basketball orange, never gold
+    if (k >= 0.5) return { color: '#ff6a13', glow: 'rgba(255,106,19,.5)', stage: 'mid' }; 
     if (k >= 0.25) return { color: '#3f86d6', glow: 'rgba(63,134,214,.4)', stage: 'low' };
     return { color: '#3b5b8a', glow: 'rgba(59,91,138,.3)', stage: 'cold' };
   };
 
-  // The starting five on a half court (css/main.css draws the floor), the hoop at the top: the centre under it, the
-  // forwards on the blocks either side, the guards out on the perimeter. T.SLOTS: PG 0, SG 1, SF 2, PF 3, C 4
+  
+  
   var ROWS = R.ROWS = [[4], [3, 2], [0, 1]];
   var ROW_CLS = ['r-c', 'r-fwd', 'r-gd'];
-  // The floor's lines: the key, the free-throw circle, the restricted area, the three-point line and the hoop
+  
   var COURT = '<svg class="court-lines" viewBox="0 0 500 470" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">' +
     '<g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3">' +
     '<rect x="170" y="0" width="160" height="190" fill="rgba(var(--acc-rgb),.16)"/>' +
@@ -257,11 +257,11 @@
     if (!S.mode.wildcards) return '';
     var sub = R.subButton(S), key = R.keyTile(S), goat = R.goatTile(S), imm = R.immTile(S), il = R.ilTile(S), extras = (sub ? 1 : 0) + (key ? 1 : 0) + (goat ? 1 : 0) + (imm ? 1 : 0) + (il ? 1 : 0), five = extras >= 2;
     var paid = !!S.mode.paidOnly;
-    // One-word names on the tiles in every game and mode, Team Spin's Reroll too (the owner, 17 Oct 2026: identical
-    // wildcards, no "Reveal Tries", "Remove Player" or "Respin" on a tile). Titles, the Shop and the Terms keep the full names
+    
+    
     var TILE = { reroll: 'Reroll', scout: 'Reveal', tweak: 'Remove' };
-    // The game's own and the saved ones as one total from the first pick ("13 left"), so a bought pack is never out of sight
-    // (11 Oct 2026: a player thought his 12 Remove Players were gone)
+    
+    
     var savedN = function (k) {
       var A = window.CastAccount;
       if (paid || S.finished || !S.mode.wildcards || S.wcLocked || !A || !A.canUseSaved || !A.canUseSaved()) return 0;
@@ -272,39 +272,39 @@
       ['reroll', 'scout', 'tweak'].map(function (k) {
         var left = S.wildcards[k];
         var usable = T.canUse(k);
-        // Hard Mode: one paid use of each a game, then it's done
+        
         if (paid && !left && (S.paidUsed || {})[k] && !(k === 'tweak' && S.tweakMode)) {
           return '<button type="button" class="wc wc-' + k + ' is-spent" disabled title="One of each wildcard a game in Exactly 100000">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(TILE[k]) + '</span>' +
             '<span class="wc-left">Used</span></button>';
         }
-        // A guest once CAST Pass launches: wildcards come with a free CAST Profile (sign in and they unlock in this game)
+        
         if (S.wcLocked && !left && !S.finished) {
           return '<button type="button" class="wc wc-' + k + ' wc-lock" data-action="wc-signin" title="Sign in free to use wildcards">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(TILE[k]) + '</span>' +
             '<span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign in free</span></button>';
         }
-        // Rerolls used up: a saved one ("2 saved") or one to buy, in a pop-up over the game (CastAccount.buyReroll)
+        
         if (k === 'reroll' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.rerollsSaved() > 0))) {
-          // Just bought: "N ready", glowing, so they tap it and watch the roll
+          
           var sv = CastAccount.rerollsSaved(), live = !!(S.offer && S.offer.players.length), fresh = !!(sv && CastAccount.rerollsFresh && CastAccount.rerollsFresh());
           return '<button type="button" class="wc wc-reroll wc-buy' + (fresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reroll"' + (live ? '' : ' disabled') + ' title="' + (sv ? 'Use one of your saved rerolls' : 'Buy an extra reroll') + '">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + TILE.reroll + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; ' + px('one', '$0.99')) + '</span></button>';
         }
-        // Remove Player used up: a saved one ("2 saved") or one to buy, the same way (CastAccount.buyRemove)
+        
         if (k === 'tweak' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.canBuyRemove && (CastAccount.canBuyRemove() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.removesSaved() > 0))) {
           var rs = CastAccount.removesSaved(), can = T.filledCount() > 0 && !S.subMode, rfresh = !!(rs && CastAccount.removesFresh && CastAccount.removesFresh());
           return '<button type="button" class="wc wc-tweak wc-buy' + (rfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-remove"' + (can ? '' : ' disabled') + ' title="' + (rs ? 'Use one of your saved Remove Players' : 'Buy an extra Remove Player') + '">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x274C;</span> ' + TILE.tweak + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('remove1', '$0.99')) + '</span></button>';
         }
-        // Reveal Points used up: a saved one or one to buy, the same way (CastAccount.buyItem('reveal')), while the offer is hidden
+        
         if (k === 'scout' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.buyItem && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.itemSaved('reveal') > 0))) {
           var vs = CastAccount.itemSaved('reveal'), hidden = !!(S.offer && S.offer.players.some(function (p) { return !R.triesShown(S, p); }));
           var vok = hidden && !S.tweakMode && !S.subMode, vfresh = !!(vs && CastAccount.itemFresh('reveal'));
           return '<button type="button" class="wc wc-scout wc-buy' + (vfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reveal"' + (vok ? '' : ' disabled') + ' title="' + (vs ? 'Use one of your saved Reveals' : 'Buy an extra Reveal') + '">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F440;</span> ' + TILE.scout + '</span><span class="wc-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('reveal1', '$0.99')) + '</span></button>';
         }
-        // Rerolls used up: the same button offers one more (YouTube subscribe, or sign in first); never in Hard Mode
+        
         if (k === 'reroll' && !left && !S.finished && !paid && window.CastAccount && CastAccount.bonusState && CastAccount.bonusState() !== 'none') {
           var guest = CastAccount.bonusState() === 'signin';
           return '<button type="button" class="wc wc-reroll wc-bonus" data-action="bonus-reroll" title="' + (guest ? 'Sign in for an extra reroll every game' : 'Subscribe on YouTube for a free extra reroll') + '">' +
@@ -321,9 +321,9 @@
       }).join('') + sub + key + goat + imm + il + '</div>' +
       (paid && !S.finished ? '<p class="wc-paid-note">Hard Mode: no free wildcards. One of each a game.</p>' : '');
   };
-  /* The GOAT (bought in the Shop, one item for every CAST draft game, 16 Oct 2026): in the main mode and Exactly,
-     never the Daily or a friend's challenge. "Ready" (or "N Left") with one to use, "Buy" without, "Spot Taken" while no
-     open spot fits him; never shown where there is no GOAT. A tap asks first, then swaps the offer for him */
+  
+
+
   function goatName() { var g = T.goatPlayer && T.goatPlayer(); return g ? g.name : 'The GOAT'; }
   function goatGoals() { var g = T.goatPlayer && T.goatPlayer(); return g ? T.fmt(g.tries_1998_plus) : ''; }
   R.goatTile = function (S) {
@@ -331,22 +331,22 @@
     if (S.finished || S.challenge || S.daily || S.goatUsed || !(S.mode.id === 'plus' || S.mode.id === 'exact') || !T.goatPlayer || !T.goatPlayer()) return '';
     if (!A || !A.itemSaved || !A.isSignedIn || !A.isSignedIn()) return '';
     var n = A.itemSaved('goat'), buy = !(n > 0);
-    if (buy && !(A.canBuyReroll && A.canBuyReroll())) return ''; // under 15: only one already in the Vault
+    if (buy && !(A.canBuyReroll && A.canBuyReroll())) return ''; 
     var ok = T.goatFits() && !S.tweakMode && !S.subMode, room = T.goatRoom();
     return '<button type="button" class="wc wc-goat' + (ok && !buy ? ' is-ready' : '') + (buy ? ' wc-buy' : '') + '" data-action="goat"' + (ok ? '' : ' disabled') +
       ' title="' + (ok ? esc(goatName()) + ', ' + goatGoals() + ' career points, as your next pick' : room ? 'Ready for your next offer' : 'No open spot fits ' + esc(goatName())) + '"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F410;</span> The GOAT</span>' +
       '<span class="wc-left">' + (!room ? 'Spot Taken' : buy ? 'Buy &middot; ' + px('goat1', '$9.99') : n > 1 ? n + ' left' : 'Ready') + '</span></button>';
   };
-  // No Legend Pick tile here (16 Oct 2026, the owner: one Legend Key button). 1000TRIES and 27-0 keep the Immortal Pick
+  
   R.immTile = function () { return ''; };
-  // 100000 POINTS: no World Cup, so no World Legend Pick
+  
   R.ilTile = function () { return ''; };
-  // Under a bought Pick's three (Hall of Famers, World Legends): go back to the offer you had, nothing used
+  
   R.immBack = function (S) {
     if (!S.offer || !S.offer.paid || S.offer.taken) return '';
     return '<div class="imm-back"><button type="button" class="btn btn-quiet btn-sm" data-action="imm-back">&larr; Keep My Offer</button><small>Your ' + (S.offer.item === 'ileg' ? 'World Legend Pick' : 'Legend Pick') + ' is only used once you choose.</small></div>';
   };
-  // Use the GOAT? One tap more, so a $9.99 item is never used by mistake
+  
   R.goatSheet = function () {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
       '<div class="confirm-ico goat-ico" aria-hidden="true">&#x1F410;</div>' +
@@ -356,10 +356,10 @@
       '<button type="button" class="btn btn-primary btn-block btn-goat" data-action="confirm-goat">&#x1F410; ' + (window.CastAccount && CastAccount.itemSaved && CastAccount.itemSaved('goat') > 0 ? 'Use The GOAT' : 'Get The GOAT &middot; ' + px('goat1', '$9.99')) + '</button>' +
       '<button type="button" class="btn btn-quiet btn-block" data-action="close-sheet">Not Now</button>';
   };
-  // Substitute: CAST Pass holders get 1 a game; a free profile sees it with the CAST Pass tag (tap for the Pass page)
+  
   R.subButton = function (S) {
     var t = window.CastAccount && CastAccount.tier ? CastAccount.tier() : null;
-    if (!t || t === 'guest' || S.finished || !S.mode.wildcards || S.mode.paidOnly) return ''; // no Substitute in Hard Mode
+    if (!t || t === 'guest' || S.finished || !S.mode.wildcards || S.mode.paidOnly) return ''; 
     if (t !== 'pass') return '<button type="button" class="wc wc-sub is-pass" data-action="sub-pass" title="Move a player into another position they play (CAST Pass)"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F501;</span> Substitute</span><span class="wc-left wc-pass-tag">CAST Pass</span></button>';
     var left = S.subLeft || 0, armed = !!S.subMode, usable = T.canSub();
     return '<button type="button" class="wc wc-sub' + (left ? '' : ' is-spent') + (armed ? ' is-armed' : '') + '" data-wildcard="sub"' + (usable || armed ? '' : ' disabled') +
@@ -367,23 +367,23 @@
       '<span class="wc-left">' + (armed ? (S.subMode.from == null ? 'Tap a player' : 'Tap a spot') : left ? left + ' left' : 'Used') + '</span></button>';
   };
 
-  /* The Vault (CAST Pass): the Legend Key in 100000+, a tile with the wildcards (as 27-0 shows its Superstar Key). A Pass
-     holder can swap the offer for a Legends Pick once a day; a free profile sees it with the CAST Pass tag (tap for the
-     Pass page). Never in a friend's challenge. While it is ready and a Legend fits, the offer also gets a line under
-     its cards: "Not these? Swap for a Legends Pick". */
+  
+
+
+
   function keyState(S) {
     if (S.mode.id !== 'plus' || S.finished || S.challenge || !window.CastAccount || !CastAccount.vault) return null;
-    return CastAccount.vault('legend'); // 'ready', 'used', 'pass' (no CAST Pass: locked) or null (guests, and before the tiers)
+    return CastAccount.vault('legend'); 
   }
-  // Today's CAST Pass key and the bought ones: "Ready" for one, "N left" for more (16 Oct 2026: as many in one team as you have)
+  
   function keyLeft() { var n = window.CastAccount && CastAccount.keyCount ? CastAccount.keyCount('legend') : 1; return n > 1 ? n + ' left' : 'Ready'; }
   R.keyTile = function (S) {
     var v = keyState(S);
     if (!v) return '';
     var lab = '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F511;</span> Legend Key</span>';
-    // Never "Used" in a game, and never "had its pick": the key stays on offer (the owner, 8 Oct 2026)
-    // No key to use (no CAST Pass, or today's is gone): a player 15+ can buy one for $1.99 (CastAccount.buyKey)
-    // A Legends, Hall of Famer or paid pick on screen: the key waits for the next offer
+    
+    
+    
     var why = !T.legendKeyRoom() ? 'No Legend fits your open spots' : 'Ready for your next offer';
     if ((v === 'pass' || v === 'used') && CastAccount.buyKey && CastAccount.canBuyKey && CastAccount.canBuyKey()) {
       var bf = T.legendKeyFits() && !S.tweakMode && !S.subMode;
@@ -397,15 +397,15 @@
       ' title="' + (fits ? 'Swap this offer for a Legends Pick' : why) + '">' + lab +
       '<span class="wc-left">' + (fits || room ? keyLeft() : 'No fit') + '</span></button>';
   };
-  // Not shown since 17 Oct 2026 (the owner: an extra CTA under the offer; the Legend Key tile in the bar does the job)
+  
   R.keySwap = function (S) {
     if (keyState(S) !== 'ready' || S.tweakMode || S.subMode || !T.legendKeyFits() || !(S.offer && S.offer.players.length) || S.offer.goat || S.offer.paid) return '';
     return '<button type="button" class="key-swap" data-action="legend-key"><span aria-hidden="true">&#x1F511;</span> Not these? Swap for a Legends Pick</button>';
   };
 
-  /* A Pick you used (a bought Pick, a Legend Key's Legends Pick, the GOAT) shows its numbers straight away (16 Oct 2026,
-     the owner: "When you use legend picks they have to show the runs straight away"). A free roll, Legends Pick
-     included, stays hidden until a Reveal */
+  
+
+
   function usedOffer(S, p) { return !!(S.offer && (S.offer.paid || S.offer.key || S.offer.goat) && S.offer.players.indexOf(p) >= 0); }
   R.triesShown = function (S, p) { return !!S.revealed[p.id] || usedOffer(S, p); };
   function triesBadge(S, p) {
@@ -413,7 +413,7 @@
     return '<span class="tries-badge"><strong>??</strong> points</span>';
   }
 
-  // Remove Player armed: hide the offer entirely so the only thing to do is tap the field
+  
   R.removeMode = function (S) {
     return '<div class="panel-head"><span class="panel-title">Remove a player</span><span class="panel-meta">Offer paused</span></div>' +
       R.wildcardBar(S) +
@@ -426,7 +426,7 @@
       '</div>';
   };
 
-  // A themed Daily's club rule (none in 100000 POINTS's days): what the offer panel says until the team has one, and the tag on their cards
+  
   function dailyRule(S) {
     var d = S.daily;
     if (!d || !d.club) return '';
@@ -437,8 +437,8 @@
     return d && d.club && T.playedFor(p, d.club) ? '<span class="pcard-dc" title="Has played for the ' + esc(d.clubName) + '">' + d.icon + ' ' + esc(d.clubName) + '</span>' : '';
   }
 
-  /* The pick clock (js/app.js clockTick runs it): a bar that runs down over the offer, red for the last five seconds,
-     and Paused while a pop-up is open (the cards are covered then) */
+  
+
   R.pickClock = function (S) {
     if (!T.clockMode || !T.clockMode(S) || S.tweakMode || !S.offer || !S.offer.players.length) return '';
     var v = T.clockView(S), left = Math.ceil(v.left / 1000);
@@ -473,7 +473,7 @@
       }).join('') + '</div>' + R.immBack(S);
   };
 
-  // The team as it was called that season (a 2001 spin lands on the St. Louis Rams)
+  
   R.reel = function (year, club, landed) {
     var c = club ? T.club(club) : null;
     return '<div class="reel' + (landed ? ' is-landed' : ' is-spinning') + '">' +
@@ -483,11 +483,11 @@
       '</div>';
   };
 
-  // Roster sort for Team Spin
+  
   T.spinSort = T.spinSort || { key: 'pos', dir: 1 };
   var POS_ORDER = ['PG', 'SG', 'SF', 'PF', 'C'];
 
-  // Group under the player's main listed position that is still open in your team
+  
   function groupPos(p) {
     var open = T.openCodesFor(p);
     return open.length ? open[0] : T.positionsOf(p)[0];
@@ -520,18 +520,18 @@
       '</div>';
   }
 
-  // Team Spin roster search (cleared on every new spin)
+  
   T.squadSearch = T.squadSearch || { open: false, q: '', offer: null };
 
   R.offerSpin = function (S) {
     if (S.tweakMode) return R.removeMode(S);
     var o = S.offer;
     if (T.squadSearch.offer !== o) T.squadSearch = { open: false, q: '', offer: o };
-    // Position chosen first: one list for that position (dual players included, never split)
+    
     var fixedPos = !!o.pos;
     var sorted = sortSquad(o.players, fixedPos);
     var lastGroup = null;
-    // Rows carry the spun team's colours: that is the roster they are being picked from
+    
     var rows = sorted.map(function (p) {
       var head = '';
       if (!fixedPos && T.spinSort.key === 'pos') {
@@ -559,7 +559,7 @@
       '<span class="squad-more" aria-hidden="true">Scroll for more &darr;</span></div>';
   };
 
-  // Team Spin step 1: choose the position before the team and season are revealed
+  
   R.pickPosition = function (S) {
     var counts = {}, order = [];
     S.slots.forEach(function (sl) { if (!sl.player) { if (!counts[sl.code]) order.push(sl.code); counts[sl.code] = (counts[sl.code] || 0) + 1; } });
@@ -586,10 +586,10 @@
       '<button type="button" class="btn btn-ghost btn-sm" data-action="cancel-tweak">Cancel</button></div>';
   };
 
-  // Team full with a Remove Player in hand, or (15+) a saved or bought one: remove, or lock in (10 second countdown,
-  // which waits while a Remove Player is being bought: S.lockHold)
-  /* Go Higher (js/app.js goHigher): at the target or over, their words in turn (S.ghCopy) and the total, with the same
-     Remove (their own, a saved one, or $0.99) and Lock In as a short team */
+  
+  
+  
+
   var GO_HIGHER = [
     function () { return ['Over ' + T.fmt(T.TARGET) + '! Go Higher?', 'Want to increase your score? Remove a player now.']; },
     function () { return ['Climb the Leaderboard', 'Don’t like a player in your team? Remove them now.']; }
@@ -612,15 +612,15 @@
             : '<button type="button" class="btn btn-decide btn-decide-remove" data-wildcard="tweak"' + ghAttr + '><span class="btn-decide-lbl">&#x274C; Remove Player</span></button>') +
           '<button type="button" class="btn btn-decide btn-decide-lock" data-action="lock-in" aria-label="Lock in this team' + (over ? ' at ' + T.fmt(total) + ' points' : '') + (S.lockHold ? '' : ' (locks in automatically in ' + T.LOCK_SECS + ' seconds)') + '">' +
             '<span class="lock-fill" aria-hidden="true"></span>' +
-            '<span class="btn-decide-lbl">&#x1F512; Lock ' + (over ? 'In' : 'in') + (S.lockHold ? '' : ' <b class="lock-secs">' + T.LOCK_SECS + '</b>') + '</span></button>' + // the total is big above it
+            '<span class="btn-decide-lbl">&#x1F512; Lock ' + (over ? 'In' : 'in') + (S.lockHold ? '' : ' <b class="lock-secs">' + T.LOCK_SECS + '</b>') + '</span></button>' + 
         '</div>' +
-        // Still holding the game's own Remove Player: a way to stock up on more (the packs pop-up; nothing is used)
+        
         (!paid && window.CastAccount && CastAccount.shopRemoves && CastAccount.canBuyRemove && CastAccount.canBuyRemove()
           ? '<button type="button" class="decision-more" data-action="shop-removes">&#x2795; Get More Remove Players</button>' : '')) +
       '</div>';
   };
 
-  // Phone chooser for dual-position players: club-coloured header + glowing field spots
+  
   R.slotChooser = function (p, codes) {
     var club = T.showClub(p);
     var c = T.club(club), lk = look(club, 340, 42, 3, p);
@@ -639,7 +639,7 @@
       '<button type="button" class="chooser-back" data-action="close-sheet">&larr; Pick Someone Else</button>';
   };
 
-  // Subscribe button (red, YouTube logo, Cast Patrol avatar). Shared with 27-0's Play Again pop-up.
+  
   R.subscribeBtn = function (where) {
     return '<a class="yt-sub" href="https://www.youtube.com/@thecastpatrol?sub_confirmation=1" target="_blank" rel="noopener" data-track="click_subscribe" data-where="' + esc(where) + '">' +
       '<img class="yt-avatar" src="assets/logos/cast-patrol-avatar.jpg" alt="" width="40" height="40">' +
@@ -648,7 +648,7 @@
       '</a>';
   };
 
-  // The New Game tab mid-draft: go again in this mode, change mode or keep playing (the same pop-up as 27-0's)
+  
   R.newGameSheet = function (S) {
     var daily = S.mode.id === 'daily' || !!S.daily;
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
@@ -662,7 +662,7 @@
       R.subscribeBtn('new_game');
   };
 
-  // Mid-game restart, same idea as the 27-0 Play Again prompt
+  
   R.restartSheet = function () {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
       '<div class="confirm-ico" aria-hidden="true">&#x2699;&#xFE0F;</div>' +
@@ -674,7 +674,7 @@
       R.subscribeBtn('play_again');
   };
 
-  // A draft saved on this phone (js/app.js, Save the draft in progress): carry on, or start fresh
+  
   R.resumeSheet = function (name, picks) {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
       '<div class="confirm-ico" aria-hidden="true">&#x1F3C0;</div>' +
@@ -685,7 +685,7 @@
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="drop-draft">Start Fresh</button>';
   };
 
-  // Mid-game Change mode: confirm before dropping the current team
+  
   R.changeModeSheet = function (S) {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
       '<div class="confirm-ico" aria-hidden="true">&#x1F3AE;</div>' +
@@ -694,7 +694,7 @@
       '<p class="sheet-sub center">You are playing ' + esc(S.mode.name) + '. This team will be lost and you go back to pick a mode.</p>' +
       '<button type="button" class="btn btn-primary btn-block" data-action="confirm-change-mode">Choose a mode</button>' +
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="close-sheet">Keep going</button>' +
-      R.subscribeBtn('change_mode'); // as on 27-0's Change mode pop-up
+      R.subscribeBtn('change_mode'); 
   };
 
   R.reveal = function (p, club) {
@@ -704,7 +704,7 @@
       '<span class="reveal-lbl">' + (T.isGoat(p) ? 'Career Points. The GOAT.' : T.isImmortal(p) ? 'Career Points. A Hall of Famer.' : T.isLegend(p) ? 'Career Points. A Legend.' : 'Career Points') + '</span></div>';
   };
 
-  /* LATEST VIDEOS (shared feed from the media kit) */
+   
 
   R.videos = function (list) {
     return list.map(function (v) {
@@ -717,13 +717,13 @@
     }).join('');
   };
 
-  /* RESULTS + ADS */
+   
 
-  // Unibet holding banner (rotates like 27-0). Renders nothing until the manifest has loaded.
+  
   R.unibet = function (where) {
     var src = T.ads && T.ads.pick('homepage');
     if (!src) return '';
-    // Neutral class names and a hide-on-error so blocked images never leave an empty frame
+    
     return '<div class="cp-partner">' +
       '<a class="cp-partner-link" href="https://bit.ly/betwithcast" target="_blank" rel="noopener noreferrer sponsored" data-track="unibet_click" data-where="' + esc(where) + '">' +
         '<img src="' + esc(src) + '" alt="Unibet" width="1920" height="1080" loading="lazy" onerror="var b=this.closest(\'.cp-partner\');if(b)b.remove();">' +
@@ -743,7 +743,7 @@
     return { title: 'Short by ' + T.fmt(-out.diff), sub: '' };
   };
 
-  // The luck of the draw (T.luckPct in js/draft.js): the points on offer against an average game. Also on team sheets.
+  
   function luckLine(S) {
     var k = S.mode.source === 'roll' && T.luckPct ? T.luckPct() : null;
     if (k == null) return '';
@@ -776,8 +776,8 @@
         (h.sub ? '<p class="result-sub">' + esc(h.sub) + '</p>' : '') +
         luckLine(S) +
       '</div>' +
-      // Play Again on its own, Share and Change Mode side by side under it (4 Oct 2026, the owner's call; 27-0 the same).
-      // A Daily go turns them into Go Again and Share My Best (js/daily.js)
+      
+      
       '<div class="res-acts">' +
         '<button type="button" class="btn btn-res btn-res-again btn-block" data-action="play-again"><span aria-hidden="true">&#x2699;&#xFE0F;</span> Play Again</button>' +
         '<div class="res-two">' +

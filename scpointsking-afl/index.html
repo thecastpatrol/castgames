@@ -2,9 +2,11 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>(function () { function inn(t) { var b = t.closest && t.closest('.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'); if (b) b.classList.add('is-in'); } document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; if (/\.webp(\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); t.src = t.src.replace(/\.webp(\?v=\w*)?/, '.png'); return; } inn(t); }, true); })();</script><style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->
 <script>window.CG_MODE = 'plus';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=9d1d652119b3">
+<link rel="stylesheet" href="../shared/cg.css?v=e4b6e41dc635">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -21,8 +23,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/sc-points-king-afl-180.png?v=0c67c53a">
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=6ee39b8f" data-site="scafl"></script>
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<script src="/1000tries/js/cast-contact.js?v=b2363faf" data-site="scafl"></script>
+<script>(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy'; m.content = "upgrade-insecure-requests; object-src 'none'; base-uri 'self'"; document.head.appendChild(m); })();</script>
 <script>
   if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) {
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
@@ -48,19 +50,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=c1549e9d">
-<link rel="stylesheet" href="css/cast-account.css?v=c8cbeee9">
+<link rel="stylesheet" href="css/main.css?v=49a9847c">
+<link rel="stylesheet" href="/1000tries/css/cast-account.css?v=4066998e">
 </head>
 <body>
 <script>window.CG_GAME = 'scpointsking-afl'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=9d1d652119b3"></script>
+<script src="../shared/cg.js?v=e4b6e41dc635"></script>
+<script src="/shared/cg-speed.js?v=cef2eaf1" defer></script>
 
 
 <header class="site-header">
   <a class="brand" href="./" data-action="home" aria-label="SC POINTS KING: AFL home">
     <img class="brand-logo" src="assets/logos/cast-patrol.png" alt="The Cast Patrol" width="600" height="302" data-fallback="brand-fallback">
     <span class="brand-fallback" hidden>THE CAST PATROL</span>
-    <img class="brand-game" src="assets/logos/scafl.png?v=1" alt="SC POINTS KING: AFL" width="1200" height="760">
+    <img loading="lazy" class="brand-game" src="assets/logos/scafl.png?v=1" alt="SC POINTS KING: AFL" width="1200" height="760">
   </a>
   <nav class="header-nav">
     <button type="button" class="nav-lb ca-nav-tab" data-cast-enabled hidden aria-label="Your stats" onclick="if (window.CastAccount) CastAccount.openProfile('stats')"><span aria-hidden="true">&#x1F4CA;</span><span class="ca-nav-lbl">Stats</span></button>
@@ -185,21 +188,21 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/analytics.js?v=021f0228"></script>
-<script src="js/data.js?v=16ea459c"></script>
-<script src="js/draft.js?v=42bebc81"></script>
-<script src="js/wildcards.js?v=9a58d5e4"></script>
-<script src="js/cast-nations.js?v=46208301"></script>
-<script src="js/cast-intl.js?v=e79b8507"></script>
-<script src="js/kits-data.js?v=42efb116"></script>
-<script src="js/cast-kits.js?v=3717bf89"></script>
-<script src="js/render.js?v=8c410102"></script>
-<script src="js/share-card.js?v=840b851b"></script>
-<script src="js/cast-celebrate.js?v=a92b0328"></script>
-<script src="js/app.js?v=dd32701f"></script>
-<script src="js/cast-daily.js?v=e7382c3c"></script>
-<script src="js/scafl-daily.js?v=e43a1596"></script>
-<script src="js/daily.js?v=4b88438a"></script>
+<script src="js/analytics.js?v=d49bd1b0"></script>
+<script src="js/data.js?v=f9eed97c"></script>
+<script src="js/draft.js?v=5c4169f0"></script>
+<script src="js/wildcards.js?v=e62d292d"></script>
+<script src="/1000tries/js/cast-nations.js?v=4c4e8435"></script>
+<script src="/1000tries/js/cast-intl.js?v=5f7b4f7d"></script>
+<script src="js/kits-data.js?v=1b052f12"></script>
+<script src="js/cast-kits.js?v=3ec5889d"></script>
+<script src="js/render.js?v=4fb188e8"></script>
+<script src="js/share-card.js?v=ac7c3ba7"></script>
+<script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
+<script src="js/app.js?v=393aaa79"></script>
+<script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
+<script src="js/scafl-daily.js?v=d9702f9f"></script>
+<script src="js/daily.js?v=16194af5"></script>
 <script>
   // Accounts and leaderboards stay off until the owner presses Launch in Admin ('scafl', or the Launch All card): its own
   // game id, boards and server check (lib/checkscafl.js) are hooked up in the 1000TRIES repo's shared code and functions
@@ -208,8 +211,8 @@
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; },
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); } };
 </script>
-<script src="js/cast-picks.js?v=08f42325"></script>
-<script src="js/cast-prices.js?v=1f44db96"></script>
-<script src="js/cast-account.js?v=df4697dc"></script>
+<script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
+<script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
+<script src="/1000tries/js/cast-account.js?v=423233c5"></script>
 </body>
 </html>

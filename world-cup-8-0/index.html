@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
+<script>(function () { function inn(t) { var b = t.closest && t.closest('.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'); if (b) b.classList.add('is-in'); } document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; if (/\.webp(\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); t.src = t.src.replace(/\.webp(\?v=\w*)?/, '.png'); return; } inn(t); }, true); })();</script><style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->
 <base href="../27-0/">
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <script>window.CG_MODE = 'wc';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=9d1d652119b3">
+<link rel="stylesheet" href="../shared/cg.css?v=e4b6e41dc635">
 <style>html.cg-in-game .cp-site-header, .screen > .header .header-logo, .screen > .header .cp-new-tab, .screen > .header [data-cast-account], .screen > .header [data-cast-friends], .screen > .header .cp-right, .nf-head, .site-header { display: none !important; }</style>
 
 <meta charset="UTF-8">
@@ -21,8 +23,8 @@
 <script>try{if(localStorage.getItem('cast_signed_in')==='1'&&!/FBAN|FBAV|FB_IAB|Instagram|Barcelona|musical_ly|Bytedance|TikTok|Snapchat|LinkedInApp|Line\//i.test(navigator.userAgent))document.documentElement.classList.add('ca-in')}catch(e){}</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SFNZY7BFYW"></script>
-<script src="js/cast-promo.js?v=f0525281"></script>
-<script src="js/game-core.js?v=926d4514"></script>
+<script src="/1000tries/js/cast-promo.js?v=8fe0a4ed"></script>
+<script src="js/game-core.js?v=ce48d74c"></script>
 <script src="js/ga.js?v=896743d6"></script>
   
   
@@ -37,9 +39,9 @@
 <!-- No automatic links on numbers, dates, places or units (7 Oct 2026: Chrome on iPhone underlined some players’ nation and rating) -->
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<script>(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy'; m.content = "upgrade-insecure-requests; object-src 'none'; base-uri 'self'"; document.head.appendChild(m); })();</script>
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=be30756c" data-site="27-0"></script>
+<script src="/1000tries/js/cast-contact.js?v=b2363faf" data-site="27-0"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover.
   // In a browser tab (e.g. Chrome on iPhone) cover let the page slide under the address bar and clipped the top.
@@ -75,29 +77,30 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/legacy-1.css?v=5e4a94d0">
+<link rel="stylesheet" href="css/legacy-1.css?v=b80a9de9">
 
 <!-- ╔══════════════════════════════════════════════════════╗
      ║       27-0 IMPECCABLE REDESIGN: Visual Layer         ║
      ╚══════════════════════════════════════════════════════╝ -->
-<link rel="stylesheet" href="css/legacy-2.css?v=1f88f4a9">
-<link rel="stylesheet" href="css/theme.css?v=e27b84c1">
+<link rel="stylesheet" href="css/legacy-2.css?v=79d4c997">
+<link rel="stylesheet" href="css/theme.css?v=c9a9ba37">
 
-<link rel="stylesheet" href="css/cast-account.css?v=c8cbeee9">
+<link rel="stylesheet" href="/1000tries/css/cast-account.css?v=4066998e">
 </head>
 <body>
 <script>window.CG_GAME = 'world-cup-8-0'; window.CG_PLAY = function (dry) { var b = document.querySelector('.screen.active .cp-new-tab'); if (b) { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=9d1d652119b3"></script>
+<script src="../shared/cg.js?v=e4b6e41dc635"></script>
+<script src="/shared/cg-speed.js?v=cef2eaf1" defer></script>
 
 
 <div id="setup" class="screen">
   <header class="cp-site-header">
-    <a class="cp-brand" href="./" aria-label="27-0 home"><img class="cp-brand-cast" src="assets/img/cast-wordmark.png" alt="The Cast Patrol" width="600" height="302"><img class="cp-brand-game" src="assets/img/27-0-logo.png" alt="27-0" width="601" height="358"></a>
+    <a class="cp-brand" href="./" aria-label="27-0 home"><img loading="lazy" class="cp-brand-cast" src="assets/img/cast-wordmark.png" alt="The Cast Patrol" width="600" height="302"><img loading="lazy" class="cp-brand-game" src="assets/img/27-0-logo.png" alt="27-0" width="601" height="358"></a>
     <button type="button" class="ca-nav-tab cp-stats-btn" onclick="if (window.CastAccount) CastAccount.openProfile('stats')" aria-label="Your stats"><span aria-hidden="true">&#x1F4CA;</span><span class="ca-nav-lbl">Stats</span></button>
   </header>
   <div class="setup-inner cp-home">
     <div class="cp-hero">
-      <h1 class="cp-hero-title"><span class="cast-logo-fx"><img class="cp-hero-logo" src="assets/img/27-0-logo.png" alt="27-0: Build the Ultimate NRL Era Team" width="601" height="358"></span></h1>
+      <h1 class="cp-hero-title"><span class="cast-logo-fx"><img loading="lazy" class="cp-hero-logo" src="assets/img/27-0-logo.png" alt="27-0: Build the Ultimate NRL Era Team" width="601" height="358"></span></h1>
       <p class="cp-hero-pitch">Rugby League&rsquo;s most addictive game. Spin, draft your <strong>NRL era 13</strong> and simulate a full season. Win every game and you go <strong>27-0</strong>.</p>
     </div>
 
@@ -282,7 +285,7 @@
       <h2 class="cp-section-title" id="faqTitle">Frequently Asked Questions</h2>
       <div id="faqList"></div>
     </section>
-    <script src="js/faq.js?v=b7006d72"></script>
+    <script src="js/faq.js?v=87933fdb"></script>
   </div>
 
   <footer id="siteFooter" class="cp-footer">
@@ -316,7 +319,7 @@
 
 <div id="draft" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>Spin for a squad, then pick your best player</p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -383,7 +386,7 @@
 
 <div id="squad-complete" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>Squad Complete: Your Best Starting 13 Is Set</p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -430,7 +433,7 @@
 
 <div id="season" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>Season Underway: <span id="seasonTeamLabel"></span></p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -461,7 +464,7 @@
 <!-- World Cup 8-0 (4 Oct 2026): the tournament, one game at a time (js/world-cup.js) -->
 <div id="wc-season" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>World Cup Underway: <span id="wcTeamLabel"></span></p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -481,7 +484,7 @@
 
 <div id="finals-viewer" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>Finals Underway</p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -512,7 +515,7 @@
 </div>
 <div id="results" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>Season Complete: <span id="resultsTeamLabel"></span></p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -533,7 +536,7 @@
 <!-- World Cup 8-0: the result -->
 <div id="wc-results" class="screen">
   <div class="header">
-    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <img loading="lazy" src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
     <div class="header-title"><p>World Cup Complete</p></div>
     <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
   </div>
@@ -543,8 +546,8 @@
   </div>
 </div>
 
-<script src="js/game-data-sim.js?v=3fc118f8"></script>
-<script src="js/finals-live.js?v=8ac65573"></script>
+<script src="js/game-data-sim.js?v=454f152f"></script>
+<script src="js/finals-live.js?v=b0abaf96"></script>
 
 
 
@@ -808,9 +811,9 @@
   </div>
 </div>
 
-<script src="js/cast-celebrate.js?v=a92b0328"></script>
-<script src="js/celebration.js?v=04207b32"></script>
-<script src="js/share-story.js?v=78c3ce41"></script>
+<script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
+<script src="js/celebration.js?v=7f7940c4"></script>
+<script src="js/share-story.js?v=069ccc94"></script>
 
   
 
@@ -873,7 +876,7 @@
 </div>
 
 
-<script src="js/site-extras.js?v=420d412a"></script>
+<script src="js/site-extras.js?v=13c08d57"></script>
 <!-- Analytics notice removed 2026-09-24: covered by the Privacy Policy -->
 <script>
   window.CAST_ACCOUNT = {
@@ -901,25 +904,25 @@
     privacyUrl: 'privacy.html', termsUrl: 'terms.html'
   };
 </script>
-<script src="js/upgrades-data.js?v=13379f9a"></script>
-<script src="js/cast-upgrades.js?v=c4498892"></script>
-<script src="js/cast-dual.js?v=9b9f6910"></script>
-<script src="js/cast-picks.js?v=08f42325"></script>
-<script src="js/cast-prices.js?v=1f44db96"></script>
-<script src="js/cast-account.js?v=b2938517"></script>
-<script src="js/cast-totw.js?v=5c338588"></script>
-<script src="js/cast-wch.js?v=da90d71b"></script>
-<script src="js/theme-fx.js?v=da6e677c"></script>
-<script src="js/cast-daily.js?v=e7382c3c"></script>
-<script src="js/daily.js?v=904083d1"></script>
-<script src="js/daily-wild.js?v=09367025"></script>
-<script src="js/picks.js?v=0280009e"></script>
-<script src="js/hard-mode.js?v=c6046a91"></script>
-<script src="js/mode-skin.js?v=c62cea94"></script>
-<script src="js/cast-nations.js?v=46208301"></script>
-<script src="js/cast-intl.js?v=e79b8507"></script>
-<script src="js/wc-engine.js?v=68137dbc"></script>
-<script src="js/world-cup.js?v=a10662b9"></script>
-<script src="js/draft-save.js?v=8ebedfe3"></script>
+<script src="/1000tries/js/upgrades-data.js?v=3e734230"></script>
+<script src="/1000tries/js/cast-upgrades.js?v=97bdb0f0"></script>
+<script src="/1000tries/js/cast-dual.js?v=ffefa095"></script>
+<script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
+<script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
+<script src="/1000tries/js/cast-account.js?v=423233c5"></script>
+<script src="/1000tries/js/cast-totw.js?v=513cc917"></script>
+<script src="/1000tries/js/cast-wch.js?v=8dd07687"></script>
+<script src="js/theme-fx.js?v=36e7ed0c"></script>
+<script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
+<script src="js/daily.js?v=7dfbcb41"></script>
+<script src="js/daily-wild.js?v=f5d9ae3e"></script>
+<script src="js/picks.js?v=a320be47"></script>
+<script src="js/hard-mode.js?v=560ff4f1"></script>
+<script src="js/mode-skin.js?v=4a7cd9bd"></script>
+<script src="/1000tries/js/cast-nations.js?v=4c4e8435"></script>
+<script src="/1000tries/js/cast-intl.js?v=5f7b4f7d"></script>
+<script src="js/wc-engine.js?v=5f6145b5"></script>
+<script src="js/world-cup.js?v=5c13d7be"></script>
+<script src="js/draft-save.js?v=b02a4712"></script>
 </body>
 </html>

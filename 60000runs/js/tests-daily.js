@@ -1,14 +1,14 @@
-/* global require */ // only on the server, where this file is loaded with require (see below)
-/* 60000 RUNS Daily calendar (16 Oct 2026): the Test cricket twin of the shared CAST Daily calendar (js/cast-daily.js, loaded
-   first), copied from 25000 RUNS' js/bbl-daily.js. It keeps the shared rewards, item names and streak ladder, and swaps in
-   Test days: nation days taking turns through the 8 big Test nations, a rivalry day (The Ashes: Australia and England, or
-   the Subcontinent: India, Pakistan, Sri Lanka and Bangladesh), an era day (before 1946, 1946 to 1979, 1980 to 1999, since
-   2000), and Sunday as the hard nation day, the same weekly pattern as 1000TRIES. Each player gets their own random draft
-   within the theme.
+  
 
-   CAST_DAILY.day('YYYY-MM-DD') gives the same shape as the shared calendar:
-     { date, key, name, short, lead, icon, title, story, who, hard, planned, onThisDay: null,
-       g1000: { target, only, years }, reward, rewardKind } */
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
   var shared = (typeof module !== 'undefined' && module.exports && typeof require === 'function') ? require('./cast-daily.js') : (root.CAST_DAILY || {});
@@ -16,24 +16,24 @@
   var NICK = { aus: 'Australia', eng: 'England', ind: 'India', sa: 'South Africa', nz: 'New Zealand', wi: 'West Indies', pak: 'Pakistan',
     sl: 'Sri Lanka', ban: 'Bangladesh' };
   var MASCOT = { aus: '🇦🇺', eng: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', ind: '🇮🇳', sa: '🇿🇦', nz: '🇳🇿', wi: '🌴', pak: '🇵🇰', sl: '🇱🇰' };
-  // Each nation's first Test, for the stories
+  
   var FIRST = { aus: 1877, eng: 1877, sa: 1889, wi: 1928, nz: 1930, ind: 1932, pak: 1952, sl: 1982 };
   function dayName(c) { return NICK[c]; }
   var CLUBS = ['aus', 'eng', 'ind', 'sa', 'nz', 'wi', 'pak', 'sl'];
   var RIVALS = { ashes: ['aus', 'eng'], sub: ['ind', 'pak', 'sl', 'ban'] };
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
 
-  /* Targets (16 Oct 2026): [normal, hard (Sundays)], set with the real-engine smart-fan simulator on each theme's own
-     pool (~/cast-dev/tests/tools/strat.js), rounded to 250 */
+  
+
   var TARGETS = {
     'nation:aus': [46250, 50000], 'nation:eng': [48750, 53500], 'nation:ind': [44000, 48250], 'nation:sa': [32250, 34750],
     'nation:nz': [44250, 47750], 'nation:wi': [43750, 47250], 'nation:pak': [39000, 42000], 'nation:sl': [48500, 51750],
     'rival:ashes': [49250, 54250], 'rival:sub': [45750, 50000],
     'era:pre1946': [23000, 26500], 'era:1946': [43750, 47500], 'era:1980': [52750, 56750], 'era:2000': [54000, 59250]
   };
-  /* The All-Rounder spot (17 Oct 2026, the owner: the Daily plays as it did before): from AR_FROM, the first Daily with the
-     All-Rounder spot live, every day's target is a little lower, Sri Lanka's more (its pool has few all-rounders), set
-     with the same simulator: [normal, hard]. Every day before keeps its target */
+  
+
+
   var AR_FROM = '2026-10-18';
   var TARGETS_AR = {
     'nation:aus': [45750, 49450], 'nation:eng': [48225, 52900], 'nation:ind': [43525, 47725], 'nation:sa': [31900, 34375],
@@ -44,16 +44,16 @@
   function tgt(key, hard, date) { var t = date >= AR_FROM && TARGETS_AR[key] || TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 50000 : 46000); }
 
   var REWARDS = { keys: { tests: { legend: 1 } }, wild: { tests: { reveals: 1 } }, freeze: { tests: { freezes: 1 } }, reroll: { tests: { left: 1 } } };
-  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
+  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; 
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  // The planned days (edit here): { key, name, short, lead, icon, title, who, story, t (target), g1000: { only | years } }
+  
   var DAYS = {};
 
-  var WEEK = ['nation', 'nation', 'rival', 'nation', 'era', 'nation', 'nation']; // Sun ... Sat
+  var WEEK = ['nation', 'nation', 'rival', 'nation', 'era', 'nation', 'nation']; 
   var RIVAL_ORDER = ['ashes', 'sub'];
-  // Test years are calendar years
+  
   var ERAS = [['pre1946', 'Before 1946', '', 1877, 1945, 'from the first Test in 1877 to the Second World War, the age of Victor Trumper, Jack Hobbs and Wally Hammond'],
     ['1946', '1946 to 1979', 'From ', 1946, 1979, 'from Ray Lindwall and the post-war Australians to Dennis Lillee and Clive Lloyd’s West Indies'],
     ['1980', '1980 to 1999', 'From ', 1980, 1999, 'the age of Malcolm Marshall, Imran Khan, Kapil Dev and Richard Hadlee, and the rise of Shane Warne'],
@@ -77,7 +77,7 @@
         story: 'How well do you know your Test history? Every player you can draft today played Tests ' + (e[0] === 'pre1946' ? 'before 1946' : e[0] === '2000' ? 'since 2000' : 'from ' + e[1]) + ', ' + e[5] + '.',
         g1000: { years: [e[3], e[4]] } };
     }
-    // Nation days: five a week, taking turns through the 8 nations
+    
     var slot = [0, 1, -1, 2, -1, 3, 4][wd], k = CLUBS[(week * 5 + slot) % CLUBS.length];
     return { key: 'nation:' + k, name: dayName(k) + ' Day', short: dayName(k), lead: 'With ', icon: MASCOT[k] || '🏏', title: dayName(k) + ' Players Only',
       who: dayName(k) + ' players',
@@ -103,7 +103,7 @@
     return t;
   }
 
-  // Where a reward item is used, in 60000 RUNS' words
+  
   var ITEM_USE = { legend: 'Use it in 60000+ to swap an offer for a Legends Pick.', reveals: 'Use it in your next draft to see the hidden runs.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh roll.', removes: 'Use it to take a player out of your XI.' };
   function useText(items) {
@@ -114,6 +114,6 @@
 
   var api = Object.assign({}, shared, { day: day, finals: [], nick: NICK, mascot: MASCOT, clubs: CLUBS, rivals: RIVALS,
     useText: useText, TARGETS: TARGETS, TARGETS_HARDER: TARGETS });
-  if (typeof module !== 'undefined' && module.exports) module.exports = api; // the server: its own copy, the shared one untouched
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; 
   else root.CAST_DAILY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

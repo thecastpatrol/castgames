@@ -168,3 +168,21 @@ html.cg-has-sport .cg-bar { border-bottom: 3px solid var(--cg-sport); }
 .cg-acct .ca-btn-admin > svg { display: none; }
 .cg-acct .ca-btn-admin::before { content: ""; flex: none; width: 22px; height: 22px; background: var(--cg-admin-off) center / contain no-repeat; }
 @media (hover: hover) { .cg-acct .ca-btn-admin:hover::before { background-image: var(--cg-admin-on); } }
+
+/* Card and logo art still on its way (speed pass, 18 Oct 2026, the owner: "sometimes the game shows an empty box"): a soft
+   shimmer in the card's own colour until the picture is in, never an empty box. It only fades in after 0.15 s, so art the
+   phone already has never flashes it, and it moves by transform alone, so a page full of them stays light on a phone.
+   The pictures script at the top of each page's head marks the box .is-in once its picture loads (tools/build.py IMGFB) */
+.cg-idle-art { position: relative; }
+.cg-art:not(.is-in):has(> img), .cg-swr-art:not(.is-in):has(> img), .cg-idle-art:not(.is-in):has(> img) { overflow: hidden; }
+.cg-art:not(.is-in):has(> img) { border-radius: 10px; }
+.cg-art:not(.is-in):has(> img)::after, .cg-swr-art:not(.is-in):has(> img)::after, .cg-idle-art:not(.is-in):has(> img)::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; z-index: 1; width: 300%; pointer-events: none; opacity: 0;
+  background: linear-gradient(105deg, rgba(255, 255, 255, .07) 35%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .07) 65%);
+  animation: cg-art-wait .3s ease .15s forwards, cg-art-shine 1.4s linear .15s infinite;
+}
+@keyframes cg-art-wait { to { opacity: 1; } }
+@keyframes cg-art-shine { from { transform: translateX(-66.667%); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .cg-art:not(.is-in):has(> img)::after, .cg-swr-art:not(.is-in):has(> img)::after, .cg-idle-art:not(.is-in):has(> img)::after { animation: cg-art-wait .3s ease .15s forwards; }
+}

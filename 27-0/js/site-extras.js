@@ -1,4 +1,4 @@
-// ── Privacy/Terms hash route ──
+
 (function(){
   function checkHash(){
     var h=window.location.hash;
@@ -19,11 +19,11 @@
   document.addEventListener('DOMContentLoaded',checkHash);
 })();
 
-// Unibet ads are switched off (no current deal). To bring them back set ADS_ON to true
-// and restore banners/ from git history. With the lists empty the game skips the popup.
+
+
 var ADS_ON = false;
 
-// ── Homepage banner rotation (replaces embedded GIF) ──
+
 (function(){
   if (!ADS_ON) return;
   fetch('banners/homepage-manifest.json')
@@ -41,7 +41,7 @@ var ADS_ON = false;
     .catch(function(){});
 })();
 
-// ── Unibet interstitial popup ──
+
 var _unibetPopupList=null;
 var _seasonsPlayed=0;
 var _resetGameCount=0;
@@ -73,7 +73,7 @@ function _showUnibetInterstitial(onClose){
     _closeInterstitial(onClose);
   };
 
-  // countdown bar
+  
   var rgLine=document.createElement('p');
   rgLine.style.cssText='color:#888;font-size:10px;text-align:center;margin:6px 0 2px;font-family:Inter,sans-serif;max-width:480px;width:100%';
   rgLine.innerHTML='18+ only. Gambling advertising. For support call <strong style="color:#aaa">1800 858 858</strong> or visit <a href="https://www.gamblinghelponline.org.au" target="_blank" style="color:#aaa">gamblinghelponline.org.au</a>.';
@@ -122,7 +122,7 @@ function _closeInterstitial(onClose){
   if(onClose)onClose();
 }
 
-// ── Wrap showSocialPrompt: show interstitial after first season ──
+
 var _origShowSocialPrompt=showSocialPrompt;
 showSocialPrompt=function(){
   _seasonsPlayed++;
@@ -135,7 +135,7 @@ showSocialPrompt=function(){
   }
 };
 
-// ── Wrap resetGame: every 5th call also shows interstitial ──
+
 var _origResetGame=resetGame;
 resetGame=function(){
   _resetGameCount++;
@@ -148,15 +148,15 @@ resetGame=function(){
   }
 };
 
-// The club slot (audit X4, 16 Oct 2026: "Canterbury-Bankstown Bulldogs" was cut off): a long club name steps down in size
-// until it fits two lines (css/theme.css lets the slot grow), so it is never cut. World Cup mode draws its own slot
+
+
 (function(){
   function fit(el){
     el.style.fontSize='';
     if(document.body.classList.contains('cp-wc'))return;
-    // the last two words stay together, so "Cowboys" is never alone on the second line (the owner's rule)
+    
     var t=el.textContent,i=t.lastIndexOf(' ');
-    if(i>0&&t.indexOf('\u00A0')<0&&el.children.length===0){el.textContent=t.slice(0,i)+'\u00A0'+t.slice(i+1);return;} // the observer fits it next
+    if(i>0&&t.indexOf('\u00A0')<0&&el.children.length===0){el.textContent=t.slice(0,i)+'\u00A0'+t.slice(i+1);return;} 
     var cs=getComputedStyle(el),fs=parseFloat(cs.fontSize)||15;
     function lines(){var lh=parseFloat(getComputedStyle(el).lineHeight)||fs*1.15;return el.scrollHeight/lh;}
     while(lines()>2.2&&fs>11){fs-=0.5;el.style.fontSize=fs+'px';}

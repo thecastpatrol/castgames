@@ -2,9 +2,11 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>(function () { function inn(t) { var b = t.closest && t.closest('.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'); if (b) b.classList.add('is-in'); } document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; if (/\.webp(\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); t.src = t.src.replace(/\.webp(\?v=\w*)?/, '.png'); return; } inn(t); }, true); })();</script><style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->
 <script>window.CG_MODE = 'plus';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=9d1d652119b3">
+<link rel="stylesheet" href="../shared/cg.css?v=e4b6e41dc635">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -21,8 +23,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/sc-points-king-180.png?v=ccf01691">
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=be30756c" data-site="sc"></script>
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<script src="js/cast-contact.js?v=76e04347" data-site="sc"></script>
+<script>(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy'; m.content = "upgrade-insecure-requests; object-src 'none'; base-uri 'self'"; document.head.appendChild(m); })();</script>
 <script>
   if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) {
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
@@ -48,19 +50,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=5d513f66">
-<link rel="stylesheet" href="css/cast-account.css?v=c8cbeee9">
+<link rel="stylesheet" href="css/main.css?v=6a410386">
+<link rel="stylesheet" href="/1000tries/css/cast-account.css?v=4066998e">
 </head>
 <body>
 <script>window.CG_GAME = 'scpointsking'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=9d1d652119b3"></script>
+<script src="../shared/cg.js?v=e4b6e41dc635"></script>
+<script src="/shared/cg-speed.js?v=cef2eaf1" defer></script>
 
 
 <header class="site-header">
   <a class="brand" href="./" data-action="home" aria-label="SC POINTS KING home">
     <img class="brand-logo" src="assets/logos/cast-patrol.png" alt="The Cast Patrol" width="600" height="302" data-fallback="brand-fallback">
     <span class="brand-fallback" hidden>THE CAST PATROL</span>
-    <img class="brand-game" src="assets/logos/sc.png?v=1" alt="SC POINTS KING" width="1200" height="760">
+    <img loading="lazy" class="brand-game" src="assets/logos/sc.png?v=1" alt="SC POINTS KING" width="1200" height="760">
   </a>
   <nav class="header-nav">
     <button type="button" class="nav-lb ca-nav-tab" data-cast-enabled hidden aria-label="Your stats" onclick="if (window.CastAccount) CastAccount.openProfile('stats')"><span aria-hidden="true">&#x1F4CA;</span><span class="ca-nav-lbl">Stats</span></button>
@@ -185,21 +188,21 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/analytics.js?v=bd1b8066"></script>
-<script src="js/data.js?v=2de56738"></script>
-<script src="js/draft.js?v=010bfa65"></script>
-<script src="js/wildcards.js?v=18a02a4b"></script>
-<script src="js/cast-nations.js?v=46208301"></script>
-<script src="js/cast-intl.js?v=e79b8507"></script>
-<script src="js/kits-data.js?v=2e7e35a9"></script>
-<script src="js/cast-kits.js?v=3717bf89"></script>
-<script src="js/render.js?v=604dfaaf"></script>
-<script src="js/share-card.js?v=4a9f4122"></script>
-<script src="js/cast-celebrate.js?v=a92b0328"></script>
-<script src="js/app.js?v=3108375c"></script>
-<script src="js/cast-daily.js?v=e7382c3c"></script>
-<script src="js/sc-daily.js?v=d83fc4d2"></script>
-<script src="js/daily.js?v=4045eeb3"></script>
+<script src="js/analytics.js?v=d49bd1b0"></script>
+<script src="js/data.js?v=831fef1e"></script>
+<script src="js/draft.js?v=00c0f44e"></script>
+<script src="js/wildcards.js?v=628486a1"></script>
+<script src="/1000tries/js/cast-nations.js?v=4c4e8435"></script>
+<script src="/1000tries/js/cast-intl.js?v=5f7b4f7d"></script>
+<script src="js/kits-data.js?v=533919e3"></script>
+<script src="js/cast-kits.js?v=3ec5889d"></script>
+<script src="js/render.js?v=5cadef1e"></script>
+<script src="js/share-card.js?v=2eaa3dd1"></script>
+<script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
+<script src="js/app.js?v=5c0aefe7"></script>
+<script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
+<script src="js/sc-daily.js?v=d60f93f6"></script>
+<script src="js/daily.js?v=fd980df5"></script>
 <script>
   // Accounts and leaderboards stay off until the owner presses Launch in Admin. SC is not connected to CAST accounts yet
   // (its own game id, boards and server check come with the hookup: see the integration checklist); 'launch' names a
@@ -209,8 +212,8 @@
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; },
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); } };
 </script>
-<script src="js/cast-picks.js?v=08f42325"></script>
-<script src="js/cast-prices.js?v=1f44db96"></script>
-<script src="js/cast-account.js?v=df4697dc"></script>
+<script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
+<script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
+<script src="/1000tries/js/cast-account.js?v=423233c5"></script>
 </body>
 </html>

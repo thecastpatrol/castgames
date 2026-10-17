@@ -1,25 +1,25 @@
-/* SC draft game data layer (17 Oct 2026, from the 1000TRIES engine via 100000 POINTS): the player-season pack, club maps,
-   the 13 in SC positions. Each card is one NRL player's season: his club that year, his SC position(s) that year and his
-   SC points for the season, 2009 to 2026, every season with at least one game. */
+
+
+
 (function (T) {
   'use strict';
 
-  /* SC POINTS KING (the owner, 17 Oct 2026): a high-score chase, not a target game. The biggest SC total wins the boards
-     and each board's #1 wears the crown. No target number anywhere in the main mode (the Daily keeps its own targets) */
+  
+
   T.GAME_NAME = 'SC POINTS KING';
-  T.GAME_SLUG = 'scpointsking'; // its address on CAST Games: castgames.com.au/scpointsking
+  T.GAME_SLUG = 'scpointsking'; 
   T.TARGET = 0;
 
-  // The over/under game would be a separate page on CAST Games; this home shows no card for it
+  
   T.OU_SEPARATE = true;
 
-  /* The 13 in SC positions (the owner, 17 Oct 2026): a fullback, four centres or wingers, a five-eighth, a halfback, a
-     hooker, two front rowers and three second rowers. A season fills one of the SC positions he had that year (the
-     site's first and second position). The codes are what the games save and the server checks, so they never change;
-     5/8 and 2RF keep their SC labels on screen */
+  
+
+
+
   T.SLOTS = ['FLB', 'CTW', 'CTW', 'CTW', 'CTW', 'FE', 'HFB', 'HOK', 'FRF', 'FRF', 'SR', 'SR', 'SR'];
-  /* The GOAT moment's headline (js/cast-celebrate.js), by the GOAT's player id (the owner, 17 Oct 2026: "IT'S TURBO TIME"
-     for Tom Trbojevic). A new #1 season by someone else gets the plain moment until his own line is added here */
+  
+
   T.GOAT_HEADLINES = { 'tom-trbojevic': 'IT\u2019S TURBO TIME' };
   T.goatHeadline = function (p) { return (p && T.GOAT_HEADLINES[p.pid]) || ''; };
   T.POS_NAMES = { FLB: 'Fullback', CTW: 'Centre / Wing', FE: 'Five-Eighth', HFB: 'Halfback', HOK: 'Hooker', FRF: 'Front Row', SR: 'Second Row' };
@@ -32,7 +32,7 @@
   T.FIRST_YEAR = 2009;
   T.LAST_YEAR = 2026;
 
-  // The 17 clubs, by the slugs the other NRL games use (1000TRIES and 27-0)
+  
   T.CLUBS = {
     broncos: { name: 'Brisbane Broncos', from: 2009, to: 2026 },
     raiders: { name: 'Canberra Raiders', from: 2009, to: 2026 },
@@ -56,7 +56,7 @@
   T.CLUB_NICK = { broncos: 'Broncos', raiders: 'Raiders', bulldogs: 'Bulldogs', sharks: 'Sharks', dolphins: 'Dolphins', titans: 'Titans',
     seaeagles: 'Sea Eagles', storm: 'Storm', knights: 'Knights', cowboys: 'Cowboys', eels: 'Eels', panthers: 'Panthers', rabbitohs: 'Rabbitohs',
     dragons: 'Dragons', roosters: 'Roosters', warriors: 'Warriors', tigers: 'Wests Tigers' };
-  // The abbreviations and colours 1000TRIES uses
+  
   T.CLUB_ABBR = { broncos: 'BRI', raiders: 'CBR', bulldogs: 'BUL', sharks: 'CRO', dolphins: 'DOL', titans: 'GCT', seaeagles: 'MAN', storm: 'MEL',
     knights: 'NEW', cowboys: 'NQC', eels: 'PAR', panthers: 'PTH', rabbitohs: 'SSR', dragons: 'SGI', roosters: 'SYD', warriors: 'NZW', tigers: 'WST' };
   T.CLUB_COLORS = { broncos: '#6B0046', raiders: '#36AD2D', bulldogs: '#00468B', sharks: '#0182BB', dolphins: '#FB141C', titans: '#00A2E0',
@@ -73,7 +73,7 @@
     return (0.299 * r + 0.587 * g + 0.114 * b) > 140 ? '#111111' : '#FFFFFF';
   }
 
-  // Everything the UI needs to paint a club: strong primary block, accent bar, readable text
+  
   T.club = function (slug) {
     var primary = T.CLUB_COLORS[slug] || '#1a1a2e';
     var secondary = T.CLUB_SECONDARY[slug] || '#FFFFFF';
@@ -91,20 +91,20 @@
     };
   };
 
-  // A season's SC positions that year (1 or 2)
+  
   T.positionsOf = function (p) { return p.positions_played || []; };
   T.canFill = function (p, code) { return T.positionsOf(p).indexOf(code) !== -1; };
 
-  // A season card belongs to one club and one year: played for club (in that year, when given)
+  
   T.playedFor = function (p, club, year) { return !!club && p.club === club && (year == null || p.year === year); };
   T.lastClub = function (p) { return p.club; };
   T.slotClub = function (slot) { return (slot && slot.club) || (slot && slot.player && slot.player.club); };
 
-  /* Legends (the Legend Key's Legends Pick only, 17 Oct 2026): all-time great SC seasons, each player's best when it
-     is 1750 or more (data/seasons.json "legends", set by ~/cast-dev/sc/tools/make_game_files.py). They are seasons
-     from the pack, so they also come in normal offers like any other season; a Legend Key's three are their own cards
-     (tier 'legend'), saved as "Name YEAR (Legend)" so the server can count them against the keys used. No free
-     Legends Pick and no lifeline: there is no target to rescue */
+  
+
+
+
+
   T.LEGENDS = [];
   T.LEGEND_ODDS = { legends: 0, immortal: 0 };
   T.LEGEND_REPLACES = [];
@@ -116,34 +116,34 @@
   T.isSpecial = function (p) { return !!p && !!p.tier; };
   T.loadLegends = function () { return T.loadDataset('nrl').then(function () { return T.LEGENDS; }); };
 
-  /* The GOAT: the #1 SC season total in the data (the owner's rule for every game: the GOAT is the #1 in the stat), Tom
-     Trbojevic's 2021 (2149 SC points in 15 games). A pack season, so he can be dealt like any other, but rarely in free
-     play (js/draft.js S.goatOut); the GOAT item brings his own card, his number showing */
+  
+
+
   T.GOAT_SRC = null;
   T.GOAT_ID = null;
   T.isGoat = function (p) { return !!p && (p.tier === 'goat' || (!!T.GOAT_ID && p.id === T.GOAT_ID)); };
   T.goatCard = function (src) { return src || null; };
 
-  // The surname on the field tiles: everything after the first name (Ah Mau, Chan Kum Tong)
+  
   T.surname = function (name) {
     var n = String(name).replace(/\s*\([^)]*\)\s*$/, '').trim(), parts = n.split(/\s+/);
     return parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
   };
 
   T.fmt = function (n) {
-    return Number(n).toLocaleString('en-AU', { useGrouping: false }); // no commas in numbers (the owner, 16 Oct 2026)
+    return Number(n).toLocaleString('en-AU', { useGrouping: false }); 
   };
 
   T.players = [];
   T.byId = {};
 
-  // World Cup match days (shared code from 1000TRIES; never on here)
+  
   T.NAT = null;
   T.loadNat = function () { return Promise.reject(new Error('no World Cup here')); };
   T.nationsOf = function () { return []; };
 
-  /* The pack (key 'nrl': the main pack everywhere in the shared code). tries_1998_plus holds each card's season SC
-     points (the engine's one number field); the second pack slot is never live */
+  
+
   T.DATASETS = {
     nrl: { file: 'data/seasons.json', target: 0, weight: 100, label: 'SC points', era: 'SC Points', only: 'Season SC points, 2009 to 2026', who: 'NRL' },
     wc: { file: 'data/seasons.json', target: 0, weight: 100, label: 'SC points', era: 'SC Points', only: 'SC points', who: 'NRL' },
@@ -153,9 +153,9 @@
   T.TRY_LABEL = 'SC points';
   T.ERA_LABEL = 'SC Points';
 
-  /* data/seasons.json (compact): clubs, people [[id, name]], rows [[person, year, club, "FLB/CTW", SC points, games]],
-     legends [row], goat row, tags {row: club} for a name two players share ("Sione Katoa (Sharks) 2018" on the boards) */
-  // One flat string (an id built from two parts is looked up thousands of times an offer)
+  
+
+  
   function flat(s) { var o = {}; o[s] = 1; return Object.keys(o)[0]; }
   T.expandPack = function (doc) {
     var players = [], byId = {};
@@ -192,7 +192,7 @@
     return d.loading;
   };
 
-  // Big seasons (top 5% of the pack) for the first offer. Cached per pack.
+  
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {
@@ -202,7 +202,7 @@
     return d.starCut;
   };
 
-  // Switch the live pack (call only between games)
+  
   T.useDataset = function (name) {
     var d = T.DATASETS[name];
     if (!d || !d.pool) return false;
@@ -222,7 +222,7 @@
     return T.loadDataset('nrl').then(function (pool) {
       if (!pool.legendsApplied) {
         T.LEGENDS.forEach(function (p) { pool.byId[p.id] = p; });
-        T.GOAT_CARD = null; // the GOAT is a pack season: the item brings his own card
+        T.GOAT_CARD = null; 
         pool.legendsApplied = true;
       }
       T.useDataset('nrl');

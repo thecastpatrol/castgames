@@ -1,50 +1,50 @@
-/* 650 GOALS Team Spin: 27-0 style season + club spin. */
+ 
 (function (T) {
   'use strict';
 
-  var MIN_YEAR = 1992; // the Premier League's first season, 1992-93
-  var MAX_YEAR = T.CUR_SEASON || 2026; // seasons go by the year they start (2026 is 2026-27)
-  T.SPIN_LIFT = 0; // see spinOffer
+  var MIN_YEAR = 1992; 
+  var MAX_YEAR = T.CUR_SEASON || 2026; 
+  T.SPIN_LIFT = 0; 
 
-  // Only the clubs in the Premier League that season (17 Oct 2026: clubs come and go with promotion and relegation)
+  
   function clubsInYear(year) {
     return Object.keys(T.CLUBS).filter(function (slug) {
       var c = T.CLUBS[slug];
-      return (c.spells || [[c.from, c.to]]).some(function (s) { return s[0] <= year && year <= s[1]; }); // spells: its runs in the league
+      return (c.spells || [[c.from, c.to]]).some(function (s) { return s[0] <= year && year <= s[1]; }); 
     });
   }
 
-  // Unused players from that club and season who can play the chosen position
-  // (or any open slot, if no position has been chosen)
+  
+  
   T.spinSquad = function (club, year, pos) {
     var S = T.state();
     return T.players
       .filter(function (p) { return !S.used[p.id] && !T.goatOut(p) && T.playedFor(p, club, year) && (pos ? T.canFill(p, pos) : T.fitsEmpty(p)); })
-      .sort(function (a, b) { return a.name.localeCompare(b.name); }); // alphabetical so order leaks nothing
+      .sort(function (a, b) { return a.name.localeCompare(b.name); }); 
   };
 
-  /* How many of the squad a spin shows (12 Oct 2026): an AFL list is about three times an NRL one, so a spin shows
-     SPIN_SHOW players from the squad who can play that spot (a little under a 1000TRIES spin), drawn the same way for
-     everyone with the same draft. keep: players who must be among them (the first spin's big goalscorer, a Respin's) */
+  
+
+
   T.SPIN_SHOW = 4;
   function shown(squad, R, keep, low) {
     if (squad.length <= T.SPIN_SHOW) return squad;
     var must = (keep || []).filter(function (p) { return squad.indexOf(p) >= 0; }).slice(0, T.SPIN_SHOW);
     var rest = squad.filter(function (p) { return must.indexOf(p) < 0; });
-    // a Respin's other cards come from below its bar when enough are left, so it shows one better, not more
+    
     if (low) { var under = rest.filter(low); if (under.length >= T.SPIN_SHOW - must.length) rest = under; }
     for (var i = rest.length - 1; i > 0; i--) { var j = Math.floor(R() * (i + 1)), t = rest[i]; rest[i] = rest[j]; rest[j] = t; }
     return must.concat(rest.slice(0, T.SPIN_SHOW - must.length)).sort(function (a, b) { return a.name.localeCompare(b.name); });
   }
 
-  // Spin until a combo has someone eligible. Returns the offer plus how many empty spins were skipped.
+  
   T.spinOffer = function () {
     var S = T.state();
     var pos = S.spinPos || null;
     var skipped = 0;
-    var R = T.stream ? T.stream('spin' + (S.spinNo = (S.spinNo || 0) + 1)) : Math.random; // seeded: a challenge gets the same spins
-    // A Respin or Remove Player, 7 times in 10 (js/draft.js S.boost): a club and season with just 1 player for this
-    // position who beats the best of the last squad (or the player removed), else one with more, else a normal spin
+    var R = T.stream ? T.stream('spin' + (S.spinNo = (S.spinNo || 0) + 1)) : Math.random; 
+    
+    
     var boost = S.boost; S.boost = null;
     if (boost) {
       var best = [];
@@ -67,11 +67,11 @@
         return S.offer;
       }
     }
-    // First spin of a game: most of the time land on a club and season with a big goalscorer in that position
+    
     var first = !S.firstOfferDone;
     S.firstOfferDone = true;
-    // Now and then a later spin lands the same way (T.SPIN_LIFT, on its own seeded stream, so the other spins are dealt as
-    // before): Team Spin set again on 17 Oct 2026, when the GOAT became rare in free play, so it stays as hard as it was
+    
+    
     var lift = !first && T.SPIN_LIFT > 0 && T.stream('spinlift' + S.spinNo)() < T.SPIN_LIFT;
     if ((first && R() < T.FIRST_STAR_CHANCE) || lift) {
       var stars = T.players.filter(function (p) {
@@ -107,7 +107,7 @@
       }
       skipped++;
     }
-    // Pool is nearly dry: pick straight from the combos that still have someone eligible
+    
     var combos = [];
     for (var y = MIN_YEAR; y <= MAX_YEAR; y++) {
       clubsInYear(y).forEach(function (c) {
@@ -115,7 +115,7 @@
         if (sq.length) combos.push({ year: y, club: c, players: sq });
       });
     }
-    if (!combos.length) return null; // nobody left anywhere for this position
+    if (!combos.length) return null; 
     var pickC = combos[Math.floor(R() * combos.length)];
     S.offer = { kind: 'spin', year: pickC.year, club: pickC.club, pos: pos, players: shown(pickC.players, R), skipped: skipped };
     S.revealed = {};

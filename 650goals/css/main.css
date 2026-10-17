@@ -1,9 +1,7 @@
-/* 650 GOALS (from 1000TRIES via 25000 RUNS). Dark theme, club colours up front. */
+
 
 :root {
-  /* 650 GOALS (17 Oct 2026): a Premier League magenta accent on deep purple (gold stays with the CAST Pass). The rules
-     point at --gold and --acc-rgb, never literal gold, like 700 TDS; the variable keeps its old name so the shared rules
-     find it */
+  
   --gold: #ff2d7a;
   --gold-dark: #d1105c;
   --acc-rgb: 255, 45, 122;
@@ -47,7 +45,7 @@ body.is-locked { overflow: hidden; }
 .wrap { max-width: 640px; margin: 0 auto; padding: 16px; }
 .wrap-wide { max-width: 1100px; }
 
-/* Header */
+
 
 .site-header {
   position: sticky; top: 0; z-index: 50;
@@ -59,16 +57,14 @@ body.is-locked { overflow: hidden; }
   border-bottom: 2px solid var(--gold);
 }
 .brand { display: flex; align-items: center; text-decoration: none; min-height: 36px; min-width: 40px; }
-.brand-logo { height: 38px; width: auto; max-width: 100%; display: block; object-fit: contain; object-position: left center; } /* shrinks evenly, never squashed */
-/* Signed in on a phone (11 Oct 2026, the owner: "they just want to play"): the 1000TRIES logo top left instead of cast, and
-   no big logo or pitch, so the banner and the modes come first. Guests, iPads and desktop keep both. html.ca-in: index.html
-   sets it before the page draws, js/cast-account.js keeps it right */
+.brand-logo { height: 38px; width: auto; max-width: 100%; display: block; object-fit: contain; object-position: left center; } 
+
 .brand .brand-game { display: none; height: 40px; width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
 @media (max-width: 767px) {
   .ca-in .brand .brand-logo, .ca-in .brand .brand-fallback { display: none; }
   .ca-in .brand .brand-game { display: block; }
   .ca-in #screen-home .hero { display: none; }
-  .ca-in #screen-home .ca-home-spot { margin-top: 14px; } /* the same gap under the top bar as 27-0 */
+  .ca-in #screen-home .ca-home-spot { margin-top: 14px; } 
 }
 @media (max-width: 380px) { .ca-in .brand .brand-game { height: 36px; } }
 .brand-fallback { font-weight: 900; font-size: 13px; letter-spacing: 2px; color: var(--gold); }
@@ -80,7 +76,7 @@ body.is-locked { overflow: hidden; }
   font-size: 11px; font-weight: 900; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap;
 }
 @media (hover: hover) { .header-nav .nav-rules:hover { border-color: var(--gold); background: rgba(var(--acc-rgb), .16); color: var(--gold); } }
-/* Stats and Leaderboards look like every other top bar button (.ca-nav-tab in cast-account.css: icon over a label) */
+
 .header-nav .nav-lb[hidden] { display: none; }
 body[data-screen="draft"] .header-nav .nav-lb { display: none; }
 @media (hover: hover) { .header-nav a:hover { color: var(--gold); } }
@@ -95,7 +91,7 @@ body[data-screen="draft"] .header-nav a { display: none; }
   .header-nav .nav-rules { min-height: 40px; padding: 8px 10px; font-size: 10.5px; }
   .btn-again .lbl-short { display: inline; }
   .brand-logo { height: 32px; }
-  body[data-screen="draft"] .btn-again > span[aria-hidden] { display: none; } /* room for the logo mid-draft */
+  body[data-screen="draft"] .btn-again > span[aria-hidden] { display: none; } 
 }
 body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .icon-btn {
@@ -109,13 +105,13 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .icon-btn.is-on .ico-on { display: block; }
 .icon-btn.is-on .ico-off { display: none; }
 
-/* Screens */
+
 
 .screen { display: none; }
 .screen.is-active { display: block; animation: fadeUp .25s ease both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* Buttons */
+
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -134,9 +130,9 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .btn-sm { min-height: 36px; padding: 6px 14px; font-size: 12px; }
 .btn-row { display: flex; gap: 10px; margin: 16px 0 10px; }
 .btn-row .btn { flex: 1; min-width: 0; }
-@media (max-width: 380px) { .btn-row .btn-decide { font-size: 12.5px; letter-spacing: 0; padding-left: 4px; padding-right: 4px; } .btn-row .btn-decide-lbl { gap: 4px; } .btn-row .btn-decide-lock .btn-decide-lbl { padding: 6px 10px; } } /* Remove Player and Lock In fit side by side at 360px, each label on one line (17 Oct 2026) */
-@media (max-width: 340px) { .btn-row:has(> .btn-decide) { flex-wrap: wrap; } .btn-row .btn-decide { flex-basis: 100%; } } /* narrower still: one above the other */
-/* Stand-alone links are small buttons, never underlined text */
+@media (max-width: 380px) { .btn-row .btn-decide { font-size: 12.5px; letter-spacing: 0; padding-left: 4px; padding-right: 4px; } .btn-row .btn-decide-lbl { gap: 4px; } .btn-row .btn-decide-lock .btn-decide-lbl { padding: 6px 10px; } } 
+@media (max-width: 340px) { .btn-row:has(> .btn-decide) { flex-wrap: wrap; } .btn-row .btn-decide { flex-basis: 100%; } } 
+
 .text-link {
   display: flex; width: max-content; max-width: 100%; align-items: center; justify-content: center; min-height: 36px; margin: 10px auto 0; padding: 8px 16px; box-sizing: border-box;
   border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06);
@@ -145,27 +141,27 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 @media (hover: hover) { .text-link:hover { border-color: rgba(255, 255, 255, .45); } }
 .center { text-align: center; }
 
-/* Home */
+
 
 .hero { text-align: center; padding: 18px 0 8px; }
 .hero-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); opacity: .85; }
 .hero-title { margin: 8px 0 10px; line-height: 1; }
-.hero-logo { display: block; margin: 0 auto; width: 100%; max-width: 300px; height: auto; } /* same size as the 27-0 logo */
-.cast-logo-fx { --logo-fx-img: url(../assets/logos/1000tries.png); } /* the glint's shape (cast-account.css) */
+.hero-logo { display: block; margin: 0 auto; width: 100%; max-width: 300px; height: auto; } 
+.cast-logo-fx { --logo-fx-img: url(../assets/logos/1000tries.png); } 
 .hero-wordmark { display: inline-flex; align-items: baseline; gap: 2px; font-weight: 900; letter-spacing: -1px; }
 .wm-num { font-size: clamp(64px, 20vw, 104px); color: var(--gold); text-shadow: 0 0 40px rgba(var(--acc-rgb), .35); }
 .wm-word { font-size: clamp(30px, 9vw, 48px); color: #fff; }
-.hero-pitch { color: #c8c8d8; font-size: 16px; line-height: 1.55; max-width: 520px; margin: 0 auto 14px; } /* room above the first box (30 Sep 2026) */
+.hero-pitch { color: #c8c8d8; font-size: 16px; line-height: 1.55; max-width: 520px; margin: 0 auto 14px; } 
 .hero-pitch strong { color: var(--gold); font-weight: 900; }
-/* Links inside a sentence: a soft accent tag instead of underlined text */
+
 .hero-pitch a, .faq-item p a, .doc p a, .doc li a { padding: 1px 6px; border-radius: 6px; background: rgba(var(--acc-rgb), .12); color: var(--gold); font-weight: 800; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 @media (hover: hover) { .hero-pitch a:hover, .faq-item p a:hover, .doc p a:hover, .doc li a:hover { background: rgba(var(--acc-rgb), .24); color: #fff; } }
 
-/* Choose Your Mode: a tap on a card starts that mode (no separate Play button) */
+
 .mode-kicker { margin: 20px 2px 14px; font: 900 11px/1 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); text-align: left; }
 .mode-picker { display: grid; gap: 10px; margin: 22px 0 16px; }
 .mode-kicker + .mode-picker { margin-top: 0; }
-/* Play on the right of each card; the chips fill their row evenly */
+
 .mode-go { grid-area: go; align-self: center; margin-left: 8px; font-size: 11px; font-weight: 900; letter-spacing: .6px; text-transform: uppercase; padding: 6px 11px; border-radius: 999px; background: rgba(255, 255, 255, .1); color: #fff; white-space: nowrap; }
 #startBtn[hidden] { display: none; }
 .mode-card {
@@ -188,7 +184,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .mode-card.is-on .mode-chip { background: rgba(var(--acc-rgb), .16); color: var(--gold); }
 .mode-tag { position: absolute; top: -9px; right: 12px; font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 5px; background: var(--gold); color: #111; }
 
-/* Team Spin: purple */
+
 .mode-card.is-spin { border-color: #3b2f6b; background: linear-gradient(135deg, rgba(124, 92, 255, .18), rgba(124, 92, 255, .03) 70%), var(--card); }
 @media (hover: hover) { .mode-card.is-spin:hover { border-color: #7c5cff; } }
 .mode-card.is-spin .mode-name { color: #c4b5fd; }
@@ -197,7 +193,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .mode-card.is-spin.is-on .mode-name { color: #fff; }
 .mode-tag-spin { background: #7c3aed; color: #fff; }
 
-/* NRLW: teal */
+
 .mode-card.is-nrlw { border-color: #134e4a; background: linear-gradient(135deg, rgba(20, 184, 166, .18), rgba(20, 184, 166, .03) 70%), var(--card); }
 .mode-card.is-nrlw .mode-name { color: #5eead4; }
 .mode-card.is-nrlw .mode-chip { background: rgba(20, 184, 166, .16); color: #5eead4; }
@@ -205,7 +201,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .mode-card.is-nrlw.is-on .mode-name { color: #fff; }
 .mode-tag-nrlw { background: #0d9488; color: #fff; }
 
-/* Exactly 1000: hard mode */
+
 .mode-card.is-hard { border-color: #5a1f26; background: linear-gradient(135deg, rgba(220, 38, 38, .16), rgba(220, 38, 38, .03) 70%), var(--card); }
 @media (hover: hover) { .mode-card.is-hard:hover { border-color: #b91c1c; } }
 .mode-card.is-hard .mode-name { color: #fca5a5; }
@@ -238,7 +234,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .promo-sub { font-size: 13px; color: #b8b8cc; }
 .promo-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 22px; color: var(--gold); }
 
-/* FAQ (same look as 27-0) */
+
 
 .faq { margin: 26px 0 0; }
 .faq-title { font-size: 20px; font-weight: 900; margin: 0 0 10px; }
@@ -249,7 +245,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .faq-ico { flex-shrink: 0; font-size: 22px; font-weight: 400; line-height: 1; color: var(--gold); transition: transform .25s, color .25s; }
 .faq-item[open] .faq-ico { transform: rotate(45deg); color: #fff; }
 .faq-item p { margin: 0; padding: 0 16px 14px; font-size: 14px; line-height: 1.6; color: #b8b8cc; }
-/* The whole FAQ folds away under its heading */
+
 .faq-fold > summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; cursor: pointer; list-style: none; background: var(--card); border: 1px solid var(--line); }
 .faq-fold > summary::-webkit-details-marker { display: none; }
 .faq-fold > summary .faq-title { flex: 1 1 auto; margin: 0; }
@@ -257,7 +253,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .faq-fold[open] > summary .faq-ico { transform: rotate(45deg); color: #fff; }
 @media (hover: hover) { .faq-fold > summary:hover { border-color: rgba(var(--acc-rgb), .5); } }
 
-/* Latest videos */
+
 
 .watch { margin: 26px 0 0; }
 .watch-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -272,7 +268,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   scrollbar-width: none;
 }
 .watch-track::-webkit-scrollbar { display: none; }
-/* Wider screens keep the same side-scrolling row as 27-0, two big cards and a peek of the next */
+
 @media (min-width: 600px) { .watch-track { grid-auto-columns: 46%; } }
 .vcard {
   display: flex; flex-direction: column; scroll-snap-align: start; overflow: hidden;
@@ -295,7 +291,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .acast-embed { margin: 18px 0 8px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
 .acast-embed iframe { display: block; border: 0; }
 
-/* Draft: scoreboard */
+
 
 .scoreboard {
   position: sticky; top: 58px; z-index: 40;
@@ -333,7 +329,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   box-shadow: 0 0 12px var(--glow);
   transition: width 1.1s cubic-bezier(.22, 1.2, .36, 1), --bar .8s, box-shadow .8s, background .8s;
 }
-/* moving sheen so the bar feels alive */
+
 .sb-fill::after {
   content: ""; position: absolute; inset: 0;
   background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0) 0 14px, rgba(255, 255, 255, .16) 14px 22px);
@@ -354,7 +350,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .sb-gain.is-on { animation: sbGain 1.5s ease-out .3s both; }
 @keyframes sbGain { 0% { opacity: 0; transform: translate(-50%, 6px) scale(.7); } 20% { opacity: 1; transform: translate(-50%, -14px) scale(1.15); } 70% { opacity: 1; transform: translate(-50%, -20px) scale(1); } 100% { opacity: 0; transform: translate(-50%, -28px); } }
 
-/* Draft: layout */
+
 
 .draft-grid { display: grid; gap: 16px; }
 .panel {
@@ -364,7 +360,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .panel-title { font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); }
 .panel-meta { font-size: 12px; color: var(--muted); font-weight: 600; }
 
-/* Pitch */
+
 
 .pitch {
   display: grid; gap: 8px; padding: 12px 8px;
@@ -390,7 +386,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 }
 .slot.is-filled .slot-code { position: absolute; top: 5px; left: 6px; font-size: 9px; font-weight: 900; opacity: .75; }
 .slot-abbr { position: absolute; top: 5px; right: 6px; font-size: 9px; font-weight: 900; color: var(--club-accent); }
-.slot-name { font-size: 12px; font-weight: 900; line-height: 1.25; margin-top: 10px; max-width: 100%; overflow-x: clip; overflow-y: visible; white-space: nowrap; } /* line-height and clip only sideways: a g, y or p keeps its tail (16 Oct 2026, the owner) */
+.slot-name { font-size: 12px; font-weight: 900; line-height: 1.25; margin-top: 10px; max-width: 100%; overflow-x: clip; overflow-y: visible; white-space: nowrap; } 
 .slot-tries { font-size: 18px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .slot.is-flash { animation: flash 1s ease; }
 @keyframes flash { 0% { transform: scale(.6); opacity: 0; } 40% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
@@ -398,7 +394,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 @media (hover: hover) { .slot.is-tweakable:hover { outline: 3px solid var(--bad); } }
 @keyframes wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-1.5deg); } 75% { transform: rotate(1.5deg); } }
 
-/* Wildcard colours: Roll Again teal, Reveal Try Stats amber, Tweak pink */
+
 .wc.wc-reroll { border-color: #0f766e; background: linear-gradient(160deg, rgba(20, 184, 166, .22), rgba(20, 184, 166, .06)); }
 .wc.wc-reroll .wc-left { color: #5eead4; }
 .wc.wc-scout { border-color: #b45309; background: linear-gradient(160deg, rgba(245, 158, 11, .22), rgba(245, 158, 11, .06)); }
@@ -409,7 +405,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .wc.wc-tweak.is-armed { border-color: var(--bad); background: #2a1116; }
 .wc-ico { font-size: 13px; }
 
-/* Wildcards feel charged while unused: a slow glow and a light sweep, staggered across the three */
+
 .wc { position: relative; overflow: hidden; --wc: var(--gold); --wc-rgb: var(--acc-rgb); }
 .wc.wc-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; }
 .wc.wc-scout  { --wc: #fbbf24; --wc-rgb: 251, 191, 36; }
@@ -431,7 +427,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .wc.is-armed { animation: wcArmed .9s ease-in-out infinite; }
 @keyframes wcArmed { 0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, .0); } 50% { box-shadow: 0 0 0 3px rgba(248, 113, 113, .35), 0 0 16px rgba(248, 113, 113, .5); } }
 
-/* The button that was just spent pops, flashes, then fades to Used */
+
 .wc.just-used { animation: wcSpent .9s ease both; }
 @keyframes wcSpent {
   0% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--wc-rgb), .8); filter: brightness(1.8); }
@@ -439,7 +435,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   100% { opacity: .3; transform: none; box-shadow: none; filter: none; }
 }
 
-/* Burst: big card over the screen when a wildcard fires */
+
 .wc-burst { position: fixed; inset: 0; z-index: 120; display: flex; align-items: center; justify-content: center; pointer-events: none; --wc: var(--gold); --wc-rgb: var(--acc-rgb); }
 .wc-burst-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; }
 .wc-burst-scout  { --wc: #fbbf24; --wc-rgb: 251, 191, 36; }
@@ -464,17 +460,17 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 @keyframes wcbIco { 0% { transform: scale(.2); } 30% { transform: scale(1.35); } 45%, 100% { transform: scale(1); } }
 @keyframes wcbSpin { 0% { transform: scale(.2) rotate(-180deg); } 35% { transform: scale(1.3) rotate(200deg); } 55%, 100% { transform: scale(1) rotate(360deg); } }
 
-/* Reroll payoff: the new offer flips in card by card */
+
 .offer-cards.is-rerolled .pcard { animation: rerollIn .55s cubic-bezier(.2, .8, .3, 1.15) both; }
 @keyframes rerollIn { 0% { opacity: 0; transform: perspective(700px) rotateX(-75deg) translateY(-14px); } 60% { opacity: 1; transform: perspective(700px) rotateX(10deg); } 100% { transform: none; } }
 
-/* Reveal Tries payoff: each number pops with a gold flash while it counts up */
+
 .tries-badge.is-popping { display: inline-block; animation: triesPop .7s ease both; }
 .tries-badge.is-popping strong { color: var(--gold); text-shadow: 0 0 12px rgba(var(--acc-rgb), .8); }
 @keyframes triesPop { 0% { transform: scale(.5); opacity: 0; } 45% { transform: scale(1.35); opacity: 1; } 100% { transform: scale(1); } }
 
 
-/* Team Spin: choose a position first */
+
 .pp-intro { font-size: 13px; color: #c0c0d0; margin: 0 0 10px; }
 .pp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .pp-btn {
@@ -490,7 +486,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .slot.is-choose .slot-code { color: #c4b5fd; }
 .slot.is-chosen { border: 2px solid #a78bfa; background: rgba(124, 92, 255, .3); box-shadow: 0 0 16px rgba(139, 92, 246, .55); }
 
-/* Remove Player mode */
+
 .remove-mode {
   display: grid; justify-items: center; gap: 4px; text-align: center; padding: 18px 12px 12px; border-radius: 14px;
   background: linear-gradient(180deg, rgba(236, 72, 153, .14), rgba(236, 72, 153, .03)); border: 1.5px dashed #be185d;
@@ -511,19 +507,19 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .share-opt .btn { width: 100%; margin: 0; }
 .share-preview { display: block; width: 100%; max-width: 300px; margin: 10px auto 4px; border-radius: 12px; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,.5); }
 
-/* Results buttons: one colour each */
+
 .btn-res { gap: 8px; border: 2px solid transparent; white-space: nowrap; }
 @media (max-width: 480px) { .btn-res { font-size: 14px; padding: 12px 10px; gap: 6px; letter-spacing: .3px; } #results .panel-meta { white-space: nowrap; } #results .panel-title { font-size: 12px; } }
 .btn-res-again { background: var(--gold); color: #111; }
 .btn-res-share { background: #16a34a; color: #fff; }
 .btn-res-mode { background: #14141f; color: var(--gold); border-color: var(--gold); margin-top: 2px; }
-/* Results buttons: Play Again full width, Share and Change Mode side by side under it (4 Oct 2026) */
+
 .res-acts { display: grid; gap: 10px; margin: 16px 0 10px; }
 .res-acts .btn-res-again { min-height: 56px; font-size: 17px; }
 .res-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .res-two .btn-res-mode { margin-top: 0; }
 @media (max-width: 480px) { .res-acts .btn-res-again { font-size: 16px; } }
-/* The results list's title on its own line, its note under it (it wrapped over three lines beside the note) */
+
 .panel-head.is-stack { flex-direction: column; align-items: flex-start; gap: 2px; }
 #results .panel-head.is-stack .panel-meta { white-space: normal; }
 @media (hover: hover) {
@@ -532,7 +528,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   .btn-res-mode:hover { background: rgba(var(--acc-rgb), .12); }
 }
 
-/* Desktop placing: glowing target spots */
+
 
 .slot.is-preview { border-color: rgba(var(--acc-rgb), .7); background: rgba(var(--acc-rgb), .1); }
 .slot.is-preview .slot-code { color: var(--gold); }
@@ -554,7 +550,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .pcard.is-selected, .srow.is-selected { outline: 3px solid var(--gold); outline-offset: 2px; }
 .place-hint { color: var(--gold); font-weight: 900; }
 
-/* Wildcards */
+
 
 .wildcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
 .wc {
@@ -574,7 +570,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   background: #2a1116; border: 1px solid var(--bad); font-size: 13px; color: #fecaca;
 }
 
-/* Offer cards (roll 3) */
+
 
 .offer-cards { display: grid; gap: 10px; }
 .pcard {
@@ -583,8 +579,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   animation: dealIn .35s ease both;
   transition: transform .12s, box-shadow .15s;
 }
-/* The hover ring is gold on every card (30 Sep 2026): it was the club's second colour, which only looked gold on clubs
-   like Parramatta and vanished on dark ones like Cronulla */
+
 @media (hover: hover) { .pcard:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .45), 0 0 0 2px var(--gold); } }
 .pcard:disabled { opacity: .5; cursor: not-allowed; }
 @keyframes dealIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -594,16 +589,16 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   border-left: 8px solid var(--club-accent);
 }
 .pcard-abbr { font-size: 13px; font-weight: 900; letter-spacing: 1px; padding: 2px 7px; border-radius: 5px; background: var(--club-accent); color: var(--club); }
-.pcard-club { font-size: 13px; font-weight: 800; line-height: 1.15; min-width: 0; text-wrap: balance; } /* wraps, never cut short ("Manly Warringah Sea Eagles" on an Immortal card at 390px, 17 Oct 2026) */
+.pcard-club { font-size: 13px; font-weight: 800; line-height: 1.15; min-width: 0; text-wrap: balance; } 
 .pcard-body { display: grid; gap: 6px; padding: 12px 14px 4px; }
 .pcard-name { font-size: 20px; font-weight: 900; line-height: 1.15; }
 .pcard-meta, .srow-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
 .pcard-span { font-size: 12px; color: var(--muted); font-weight: 600; margin-left: 4px; }
-/* World Cup 200+: a badge for each nation a dual Test player played for (5 Oct 2026) */
+
 .pcard-nats { display: inline-flex; flex-wrap: wrap; gap: 3px; margin-left: 2px; }
 .pcard-nats i { display: inline-grid; place-items: center; min-width: 26px; height: 15px; padding: 0 3px; border-radius: 3px; font: 900 8px/1 'Inter', sans-serif; font-style: normal;
   letter-spacing: .2px; color: var(--n2); background: var(--n1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); }
-/* Themed Daily (e.g. Knights Day): a tag on every player who has played for the day's club */
+
 .pcard-dc { align-self: flex-start; margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px;
   background: rgba(58, 120, 181, .18); border: 1px solid rgba(58, 120, 181, .6); color: #cfe3ff; font-size: 10.5px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; }
 .chip { font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; background: #2a2a44; color: #c7d2fe; letter-spacing: .3px; }
@@ -613,7 +608,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .tries-badge strong { font-size: 18px; color: #6b6b85; font-weight: 900; margin-right: 2px; }
 .tries-badge.is-revealed strong { color: var(--gold); }
 
-/* Team Spin */
+
 
 .reel { display: grid; grid-template-columns: 1fr auto 2fr; align-items: stretch; gap: 8px; margin-bottom: 10px; }
 .reel-box {
@@ -633,7 +628,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .reel-club[style] { background: var(--club); border-color: var(--club-accent); color: var(--club-text); }
 .reel-club[style] .reel-lbl { color: var(--club-text); opacity: .7; }
 
-/* Squad sort toggle (Team Spin) */
+
 .sort-toggle { display: grid; grid-template-columns: 1fr 1fr; margin: 0 0 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg2); overflow: hidden; }
 .sort-btn {
   display: grid; gap: 1px; justify-items: center; padding: 8px 6px; border: 0; background: transparent; cursor: pointer;
@@ -679,7 +674,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .srow-name { font-size: 15px; font-weight: 800; }
 .note { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
 
-/* Reveal after a pick */
+
 
 .reveal {
   display: grid; justify-items: center; gap: 2px; padding: 26px 16px; border-radius: 14px;
@@ -691,20 +686,20 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .reveal-lbl { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: .8; text-align: center; text-wrap: balance; }
 @keyframes pop { 0% { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }
 
-/* Decision when full but short */
+
 
 .decision { text-align: center; padding: 8px 4px; }
 .decision-big { font-size: 34px; font-weight: 900; color: var(--bad); margin: 4px 0; }
 .decision p { color: #c8c8d8; }
-/* At the target or over (Go Higher, 2 Oct 2026): the total in the win green */
+
 .decision.is-over .decision-big { color: var(--good); }
 .decision.is-over .decision-big small { font-size: 16px; font-weight: 800; color: #c8c8d8; }
-/* Squad full with the game's own Remove Player: a small pink pill to stock up on more (a pill, not a text link) */
+
 .decision-more { display: inline-flex; align-items: center; gap: 6px; margin: 12px auto 0; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(244, 114, 182, .55);
   background: rgba(236, 72, 153, .12); color: #f9a8d4; font: 800 12.5px/1.2 var(--font); cursor: pointer; -webkit-tap-highlight-color: transparent; }
 @media (hover: hover) { .decision-more:hover { border-color: #f472b6; color: #fff; } }
 
-/* Sheet (slot chooser) */
+
 
 .sheet { position: fixed; inset: 0; z-index: 200; display: flex; align-items: flex-end; justify-content: center; height: 100vh; height: 100dvh; overscroll-behavior: contain; }
 .sheet-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, .7); }
@@ -717,7 +712,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 @keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
 .sheet-title { font-size: 18px; font-weight: 900; margin: 0 0 2px; }
 .sheet-sub { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
-/* Dual-position chooser (phones) */
+
 .chooser-card { overflow: hidden; border-radius: 14px; border: 2px solid var(--club); background: var(--card2); margin-bottom: 14px; }
 .chooser-card .pcard-plate { display: flex; }
 .chooser-name { display: block; padding: 10px 14px 12px; font-size: 20px; font-weight: 900; }
@@ -755,23 +750,23 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 }
 .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
 
-/* Results */
+
 
 .result-hero { text-align: center; padding: 22px 16px 18px; border-radius: 18px; margin-top: 4px; }
 .result-hero.is-win { background: radial-gradient(circle at 50% 0, rgba(var(--acc-rgb), .28), rgba(var(--acc-rgb), .04) 70%); border: 2px solid var(--gold); }
 .result-hero.is-fail { background: radial-gradient(circle at 50% 0, rgba(248, 113, 113, .18), rgba(248, 113, 113, .03) 70%); border: 2px solid #5a2630; }
 .result-kicker { font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); }
-/* The total is the hero */
+
 .result-total { display: grid; justify-items: center; margin: 4px 0 2px; }
 .rt-num {
-  font-size: clamp(88px, 24vw, 150px); font-weight: 900; line-height: .95; letter-spacing: -3px; font-variant-numeric: tabular-nums; /* 24vw, not 30 (16 Oct 2026): a five figure total (25000 and up) fits a 390px phone */
-  padding: 0 .08em; /* the gradient only paints inside the box: room so the last digit (a 6, a 0) is never clipped (16 Oct 2026) */
-  /* 25000 RUNS's own colour top to bottom (16 Oct 2026): real gold stays with the CAST Pass */
+  font-size: clamp(88px, 24vw, 150px); font-weight: 900; line-height: .95; letter-spacing: -3px; font-variant-numeric: tabular-nums; 
+  padding: 0 .08em; 
+  
   background: linear-gradient(180deg, #ffc2d9 0%, var(--gold) 45%, var(--gold-dark) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 40px rgba(var(--acc-rgb), .25);
 }
 .rt-of { margin-top: 4px; font-size: 12px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #b8b8cc; }
-/* Result as a coloured badge under the total */
+
 .result-title {
   display: inline-flex; align-items: center; gap: 6px; margin: 14px 0 4px; padding: 7px 16px; border-radius: 999px;
   font-size: clamp(16px, 4.6vw, 20px); font-weight: 900; line-height: 1.1; letter-spacing: .8px; text-transform: uppercase;
@@ -806,7 +801,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .rsum strong { font-size: 24px; font-weight: 900; color: var(--gold); }
 #results .panel { margin-top: 18px; }
 
-/* Unibet (neutral class names so content blockers do not hide the placements) */
+
 
 .cp-partner { margin: 18px 0 0; }
 .cp-partner-link { display: block; border-radius: 12px; overflow: hidden; text-decoration: none; }
@@ -818,13 +813,13 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   background: rgba(0, 0, 0, .92);
 }
 .cp-takeover-link { display: block; max-width: 480px; border-radius: 16px; overflow: hidden; }
-/* Fit the 4:5 creative inside the visible screen, leaving room for the countdown bar */
+
 .cp-takeover-link img { display: block; width: auto; height: auto; max-width: min(100%, 480px); max-width: min(calc(100vw - 32px), 480px); max-height: calc(100vh - 110px); max-height: calc(100dvh - 110px); }
 .cp-takeover-bar { width: 100%; max-width: 480px; height: 6px; margin-top: 8px; border-radius: 4px; background: #333; overflow: hidden; }
 .cp-takeover-fill { height: 100%; width: 100%; background: var(--gold); transition: width .1s linear; }
 .cp-takeover-label { margin-top: 6px; font-size: 11px; color: #888; }
 
-/* 404 */
+
 
 .nf { text-align: center; padding-top: 40px; padding-bottom: 20px; }
 .nf-code { font-size: clamp(96px, 30vw, 160px); font-weight: 900; line-height: 1; color: var(--gold); font-style: italic; letter-spacing: -4px; text-shadow: 0 0 40px rgba(var(--acc-rgb), .3); }
@@ -832,7 +827,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .nf-sub { color: #c0c0d0; max-width: 380px; margin: 0 auto 22px; }
 .nf-btn { max-width: 360px; }
 
-/* Footer */
+
 
 .site-footer { margin-top: 28px; padding: 18px 16px 32px; text-align: center; border-top: 1px solid #1a1a2a; }
 .socials { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; }
@@ -844,7 +839,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .footer-copy { font-size: 11px; font-weight: 600; color: #78788e; margin: 0 0 6px; }
 .footer-legal { font-size: 11px; color: #78788e; max-width: 620px; margin: 0 auto; line-height: 1.6; text-wrap: pretty; }
 
-/* Content pages (How it works, Privacy, Terms) */
+
 
 .doc h1 { font-size: clamp(28px, 7vw, 38px); font-weight: 900; margin: 12px 0 4px; }
 .doc .updated { font-size: 12px; color: var(--dim); margin: 0 0 20px; }
@@ -857,7 +852,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .doc th, .doc td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .doc th { color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
 .doc td { color: #c0c0d0; }
-/* On a phone each mode is a small card (name, then each detail with its label), not four squeezed columns */
+
 @media (max-width: 560px) {
   .doc thead { display: none; }
   .doc table, .doc tbody, .doc tr, .doc td { display: block; }
@@ -868,7 +863,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 }
 .doc .cta { margin-top: 26px; }
 
-/* How it works viewer (27-0 style) */
+
 
 .how-it-works {
   margin: 20px 0 0; padding: 16px 14px 14px; border-radius: 16px;
@@ -907,7 +902,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .rules-arrow { font-size: 20px; color: var(--gold); transition: transform .15s; }
 @media (hover: hover) { .rules-btn:hover .rules-arrow { transform: translateX(3px); } }
 
-/* Rules pop-up */
+
 
 .sheet.is-rules { align-items: center; padding: 16px; }
 .sheet.is-rules .sheet-body {
@@ -922,7 +917,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .rules-pop h1 { margin-top: 0; }
 .rules-pop table { display: block; overflow-x: auto; }
 
-/* Back to game on content pages */
+
 
 .back-link {
   display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 6px; padding: 8px 14px;
@@ -935,14 +930,14 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 }
 @media (hover: hover) { .header-nav .nav-play:hover { background: var(--gold-dark); color: #111; } }
 
-/* Restart sheet */
+
 
 .sheet-grab { width: 48px; height: 4px; border-radius: 2px; background: #2a2a4a; margin: 0 auto 18px; }
 .sheet-kicker { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 6px; }
 .sheet-title.center, .sheet-sub.center { text-align: center; }
 .sheet-gap { margin-top: 10px; }
 
-/* Play again / Change mode: game-styled card. Bottom sheet on phones, centred pop-up on desktop */
+
 .sheet.is-confirm .sheet-backdrop { background: rgba(5, 5, 10, .72); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); animation: wcbFade2 .2s ease both; }
 @keyframes wcbFade2 { from { opacity: 0; } to { opacity: 1; } }
 .sheet.is-confirm .sheet-body {
@@ -974,7 +969,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 }
 @keyframes confirmIn { from { opacity: 0; transform: translateY(16px) scale(.94); } to { opacity: 1; transform: none; } }
 
-/* Subscribe to The Cast Patrol */
+
 .yt-sub {
   display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 16px; padding: 10px 14px 10px 10px; box-sizing: border-box;
   border-radius: 14px; background: #FF0000; color: #fff; text-decoration: none; text-align: left;
@@ -988,7 +983,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .yt-label { font-size: 15px; font-weight: 900; line-height: 1.2; }
 .yt-logo { width: 30px; height: 21px; flex-shrink: 0; }
 
-/* The GOAT: Alex Johnston */
+
 
 .goat { font-style: normal; }
 .pcard.is-goat, .reveal.is-goat, .slot.is-goat, .rrow.is-goat, .srow.is-goat {
@@ -1008,7 +1003,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .srow.is-goat .srow-name { color: var(--gold); }
 @keyframes goatShine { from { background-position: 0% 0; } to { background-position: 200% 0; } }
 
-/* Mobile: tighter blocks so more of the offer fits on screen */
+
 
 @media (max-width: 899px) {
   .wrap-wide.draft-grid { padding-top: 12px; gap: 12px; }
@@ -1039,7 +1034,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   .sb-inner { padding: 8px 16px 10px; row-gap: 6px; }
 }
 
-/* Phones: compact home so PLAY NOW is on screen without scrolling */
+
 @media (max-width: 899px) {
   #screen-home .wrap { padding-top: 6px; }
   .hero { padding: 6px 0 2px; }
@@ -1056,7 +1051,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   #startBtn { min-height: 52px; font-size: 17px; letter-spacing: 1px; }
 }
 
-/* Desktop */
+
 
 @media (min-width: 900px) {
   .draft-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; padding-top: 20px; }
@@ -1067,7 +1062,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   .slot-tries { font-size: 22px; }
   .pitch { gap: 10px; padding: 16px 10px; }
   .pitch-row { gap: 10px; }
-  /* Mode cards stay a full-width list on desktop too, the same as 27-0 */
+  
   .mode-picker { gap: 12px; }
   .mode-card { padding: 16px 18px; }
   .promo-logo { width: 140px; }
@@ -1086,11 +1081,11 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
-/* Free bonus reroll (follow us), shown once the normal reroll is used */
+
 @keyframes wcBonusPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--acc-rgb), 0); } 50% { box-shadow: 0 0 0 4px rgba(var(--acc-rgb), .22); } }
 @media (prefers-reduced-motion: reduce) { .wc.wc-bonus { animation: none; } }
 
-/* Squad full: Remove a player / Lock in (with a draining countdown) */
+
 .btn-decide { position: relative; overflow: hidden; border-width: 2px; box-shadow: 0 6px 18px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .12); transition: transform .12s ease, box-shadow .12s ease; }
 .btn-decide:active { transform: translateY(1px) scale(.99); box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
 .btn-decide-lbl { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
@@ -1109,7 +1104,7 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .btn-decide-lock .lock-fill { animation: none; transform: scaleX(1); transition: transform 1s linear; }
 @media (prefers-reduced-motion: reduce) { .btn-decide-lock .lock-fill { transition: none; } }
 
-/* Team Spin squad search */
+
 .squad-tools { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; }
 .squad-tools .sort-toggle, .squad-tools .squad-group-fixed { margin-bottom: 8px; }
 .squad-search-btn { width: 46px; min-height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg2); color: #fff; font-size: 17px; cursor: pointer; }
@@ -1118,13 +1113,12 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .squad-search:focus { outline: none; box-shadow: 0 0 0 3px rgba(var(--acc-rgb), .25); }
 .squad-none { color: var(--muted); font-size: 13px; text-align: center; padding: 14px 0; }
 
-/* Mode skins: body[data-mode] is set while drafting and on results.
-   1000+ gold (the 27-0 Classic gold), Exactly 1000 red, Team Spin purple, NRLW teal. */
+
 body[data-mode] { --mode: var(--gold); --mode-rgb: var(--acc-rgb); }
 body[data-mode="exact"] { --mode: #f87171; --mode-rgb: 220, 38, 38; }
 body[data-mode="spin"] { --mode: #c4b5fd; --mode-rgb: 124, 92, 255; }
 body[data-mode="nrlw"] { --mode: #5eead4; --mode-rgb: 20, 184, 166; }
-body[data-mode="wc"] { --mode: #7dd3fc; --mode-rgb: 14, 165, 233; } /* World Cup 200+: sky blue in both games (gold stays CAST Pass's) */
+body[data-mode="wc"] { --mode: #7dd3fc; --mode-rgb: 14, 165, 233; } 
 body[data-mode] .site-header { border-bottom-color: var(--mode); }
 body[data-mode] main { background: radial-gradient(120% 420px at 50% 0, rgba(var(--mode-rgb), .12), transparent 70%); }
 body[data-mode] .scoreboard { border-bottom-color: rgba(var(--mode-rgb), .5); background: linear-gradient(180deg, rgba(var(--mode-rgb), .14), rgba(var(--mode-rgb), .02)), rgba(14, 14, 26, .96); }
@@ -1132,28 +1126,27 @@ body[data-mode] .sb-mode { color: var(--mode); }
 body[data-mode] .panel { border-color: rgba(var(--mode-rgb), .22); }
 body[data-mode] .panel-title { color: var(--mode); }
 body[data-mode="exact"] .sb-mode::before { content: "\1F525  "; }
-/* World Cup 200+'s longer name stays on one line (5 Oct 2026: at a 3-digit total "World" sat alone): its column takes the
-   room it needs and the "to go" side gives way */
+
 body[data-mode="wc"] .sb-inner { grid-template-columns: minmax(max-content, 1fr) auto 1fr; }
 body[data-mode="wc"] .sb-mode { white-space: nowrap; }
-/* ---------------- Nation looks (5 Oct 2026, the owner's calls; js/cast-nations.js draws them, as in 27-0) ---------------- */
-.wc-look { position: absolute; inset: 0; z-index: -1; border-radius: inherit; overflow: hidden; pointer-events: none; filter: brightness(.95); } /* 5% down: the owner's call */
+
+.wc-look { position: absolute; inset: 0; z-index: -1; border-radius: inherit; overflow: hidden; pointer-events: none; filter: brightness(.95); } 
 .wc-look svg { display: block; width: 100%; height: 100%; }
-/* A World Cup 200+ card's nation band: the look, the side's name in a dark pill */
+
 .pcard-plate.has-look { position: relative; isolation: isolate; overflow: hidden; }
 .pcard-plate.has-look .pcard-club { background: rgba(8, 10, 18, .74); color: #fff; padding: 2px 8px; border-radius: 6px; }
-/* Team tiles: the full look on its own main colour, the name and tries white in dark boxes (the owner turned down a faint look) */
+
 .slot.is-filled.has-look { isolation: isolate; background: var(--wc-field, var(--club)); }
 .slot.is-filled.has-look .slot-name, .slot.is-filled.has-look .slot-tries { color: #fff; background: rgba(8, 10, 18, .74); border-radius: 5px; padding: 0 4px; }
 .slot.is-filled.has-look .slot-code, .slot.is-filled.has-look .slot-abbr { color: #fff; opacity: 1; background: rgba(8, 10, 18, .6); padding: 1px 3px; border-radius: 3px; }
-/* The home card's chips */
+
 .mode-wc-strip i.has-look { position: relative; isolation: isolate; overflow: hidden; color: #fff; }
 .mode-wc-strip i.has-look span { text-shadow: 0 0 3px rgba(0, 0, 0, .95), 0 1px 2px rgba(0, 0, 0, .9); }
-/* Exactly 1000: the pressure lives in the scoreboard's red line only (a slow pulse), never round the whole page */
+
 body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infinite; }
 @keyframes hardLine { 50% { border-bottom-color: #ef4444; box-shadow: 0 6px 18px -8px rgba(239, 68, 68, .7); } }
 @media (prefers-reduced-motion: reduce) { body[data-mode="exact"] .scoreboard { animation: none; } }
-/* 1000+ owns the Classic gold on its home card too, even when it isn't the one selected */
+
 .mode-card[data-mode="plus"]:not(.is-on) { border-color: #5a2e14; background: linear-gradient(135deg, rgba(var(--acc-rgb), .14), rgba(var(--acc-rgb), .02) 70%), var(--card); }
 .mode-card[data-mode="plus"]:not(.is-on) .mode-name { color: #ffb3cf; }
 .mode-card[data-mode="plus"]:not(.is-on) .mode-chip { background: rgba(var(--acc-rgb), .12); color: #ff8ab4; }
@@ -1161,8 +1154,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 #startBtn[data-pick="spin"] { background: linear-gradient(135deg, #6d28d9, #8b5cf6); color: #fff; box-shadow: 0 6px 22px rgba(124, 92, 255, .35); }
 #startBtn[data-pick="nrlw"] { background: linear-gradient(135deg, #0f766e, #14b8a6); color: #fff; box-shadow: 0 6px 22px rgba(20, 184, 166, .3); }
 #startBtn[data-pick="wc"] { background: linear-gradient(135deg, #0369a1, #0ea5e9); color: #fff; box-shadow: 0 6px 22px rgba(14, 165, 233, .3); }
-/* World Cup 200+ (4 Oct 2026): the big card, the same size as 1000+, with the ten World Cup nations' badges across the top
-   (their colours, a third colour as a stripe: no flags until the owner's designs arrive) */
+
 .mode-card.is-wc { border-color: #075985; background: linear-gradient(135deg, rgba(14, 165, 233, .22), rgba(14, 165, 233, .03) 70%), var(--card);
   grid-template-areas: "strip strip strip" "ico name go" "ico line go" "chips chips chips"; padding-top: 18px; }
 .mode-card.is-wc .mode-name { color: #bae6fd; }
@@ -1176,8 +1168,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
   color: var(--n2); background: linear-gradient(to bottom, var(--n1) 0 72%, var(--n3) 72% 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
 @media (max-width: 380px) { .mode-wc-strip i { height: 18px; font-size: 7.5px; letter-spacing: 0; } }
 
-/* ---- Legends (bronze, vintage) and Immortals (platinum and gold, the most prestigious look in the game) ----
-   Order of prestige: Immortal > Legend > everyone else. The GOAT keeps his own gold. */
+
 .pcard.is-legend, .slot.is-legend, .reveal.is-legend, .rrow.is-legend, .srow.is-legend {
   --leg: linear-gradient(135deg, #3a2210 0%, #8a5a2b 28%, #d9a66b 50%, #8a5a2b 72%, #3a2210 100%);
 }
@@ -1186,7 +1177,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 }
 .pcard-tier { margin-left: auto; flex-shrink: 0; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; }
 
-/* Legend */
+
 .pcard.is-legend { border-color: #b07a42; background: linear-gradient(180deg, #2a1c12, var(--card2) 60%); box-shadow: 0 0 0 1px rgba(176, 122, 66, .5), 0 0 16px rgba(176, 122, 66, .25); }
 .pcard.is-legend .pcard-plate { background: var(--leg); color: #fff4e2; border-left-color: #2a1608; text-shadow: 0 1px 1px rgba(0, 0, 0, .35); }
 .pcard.is-legend .pcard-abbr { background: #2a1608; color: #e7c08f; }
@@ -1200,7 +1191,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .rrow.is-legend .rrow-name, .rrow.is-legend .rrow-tries, .srow.is-legend .srow-name { color: #e7c08f; }
 .srow.is-legend { border-color: #b07a42; }
 
-/* Immortal: platinum with gold trim, a slow shimmer and a glow */
+
 .pcard.is-immortal { border: 2px solid #f1c073; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .14), transparent 60%), linear-gradient(180deg, #23222c, var(--card2) 65%);
   box-shadow: 0 0 0 1px #fff1c4, 0 0 26px rgba(255, 255, 255, .28), 0 0 18px rgba(241, 192, 115, .35); }
 .pcard.is-immortal .pcard-plate { background: var(--imm); background-size: 200% 100%; color: #14161d; border-left-color: #f1c073; animation: goatShine 4s linear infinite; }
@@ -1220,13 +1211,13 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .rrow.is-immortal .rrow-tries { color: #ffe2a8; }
 .srow.is-immortal { border-color: #f1c073; }
 
-/* The offer panel heading when a pack lands */
+
 .panel-head.is-legends, .panel-head.is-immortal { flex-wrap: wrap; row-gap: 2px; }
 .panel-head.is-legends .panel-title, .panel-head.is-immortal .panel-title { white-space: nowrap; }
 .panel-head.is-legends .panel-title { color: #e7c08f; }
 .panel-head.is-immortal .panel-title { background: linear-gradient(90deg, #f1c073, #fff, #f1c073); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* Pack opening */
+
 .pack-intro { position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; align-content: center; gap: 22px; cursor: pointer; overflow: hidden;
   background: radial-gradient(55% 40% at 50% 40%, rgba(var(--pi-rgb), .3), transparent 70%), rgba(6, 6, 12, .96); animation: piIn .25s ease both; }
 .pack-intro.is-legends { --pi-rgb: 217, 166, 107; --pi-edge: #e7c08f; --pi-face: linear-gradient(115deg, #3a2210 0%, #8a5a2b 30%, #e2b77a 45%, #8a5a2b 60%, #3a2210 100%); --pi-ink: #fff4e2; }
@@ -1253,7 +1244,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 @keyframes piShine { from { background-position: 100% 0; } to { background-position: -150% 0; } }
 @keyframes piText { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .pack-intro, .pi-rays, .pi-card, .pi-card-face, .pi-text, .pcard.is-immortal .pcard-plate, .slot.is-immortal, .reveal.is-immortal { animation: none !important; } }
-/* Position chooser (players with more than one position) */
+
 .chooser-card.is-legend { border-color: #b07a42; }
 .chooser-card.is-legend .pcard-plate { background: linear-gradient(135deg, #3a2210, #8a5a2b 28%, #d9a66b 50%, #8a5a2b 72%, #3a2210); color: #fff4e2; }
 .chooser-card.is-legend .chooser-name { color: #e7c08f; }
@@ -1261,10 +1252,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .chooser-card.is-immortal .pcard-plate { background: linear-gradient(135deg, #8e97a6, #dfe4ec 26%, #ffffff 50%, #dfe4ec 74%, #8e97a6); color: #14161d; }
 .chooser-card.is-immortal .chooser-name { color: #fff; text-shadow: 0 0 10px rgba(241, 192, 115, .6); }
 
-/* ---- Added to an iPhone home screen ----
-   The page draws under the clock (viewport-fit=cover), so the sticky header grows by the status bar height and
-   everything pinned below it moves down with it; sheets and toasts stay clear of the clock and the home bar.
-   env() is 0 in a browser tab, so nothing changes there. */
+
 .site-header { padding-top: calc(10px + env(safe-area-inset-top, 0px)); }
 .scoreboard { top: calc(58px + env(safe-area-inset-top, 0px)); }
 .toast { bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
@@ -1274,36 +1262,36 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .cp-takeover { padding-top: max(16px, env(safe-area-inset-top, 0px)); padding-bottom: max(16px, env(safe-area-inset-bottom, 0px)); }
 @media (min-width: 900px) { .offer-panel { top: calc(150px + env(safe-area-inset-top, 0px)); } }
 
-/* CAST Pass tiers: a guest's wildcards, locked until they sign in free (tap to sign in; they unlock in the same game) */
-/* A guest's wildcards (once the CAST tiers are on): they look ready to use, and a tap asks for a free sign-in */
+
+
 .wc.wc-lock { cursor: pointer; }
 
-/* The Vault (CAST Pass): the Legend Key under the wildcards in 1000+ */
 
-/* Substitute (CAST Pass): gold; a free profile sees it with the CAST Pass tag */
+
+
 .wildcards.has-4 { grid-template-columns: repeat(2, 1fr); }
 .wc.wc-sub { --wc: #f1c073; --wc-rgb: 241, 192, 115; border-color: #a16207; background: linear-gradient(160deg, rgba(241, 192, 115, .22), rgba(241, 192, 115, .06)); }
 .wc.wc-sub .wc-left { color: var(--gold); }
 .wc.wc-sub.is-armed { border-color: var(--gold); box-shadow: 0 0 14px rgba(241, 192, 115, .45); }
 .wc-pass-tag { display: inline-block; padding: 2px 7px; border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(241, 192, 115, .6); background: rgba(241, 192, 115, .14); font-size: 9.5px !important; letter-spacing: .6px; }
-/* Substitute's highlights in its tile's blue, in every game (17 Oct 2026, the owner) */
+
 .slot.is-subcan { cursor: pointer; animation: wiggle 1.2s ease-in-out infinite; outline: 3px solid #3b82f6; outline-offset: 1px; box-shadow: 0 0 14px rgba(59, 130, 246, .55); }
 .slot.is-subfrom { outline: 3px solid #fff; outline-offset: 1px; }
 .slot.is-subno { opacity: .35; filter: grayscale(.5); }
 .slot.is-subto { cursor: pointer; outline: 3px dashed #60a5fa; outline-offset: 1px; animation: wiggle 1.2s ease-in-out infinite; background: rgba(59, 130, 246, .14); font: inherit; color: inherit; }
 
-/* Sound: a small labelled toggle in the footer (off the header, which is full) */
+
 .footer-sound { display: flex; justify-content: center; margin: 0 0 12px; }
 .icon-btn.sound-foot { width: auto; height: 36px; padding: 0 14px 0 12px; gap: 8px; border-radius: 999px; font: 800 12px/1 Inter, sans-serif; letter-spacing: .4px; }
 
-/* ---------------- The Daily (js/daily.js): orange, the same as 27-0's Daily (gold stays with CAST Pass) ---------------- */
+
 #dailyCard, #dlyPop, .dly-result { --gold: #fb923c; --gold-dark: #f97316; }
 .dly-home { margin: 0 0 16px; }
 .dly-card, .dly-result { padding: 14px; border-radius: 16px; border: 1.5px solid rgba(251, 146, 60, .6);
   background: radial-gradient(120% 90% at 0% 0%, rgba(251, 146, 60, .22), transparent 55%), linear-gradient(135deg, #1d1a33, #111020);
   box-shadow: 0 0 0 4px rgba(251, 146, 60, .1), 0 10px 30px rgba(0, 0, 0, .35); }
 .dly-card.is-compact { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 11px; align-items: center; padding: 7px 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-/* Slightly thinner (6 Oct 2026, the owner) */
+
 .dly-card.is-compact .dly-meta, .dly-card.is-compact .dly-reward-chip { margin-top: 3px; }
 .dly-card.is-compact:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .dly-card.is-done { border-color: rgba(251, 146, 60, .45); }
@@ -1312,7 +1300,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .dly-mid { display: grid; min-width: 0; }
 .dly-kicker { color: var(--gold); font: 900 11px/1.2 var(--font); letter-spacing: 1.2px; text-transform: uppercase; }
 .dly-card .dly-kicker { margin-bottom: 2px; }
-.dly-title { color: #fff; font: italic 900 16px/1.1 var(--font); text-transform: uppercase; letter-spacing: -.3px; padding-right: .12em; text-wrap: balance; } /* no clamp: the italic last letter was clipped (17 Oct 2026) */
+.dly-title { color: #fff; font: italic 900 16px/1.1 var(--font); text-transform: uppercase; letter-spacing: -.3px; padding-right: .12em; text-wrap: balance; } 
 .dly-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 5px; font: 700 12px/1.2 var(--font); color: #b8b8cc; }
 .dly-meta b { color: var(--gold); }
 .dly-card.is-won .dly-meta b { color: var(--good); }
@@ -1325,7 +1313,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .btn.dly-go-btn { min-height: 40px; padding: 0 16px; font-size: 13px; white-space: nowrap; box-shadow: 0 6px 22px rgba(251, 146, 60, .3); }
 .btn.dly-go-btn.btn-ghost { box-shadow: none; }
 .btn.dly-go-btn.is-won { background: var(--good); border-color: var(--good); color: #052e14; }
-/* The full challenge (tap the card): a sheet from the bottom on phones, a centred pop-up on wider screens */
+
 .dly-pop { position: fixed; inset: 0; z-index: 210; display: flex; align-items: flex-end; justify-content: center; height: 100vh; height: 100dvh; overscroll-behavior: contain; }
 .dly-pop[hidden] { display: none; }
 .dly-pop-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, .72); }
@@ -1348,16 +1336,15 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .dly-facts > div { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 8px; border-radius: 12px; background: rgba(255, 255, 255, .05); border: 1px solid #2a2a44; }
 .dly-facts b { font: 900 16px/1.2 var(--font); color: var(--gold); }
 .dly-facts span { font: 700 11.5px/1.3 var(--font); color: #a9a9bd; }
-/* The Daily reward (29 Sep 2026): a little box in the challenge pop-up and on the result, and a chip on the home card, in
-   the green of a completed Daily (gold is CAST Pass's) */
+
 .dly-reward { display: flex; align-items: center; gap: 10px; margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; text-align: left;
   background: rgba(74, 222, 128, .08); border: 1px dashed rgba(74, 222, 128, .55); }
 .dly-reward > span:not(.dly-reward-ico) { display: grid; gap: 2px; min-width: 0; flex: 1; }
 .dly-reward-ico { flex: none; font-size: 22px; line-height: 1; }
 .dly-reward b { color: #fff; font: 900 14px/1.25 var(--font); }
 .dly-reward small { color: #b8e8c8; font: 700 11.5px/1.35 var(--font); }
-.dly-nw { white-space: nowrap; } /* a score kept whole ("30-24") */
-.dly-reward small.dly-reward-streak { margin-top: 3px; color: #fdba74; } /* the streak's next reward (orange, like the streak) */
+.dly-nw { white-space: nowrap; } 
+.dly-reward small.dly-reward-streak { margin-top: 3px; color: #fdba74; } 
 .dly-reward.is-earned { margin: 10px 0 12px; border-style: solid; background: rgba(74, 222, 128, .12); flex-wrap: wrap; }
 .dly-reward .dly-claim { flex: 1 1 100%; margin-top: 4px; }
 .dly-reward-chip { justify-self: start; margin-top: 5px; padding: 2px 8px; border-radius: 999px; background: rgba(74, 222, 128, .12); border: 1px solid rgba(74, 222, 128, .45);
@@ -1372,7 +1359,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .dly-rank b { color: var(--gold); font-size: 17px; line-height: 1; }
 .dly-rank small { color: var(--muted); font-size: 12px; font-weight: 600; }
 .dly-rank-t { text-align: center; }
-.dly-rank small, .dly-rank-a { white-space: nowrap; } /* a wrap falls between "Not ranked yet today" and "See the leaderboard ›" */
+.dly-rank small, .dly-rank-a { white-space: nowrap; } 
 .dly-rank-go { color: var(--gold); font-size: 18px; line-height: 1; transition: transform .15s; }
 @media (hover: hover) { .dly-rank:hover { background: rgba(251, 146, 60, .2); border-color: var(--gold); } .dly-rank:hover .dly-rank-go { transform: translateX(3px); } }
 .dly-pop-acts { display: grid; gap: 10px; margin-top: 4px; }
@@ -1392,7 +1379,7 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .dly-go.is-win { border-color: rgba(74, 222, 128, .6); background: rgba(74, 222, 128, .08); }
 .dly-go.is-win b { color: var(--good); }
 .dly-go.is-left b { color: var(--bad); }
-/* The main button (or the day's done line) across the top, the rest side by side in even columns */
+
 .dly-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .dly-actions .btn { flex: 1 1 0; width: auto; min-width: 0; margin: 0; }
 .dly-actions .btn-primary, .dly-done { flex: 1 1 100%; }
@@ -1402,42 +1389,39 @@ body[data-mode="exact"] .scoreboard { animation: hardLine 2.6s ease-in-out infin
 .dly-score small { font-size: 16px; color: var(--muted); }
 .dly-best { color: var(--muted); font-size: 13px; }
 .dly-best b { color: #fff; }
-/* Themed Daily result: the day's two rules, ticked or crossed */
+
 .dly-rules { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; margin: 2px 0 4px; font-size: 12.5px; font-weight: 800; }
 .dly-rules .is-ok { color: #86efac; }
 .dly-rules .is-no { color: #fca5a5; }
 
-/* Five tools (1000+ with a CAST Profile): Reroll, Reveal and Remove across the top, Substitute and the Legend Key below.
-   Icons sit above one-word names, so every tile in a row is the same height */
+
 .wildcards.has-5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .wildcards.has-5 > .wc { grid-column: span 2; }
 .wildcards.has-5 > .wc-sub, .wildcards.has-5 > .wc-key { grid-column: span 3; }
 .wildcards.has-5 .wc-label { flex-direction: column; gap: 3px; flex-wrap: nowrap; white-space: nowrap; }
 .wildcards.has-5 .wc-ico { font-size: 17px; line-height: 1; }
-/* The Legend Key (CAST Pass gold) */
+
 .wc-key { border-color: #b45309; background: linear-gradient(160deg, rgba(241, 192, 115, .2), rgba(180, 83, 9, .06)); }
 .wc-key .wc-left { color: #f1c073; }
 .wc-key.is-ready { box-shadow: inset 0 0 0 1px rgba(241, 192, 115, .45); }
-.wc-key.is-used { opacity: .8; cursor: default; } /* still readable: it counts down to the next key */
-/* Under the offer while the key is ready: swap these three for a Legends Pick */
+.wc-key.is-used { opacity: .8; cursor: default; } 
+
 .key-swap { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin: 12px 0 0; padding: 11px 14px; box-sizing: border-box;
   border-radius: 12px; border: 1.5px dashed rgba(var(--acc-rgb), .6); background: rgba(var(--acc-rgb), .06); color: var(--gold); font: 800 13.5px/1.2 var(--font); cursor: pointer; }
 @media (hover: hover) { .key-swap:hover { background: rgba(var(--acc-rgb), .14); border-style: solid; } }
 
-/* No lonely words (the user's rule, 28 Sep 2026): a word never sits on a line by itself. Every block wraps "pretty" (its
-   last line is never one lonely word) and headings are balanced. text-wrap-style is inherited, so this reaches all copy. */
-html { text-wrap-style: pretty; }
-/* Short copy (nearly all of it) is balanced: its lines come out even, so one word is never left alone, and older iPhones
-   understand it. Chrome's "pretty" alone still leaves a lonely word on some two-line titles */
-h1, h2, h3, h4, h5, p, li, dt, dd, small, label, button, figcaption, summary, td, th, div, b, strong, span, em { text-wrap-style: balance; }
-/* Long reads keep "pretty" (balancing is for short blocks: Chrome skips it past six lines) */
-.doc p, .doc li, .dly-pop-story { text-wrap-style: pretty; } /* (a Daily's write-up can run past six lines) */
 
-/* The top bar's tabs sit close on small phones, so the fullest bar (Stats, Rankings, Shop, Friends, Admin, Profile) fits */
+html { text-wrap-style: pretty; }
+
+h1, h2, h3, h4, h5, p, li, dt, dd, small, label, button, figcaption, summary, td, th, div, b, strong, span, em { text-wrap-style: balance; }
+
+.doc p, .doc li, .dly-pop-story { text-wrap-style: pretty; } 
+
+
 @media (max-width: 400px) { .header-nav { gap: 2px; } .site-header { padding-left: 12px; padding-right: 12px; } }
 
-/* ---------------- Home, 29 Sep 2026 (the user's call: less clutter) ---------------- */
-/* 1000+ is the main mode: one big card with a clear Play button */
+
+
 .mode-card.mode-main { padding: 18px 18px 16px; column-gap: 14px; grid-template-columns: auto 1fr; grid-template-areas: "ico name" "ico line" "chips chips" "go go"; }
 .mode-main .mode-ico { font-size: 38px; align-self: center; }
 .mode-main .mode-name { font-size: 32px; }
@@ -1445,7 +1429,7 @@ h1, h2, h3, h4, h5, p, li, dt, dd, small, label, button, figcaption, summary, td
 .mode-main .mode-chips { margin-top: 12px; }
 .mode-main .mode-go { justify-self: stretch; margin: 12px 0 0; padding: 13px 12px; border-radius: 12px; background: var(--gold); color: #111; font-size: 15px; letter-spacing: 1px; text-align: center; }
 @media (hover: hover) { .mode-main:hover .mode-go { background: #ff6fa3; } }
-/* The other modes: three small buttons in a row, each in its own colour with one tag */
+
 .mode-more-kicker { margin: 10px 2px 0; font: 900 11px/1 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); }
 .mode-more { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 8px; }
 .mode-mini { display: grid; justify-items: center; align-content: center; gap: 5px; min-height: 96px; padding: 12px 4px 10px; border-radius: 14px; border: 1px solid #2a2a44;
@@ -1453,7 +1437,7 @@ h1, h2, h3, h4, h5, p, li, dt, dd, small, label, button, figcaption, summary, td
 .mode-mini:active { transform: scale(.97); }
 .mm-ico { font-size: 24px; line-height: 1; }
 .mm-name { font-size: clamp(12.5px, 3.6vw, 16px); font-weight: 900; line-height: 1.1; white-space: nowrap; }
-.mm-tag { font-size: clamp(9.5px, 2.6vw, 11px); /* stays small on phones: 'Know Your Squads' can't fit a third-width tile at 11px (4 Oct 2026) */ font-weight: 800; letter-spacing: .2px; line-height: 1.2; color: #a8a8c0; white-space: nowrap; }
+.mm-tag { font-size: clamp(9.5px, 2.6vw, 11px);  font-weight: 800; letter-spacing: .2px; line-height: 1.2; color: #a8a8c0; white-space: nowrap; }
 .mode-mini.is-exact { border-color: #5a1f26; background: linear-gradient(160deg, rgba(220, 38, 38, .2), rgba(220, 38, 38, .03) 75%), var(--card); }
 .mode-mini.is-exact .mm-name { color: #fca5a5; } .mode-mini.is-exact .mm-tag { color: #f87171; }
 .mode-mini.is-spin { border-color: #3b2f6b; background: linear-gradient(160deg, rgba(124, 92, 255, .2), rgba(124, 92, 255, .03) 75%), var(--card); }
@@ -1468,14 +1452,13 @@ h1, h2, h3, h4, h5, p, li, dt, dd, small, label, button, figcaption, summary, td
 .mode-mini.is-spin.is-on { border-color: #8b5cf6; box-shadow: 0 0 0 1px #8b5cf6; }
 .mode-mini.is-nrlw.is-on { border-color: #14b8a6; box-shadow: 0 0 0 1px #14b8a6; }
 
-/* The New Game tab: only mid-draft (it looks like every other top bar tab) */
+
 .header-nav .nav-new { display: none; }
 body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .btn-quiet { background: transparent; border-color: transparent; color: #b8b8cc; margin-top: 4px; }
 @media (hover: hover) { .btn-quiet:hover { color: #fff; } }
 
-/* The main card's Play Now (29 Sep 2026, the user's call: it looked flat): a deeper orange with a lit top edge, a soft glow,
-   a slow shine across it and a press. Both games have the same button */
+
 @keyframes playShine { 0%, 62% { transform: translateX(-120%) skewX(-18deg); } 100% { transform: translateX(260%) skewX(-18deg); } }
 .mode-card.mode-main .mode-go { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 15px 12px; border-radius: 13px; border: 0; font-size: 16.5px; font-weight: 900; letter-spacing: 1.4px; color: #22030f;
@@ -1488,12 +1471,12 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .mode-card.mode-main:active .mode-card.mode-main .mode-go { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 -1px 0 rgba(110, 10, 50, .35), 0 4px 12px rgba(var(--acc-rgb), .3); }
 @media (prefers-reduced-motion: reduce) { .mode-card.mode-main .mode-go::after { animation: none; display: none; } }
 
-/* ---------------- The GOAT and Hard Mode wildcards (29 Sep 2026) ---------------- */
-/* Six tools (3 wildcards, Substitute, Legend Key, the GOAT): two even rows of three */
+
+
 .wildcards.has-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .wildcards.has-6 .wc-label { flex-direction: column; gap: 3px; flex-wrap: nowrap; white-space: nowrap; }
 .wildcards.has-5 > .wc:nth-child(n+4) { grid-column: span 3; }
-/* The GOAT tile: his gold, shining while he's ready (the same gradient as his player card) */
+
 .wc.wc-goat, .confirm-ico.goat-ico, .btn.btn-goat { --goat: linear-gradient(135deg, #7a5a12 0%, #f1c073 30%, #fff1c4 50%, #f1c073 70%, #7a5a12 100%); }
 .wc.wc-goat { border-color: var(--gold); color: #1a1204; background: var(--goat); background-size: 200% 100%; }
 .wc.wc-goat .wc-left { color: #3a2a08; font-weight: 900; }
@@ -1503,11 +1486,10 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .confirm-ico.goat-ico { background: var(--goat); border-color: #fff1c4; }
 .btn.btn-goat { background: var(--goat); background-size: 200% 100%; color: #1a1204; border-color: #fff1c4; animation: goatShine 3s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .btn.btn-goat { animation: none; } }
-/* Hard Mode (Exactly 1000): the note under its paid-only wildcards */
+
 .wc-paid-note { margin: -4px 0 10px; text-align: center; font-size: 11.5px; font-weight: 700; color: #fca5a5; }
 
-/* Dally M promo (30 Sep 2026, js/cast-promo.js; the owner's pick: Dally M navy): the Team of the Year on navy cards with
-   an icy edge and a moving shine, the Dally M Medal winner with a gold edge. Pick cards, the 13 and the reveal */
+
 @keyframes plSheen { 0% { background-position: -160% 0; } 60%, 100% { background-position: 260% 0; } }
 .pcard.is-plat { position: relative; border-color: #bfdbfe; background: linear-gradient(170deg, #12307a, #0a1a45 70%); box-shadow: 0 0 0 1px rgba(191, 219, 254, .35), 0 6px 22px rgba(59, 130, 246, .22); }
 .pcard.is-plat::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, .16) 50%, transparent 65%); background-size: 250% 100%; animation: plSheen 3s ease-in-out infinite; }
@@ -1526,10 +1508,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .reveal.is-plat { background: linear-gradient(135deg, #0a1a45, #1e3a8a); color: #fff; border-color: #bfdbfe; box-shadow: 0 0 26px rgba(147, 197, 253, .45); }
 .reveal.is-medal { border-color: #f1c073; box-shadow: 0 0 28px rgba(241, 192, 115, .5); }
 @media (prefers-reduced-motion: reduce) { .pcard.is-plat::after { animation: none; } }
-/* The Grand Final promo, 2026 Premiers (4 Oct 2026, js/cast-promo.js; the owner's calls): a premier keeps his club's
-   colours with a trophy-gold foil edge (gold, like proper winners: the owner's call), a moving shine, a "2026 Premiers"
-   tag and the trophy after his name; the Clive Churchill or Karyn Murphy Medal winner's edge is holographic. Pick
-   cards, the 13 and the reveal */
+
 .pcard.is-prem { position: relative; border: 2px solid transparent; box-shadow: 0 0 0 1px rgba(246, 210, 122, .22), 0 6px 22px rgba(246, 210, 122, .14);
   background: linear-gradient(var(--card2), var(--card2)) padding-box, linear-gradient(135deg, #8a5a14, #f6d27a 30%, #fff1c1 48%, #d4a23c 66%, #8a5a14) border-box; }
 .pcard.is-prem::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, .14) 50%, transparent 65%); background-size: 250% 100%; animation: plSheen 3s ease-in-out infinite; }
@@ -1543,13 +1522,13 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .reveal.is-prem.is-medal { border-color: #f0abfc; box-shadow: 0 0 28px rgba(240, 171, 252, .5); }
 @media (prefers-reduced-motion: reduce) { .pcard.is-prem::after { animation: none; } }
 
-/* ---------------- The Immortal Pick (bought, 2 Oct 2026; shared with 27-0) ---------------- */
-/* Seven tools (3 wildcards, Substitute, Legend Key, the GOAT, the Immortal Pick): rows of three, the last across the row */
+
+
 .wildcards.has-7 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .wildcards.has-7 .wc-label { flex-direction: column; gap: 3px; flex-wrap: nowrap; white-space: nowrap; }
 .wildcards.has-7 > .wc:last-child { grid-column: span 3; }
 .wildcards.has-7 > .wc:last-child .wc-label { flex-direction: row; gap: 6px; }
-/* The tile: the Immortal look (charcoal, a gold edge, a moving platinum tag) */
+
 .wc.wc-imm { border-color: var(--gold); color: #fff; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .12), transparent 60%), linear-gradient(160deg, #2b2a33, #121219 85%); }
 .wc.wc-imm .wc-left { color: #ffc2d9; font-weight: 900; }
 .wc.wc-imm.is-have .wc-left { display: inline-block; align-self: center; padding: 2px 8px; border-radius: 999px; color: #14161d;
@@ -1557,9 +1536,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .wc.wc-imm.is-ready { box-shadow: 0 0 16px rgba(var(--acc-rgb), .4); }
 .wc.wc-imm:disabled { opacity: .5; }
 @media (prefers-reduced-motion: reduce) { .wc.wc-imm.is-have .wc-left { animation: none; } }
-/* World Legends (World Cup 200+, 8 Oct 2026, the owner's calls): his nation's look stays the star, with a bold gold
-   frame that glows and a shine across it ("they also need a golder border ... to show how special"); the tag says Legend so
-   his nation's name still fits ("remove international from here and just have legend") */
+
 .pcard.is-ileg { position: relative; border: 3px solid var(--gold); box-shadow: 0 0 0 1px #ffc2d9, 0 0 20px rgba(var(--acc-rgb), .55), 0 0 42px rgba(var(--acc-rgb), .22); animation: dealIn .35s ease both, ilPulse 2.4s ease-in-out .4s infinite; }
 .pcard.is-ileg::after { content: ''; position: absolute; top: -60%; left: -80%; width: 40%; height: 220%; transform: rotate(20deg); pointer-events: none; background: linear-gradient(90deg, transparent, rgba(255, 208, 168, .3), transparent); animation: ilShine 3.4s ease-in-out 1s infinite; }
 @keyframes ilPulse { 0%, 100% { box-shadow: 0 0 0 1px #ffc2d9, 0 0 16px rgba(var(--acc-rgb), .45), 0 0 34px rgba(var(--acc-rgb), .18); } 50% { box-shadow: 0 0 0 1px #ffc2d9, 0 0 28px rgba(var(--acc-rgb), .78), 0 0 56px rgba(var(--acc-rgb), .32); } }
@@ -1579,12 +1556,11 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .wc.wc-ileg.is-ready { box-shadow: 0 0 16px rgba(var(--acc-rgb), .4); }
 .wc.wc-ileg:disabled { opacity: .5; }
 @media (prefers-reduced-motion: reduce) { .pcard.is-ileg, .pcard.is-ileg::after { animation: none; } }
-/* Under the three: go back to the offer you had */
+
 .imm-back { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 12px 0 0; text-align: center; }
 .imm-back small { color: #ffc2d9; font-size: 11.5px; font-weight: 700; }
 
-/* The pick clock (17 Oct 2026, as 1000TRIES; Exactly's shot clock since 2 Oct): a white bar that runs down over the offer, red
-   for the last five seconds (never gold: gold is CAST Pass), and Paused while a pop-up is open */
+
 .pick-clock { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 28px; margin: 0 0 10px; padding: 0 11px;
   border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .2); transition: background .2s, border-color .2s; }
 .pick-clock i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, rgba(255, 255, 255, .3), rgba(255, 255, 255, .16)); transition: width .2s linear, background .2s; }
@@ -1601,7 +1577,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .pick-clock.is-paused .pc-wait { display: inline; }
 @keyframes pickClockPulse { to { box-shadow: 0 0 14px rgba(248, 113, 113, .65); } }
 @media (prefers-reduced-motion: reduce) { .pick-clock i { transition: none; } .pick-clock.is-low { animation: none; } }
-/* While the clock waits the offer is covered: no names, years or numbers to look up */
+
 #offerPanel.is-clock-paused .offer-cards { position: relative; }
 #offerPanel.is-clock-paused .offer-cards .pcard { pointer-events: none; user-select: none; -webkit-user-select: none; }
 #offerPanel.is-clock-paused .offer-cards .pcard > * { filter: blur(12px); opacity: .3; }
@@ -1609,8 +1585,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
   padding: 9px 16px; border-radius: 999px; background: rgba(8, 10, 18, .88); border: 1px solid rgba(255, 255, 255, .3); color: #fff;
   font: 900 13px/1 Inter, sans-serif; letter-spacing: .4px; white-space: nowrap; pointer-events: none; }
 
-/* A Daily go: today's challenge under the scoreboard's bar, always in view, and a tap opens the whole challenge
-   (2 Oct 2026: the owner forgot his part way through a go). The Daily's orange, like its card */
+
 .sb-daily { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 10px; row-gap: 2px; width: 100%; margin: 2px 0 0;
   padding: 7px 12px; border-radius: 10px; border: 1px solid rgba(251, 146, 60, .45); background: rgba(251, 146, 60, .1); color: #fff; font: inherit; text-align: left; cursor: pointer; }
 .sb-daily-k { grid-column: 1; font: 900 10.5px/1.2 Inter, sans-serif; letter-spacing: .8px; text-transform: uppercase; color: #fb923c; }
@@ -1618,21 +1593,19 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .sb-daily-t b { color: #fff; font-weight: 900; }
 .sb-daily-i { grid-column: 2; grid-row: 1 / span 2; font-size: 18px; line-height: 1; color: #fb923c; }
 @media (hover: hover) { .sb-daily:hover { background: rgba(251, 146, 60, .16); } }
-/* World Cup 200+'s big card (4 Oct 2026): the same layout as 1000+'s, with the nations across the top, and its Play button in
-   sky blue (gold stays with Classic and CAST Pass) */
+
 .mode-card.mode-main.is-wc { grid-template-areas: "strip strip" "ico name" "ico line" "chips chips" "go go"; padding-top: 20px; }
 .mode-card.mode-main.is-wc .mode-go { background: linear-gradient(180deg, #0ea5e9, #0369a1); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 4px 14px rgba(14, 165, 233, .3); }
 @media (hover: hover) { .mode-card.mode-main.is-wc:hover .mode-go { background: linear-gradient(180deg, #38bdf8, #0284c7); } }
-/* A Daily missed: every go used without a win (8 Oct 2026, the owner: "say missed out or in red ... more obvious") */
+
 .dly-reward.is-missed { background: rgba(248, 113, 113, .08); border: 1px solid rgba(248, 113, 113, .6); }
 .dly-reward.is-missed b { color: #f87171; }
 .dly-reward.is-missed small:not(.dly-reward-streak) { color: #fecaca; }
 .dly-reward-chip.is-missed { color: #fca5a5; background: rgba(248, 113, 113, .12); border-color: rgba(248, 113, 113, .55); }
 
-/* ---------- HIGHER OR LOWER (15 Oct 2026, js/overunder.js): 1000TRIES's HIGHER OR LOWER: NRL block, kept in step with it ---------- */
+
 .ou-home { margin: 12px 0 4px; } .ou-home .mode-mini { width: 100%; min-height: 84px; }
-/* The home card's live look (15 Oct 2026; made shorter the same day, the owner: "too tall and crammed"): two small player
-   cards with pulsing arrows, the name and line, a play arrow; the whole card is the button */
+
 .ou-home .oup { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; justify-items: start; gap: 12px; min-height: 0; padding: 10px 12px; text-align: left;
   border: 1.5px solid rgba(56, 189, 248, .6); background: radial-gradient(120% 140% at 0% 0%, rgba(56, 189, 248, .22), transparent 55%), radial-gradient(90% 120% at 100% 100%, rgba(74, 222, 128, .14), transparent 60%), #0d1622; overflow: hidden; }
 .oup-new { position: absolute; top: 8px; right: 8px; padding: 3px 7px; border-radius: 999px; background: #38bdf8; color: #04121f; font: 900 9.5px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; box-shadow: 0 0 12px rgba(56, 189, 248, .55); }
@@ -1658,11 +1631,11 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-back { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 17px; cursor: pointer; }
 .ou-load { padding: 60px 0; text-align: center; color: var(--muted); }
 
-/* Start */
+
 .ou-start { display: grid; gap: 14px; text-align: center; }
 .ou-logo { margin: 0; font: 900 clamp(30px, 9vw, 42px)/1 var(--font); letter-spacing: -.5px; text-transform: uppercase; color: #fff; }
 .ou-up { color: var(--good); } .ou-dn { color: var(--bad); }
-/* HIGHER OR LOWER (17 Oct 2026): the name on one line at any phone width, its sport in a pill under it */
+
 .ou-logo { display: grid; justify-items: center; gap: 8px; }
 .ou-logo-t { white-space: nowrap; font-size: clamp(25px, 7.4vw, 40px); }
 .ou-logo-t .ou-up, .ou-logo-t .ou-dn { font-size: .7em; vertical-align: .14em; }
@@ -1670,14 +1643,14 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-lede { margin: 0; color: var(--muted); font: 600 15px/1.45 var(--font); text-wrap: balance; } .ou-lede b { color: #fff; }
 .ou-pair.is-demo { pointer-events: none; transform: scale(.92); margin: -6px 0; }
 .ou-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-/* An odd number of categories (1 or 3): one per row, all the same, so no tile sits alone half empty (audit L7, 16 Oct 2026) */
+
 .ou-tiles:has(> :last-child:nth-child(odd)) { grid-template-columns: 1fr; }
 .ou-tiles:has(> :last-child:nth-child(odd)) .ou-tile { min-height: 60px; }
 .ou-tiles:has(> :last-child:nth-child(odd)) .ou-tile-l { grid-auto-flow: column; align-items: center; justify-content: start; gap: 10px; }
-/* Category tiles: the name on the left, the best as a big number on the right, each category in its own colour (--oc) */
+
 .ou-tile { --oc: 148, 163, 184; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; min-height: 84px; padding: 11px 12px; border-radius: 14px; text-align: left; cursor: pointer;
   border: 2px solid rgba(var(--oc), .45); background: linear-gradient(150deg, rgba(var(--oc), .30), rgba(var(--oc), .07) 70%), var(--card); color: var(--text); }
-.ou-c-plgoals { --oc: 255, 45, 122; } .ou-c-plassists { --oc: 56, 189, 248; } .ou-c-plapps { --oc: 52, 211, 153; } /* HIGHER OR LOWER: PREMIER LEAGUE (17 Oct 2026): the game's magenta, sky blue, pitch green */
+.ou-c-plgoals { --oc: 255, 45, 122; } .ou-c-plassists { --oc: 56, 189, 248; } .ou-c-plapps { --oc: 52, 211, 153; } 
 .ou-tile-l { display: grid; justify-items: start; gap: 4px; min-width: 0; }
 .ou-tile-ico { font-size: 20px; }
 .ou-tile-l b { font: 900 15px/1.15 var(--font); color: #fff; text-wrap: balance; }
@@ -1688,11 +1661,11 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-tile.is-on { border-color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 6px 20px rgba(var(--oc), .3); }
 .ou-play { width: 100%; padding: 16px; border-radius: 14px; font: 900 16px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; }
 .ou-play i { font-style: normal; font-size: 12px; margin-left: 6px; }
-/* The leaderboard is a pill button, not a text link (audit L6, 16 Oct 2026) */
+
 .ou-link { display: flex; align-items: center; justify-content: center; gap: 6px; width: max-content; max-width: 100%; min-height: 40px; margin: 4px auto 0; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .06); color: #fff; font: 800 13.5px/1.2 var(--font); cursor: pointer; }
 @media (hover: hover) { .ou-link:hover { border-color: rgba(255, 255, 255, .45); } }
 
-/* The run */
+
 .ou-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .ou-streak { display: inline-flex; align-items: baseline; gap: 6px; } .ou-streak i { font-style: normal; font-size: 20px; }
 .ou-streak b { font: 900 34px/1 var(--font); color: #fff; } .ou-streak small { font: 800 12px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
@@ -1700,12 +1673,12 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-clock { height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .1); overflow: hidden; margin-bottom: 12px; }
 .ou-clock i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--bad), #fbbf24 35%, var(--good)); transform-origin: left; animation: ou-clock linear forwards; }
 .ou-clock.is-stop i { animation-play-state: paused; }
-.ou-clock.is-free { height: auto; overflow: visible; background: none; text-align: center; } /* the first call after a Run It Back */
+.ou-clock.is-free { height: auto; overflow: visible; background: none; text-align: center; } 
 .ou-clock.is-free span { display: inline-block; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(244, 114, 182, .5); background: rgba(244, 114, 182, .12); color: #f9a8d4; font: 800 12px/1.2 Inter, sans-serif; }
 @keyframes ou-clock { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (prefers-reduced-motion: reduce) { .ou-clock i { animation: none; } }
 
-/* Two players side by side, each in his club's colours (R.clubVars: --club, --club-accent, --club-text) */
+
 .ou-pair { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .ou-card { position: relative; display: grid; grid-template-rows: auto 1fr auto; min-height: 236px; overflow: hidden; border-radius: 16px; border: 2px solid var(--club);
   background: linear-gradient(180deg, color-mix(in srgb, var(--club) 34%, var(--card2)) 0%, var(--card2) 72%); box-shadow: 0 8px 22px rgba(0, 0, 0, .35); }
@@ -1716,7 +1689,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-flag svg { width: 100%; height: 100%; display: block; }
 .ou-abbr { flex: none; font: 900 11.5px/1 var(--font); letter-spacing: .8px; padding: 3px 6px; border-radius: 5px; background: var(--club-accent); color: var(--club); }
 .ou-club { min-width: 0; font: 800 11.5px/1.15 var(--font); white-space: nowrap; overflow: hidden; }
-.ou-club.is-wrap { white-space: normal; text-wrap: balance; } /* js fitClubs: smaller first, two lines last, never "..." */
+.ou-club.is-wrap { white-space: normal; text-wrap: balance; } 
 .ou-body { display: grid; align-content: center; gap: 4px; padding: 12px 10px 6px; text-align: center; }
 .ou-name { font: 900 19px/1.12 var(--font); color: #fff; text-wrap: balance; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .ou-years { font: 700 11.5px/1.2 var(--font); color: var(--muted); }
@@ -1734,16 +1707,16 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-call { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 18px 10px; border-radius: 16px; border: 0; font: 900 20px/1 var(--font); letter-spacing: .6px;
   text-transform: uppercase; cursor: pointer; touch-action: manipulation; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .22), 0 6px 16px rgba(0, 0, 0, .3); }
 .ou-call span { font-size: 16px; }
-/* The keys on a computer (hover and a fine pointer): Left or Up for Over, Right or Down for Under */
+
 .ou-key { display: none; margin-left: 4px; padding: 3px 6px; border-radius: 6px; background: rgba(0, 0, 0, .18); font: 800 11px/1 var(--font); letter-spacing: 1px; }
 @media (hover: hover) and (pointer: fine) { .ou-key { display: inline-block; } }
 .ou-call.is-over { background: linear-gradient(180deg, #5ee08f, #22c55e); color: #052e16; } .ou-call.is-under { background: linear-gradient(180deg, #fb8a8a, #ef4444); color: #450a0a; }
 .ou-call:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .22); }
 .ou-call:disabled { opacity: .45; cursor: default; }
-.ou-wild { grid-template-columns: 1fr; margin: 12px 0 0; } /* the Reroll: the drafts' wildcard button, full width */
+.ou-wild { grid-template-columns: 1fr; margin: 12px 0 0; } 
 @media (max-width: 360px) { .ou-name { font-size: 16.5px; } .ou-num b { font-size: 32px; } .ou-card { min-height: 214px; } }
 
-/* Out */
+
 .ou-out { display: grid; gap: 12px; text-align: center; }
 .ou-out-h { font: 900 30px/1 var(--font); color: #fff; text-transform: uppercase; }
 .ou-pair.is-small .ou-card { min-height: 0; } .ou-pair.is-small .ou-name { font-size: 16px; } .ou-pair.is-small .ou-num b { font-size: 30px; }
@@ -1752,7 +1725,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-again { padding: 14px; border-radius: 14px; font: 900 15px/1 var(--font); text-transform: uppercase; letter-spacing: .5px; }
 .ou-ghost { padding: 14px; border-radius: 14px; border: 1.5px solid rgba(255, 255, 255, .5); background: transparent; color: #fff; font: 900 15px/1 var(--font); text-transform: uppercase; letter-spacing: .5px; cursor: pointer; }
 .ou-note { text-align: center; color: var(--good); font: 700 13px/1.3 var(--font); }
-/* Run It Back: on the screen like the draft's Remove / Lock In (render.js R.decision), End Run drains over 10 s */
+
 .ou-decide { text-align: center; }
 .ou-decide .decision { padding: 0 2px; }
 .ou-decide .decision p { margin: 4px 0 0; text-wrap: balance; }
@@ -1760,7 +1733,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-decide-rib { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
 .ou-decide-rib small { position: relative; z-index: 1; font: 800 11.5px/1 var(--font); color: #fbcfe8; }
 
-/* Results: the score, the strip of calls, three numbers, then Your Run */
+
 .ou-res { display: grid; gap: 12px; }
 .ou-hero { position: relative; display: grid; justify-items: center; gap: 4px; padding: 18px 14px 16px; border-radius: 18px; text-align: center; overflow: hidden;
   background: radial-gradient(120% 90% at 50% 0%, rgba(74, 222, 128, .16), transparent 60%), linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); }
@@ -1789,7 +1762,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .ou-chip b { font: 900 9.5px/1 var(--font); letter-spacing: .4px; }
 .ou-chip svg { width: 100%; height: 100%; display: block; }
 .ou-step-p { display: grid; gap: 2px; min-width: 0; text-align: left; }
-.ou-step-p b { font: 800 14px/1.15 var(--font); color: #fff; overflow-wrap: anywhere; text-wrap: balance; } /* a long name wraps, never "..." (audit T10, 16 Oct 2026) */
+.ou-step-p b { font: 800 14px/1.15 var(--font); color: #fff; overflow-wrap: anywhere; text-wrap: balance; } 
 .ou-step-p small { font: 700 10.5px/1 var(--font); color: var(--dim); }
 .ou-step-v { font: 900 18px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; text-align: right; min-width: 30px; }
 .ou-step.is-bad .ou-step-v { color: var(--bad); } .ou-step.is-bad .ou-step-p small { color: #fca5a5; font-weight: 800; }
@@ -1802,7 +1775,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @keyframes ouPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .ou-hero-n, .ou-strip i { animation: none; } }
 @media (max-width: 360px) { .ou-step { grid-template-columns: 18px 30px minmax(0, 1fr) auto auto; gap: 6px; } .ou-tag { min-width: 0; } .ou-step-v { font-size: 16px; } }
-/* Run It Back's rewind (15 Oct 2026): a burst of light, the rewind icon spinning backwards, the streak saved, ~1.5 s */
+
 .ou-rewind { position: fixed; inset: 0; z-index: 60; display: grid; place-content: center; justify-items: center; gap: 10px; background: rgba(6, 8, 14, .82); animation: ouRwIn .25s ease both, ouRwOut .3s ease 1.25s forwards; overflow: hidden; }
 .ou-rw-rays { position: absolute; left: 50%; top: 50%; width: 900px; height: 900px; margin: -450px 0 0 -450px; background: repeating-conic-gradient(from 0deg, rgba(236, 72, 153, .16) 0 8deg, transparent 8deg 22deg); animation: ouRwSpin 1.5s linear both; mask-image: radial-gradient(circle, #000 0 30%, transparent 62%); -webkit-mask-image: radial-gradient(circle, #000 0 30%, transparent 62%); }
 .ou-rw-ico { position: relative; font-size: 64px; line-height: 1; filter: drop-shadow(0 0 22px rgba(236, 72, 153, .8)); animation: ouRwIco .9s cubic-bezier(.2, .9, .3, 1.2) both; }
@@ -1816,23 +1789,21 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @keyframes ouRwIco { 0% { transform: scale(.3) rotate(0deg); opacity: 0; } 60% { transform: scale(1.15) rotate(-360deg); opacity: 1; } 100% { transform: scale(1) rotate(-360deg); } }
 @keyframes ouRwPop { from { transform: scale(.6) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .ou-rewind, .ou-rw-rays, .ou-rw-ico, .ou-rw-t, .ou-rw-s { animation: none; } }
-/* A Reroll (15 Oct 2026): the old card flips away, the new one flips in with a teal glow (the drafts' Reroll colour) */
+
 .ou-card.is-rr-out { animation: ouRrOut .35s ease-in both; }
 .ou-card.is-rerolled { animation: ouRrIn .6s cubic-bezier(.2, .9, .3, 1.15) both; box-shadow: 0 0 0 2px #2dd4bf, 0 0 28px rgba(45, 212, 191, .55); }
 @keyframes ouRrOut { to { transform: perspective(600px) rotateY(90deg) scale(.9); opacity: 0; } }
 @keyframes ouRrIn { 0% { transform: perspective(600px) rotateY(-90deg) scale(.9); opacity: 0; } 60% { transform: perspective(600px) rotateY(8deg) scale(1.03); opacity: 1; } 100% { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ou-card.is-rr-out, .ou-card.is-rerolled { animation: none; } }
-/* The slider banner's live look (15 Oct 2026): mini player cards, pulsing arrows, NEW MODE, a Play pill */
+
 .spot-promo.is-ou { gap: 12px; padding: 10px 12px; border: 1.5px solid rgba(56, 189, 248, .6); background: radial-gradient(120% 140% at 0% 0%, rgba(56, 189, 248, .24), transparent 55%), radial-gradient(90% 120% at 100% 100%, rgba(74, 222, 128, .16), transparent 60%), #0d1622; }
 .spot-promo.is-ou .oup-pair { flex: none; }
 .spot-promo.is-ou .spot-promo-txt b { font-size: 17px; }
 .oup-kick { font: 900 9.5px/1 var(--font); font-style: normal; letter-spacing: 1.2px; text-transform: uppercase; color: #7dd3fc; }
-.oup-play { flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding-left: 2px; box-sizing: border-box; border-radius: 50%; background: #38bdf8; color: #04121f; font-size: 13px; box-shadow: 0 0 14px rgba(56, 189, 248, .45); } /* a round play button (the owner: the text was squashed) */
+.oup-play { flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding-left: 2px; box-sizing: border-box; border-radius: 50%; background: #38bdf8; color: #04121f; font-size: 13px; box-shadow: 0 0 14px rgba(56, 189, 248, .45); } 
 .spot-promo.is-ou .spot-promo-txt small { text-wrap: balance; }
 
-/* 650 GOALS: a football pitch from above, attacking upwards (17 Oct 2026): mowing stripes, the halfway line and centre
-   circle, and the penalty area and six-yard box at each end. The front three sit inside the top box's reach, the back
-   four across the bottom, every spot inside the touchlines */
+
 .pitch {
   position: relative; isolation: isolate; gap: 14px; padding: 46px 12px; border-radius: 6px;
   background:
@@ -1844,7 +1815,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
   border: 2px solid rgba(255, 255, 255, .34);
   box-shadow: inset 0 0 0 6px #0e4423, 0 0 0 1px #0a2f18;
 }
-/* The penalty areas (::before at the top, ::after at the bottom), each with its six-yard box */
+
 .pitch::before, .pitch::after {
   content: ''; position: absolute; left: 22%; right: 22%; height: 34px; pointer-events: none; z-index: -1;
   border: 2px solid rgba(255, 255, 255, .24);
@@ -1860,22 +1831,21 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
   .pitch::before, .pitch::after { height: 42px; }
 }
 
-/* Desktop keys (16 Oct 2026): a small number on each card's Pick, only where there's a keyboard and a mouse */
+
 .pcard-key { display: none; }
 @media (hover: hover) and (pointer: fine) {
   .pcard-key { display: inline-grid; place-items: center; min-width: 17px; height: 17px; margin-right: 6px; padding: 0 3px; box-sizing: border-box; border-radius: 5px; border: 1px solid currentColor; font: inherit; font-size: 10px; line-height: 1; opacity: .75; vertical-align: 1px; }
 }
 
-/* One footer on every CAST game and the CAST Games home (audit L4/L5, 16 Oct 2026, the owner's rule: buttons, not text
-   links): the page links as pills, a credit's link inside its sentence as a soft tag, never underlined */
+
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 12px; }
 .footer-links > span[aria-hidden] { display: none; }
 .footer-links a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); color: #d6d6e4; font-size: 12.5px; font-weight: 800; text-decoration: none; }
 @media (hover: hover) { .footer-links a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
 .footer-legal a { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); color: #c9c9d8; font-weight: 700; text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-.footer-legal, .nf-sub { text-wrap: balance; } /* no word alone on the last line at 390px (audit T9) */
+.footer-legal, .nf-sub { text-wrap: balance; } 
 
-/* The formation offer (17 Oct 2026): three cards, each its name, a few words and a little pitch of its spots */
+
 .fm-intro { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; text-wrap: pretty; }
 .fm-cards { display: grid; gap: 10px; }
 .fm-card {
@@ -1899,22 +1869,18 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .fm-dot i { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .7); }
 .fm-dot b { font-size: 9px; font-weight: 900; letter-spacing: .3px; color: rgba(255, 255, 255, .9); line-height: 1; }
 @media (max-width: 380px) { .fm-card { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } .fm-name { font-size: 21px; } }
-/* The formation spin (17 Oct 2026): the cards turn like reels (js/app.js fmSpin), then land one by one.
-   Smoother (17 Oct 2026): each card gets a reel over it, a strip of whole faces on its own GPU layer that only ever moves
-   by transform. The real card stays laid out underneath (its name and pitch hidden, its dim Pick showing through and
-   staying still, as before), so nothing around it reflows, and takes over once the reel has settled. The card's height
-   comes from its pitch, so a late font swap cannot move the reel either */
+
 .fm-card.is-spinning { cursor: default; animation: none; border-color: rgba(var(--acc-rgb), .25); }
 .fm-card.is-spinning .fm-note { opacity: 0; }
 .fm-card.is-spinning .fm-cta { opacity: .35; }
 .fm-card .fm-note, .fm-card .fm-cta { transition: opacity .25s ease; }
-.fm-card.has-reel > .fm-side > .fm-name, .fm-card.has-reel > .fm-pitch { visibility: hidden; } /* its dim Pick stays put */
-.fm-face .fm-note, .fm-face .fm-cta { visibility: hidden; } /* only the names and pitches roll */
+.fm-card.has-reel > .fm-side > .fm-name, .fm-card.has-reel > .fm-pitch { visibility: hidden; } 
+.fm-face .fm-note, .fm-face .fm-cta { visibility: hidden; } 
 .fm-reel { position: absolute; inset: 0; overflow: hidden; border-radius: 12px; contain: strict; pointer-events: none; }
 .fm-strip { position: absolute; inset: 0; will-change: transform; }
 .fm-face { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 172px); align-items: stretch; gap: 10px; height: 100%; padding: 10px; }
-@media (max-width: 380px) { .fm-face { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } } /* as the card's own columns */
-/* The landing flash: its ring and glow fade by opacity alone, so nothing repaints while the other cards turn */
+@media (max-width: 380px) { .fm-face { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } } 
+
 .fm-card::after {
   content: ''; position: absolute; inset: -2px; border-radius: 14px; pointer-events: none; opacity: 0;
   box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .95), 0 0 22px rgba(var(--acc-rgb), .55);
@@ -1925,47 +1891,39 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 @media (prefers-reduced-motion: reduce) { .fm-card.is-landed::after { animation: none; } .fm-strip { will-change: auto; } }
 .fm-cards.is-fade .fm-card { animation: fmFade .3s ease both; }
 @keyframes fmFade { from { opacity: 0; } to { opacity: 1; } }
-/* Before a formation is chosen the pitch waits for it */
+
 .pitch-wait { display: grid; place-items: center; gap: 4px; min-height: 260px; text-align: center; }
 .pitch-wait b { font-size: 16px; font-weight: 900; color: #fff; }
 .pitch-wait span { font-size: 12px; color: rgba(255, 255, 255, .7); }
-/* Rows of four or five spots use the whole width; shorter rows sit in a little (17 Oct 2026) */
+
 .pitch-row:first-child, .pitch-row:nth-child(2) { padding: 0; }
 .pitch-row.is-n1, .pitch-row.is-n2, .pitch-row.is-n3 { padding: 0 6%; }
 .pitch-row.is-n5 { gap: 4px; }
 .pitch-row.is-n5 .slot-name { font-size: 10.5px; }
-/* An empty spot's full name (Left Wing Back) only where it fits on one line; a narrow spot shows its code alone (17 Oct 2026) */
+
 .pitch .slot { container: slot / inline-size; }
 .pitch .slot.is-empty .slot-pos { white-space: nowrap; }
 @container slot (max-width: 100px) { .slot.is-empty .slot-pos { display: none; } }
 
-/* 3-5-2: the wide mids a touch higher than the centre mids (17 Oct 2026) */
-.pitch-row.is-wings-up > :first-child, .pitch-row.is-wings-up > :last-child { transform: translateY(-26%); }
-.pitch-row.is-diamond > :first-child, .pitch-row.is-diamond > :last-child { transform: translateY(-56%); } /* 4-3-1-2: the CMs halfway up to the CAM, a diamond */
 
-/* The Classic card shows the game's logo (17 Oct 2026) */
+.pitch-row.is-wings-up > :first-child, .pitch-row.is-wings-up > :last-child { transform: translateY(-26%); }
+.pitch-row.is-diamond > :first-child, .pitch-row.is-diamond > :last-child { transform: translateY(-56%); } 
+
+
 .mode-main .mode-ico.is-logo { display: grid; place-items: center; }
 .mode-main .mode-logo { display: block; width: 112px; height: auto; }
 @media (max-width: 420px) { .mode-main .mode-logo { width: 92px; } }
 
-/* The GOAT wears 1000TRIES' gold in every game, his free Legend card too (17 Oct 2026, the owner) */
+
 .pcard.is-goat, .reveal.is-goat, .slot.is-goat, .rrow.is-goat, .srow.is-goat, .chooser-card.is-goat { --gold: #f1c073; --gold-dark: #c9953a; }
 
-/* The Classic card's logo is its headline, so the big number goes (17 Oct 2026, the owner: it doubled up "777") */
+
 .mode-card.mode-main.is-logo { grid-template-areas: "ico line" "chips chips" "go go"; }
 .mode-card.mode-main.is-logo .mode-line { align-self: center; font-size: 15.5px; }
 .mode-card.mode-main.is-logo .mode-logo { width: 138px; }
 @media (max-width: 420px) { .mode-card.mode-main.is-logo .mode-logo { width: 120px; } }
 
-/* ---------------- Standard wildcard tiles, 17 Oct 2026 ----------------
-   The owner: "WILDCARDS IDENTICAL IN EVERY GAME". This block is the same, byte for byte, at the end of every draft game's
-   css/main.css (1000TRIES, 4000 GOALS, 25000 RUNS, 60000 RUNS, 777 TDS, G1 WINNER SPINNER, 650 GOALS, 100000 POINTS), and
-   27-0's css/theme.css uses the same colours for its bar. Explicit colours only, never a game's theme colours (--gold,
-   --acc-rgb), so a tile looks the same in every game. It wins over the older per-tile rules above (.wildcards .wc beats .wc).
-   Tiles (js/render.js), in this order, each only where its mode allows it: Reroll teal, Reveal yellow, Remove pink,
-   Substitute blue, Legend Key violet, The GOAT gold foil (the owner's own exception to gold being for CAST Pass), then
-   1000TRIES' Immortal and World Legend Picks (charcoal, a gold edge). The CAST Pass tag stays CAST Pass gold. A guest's
-   "Sign in free", the free bonus Reroll, "Buy" and "N left" all keep their tile's own colours. */
+
 .wildcards .wc { --wc: #ffffff; --wc-rgb: 255, 255, 255; color: #fff; }
 .wildcards .wc.wc-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; border-color: #14b8a6; background: linear-gradient(160deg, rgba(20, 184, 166, .22), rgba(20, 184, 166, .06)); }
 .wildcards .wc.wc-reroll .wc-left { color: #5eead4; }
@@ -1988,7 +1946,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
   background: linear-gradient(135deg, #8e97a6 0%, #dfe4ec 26%, #ffffff 50%, #dfe4ec 74%, #8e97a6 100%); background-size: 200% 100%; }
 .wildcards .wc.wc-imm.is-ready, .wildcards .wc.wc-ileg.is-ready { box-shadow: 0 0 16px rgba(241, 192, 115, .4); }
 .wildcards .wc.wc-imm .wc-label, .wildcards .wc.wc-ileg .wc-label { white-space: normal; text-wrap: balance; }
-/* Hover: a lighter rim of the tile's own colour */
+
 @media (hover: hover) {
   .wildcards .wc:hover:not(:disabled) { border-color: rgba(255, 255, 255, .55); }
   .wildcards .wc.wc-reroll:hover:not(:disabled) { border-color: #5eead4; }
@@ -1998,18 +1956,17 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
   .wildcards .wc.wc-key:hover:not(:disabled) { border-color: #c4b5fd; }
   .wildcards .wc.wc-goat:hover:not(:disabled), .wildcards .wc.wc-imm:hover:not(:disabled), .wildcards .wc.wc-ileg:hover:not(:disabled) { border-color: #fff1c4; }
 }
-/* Armed (tap the field next): Remove goes red, Substitute keeps its blue with a glow */
+
 .wildcards .wc.is-armed, .wildcards .wc.wc-tweak.is-armed { border-color: #f87171; background: #2a1116; opacity: 1; }
 .wildcards .wc.wc-sub.is-armed { border-color: #93c5fd; background: linear-gradient(160deg, rgba(59, 130, 246, .22), rgba(59, 130, 246, .05)); box-shadow: 0 0 14px rgba(59, 130, 246, .45); }
-/* Not usable right now, then used up; the Legend Key's countdown stays readable */
+
 .wildcards .wc:disabled { opacity: .4; cursor: not-allowed; }
 .wildcards .wc.is-spent { opacity: .3; }
 .wildcards .wc.wc-goat:disabled, .wildcards .wc.wc-imm:disabled, .wildcards .wc.wc-ileg:disabled { opacity: .5; }
 .wildcards .wc.wc-key.is-used { opacity: .8; cursor: default; }
-/* The CAST Pass tag (Substitute and the Legend Key for a free profile) */
+
 .wildcards .wc .wc-left.wc-pass-tag { display: inline-block; padding: 2px 7px; border-radius: 999px; color: #f1c073; box-shadow: inset 0 0 0 1px rgba(241, 192, 115, .6); background: rgba(241, 192, 115, .14); font-size: 9.5px; letter-spacing: .6px; }
-/* Layout by count: 3 in a row; 4 as two rows of two; 5 as three and two; 6 as two rows of three; 7 the same and the last
-   across the row. From 5 the icon sits above the name, so every tile in a row is the same height */
+
 .wildcards.has-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .wildcards.has-5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .wildcards.has-5 > .wc { grid-column: span 2; }
@@ -2019,11 +1976,11 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .wildcards.has-5 .wc-label, .wildcards.has-6 .wc-label, .wildcards.has-7 .wc-label { flex-direction: column; gap: 3px; flex-wrap: nowrap; }
 .wildcards.has-7 > .wc:last-child .wc-label { flex-direction: row; gap: 6px; }
 .wildcards.has-5 .wc-ico, .wildcards.has-6 .wc-ico, .wildcards.has-7 .wc-ico { font-size: 17px; line-height: 1; }
-/* The burst when one fires, in its tile's colour */
+
 .wc-burst.wc-burst-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; }
 .wc-burst.wc-burst-scout { --wc: #facc15; --wc-rgb: 250, 204, 21; }
 .wc-burst.wc-burst-tweak { --wc: #f472b6; --wc-rgb: 244, 114, 182; }
 .wc-burst.wc-burst-sub { --wc: #60a5fa; --wc-rgb: 96, 165, 250; }
-/* The Legend Key's line under the offer ("Not these? Swap for a Legends Pick"), in the key's violet */
+
 .key-swap { border-color: rgba(167, 139, 250, .6); background: rgba(167, 139, 250, .08); color: #c4b5fd; }
 @media (hover: hover) { .key-swap:hover { background: rgba(167, 139, 250, .16); } }

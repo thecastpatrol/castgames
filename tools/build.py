@@ -37,6 +37,18 @@ ONLY = next((a.split('=', 1)[1].split(',') for a in sys.argv if a.startswith('--
 SITE = 'https://castgames.com.au/'
 # Testers only until the switch-over (16 Oct 2026, the owner): shared/cg-gate.js hides every page until the tester password
 GATE = '' if LIVE else '<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->\n'
+# Pictures, from the top of every page's head (speed pass, 18 Oct 2026): a card or logo box (ART) is marked .is-in once its
+# picture has loaded, which ends its waiting shimmer (shared/cg.css); a browser that can't show WebP (webp_pictures) gets
+# the picture's PNG instead; and the footer rule below
+ART = '.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'
+IMGFB = ("<script>(function () { function inn(t) { var b = t.closest && t.closest('" + ART + "'); if (b) b.classList.add('is-in'); } "
+         "document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); "
+         "document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; "
+         "if (/\\.webp(\\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); "
+         "t.src = t.src.replace(/\\.webp(\\?v=\\w*)?/, '.png'); return; } inn(t); }, true); })();</script>"
+         # and a game's footer waits unseen while its players load ("Loading the players", HIGHER OR LOWER and Bingo), so it
+         # never shows at the top and then jumps down when the game draws (a layout shift of 0.2)
+         "<style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->\n")
 
 
 def _ver(rel):
@@ -50,7 +62,7 @@ def trim_logos():
     Runs on each build, so a new logo dropped into assets/logos is trimmed too; an already trimmed file is left alone"""
     from PIL import Image
     s = open(os.path.join(HERE, 'shared', 'cg.js'), encoding='utf-8').read()
-    for name in sorted(set(re.findall(r"L \+ '([\w.-]+\.png)", s))):
+    for name in sorted(set(n + '.png' for n in re.findall(r"L \+ '([\w.-]+)\.(?:png|webp)", s))):  # (a .webp card logo's source is its .png)
         p = os.path.join(HERE, 'assets', 'logos', name)
         if not os.path.exists(p):
             continue
@@ -72,9 +84,11 @@ def version_logos():
     worked out, so a new logo also makes a new cg.js"""
     p = os.path.join(HERE, 'shared', 'cg.js')
     s = open(p, encoding='utf-8').read()
-    t = re.sub(r"L \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "L + '%s?v=%s'" % (m.group(1), _ver('assets/logos/' + m.group(1))), s)
-    t = re.sub(r"TB \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "TB + '%s?v=%s'" % (m.group(1), _ver('assets/tabs/' + m.group(1))), t)  # the bar's icons
-    t = re.sub(r"IC \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "IC + '%s?v=%s'" % (m.group(1), _ver('assets/icons/' + m.group(1))), t)  # the switcher's group icons
+    t = re.sub(r"L \+ '([\w.-]+\.(?:png|webp))(?:\?v=\w*)?'", lambda m: "L + '%s?v=%s'" % (m.group(1), _ver('assets/logos/' + m.group(1))), s)
+    t = re.sub(r"TB \+ '([\w.-]+\.(?:png|webp))(?:\?v=\w*)?'", lambda m: "TB + '%s?v=%s'" % (m.group(1), _ver('assets/tabs/' + m.group(1))), t)  # the bar's icons
+    t = re.sub(r"IC \+ '([\w.-]+\.(?:png|webp))(?:\?v=\w*)?'", lambda m: "IC + '%s?v=%s'" % (m.group(1), _ver('assets/icons/' + m.group(1))), t)  # the switcher's group icons
+    # the bar's own logo (webp_pictures)
+    t = re.sub(r"url\('assets/logos/castgames\.webp(?:\?v=\w*)?'\)", lambda m: "url('assets/logos/castgames.webp?v=%s')" % _ver('assets/logos/castgames.webp'), t)
     if t != s:
         open(p, 'w', encoding='utf-8').write(t)
     # the home page's banner art (js/home.js BN + '<slide>/art-phone@2x.webp'), the same way (17 Oct 2026)
@@ -85,7 +99,64 @@ def version_logos():
         open(p, 'w', encoding='utf-8').write(t)
 
 
+# Pictures the bar and the cards show, as WebP (speed pass, 18 Oct 2026): (shared/cg.js prefix, folder, lossless, widest)
+# The card logos were 54 to 137 KB PNGs each (about 2.7 MB on the home page); the largest a card shows one is 158 CSS px
+# wide, so 480 px covers a 3x phone screen. The bar's icons stay pixel for pixel (lossless). The PNG stays the source
+# (what the owner and trim_logos work on) and stays published, so anything else pointing at it still works
+WEBP = [('L', 'logos', False, 480), ('TB', 'tabs', True, 0), ('IC', 'icons', False, 0)]
+WEBP_LOG = os.path.join(HERE, 'tools', 'webp-sources.json')  # each WebP's source PNG version: made again only when it changes
+
+
+def webp_pictures():
+    from PIL import Image
+    try:
+        made = json.load(open(WEBP_LOG))
+    except Exception:
+        made = {}
+
+    def webp(png, lossless, widest):
+        out = png[:-4] + '.webp'
+        rel = os.path.relpath(out, HERE)
+        try:
+            im = Image.open(png).convert('RGBA')
+        except Exception as e:
+            print('webp: kept', os.path.relpath(png, HERE), e)
+            return False
+        # the source's pixels, not its bytes: a PNG saved again with the same picture (keep_same_pictures) changes nothing
+        import hashlib
+        src = hashlib.md5(('%dx%d:' % im.size).encode() + im.tobytes()).hexdigest()[:12]
+        if made.get(rel) == src and os.path.exists(out):
+            return True
+        try:
+            if widest and im.width > widest:
+                im = im.resize((widest, round(im.height * widest / im.width)), Image.LANCZOS)
+            if lossless:
+                im.save(out, 'WEBP', lossless=True, quality=100, method=6)
+            else:
+                im.save(out, 'WEBP', quality=90, alpha_quality=100, method=6)
+        except Exception as e:  # no WebP in this Pillow: the PNG stays
+            print('webp: kept', rel[:-5] + '.png', e)
+            return False
+        made[rel] = src
+        print('webp:', rel, os.path.getsize(png) // 1024, '->', os.path.getsize(out) // 1024, 'KB')
+        return True
+    p = os.path.join(HERE, 'shared', 'cg.js')
+    s = t = open(p, encoding='utf-8').read()
+    for pre, folder, lossless, widest in WEBP:
+        for base in sorted(set(re.findall(pre + r" \+ '([\w.-]+)\.(?:png|webp)", t))):
+            png = os.path.join(HERE, 'assets', folder, base + '.png')
+            if os.path.exists(png) and webp(png, lossless, widest):
+                t = re.sub(pre + r" \+ '" + re.escape(base) + r"\.png(\?v=\w*)?'", pre + " + '" + base + ".webp'", t)
+    # the bar's logo (1301 px wide, shown 59 to 75 px wide): 240 px, 3x its widest (the tester screen keeps the PNG)
+    if webp(os.path.join(HERE, 'assets', 'logos', 'castgames.png'), False, 240):
+        t = re.sub(r"url\('assets/logos/castgames\.png'\)", "url('assets/logos/castgames.webp')", t)
+    if t != s:
+        open(p, 'w', encoding='utf-8').write(t)
+    json.dump(made, open(WEBP_LOG, 'w'), indent=1, sort_keys=True)
+
+
 trim_logos()
+webp_pictures()
 version_logos()
 CGV = _ver('shared/cg.js') + _ver('shared/cg.css')[:4]  # the bar's version, so a change reaches every game page
 
@@ -287,6 +358,66 @@ SHARE_MARKS = [("'CAN YOU BEAT IT?  1000TRIES.COM.AU'", "'CAN YOU BEAT IT?  CAST
                ("tx('27-0.app'", "tx('CASTGAMES.COM.AU'"), ("center('27-0.app'", "center('CASTGAMES.COM.AU'")]
 
 
+# The account's first Firestore reads (which games are on, config/launch; the home's boards) go to another address, and
+# on 4G its connection alone is three round trips. Opened from the top of every page that runs the account (speed pass,
+# 18 Oct 2026), it is ready by the time the account asks, so a first visit's Coming Soon cards turn live sooner
+LAUNCH_PRE = '<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->\n'
+
+
+def with_imgfb(s):
+    """The page with the pictures script (IMGFB) and the Firestore connection (LAUNCH_PRE) once each, at the top of its
+    head (after the tester screen's script)"""
+    s = re.sub(r'<(?:script|link)[^\n]*<!-- CG_(?:IMGFB|PICS|LAUNCH) -->\n?', '', s)
+    return re.sub(r'(<head[^>]*>\n(?:<script src="/shared/cg-gate\.js[^"]*"></script><!-- CG_GATE -->\n)?)', lambda m: m.group(1) + IMGFB + (LAUNCH_PRE if 'cast-account.js' in s else ''), s, count=1)  # (only where the account runs)
+
+
+# The games' own header and home logos (speed pass, 18 Oct 2026): on CAST Games the header is hidden and a page opens
+# straight into play, yet these pictures still downloaded on every game page (about 130 KB, as much as the game's own
+# scripts). Lazy, they load only if they are ever shown (each has its width and height, so nothing moves when it does)
+HIDDEN_ART = ('brand-logo', 'brand-game', 'hero-logo', 'cp-brand-cast', 'cp-brand-game', 'cp-hero-logo', 'header-logo')
+
+
+def lazy_hidden(s):
+    def rep(m):
+        tag = m.group(0)
+        cls = re.search(r'\sclass="([^"]*)"', tag)
+        # (not one with a data-fallback: a game swaps that for words when it looks unloaded)
+        if not cls or not set(cls.group(1).split()) & set(HIDDEN_ART) or re.search(r'\s(?:loading|data-fallback)=', tag):
+            return tag
+        return tag[:4] + ' loading="lazy"' + tag[4:]
+    return re.sub(r'<img\s[^>]*>', rep, s)
+
+
+def ou_ahead(s, folder):
+    """A HIGHER OR LOWER page asks for its players (data/ou.json, as its js/overunder.js names it) from its head, so they
+    are in by the time the game opens (speed pass, 18 Oct 2026). With the page's files now fetched together the game
+    opened before its players arrived, drew "Loading the players" and then grew, pushing the footer down the screen"""
+    s = re.sub(r'<link rel="preload" href="data/ou\.json[^"]*" as="fetch" crossorigin>\n?', '', s)
+    if "window.CG_MODE = 'ou'" not in s:
+        return s
+    try:
+        m = re.search(r"fetch\('(data/ou\.json[^']*)'", open(os.path.join(HERE, folder, 'js', 'overunder.js'), encoding='utf-8').read())
+    except OSError:
+        return s
+    if not m:
+        return s
+    link = '<link rel="preload" href="%s" as="fetch" crossorigin>\n' % m.group(1)
+    return re.sub(r'(<base href="[^"]*">\n)', lambda x: x.group(1) + link, s, count=1)
+
+
+def csp_by_script(s):
+    """The games' <meta http-equiv="Content-Security-Policy"> (upgrade-insecure-requests, object-src, base-uri: the rules a
+    meta tag can carry on GitHub Pages) put in by a tiny script at the same spot instead (speed pass, 18 Oct 2026). Chrome
+    stops looking ahead for a page's files once its HTML has that meta tag, so every script after it was fetched one at a
+    time (1000TRIES took about 24 s to show on a mid-range phone on 4G, about 9 s without it). The same rules from the same
+    spot: Chrome, Safari and Firefox apply a policy meta added by a script, before anything after it loads"""
+    def rep(m):
+        import html
+        return ('<script>(function () { var m = document.createElement(\'meta\'); m.httpEquiv = \'Content-Security-Policy\'; '
+                'm.content = %s; document.head.appendChild(m); })();</script>') % json.dumps(html.unescape(m.group(1)))
+    return re.sub(r'<meta http-equiv="Content-Security-Policy" content="([^"<>]*)"\s*/?>', rep, s)
+
+
 def fit_code(dst, folder):
     for root, _, files in os.walk(dst):
         for f in files:
@@ -471,6 +602,124 @@ def sitemap(reg):
                                          ''.join('  <url><loc>%s</loc></url>\n' % u for u in urls) + '</urlset>\n')
 
 
+SHARED_FROM = '1000tries'  # the master copy of the shared account code (1000TRIES Game/shared/cast-account)
+
+
+def strip_games():
+    """The comments out of every copied game's scripts and styles (speed pass, 18 Oct 2026: about a quarter of a game's
+    code download; tools/strip/strip.cjs, which keeps every line where it was and leaves a file alone unless its code is
+    exactly the same without them). The games' own repos keep every comment. Without node it leaves them in"""
+    files = []
+    for folder, _, _, _, _ in GAMES:
+        d = os.path.join(HERE, folder)
+        for root, dirs, fs in os.walk(d):
+            dirs[:] = [x for x in dirs if x not in ('shared', 'node_modules') and not x.startswith('.')]
+            files += [os.path.join(root, f) for f in fs if f.endswith(('.js', '.css')) and not f.endswith(('.min.js', '.min.css'))]
+    try:
+        for i in range(0, len(files), 200):
+            out = subprocess.run(['node', os.path.join(HERE, 'tools', 'strip', 'strip.cjs')] + files[i:i + 200], check=True, capture_output=True, text=True).stdout
+            print(out.strip())
+    except Exception as e:
+        print('strip: comments kept (%s)' % e)
+
+
+def speed_pages():
+    """Two speed fixes on every game page (speed pass, 18 Oct 2026):
+    - its CSP meta tag put in by a script (csp_by_script), so the browser fetches the page's files ahead again;
+    - one copy of the shared files for the whole site. Every game folder carries the same account code (js/cast-account.js
+      is 1.3 MB, css/cast-account.css 450 KB, plus the contact form, prices, flags...) and each page loaded its own folder's
+      copy, so the home and every game a phone opened downloaded it all again. A game page's js/ or css/ file that is byte
+      for byte 1000TRIES's copy now loads 1000TRIES's (/1000tries/js/...), any other keeps its own. Each ?v= is the built
+      file's own content version, so a changed file is always fetched new (some pages carried one from before the build's
+      own changes to the file)"""
+    folders = set(x[0] for x in GAMES)
+    # js/x.js, or (built before) /1000tries/js/x.js or /<game>/js/x.js
+    pat = re.compile(r'((?:src|href)=")(?:/[\w.-]+/)?((?:js|css)/[\w.-]+\.(?:js|css))(?:\?v=[\w.]*)?(")')
+    vers = {}
+
+    def ver(rel):
+        if rel not in vers:
+            vers[rel] = _ver(rel)
+        return vers[rel]
+
+    sames = {}
+
+    def same(a, b):
+        if (a, b) not in sames:
+            sames[(a, b)] = ver(a) == ver(b) and open(os.path.join(HERE, a), 'rb').read() == open(os.path.join(HERE, b), 'rb').read()
+        return sames[(a, b)]
+    n = 0
+    for top in sorted(os.listdir(HERE)):
+        d = os.path.join(HERE, top)
+        if top.startswith('.') or not os.path.isdir(d) or top in ('tools', 'shared', 'assets', 'js', 'css', '__'):
+            continue
+        for f in sorted(os.listdir(d)):
+            if not f.endswith('.html'):
+                continue
+            p = os.path.join(d, f)
+            s = open(p, encoding='utf-8').read()
+            b = re.search(r'<base href="\.\./([\w.-]+)/">', s)
+            folder = b.group(1) if b else top
+            if folder not in folders or f == '404.html':  # (a 404 page keeps its addresses from the site's root)
+                t = with_imgfb(csp_by_script(s))
+                if t != s:
+                    open(p, 'w', encoding='utf-8').write(t)
+                continue
+
+            def rep(m):
+                rel, common = folder + '/' + m.group(2), SHARED_FROM + '/' + m.group(2)
+                if not os.path.isfile(os.path.join(HERE, rel)):
+                    return m.group(0)
+                if os.path.isfile(os.path.join(HERE, common)) and same(rel, common):
+                    return '%s/%s?v=%s%s' % (m.group(1), common, ver(common), m.group(3))
+                return '%s%s?v=%s%s' % (m.group(1), m.group(2), ver(rel), m.group(3))
+            t = ou_ahead(with_imgfb(csp_by_script(lazy_hidden(pat.sub(rep, s)))), folder)
+            if t != s:
+                open(p, 'w', encoding='utf-8').write(t)
+                n += 1
+    print('speed: %d pages' % n)
+    speed_script()
+
+
+def speed_script():
+    """shared/cg-speed.js (speed pass, 18 Oct 2026): its list of each game's files (FILES: the game page's own styles and
+    scripts, as the page names them, and its players file), then its own tag on every game page, after shared/cg.js"""
+    files = {}
+    for folder, _, _, _, _ in GAMES:
+        idx = os.path.join(HERE, folder, 'index.html')
+        if not os.path.exists(idx):
+            continue
+        page = open(idx, encoding='utf-8').read()
+        out = []
+        for m in re.finditer(r'<(?:script[^>]*\ssrc|link[^>]*rel="stylesheet"[^>]*\shref)="([^"]+)"', page):
+            u = m.group(1)
+            if re.match(r'(?:https?:)?//|\.\./shared/|/shared/|data:', u):
+                continue
+            out.append(u if u.startswith('/') else '/%s/%s' % (folder, u))
+        if os.path.exists(os.path.join(HERE, folder, 'data', 'players.json')):
+            out.append('/%s/data/players.json' % folder)
+        files[folder] = out
+    p = os.path.join(HERE, 'shared', 'cg-speed.js')
+    s = open(p, encoding='utf-8').read()
+    t = re.sub(r'var FILES = .*?; // CG_FILES', lambda m: 'var FILES = %s; // CG_FILES' % json.dumps(files, separators=(',', ':')), s, count=1, flags=re.S)
+    if t != s:
+        open(p, 'w', encoding='utf-8').write(t)
+    tag = '<script src="/shared/cg-speed.js?v=%s" defer></script>' % _ver('shared/cg-speed.js')
+    for top in sorted(os.listdir(HERE)):
+        d = os.path.join(HERE, top)
+        if top.startswith('.') or not os.path.isdir(d) or top in ('tools', 'shared', 'assets', 'js', 'css', '__'):
+            continue
+        for f in os.listdir(d):
+            if not f.endswith('.html'):
+                continue
+            q = os.path.join(d, f)
+            h = open(q, encoding='utf-8').read()
+            h2 = re.sub(r'<script src="/shared/cg-speed\.js[^"]*" defer></script>\n?', '', h)
+            h2 = re.sub(r'(<script src="(?:\.\./|/)shared/cg\.js\?v=\w+"></script>\n)', lambda m: m.group(1) + tag + '\n', h2, count=1)
+            if h2 != h:
+                open(q, 'w', encoding='utf-8').write(h2)
+
+
 REG = None
 
 
@@ -510,6 +759,8 @@ def main():
     mode_pages(REG)
     old_paths(REG)
     sign_in_pages()  # /__/auth/ at the root, for same-tab sign-in on phones
+    strip_games()  # (speed pass, 18 Oct 2026) before the pages take each file's version
+    speed_pages()  # every page: files fetched ahead again (csp_by_script) and one copy of the shared account files (speed pass, 18 Oct 2026)
     # Files the account code loads next to the page (assets/...): the home and sport pages need their own copy
     for rel in ['assets/cast-pass-logo.png']:
         shutil.copyfile(os.path.join(HERE, '1000tries', rel), os.path.join(HERE, rel))
@@ -520,10 +771,12 @@ def main():
     hs2 = re.sub(r'((?:1000tries|4000goals|27-0|25000runs|60000runs|777tds|g1winner|650goals|scpointsking-afl|scpointsking|100000points)/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[\w]*)?"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs)
     # and the bar's own files (17 Oct 2026: the home page kept an old cg.css, so a fix never reached it)
     hs2 = re.sub(r'shared/cg\.(css|js)\?v=[\w]*"', lambda m: 'shared/cg.%s?v=%s"' % (m.group(1), CGV), hs2)
+    hs2 = re.sub(r'shared/cg-speed\.js\?v=\w*"', lambda m: 'shared/cg-speed.js?v=%s"' % _ver('shared/cg-speed.js'), hs2)  # (speed pass, 18 Oct 2026)
     # and the home page's own script and styles (17 Oct 2026: they had fixed numbers, so changes waited in old copies)
     hs2 = re.sub(r'((?:js/home\.js|css/home\.css|css/hero-banners\.css))\?v=[\w]*"', lambda m: m.group(1) + '?v=' + _ver(m.group(1)) + '"', hs2)
     # and the How CAST Games Works tour's two files, which the page's hook loads on the first tap of The Sports banner
     hs2 = re.sub(r"((?:shared/cg-tour\.js|css/cg-tour\.css))\?v=\w*(?=['\"])", lambda m: m.group(1) + '?v=' + _ver(m.group(1)), hs2)
+    hs2 = with_imgfb(csp_by_script(hs2))  # and the pictures script, before the sport pages are made from it; its CSP by script (csp_by_script)
     if hs2 != hs:
         open(idx, 'w', encoding='utf-8').write(hs2)
     # Each sport's See All page (the owner, 15 Oct 2026): the home page with <base href="../">, drawing that sport only
@@ -560,7 +813,7 @@ def main():
     open(idx, 'w', encoding='utf-8').write(s)
     # The site's own 404 (16 Oct 2026) sits behind the tester password too, until the switch-over
     nf = os.path.join(HERE, '404.html')
-    s = re.sub(r'<script src="/shared/cg-gate\.js[^"]*"></script><!-- CG_GATE -->\n?', '', open(nf, encoding='utf-8').read())
+    s = re.sub(r'<script src="/shared/cg-gate\.js[^"]*"></script><!-- CG_GATE -->\n?', '', csp_by_script(open(nf, encoding='utf-8').read()))
     if GATE:
         s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + GATE.rstrip('\n'), s, count=1)
     open(nf, 'w', encoding='utf-8').write(s)

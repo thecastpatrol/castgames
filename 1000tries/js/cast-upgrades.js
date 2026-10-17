@@ -1,11 +1,11 @@
-/* Ratings Upgrades (6 Oct 2026, the owner's call, after FIFA's Winter Upgrades): a card in the home spot with five
-   players whose 27-0 ratings went up, each on a club-colour card with its jump; a tap opens the best 32
-   (js/upgrades-data.js, made by tools/build_upgrades.py) with its button pinned. Shared by both games
-   (tools/sync_shared.py):
-     27-0: second in the spot's turn for its first 3 days (6 to 8 Oct), halfway through it for days 4 to 14; Play Classic
-     1000TRIES: last in the turn the whole time, a push to play 27-0; Play 27-0 opens it
-   Gone from 20 Oct (Sydney days). GA (game: the page's): upgrades_view (once a visit, when the spot shows it),
-   upgrades_tap, upgrades_play, upgrades_close. */
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   var D = window.CP_UPGRADES;
@@ -20,7 +20,7 @@
     new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
     return p.year + '-' + p.month + '-' + p.day;
   }
-  // Its place in the spot on a Sydney day: '2' (second), 'mid', 'end' (1000TRIES) or 'off'
+  
   function state(day) { return day < FROM || day >= UNTIL ? 'off' : !IS27 ? 'end' : day < SECOND_UNTIL ? '2' : 'mid'; }
   function place(pos) {
     if (pos === 'off') { box.hidden = true; box.removeAttribute('data-spot-pos'); return; }
@@ -29,12 +29,12 @@
   }
   function ga(ev, x) {
     x = x || {}; x.game = CA.game || '';
-    try { if (typeof CA.track === 'function') CA.track(ev, x); else if (typeof gtag === 'function') gtag('event', ev, x); } catch (e) { /* no analytics */ }
+    try { if (typeof CA.track === 'function') CA.track(ev, x); else if (typeof gtag === 'function') gtag('event', ev, x); } catch (e) {   }
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
   function light(h) { var c = parseInt(String(h).slice(1), 16); return ((c >> 16) * 299 + ((c >> 8) & 255) * 587 + (c & 255) * 114) / 1000 > 150; }
   function surname(n) { var p = n.split(' '); return p.length > 1 ? p.slice(1).join(' ') : n; }
-  // One player's card: [name, position, club, colour, from, to]
+  
   function card(u, big, full) {
     return '<div class="cp-upg-c' + (big ? ' is-big' : '') + '" style="--c:' + esc(u[3]) + ';color:' + (light(u[3]) ? '#111' : '#fff') + '" aria-label="' + esc(u[0] + ', ' + u[1] + ', up from ' + u[4] + ' to ' + u[5]) + '">' +
       '<span class="cu-ch" aria-hidden="true">' + (u[5] - u[4]) + '</span>' +
@@ -74,8 +74,8 @@
         shut();
         if (act === 'play') {
           ga('upgrades_play');
-          // 27-0 starts Classic; 1000TRIES's button is a link to 27-0, which opens by itself
-          if (IS27) { try { CA.promoPlay('classic'); } catch (x) { /* the page's own start */ } }
+          
+          if (IS27) { try { CA.promoPlay('classic'); } catch (x) {   } }
         } else ga('upgrades_close');
       });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') shut(); });
@@ -83,11 +83,11 @@
     pop.querySelector('.cp-upg-grid').scrollTop = 0;
     pop.hidden = false;
     document.documentElement.classList.add('cp-upg-open');
-    if (pop.nextElementSibling) document.body.appendChild(pop); // last on the page, so it opens on top
+    if (pop.nextElementSibling) document.body.appendChild(pop); 
   }
   box.addEventListener('click', function (e) { if (e.target.closest('[data-upg="open"]')) { ga('upgrades_tap'); open(); } });
 
-  // Seen: the spot shows it (the spot marks every other card data-spot-off)
+  
   var seen = false;
   new MutationObserver(function () {
     if (seen || box.hidden || box.hasAttribute('data-spot-off') || !box.offsetParent) return;

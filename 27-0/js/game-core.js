@@ -1,13 +1,13 @@
-// ============================================================
-// PACK MODE FUNCTIONS
-// ============================================================
+
+
+
 function startClassicMode() { selectMode('classic'); showScreen('setup'); }
 function startPackMode() { selectMode('pack'); showScreen('setup'); }
 
 function selectMode(mode) {
   STATE.gameMode = mode;
   const cb = document.getElementById('modeClassicBtn');
-  // Pack is a small button now (29 Sep 2026): its own CSS colours it, so the old inline paint below skips it
+  
   const pb0 = document.getElementById('modePackBtn'), pb = pb0 && !pb0.classList.contains('cp-mode-mini') ? pb0 : null;
   const era = document.getElementById('eraOptions');
   const btn = document.getElementById('startModeBtn');
@@ -24,7 +24,7 @@ function selectMode(mode) {
     if (cb) { cb.style.background='#12122a'; cb.style.borderColor='#2a2a4a'; cb.querySelector('div').style.color='#665522'; cb.querySelectorAll('div')[1].style.color='#443311'; }
     if (era) era.style.display='none';
     if (btn) { btn.textContent='📦 OPEN PACKS'; btn.style.background='linear-gradient(135deg,#1e3a8a,#3b5bdb)'; btn.style.color='#fff'; btn.style.boxShadow='0 4px 20px rgba(59,91,219,0.5)'; }
-    if (grid) grid.innerHTML = _hiwClassic(); // How It Works always explains Classic (modes are one tap now)
+    if (grid) grid.innerHTML = _hiwClassic(); 
     const rt=document.getElementById('ratingsToggle'); if(rt) rt.style.display='none';
   }
 }
@@ -59,10 +59,10 @@ function shuffleArray(arr) {
 }
 
 function buildWeightedPackPool() {
-  // Collect every unique card (one per club-stint)
+  
   const all = [];
   const seen = new Set();
-  // Promos: their players (the Team of the Year, or the premiers) are only ever a rare pull (promoPulls), never a normal card
+  
   const P = typeof promoLive === 'function' ? promoLive() : null;
   RAW_PLAYERS.forEach(p => {
     const [name, seasons, positions, rating] = p;
@@ -72,7 +72,7 @@ function buildWeightedPackPool() {
       if (!seen.has(key)) { seen.add(key); all.push({ name, club, year: yt, positions, rating }); }
     });
   });
-  // Keep only highest-rated stint per player name to prevent duplicates across packs
+  
   const byName = new Map();
   all.forEach(c => {
     const ex = byName.get(c.name);
@@ -95,7 +95,7 @@ function _ensurePackHeader(screenId) {
   const clone = src.cloneNode(true);
   const p = clone.querySelector('.header-title p');
   if (p) p.textContent = 'Pack Mode: open and build your squad';
-  // The account buttons (Shop, Friends, Profile, Admin): copies don't carry their taps, so js/cast-account.js sets them up again
+  
   clone.querySelectorAll('[data-cast-shop], [data-cast-admin]').forEach(n => n.remove());
   clone.querySelectorAll('[data-cast-friends], [data-cast-account]').forEach(n => { n.removeAttribute('data-ca-init'); n.innerHTML = ''; });
   screen.insertBefore(clone, screen.firstChild);
@@ -104,13 +104,13 @@ function _ensurePackHeader(screenId) {
 
 const REQUIRED_SLOT_COUNTS = {FB:1, W:2, C:2, FE:1, HB:1, P:2, HK:1, SR:2, LK:1};
 
-// Returns true if every one of the 13 starting slots can be filled by a distinct player.
-// Uses real bipartite matching (not just a per-type count) so dual-position players who
-// overlap the same slots (e.g. HB/FE) can't create a hidden shortfall that a simple count misses.
+
+
+
 function canAssembleFullSquad(pool) {
-  const slots = SLOTS; // 13 slot objects, each with .type
-  const matchSlot = new Array(slots.length).fill(-1); // slotIdx -> poolIdx
-  const matchPlayer = new Array(pool.length).fill(-1); // poolIdx -> slotIdx
+  const slots = SLOTS; 
+  const matchSlot = new Array(slots.length).fill(-1); 
+  const matchPlayer = new Array(pool.length).fill(-1); 
   function tryAssign(slotIdx, visited) {
     for (let p = 0; p < pool.length; p++) {
       if (!pool[p].positions.includes(slots[slotIdx].type)) continue;
@@ -132,10 +132,10 @@ function canAssembleFullSquad(pool) {
   return { ok: count === slots.length, count, matchSlot };
 }
 
-// Mutates packPool in place, injecting eligible players from the wider allPool until
-// (a) every position type meets its required count, and (b) a full 13-slot matching exists.
+
+
 function ensurePackPoolCanFillSquad(packPool, allPool) {
-  // Layer 1: guarantee raw count coverage per position type
+  
   Object.entries(REQUIRED_SLOT_COUNTS).forEach(([type, needed]) => {
     let have = packPool.filter(c => c.positions.includes(type));
     if (have.length >= needed) return;
@@ -151,7 +151,7 @@ function ensurePackPoolCanFillSquad(packPool, allPool) {
         const remaining = packPool.filter((_, j) => j !== k);
         const okAfterRemoval = Object.entries(REQUIRED_SLOT_COUNTS).every(([t2, need2]) => {
           let cnt = remaining.filter(x => x.positions.includes(t2)).length;
-          if (t2 === type) cnt += 1; // accounts for pick being added
+          if (t2 === type) cnt += 1; 
           return cnt >= need2;
         });
         if (okAfterRemoval && c.rating < worstRtg) { worstRtg = c.rating; worstIdx = k; }
@@ -163,8 +163,8 @@ function ensurePackPoolCanFillSquad(packPool, allPool) {
     }
   });
 
-  // Layer 2: confirm a real 13-slot matching exists; if not, keep injecting eligible
-  // players for whichever slot types are unmatched until it does (or candidates run out).
+  
+  
   let guard = 0;
   while (guard < 20) {
     const result = canAssembleFullSquad(packPool);
@@ -180,7 +180,7 @@ function ensurePackPoolCanFillSquad(packPool, allPool) {
         .sort((a, b) => b.rating - a.rating);
       if (!candidates.length) return;
       const pick = candidates[0];
-      // Replace the lowest-rated card whose own position type still has slack after removal
+      
       let worstIdx = -1, worstRtg = Infinity;
       packPool.forEach((c, k) => {
         const countOfItsType = packPool.filter(x => x.positions.includes(c.positions[0])).length;
@@ -188,7 +188,7 @@ function ensurePackPoolCanFillSquad(packPool, allPool) {
         if (countOfItsType > needed && c.rating < worstRtg) { worstRtg = c.rating; worstIdx = k; }
       });
       if (worstIdx === -1) {
-        // Fall back to the single lowest-rated card overall if nothing has slack
+        
         worstIdx = packPool.reduce((bi, c, k) => c.rating < packPool[bi].rating ? k : bi, 0);
       }
       packPool[worstIdx] = pick;
@@ -209,7 +209,7 @@ function startPackOpening() {
 
   const tiers = buildWeightedPackPool();
 
-  // GOD PACK: all 42 cards are the best in the pool
+  
   if (Math.random() < 0.0001) {
     const allCards = [...tiers.gold, ...tiers.purple, ...tiers.blue, ...tiers.grey]
       .sort((a, b) => b.rating - a.rating);
@@ -220,7 +220,7 @@ function startPackOpening() {
     STATE.isGodPack = true;
   } else {
     STATE.isGodPack = false;
-    // 6 cards per pack. Gold distribution: min 4, avg ~6, max 10 total across 7 packs, max 3 per pack
+    
     const _gr = Math.random();
     const totalGolds = _gr < 0.10 ? 4 : _gr < 0.30 ? 5 : _gr < 0.55 ? 6 : _gr < 0.75 ? 7 : _gr < 0.87 ? 8 : _gr < 0.95 ? 9 : 10;
     const actualGolds = Math.min(totalGolds, tiers.gold.length);
@@ -258,9 +258,9 @@ function startPackOpening() {
   STATE.packAllCards = STATE.packs.flat();
   if (!STATE.isGodPack) promoPulls(STATE.packAllCards);
 
-  // Guarantee a complete Starting 13 can always be assembled from the pool.
-  // Two layers: (1) per-position count coverage (FB:1,W:2,C:2,FE:1,HB:1,P:2,HK:1,SR:2,LK:1),
-  // (2) a bipartite-matching check so dual-position players sharing the same slots can't create a hidden shortfall.
+  
+  
+  
   if (!STATE.isGodPack) {
     const allPool = [...tiers.gold, ...tiers.purple, ...tiers.blue, ...tiers.grey];
     ensurePackPoolCanFillSquad(STATE.packAllCards, allPool);
@@ -286,9 +286,9 @@ function startPackOpening() {
 
 const PACK_TOTAL = 7;
 
-/* Promos (js/cast-promo.js, the owner's call: rare): a pack run can hold a promo card (a Team of the Year player, or one
-   of the premiers' whole 2026 squad) and the medal winner (the Dally M's, or the Clive Churchill's), on their 2026 season,
-   each in place of a random card. Picks (js/picks.js) can add as many as the player buys. */
+
+
+
 const PROMO_TOTY_ODDS = 0.1, PROMO_MEDAL_ODDS = 0.02;
 function promoPulls(cards) {
   const P = typeof promoLive === 'function' ? promoLive() : null;
@@ -319,9 +319,9 @@ function packRarityColor(rating) {
   return { bg: 'linear-gradient(135deg,#120a02,#241408,#341e0e)', text: '#cd7f32', border: '#7a5020', label: 'BRONZE' };
 }
 
-// Club badge using primary colour: works after main script loads
+
 function packClubBadge(club, size) {
-  // size: 'lg' = walkout, 'sm' = list card
+  
   const bg = (typeof CLUB_COLORS !== 'undefined' ? CLUB_COLORS[club] : null) || '#1a1a2e';
   const abbr = (typeof CLUB_ABBR !== 'undefined' ? CLUB_ABBR[club] : null) || club.slice(0,3).toUpperCase();
   const fg = (typeof _clubTextColor !== 'undefined') ? _clubTextColor(bg) : '#fff';
@@ -331,13 +331,13 @@ function packClubBadge(club, size) {
   return `<div style="display:inline-flex;align-items:center;justify-content:center;background:${bg};color:${fg};border-radius:5px;font-size:10px;font-weight:900;letter-spacing:.5px;padding:3px 7px;flex-shrink:0">${abbr}</div>`;
 }
 
-// ── Pack intro: animated pack card that slides in ──────────────────
+
 function renderPackIntro() {
   const pack = STATE.packs[STATE.packIdx];
   const packNum = STATE.packIdx + 1;
   const isLast = STATE.packIdx === PACK_TOTAL - 1;
   const cardCount = pack.length;
-  // Clear any stale footer button / skip button left over from the previous pack
+  
   const staleFooter = document.getElementById('packOpeningFooter');
   if (staleFooter) staleFooter.innerHTML = '';
   const staleSkip = document.getElementById('packWalkoutSkipBtn');
@@ -375,14 +375,14 @@ function renderPackIntro() {
   `;
 }
 
-// ── Crack open animation then reveal ──────────────────────────────
+
 function openPackAnimation() {
   const packEl = document.getElementById('packCardOuter');
   if (!packEl || packEl.dataset.opening) return;
   packEl.dataset.opening = '1';
   packEl.style.animation = 'packCrack .55s cubic-bezier(.23,1,.32,1) forwards';
 
-  // Flash overlay
+  
   const flash = document.createElement('div');
   flash.style.cssText = 'position:fixed;inset:0;background:#fff;pointer-events:none;z-index:9999;animation:flashWhite .5s ease forwards';
   document.body.appendChild(flash);
@@ -391,7 +391,7 @@ function openPackAnimation() {
   setTimeout(() => {
     const pack = STATE.packs[STATE.packIdx];
     const best = pack.reduce((a, b) => b.rating > a.rating ? b : a);
-    // A promo card in this pack gets the promo walkout, whatever else is in there
+    
     const special = pack.find(c => c.pm === 'medal') || pack.find(c => c.pm);
     if (special) {
       showPlatWalkout(special, () => revealPackCards());
@@ -403,7 +403,7 @@ function openPackAnimation() {
   }, 480);
 }
 
-// ── Special gold walkout for 90+: cinematic reveal ──────────────────────────
+
 function showGoldWalkout(card, onDone) {
   const isTribute = card.name === 'Jai Arrow';
   const bg = (typeof CLUB_COLORS !== 'undefined' ? CLUB_COLORS[card.club] : null) || '#1a1a2e';
@@ -440,7 +440,7 @@ function showGoldWalkout(card, onDone) {
   `;
   document.body.appendChild(ov);
 
-  // Skip button: only visible during the walkout animation itself
+  
   const skipBtn = document.createElement('button');
   skipBtn.id = 'packWalkoutSkipBtn';
   skipBtn.innerHTML = 'Skip &#9193;';
@@ -459,7 +459,7 @@ function showGoldWalkout(card, onDone) {
     }, i * 60);
   }
 
-  // Cinematic reveal: team → year → rating+pos → name (~1s gaps)
+  
   setTimeout(() => { ov.querySelector('#woBadge').style.opacity = '1'; }, 400);
   setTimeout(() => { ov.querySelector('#woYear').style.opacity = '1'; }, 1500);
   setTimeout(() => { ov.querySelector('#woRating').style.opacity = '1'; }, 2600);
@@ -471,10 +471,10 @@ function showGoldWalkout(card, onDone) {
   ov.querySelector('#woBtn').onclick = () => { ov.remove(); skipBtn.remove(); onDone(); };
 }
 
-// ── Promos: the walkout (the owner's call: a FIFA-style moment when you pack one) ──────────────
-// The screen shakes and light beams come up, TEAM OF THE YEAR (2026 PREMIERS, or the medal) slams in, then the position
-// and the club, one at a time, and the card flips in with a shine. Skip goes straight to the card (css/theme.css .pw;
-// a premier in his club's colours with the silver edge, .pw.is-prem)
+
+
+
+
 function pwEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
 function showPlatWalkout(card, onDone) {
   const med = card.pm === 'medal', imm = card.pm === 'imm', prem = card.pk === 'prem', il = !!card.il, label = imm ? 'Immortal' : promoTag(card);
@@ -483,7 +483,7 @@ function showPlatWalkout(card, onDone) {
   const clubName = card.clubName || (typeof CLUBS !== 'undefined' && CLUBS[card.club] && CLUBS[card.club].name) || abbr;
   const fg = (typeof _clubTextColor !== 'undefined') ? _clubTextColor(bg) : '#fff';
   const ov = document.createElement('div');
-  ov.className = 'pw' + (med ? ' is-medal' : '') + (imm ? ' is-imm' : '') + (prem ? ' is-prem' : '') + (il ? ' is-ileg' : '') + (card.wcp ? ' is-wcp' : '') + (card.ch ? ' is-wch' + (card.ch === 'potf' ? ' is-wch-medal' : '') : ''); // World Champions: premium World Cup blue foil // a World Legend: gold accents on his nation's colours; an 88+ Pick: World Cup sky blue
+  ov.className = 'pw' + (med ? ' is-medal' : '') + (imm ? ' is-imm' : '') + (prem ? ' is-prem' : '') + (il ? ' is-ileg' : '') + (card.wcp ? ' is-wcp' : '') + (card.ch ? ' is-wch' + (card.ch === 'potf' ? ' is-wch-medal' : '') : ''); 
   if (prem) ov.style.cssText = promoVars(card);
   ov.innerHTML = `
     <div class="pw-beams"></div><div class="pw-flash"></div><div class="pw-sparks"></div>
@@ -518,7 +518,7 @@ function showPlatWalkout(card, onDone) {
   skipBtn.innerHTML = 'Skip &#9193;';
   skipBtn.onclick = () => { timers.forEach(clearTimeout); ov.classList.add('s1', 's5', 's6', 'is-skip'); skipBtn.remove(); };
   document.body.appendChild(skipBtn);
-  timers.push(setTimeout(() => skipBtn.remove(), 5600)); // the card is in: Continue takes over
+  timers.push(setTimeout(() => skipBtn.remove(), 5600)); 
   let closed = false;
   ov.querySelector('.pw-go').onclick = () => {
     if (closed) return;
@@ -526,13 +526,13 @@ function showPlatWalkout(card, onDone) {
   };
 }
 
-// ── Reveal all cards: worst→best, ascending from bottom to top ──────────────
+
 function _packCardHTML(card) {
   const r = packRarityColor(card.rating);
   const isTribute = card.name === 'Jai Arrow';
   const badge = packClubBadge(card.club, 'sm');
-  // Promos: platinum, or holographic platinum for the medal winner (css/theme.css .pk-plat); a premier in his club's
-  // colours with the silver edge (.pk-prem)
+  
+  
   if (card.pm) {
     const med = card.pm === 'medal', tags = card.positions.map(p => `<span class="pk-plat-pos">${p}</span>`).join('');
     return {
@@ -562,15 +562,15 @@ function revealPackCards() {
   const pack = STATE.packs[STATE.packIdx];
   const packNum = STATE.packIdx + 1;
   const isLast = STATE.packIdx === PACK_TOTAL - 1;
-  // Sort ascending: worst first (index 0=bottom), best last (index n-1=top)
+  
   const sorted = [...pack].sort((a, b) => a.rating - b.rating);
   const inner = document.getElementById('packOpeningInner');
   inner.style.cssText = 'padding:16px 16px 8px;max-width:480px;margin:0 auto;width:100%;box-sizing:border-box';
 
-  // Pre-render all cards invisible: layout is fully static, no shifts
-  // Best card first in DOM (top), worst last (bottom)
+  
+  
   const cardsHTML = [...sorted].reverse().map((card, ri) => {
-    const i = sorted.length - 1 - ri; // original index (0=worst/bottom)
+    const i = sorted.length - 1 - ri; 
     const {css, html, cls} = _packCardHTML(card);
     return `<div id="pslot-${i}"${cls ? ` class="${cls}"` : ''} style="${css};opacity:0;transition:opacity 0.35s ease">${html}</div>`;
   }).join('');
@@ -583,7 +583,7 @@ function revealPackCards() {
     <div id="packCardsList" style="display:flex;flex-direction:column;gap:8px">${cardsHTML}</div>
   `;
 
-  // Footer: Next/Build button, disabled until all cards have finished revealing
+  
   const footer = document.getElementById('packOpeningFooter');
   const revealMs = sorted.length * 220 + 350;
   if (footer) {
@@ -597,7 +597,7 @@ function revealPackCards() {
     if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
   }, revealMs);
 
-  // Fade in cards one by one from bottom (i=0) to top (i=n-1)
+  
   _packRevealCards = sorted;
   _packRevealTimers = [];
   sorted.forEach((card, i) => {
@@ -637,9 +637,9 @@ function finishPackOpening() {
   const sb = document.getElementById('packWalkoutSkipBtn'); if (sb) sb.remove();
   STATE.team = Array(13).fill(null);
   STATE.takenNames = new Set();
-  // Final validation layer: confirm a legal Starting 13 can actually be assembled.
-  // If somehow not (shouldn't happen given the pack-build guarantee, but never trust it blindly),
-  // top up from the full player pool before the user ever sees the team builder.
+  
+  
+  
   if (!STATE.isGodPack && !canAssembleFullSquad(STATE.packAllCards).ok) {
     const tiers = buildWeightedPackPool();
     const allPool = [...tiers.gold, ...tiers.purple, ...tiers.blue, ...tiers.grey];
@@ -651,7 +651,7 @@ function finishPackOpening() {
 }
 
 let _packSelectedSlot = null;
-let _cachedFieldSize = null; // cached classic field circle size: cleared on resize/new draft
+let _cachedFieldSize = null; 
 let _packRenderedPlayers = [];
 
 function updatePackRatingBar() {
@@ -677,7 +677,7 @@ function updatePackRatingBar() {
     startBtn.innerHTML = count < 13 ? `${count} / 13 picked` : '&#9654; START SEASON';
   }
   countEl.style.color = count === 13 ? '#22c55e' : '#555';
-  // Sub-ratings: backs, forwards, spine (matches classic mode)
+  
   if (typeof calcSubRatings === 'function') {
     const sub = calcSubRatings();
     const setS = (id, v) => { const el=document.getElementById(id); if(!el) return; el.textContent=v??'-'; el.style.color=v?(typeof ratingColor==='function'?ratingColor(v):'#fff'):'var(--muted)'; };
@@ -778,20 +778,20 @@ function packAssignPlayer(card) {
     STATE.takenNames.delete(STATE.team[_packSelectedSlot].name + '|' + (STATE.team[_packSelectedSlot].year||''));
   }
   STATE.team[_packSelectedSlot] = { name: card.name, club: card.club, year: card.year, positions: card.positions, rating: card.rating, pos: slot.type, ...promoKeep(card) };
-  if (card.pm && card.pm !== 'imm' && window.CastAccount && CastAccount.unlock) CastAccount.unlock([promoTrophy(card)]); // promos: the Team of the Year or 2026 Premiers trophy
+  if (card.pm && card.pm !== 'imm' && window.CastAccount && CastAccount.unlock) CastAccount.unlock([promoTrophy(card)]); 
   STATE.takenNames.add(card.name + '|' + (card.year||''));
   _packSelectedSlot = null;
   renderPackSquad();
 }
 
 function packAutoAssignPlayer(card) {
-  // Find the first empty slot this card's positions can fill
+  
   const eligible = typeof ELIGIBLE_SLOTS !== 'undefined' ? ELIGIBLE_SLOTS : {};
   for (let i = 0; i < SLOTS.length; i++) {
     if (STATE.team[i]) continue;
     const slotType = SLOTS[i].type;
-    // A card fills a slot if any of the card's positions matches the slot type
-    // (respecting ELIGIBLE_SLOTS cross-position rules e.g. SR can fill LK)
+    
+    
     const canFill = card.positions.some(p => {
       if (p === slotType) return true;
       const fillable = eligible[slotType] || [slotType];
@@ -810,7 +810,7 @@ function packClickPos(cardIdx, pos) {
   if (!card || !card.positions.includes(pos)) return;
   const alreadyPicked = STATE.team.some(t => t && t.name === card.name && t.club === card.club && t.year === card.year);
   if (alreadyPicked) return;
-  // If selected slot matches this position, use it; otherwise find first empty slot of this type
+  
   const selSlot = _packSelectedSlot !== null ? SLOTS.find(s => s.i === _packSelectedSlot) : null;
   let targetIdx;
   if (selSlot && selSlot.type === pos) {
@@ -822,7 +822,7 @@ function packClickPos(cardIdx, pos) {
   if (targetIdx === null || targetIdx === undefined) return;
   if (STATE.team[targetIdx]) STATE.takenNames.delete(STATE.team[targetIdx].name + '|' + (STATE.team[targetIdx].year||''));
   STATE.team[targetIdx] = { name: card.name, club: card.club, year: card.year, positions: card.positions, rating: card.rating, pos, ...promoKeep(card) };
-  if (card.pm && card.pm !== 'imm' && window.CastAccount && CastAccount.unlock) CastAccount.unlock([promoTrophy(card)]); // promos: the Team of the Year or 2026 Premiers trophy
+  if (card.pm && card.pm !== 'imm' && window.CastAccount && CastAccount.unlock) CastAccount.unlock([promoTrophy(card)]); 
   STATE.takenNames.add(card.name + '|' + (card.year||''));
   _packSelectedSlot = null;
   renderPackSquad();
@@ -845,32 +845,32 @@ function packAutoBuild() {
   const pool = STATE.packPlayers;
   const pkey = p => p.name + '|' + (p.year || '');
 
-  // Preserve already-placed players
+  
   const preUsed = new Set();
   SLOTS.forEach(slot => {
     if (STATE.team[slot.i]) preUsed.add(pkey(STATE.team[slot.i]));
   });
 
-  // Slots to fill and candidate players (not already placed)
+  
   const emptySlots = SLOTS.filter(s => !STATE.team[s.i]);
   const candidates = pool.filter(p => !preUsed.has(pkey(p)));
 
   if (emptySlots.length > 0 && candidates.length > 0) {
-    // Max-weight bipartite matching (Hungarian algorithm, O(n³))
-    // Maximises total rating across all empty slots simultaneously
+    
+    
     const ns = emptySlots.length;
     const np = candidates.length;
     const INF = 1e9;
 
-    // cost[i][j] = -rating if candidate j is eligible for emptySlots[i], else INF (min-cost form)
+    
     const cost = Array.from({length: ns}, (_, i) =>
       Array.from({length: np}, (_, j) =>
         candidates[j].positions.includes(emptySlots[i].type) ? -candidates[j].rating : INF
       )
     );
 
-    // Hungarian algorithm for min-cost assignment (ns rows, np cols, np >= ns required)
-    // Pad columns if needed so np >= ns
+    
+    
     const m = Math.max(ns, np);
     const C = Array.from({length: ns}, (_, i) => {
       const row = cost[i].slice();
@@ -880,7 +880,7 @@ function packAutoBuild() {
 
     const u = new Array(ns + 1).fill(0);
     const v = new Array(m + 1).fill(0);
-    const p = new Array(m + 1).fill(0); // p[j] = row assigned to col j (1-indexed)
+    const p = new Array(m + 1).fill(0); 
     const way = new Array(m + 1).fill(0);
 
     for (let i = 1; i <= ns; i++) {
@@ -908,15 +908,15 @@ function packAutoBuild() {
       do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
     }
 
-    // Extract assignment: for each col j, p[j] = row (1-indexed)
+    
     for (let j = 1; j <= m; j++) {
       if (p[j] === 0 || j > np) continue;
-      const si = p[j] - 1; // slot index in emptySlots
-      const pi = j - 1;    // player index in candidates
+      const si = p[j] - 1; 
+      const pi = j - 1;    
       const slot = emptySlots[si];
       const card = candidates[pi];
       if (C[si][pi] < INF && !STATE.team[slot.i]) {
-        STATE.team[slot.i] = { name: card.name, club: card.club, year: card.year, positions: card.positions, rating: card.rating, pos: slot.type, ...promoKeep(card) }; // keeps a Pick's marking
+        STATE.team[slot.i] = { name: card.name, club: card.club, year: card.year, positions: card.positions, rating: card.rating, pos: slot.type, ...promoKeep(card) }; 
         STATE.takenNames.add(pkey(card));
       }
     }

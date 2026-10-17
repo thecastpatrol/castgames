@@ -1,7 +1,7 @@
-/* SC POINTS KING render: builds HTML for each screen piece. No game logic here. */
+ 
 (function (T) {
   'use strict';
-  // A pack's price as this device shows it (local currency, 17 Oct 2026: "NZ$0.99"; CastAccount.price), else the A$ words
+  
   function px(pack, aud) { return window.CastAccount && CastAccount.price ? CastAccount.price(pack, aud) : aud; }
 
   var R = T.render = {};
@@ -31,8 +31,8 @@
     return '';
   }
 
-  /* The club's real home kit filling a tile (js/cast-kits.js from js/kits-data.js, the 17 clubs' 2026 jerseys: colours
-     and design only), behind the text with a shade so the words read. Plain club colours without the kits */
+  
+
   var kitCache = {};
   function kit(club, w, h) {
     var K = window.CastKits, k = club + '|' + w + '|' + h;
@@ -45,19 +45,19 @@
   }
   R.kit = kit;
 
-  // His SC position(s) that year
+  
   function posChips(p) {
     return T.positionsOf(p).map(function (c) {
       return '<span class="chip" title="' + esc(T.POS_NAMES[c] || c) + '">' + esc(T.posLabel(c)) + '</span>';
     }).join('');
   }
 
-  /* HOME */
+   
 
   R.ouCard = function () { return ''; };
   R.ouBanner = function () { return ''; };
   R.wcCard = function () { return ''; };
-  // The home's mode: one big card, Classic (the Daily Challenge has its own card above it, js/daily.js)
+  
   R.modePicker = function (selected) {
     var m = T.MODES.plus;
     return '<button type="button" class="mode-card mode-main' + (selected === 'plus' ? ' is-on' : '') + '" data-mode="plus" aria-label="Play ' + esc(m.name) + '">' +
@@ -70,14 +70,14 @@
       '</button>';
   };
 
-  /* DRAFT */
+   
 
   R.helper = function (S) {
     var left = T.SLOTS.length - T.filledCount();
     return { text: left ? left + ' to pick' : 'Team full', cls: left ? '' : 'is-good' };
   };
 
-  // The scoreboard: the mode, the picks made (13 dots in their club colours) and the 13's SC points as they build
+  
   R.scoreboard = function (S) {
     var h = R.helper(S), dots = S.slots.map(function (s, i) {
       var p = s.player;
@@ -100,14 +100,14 @@
   };
   R.barLook = function () { return { color: 'var(--gold)', glow: 'rgba(var(--acc-rgb),.5)', stage: 'mid' }; };
 
-  /* The 13 laid out like SC's own team view (the owner, 17 Oct 2026), top to bottom: the hooker, the two front rowers, the
-     three second rowers, the halfback and five-eighth side by side, the four centres and wingers, and the fullback at the
-     bottom. T.SLOTS: FLB 0, CTW 1-4, 5/8 5, HFB 6, HOK 7, FRF 8-9, 2RF 10-12. The results and the share card list the
-     13 in the same order (T.FIELD_ORDER) */
+  
+
+
+
   var ROWS = R.ROWS = T.FIELD_ROWS = [[7], [8, 9], [10, 11, 12], [6, 5], [1, 2, 3, 4], [0]];
   T.FIELD_ORDER = [].concat.apply([], ROWS);
   var ROW_CLS = ['r-hok', 'r-front', 'r-back', 'r-half', 'r-ctw', 'r-flb'];
-  // The field's lines: the try line and dead ball line at the bottom behind the fullback, posts, and the 10 metre lines
+  
   var FIELD = '<svg class="field-lines" viewBox="0 0 500 560" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
     '<g fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" transform="matrix(1 0 0 -1 0 556)">' +
     '<line x1="0" y1="10" x2="500" y2="10"/><line x1="0" y1="46" x2="500" y2="46" stroke-width="3"/>' +
@@ -163,7 +163,7 @@
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO[k] + '</span> ' + esc(SHORT[k]) + '</span>' +
             '<span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign in free</span></button>';
         }
-        // Used up: a saved one ("2 left") or one to buy, in a pop-up over the game (CastAccount.buyReroll, buyRemove, buyItem)
+        
         var A = window.CastAccount, buyable = !left && !S.finished && A && A.canBuyReroll && A.canUseSaved;
         if (k === 'reroll' && buyable && (A.canBuyReroll() || (A.canUseSaved() && A.rerollsSaved() > 0))) {
           var sv = A.rerollsSaved(), live = !!(S.offer && S.offer.players.length), fresh = !!(sv && A.rerollsFresh && A.rerollsFresh());
@@ -186,13 +186,13 @@
           return '<button type="button" class="wc wc-reroll wc-bonus" data-action="bonus-reroll" title="' + (guest ? 'Sign in for an extra Reroll every game' : 'Subscribe on YouTube for a free extra Reroll') + '">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO.reroll + '</span> Reroll</span><span class="wc-left">' + (guest ? '+1: sign in' : '&#x25B6; +1 free') + '</span></button>';
         }
-        // Reveal is paid: with no account to buy one (a guest), the tile asks them to sign in
+        
         if (k === 'scout' && !left && !S.scoutMode && !S.finished) {
           return '<button type="button" class="wc wc-scout wc-lock" data-action="wc-signin" title="Reveal comes from your Vault: sign in free to get one">' +
             '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO.scout + '</span> Reveal</span><span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign In</span></button>';
         }
         var armed = (k === 'tweak' && S.tweakMode) || (k === 'scout' && S.scoutMode);
-        var label = SHORT[k]; // one word on every tile, in every game (17 Oct 2026, the owner)
+        var label = SHORT[k]; 
         return '<button type="button" class="wc wc-' + k + (left ? '' : ' is-spent') + (armed ? ' is-armed' : '') + '" data-wildcard="' + k + '"' +
           ((usable || armed) ? '' : ' disabled') + ' title="' + esc(T.WILDCARDS[k].desc) + '">' +
           '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + ICO[k] + '</span> ' + esc(label) + '</span>' +
@@ -200,9 +200,9 @@
           '</button>';
       }).join('') + sub + key + goat + '</div>';
   };
-  /* The GOAT (bought in the Shop, one item for every CAST draft game): in Classic, never the Daily or a friend's
-     challenge. "Ready" (or "N Left") with one to use, "Buy" without, "Spot Taken" while no open spot fits his season.
-     A tap asks first, then swaps the spin for his season */
+  
+
+
   function goatName() { var g = T.goatPlayer && T.goatPlayer(); return g ? g.name + ' ' + g.year : 'The GOAT'; }
   function goatPts() { var g = T.goatPlayer && T.goatPlayer(); return g ? T.fmt(g.tries_1998_plus) : ''; }
   R.goatTile = function (S) {
@@ -228,7 +228,7 @@
       '<button type="button" class="btn btn-primary btn-block btn-goat" data-action="confirm-goat">&#x1F410; ' + (window.CastAccount && CastAccount.itemSaved && CastAccount.itemSaved('goat') > 0 ? 'Use The GOAT' : 'Get The GOAT &middot; ' + px('goat1', '$9.99')) + '</button>' +
       '<button type="button" class="btn btn-quiet btn-block" data-action="close-sheet">Not Now</button>';
   };
-  // Substitute: CAST Pass holders get 1 a game; a free profile sees it with the CAST Pass tag (tap for the Pass page)
+  
   R.subButton = function (S) {
     var t = window.CastAccount && CastAccount.tier ? CastAccount.tier() : null;
     if (!t || t === 'guest' || S.finished || S.fullTime || !S.mode.wildcards) return '';
@@ -239,8 +239,8 @@
       '<span class="wc-left">' + (armed ? (S.subMode.from == null ? 'Tap a player' : 'Tap a spot') : left ? left + ' left' : 'Used') + '</span></button>';
   };
 
-  /* The Vault (CAST Pass): the Legend Key in Classic, a tile with the wildcards. A Pass holder swaps the spin for a
-     Legends Pick once a day; a free profile sees it with the CAST Pass tag. Never in a friend's challenge */
+  
+
   function keyState(S) {
     if (S.mode.id !== 'plus' || S.finished || S.fullTime || S.challenge || !window.CastAccount || !CastAccount.vault) return null;
     return CastAccount.vault('legend');
@@ -263,14 +263,14 @@
       ' title="' + (fits ? 'Swap this spin for a Legends Pick' : why) + '">' + lab +
       '<span class="wc-left">' + (fits || room ? keyLeft() : 'No fit') + '</span></button>';
   };
-  // Not shown since 17 Oct 2026 (the owner: an extra CTA under the offer; the Legend Key tile in the bar does the job)
+  
   R.keySwap = function (S) {
     if (keyState(S) !== 'ready' || S.tweakMode || S.subMode || S.scoutMode || !T.legendKeyFits() || !(S.offer && S.offer.players.length) || S.offer.goat || S.offer.paid) return '';
     return '<button type="button" class="key-swap" data-action="legend-key"><span aria-hidden="true">&#x1F511;</span> Not these? Swap for a Legends Pick</button>';
   };
 
-  /* A Pick you used (a Legend Key's Legends Pick, the GOAT) shows its numbers straight away (the owner, 16 Oct 2026).
-     A free spin stays hidden until a Reveal shows all three */
+  
+
   function usedOffer(S, p) { return !!(S.offer && (S.offer.paid || S.offer.key || S.offer.goat) && S.offer.players.indexOf(p) >= 0); }
   R.triesShown = function (S, p) { return !!S.revealed[p.id] || usedOffer(S, p); };
   function triesBadge(S, p) {
@@ -278,7 +278,7 @@
     return '<span class="tries-badge"><strong>??</strong> SC points</span>';
   }
 
-  // Remove Player armed: hide the spin so the only thing to do is tap the field
+  
   R.removeMode = function (S) {
     return '<div class="panel-head"><span class="panel-title">Remove a Player</span><span class="panel-meta">Spin paused</span></div>' +
       R.wildcardBar(S) +
@@ -291,8 +291,8 @@
       '</div>';
   };
 
-  // One season's card: the club's kit across the top with the club and the year, then the player, his SC position(s)
-  // that year, and his SC points (hidden unless shown). n: its place in the spin (the 1, 2, 3 keys)
+  
+  
   function seasonCard(S, p, n) {
     var club = p.club, c = T.club(club), scout = S.scoutMode && !R.triesShown(S, p);
     return '<button type="button" class="pcard' + goatCls(p) + (scout ? ' is-scout' : '') + '" ' + (scout ? 'data-scout' : 'data-pick') + '="' + esc(p.id) + '" style="' + clubVars(club) + 'animation-delay:' + (n * 70) + 'ms"' + (S.tweakMode ? ' disabled' : '') +
@@ -307,8 +307,8 @@
   }
   R.seasonCard = seasonCard;
 
-  /* The pick clock (js/app.js clockTick runs it, 1000TRIES' own): a bar that runs down over the offer, red for the last
-     five seconds, and Paused while a pop-up is open (the cards are covered then) */
+  
+
   R.pickClock = function (S) {
     if (!T.clockMode || !T.clockMode(S) || S.tweakMode || !S.offer || !S.offer.players.length) return '';
     var v = T.clockView(S), left = Math.ceil(v.left / 1000);
@@ -332,8 +332,8 @@
       '<div class="offer-cards">' + players.map(function (p, n) { return seasonCard(S, p, n); }).join('') + '</div>';
   };
 
-  /* The spin (js/app.js spinOffer): three reels of club colours and years flashing through, landing one by one on the
-     three seasons. Only the text and colours swap, so nothing moves while it spins */
+  
+
   R.spinning = function (S) {
     var reel = function (i) {
       return '<div class="spin-reel" data-reel="' + i + '"><span class="kit-slot"></span><span class="sr-club">&nbsp;</span><span class="sr-year">?</span></div>';
@@ -351,8 +351,8 @@
       '<button type="button" class="btn btn-ghost btn-sm" data-action="cancel-tweak">Cancel</button></div>';
   };
 
-  // Team Full with a Remove Player in hand (or, 15+, a saved or bought one): remove, or lock in to see the SC points
-  // (a 10 second countdown, which waits while a Remove Player is being bought: S.lockHold)
+  
+  
   R.decision = function (S) {
     var paid = S.wildcards.tweak < 1;
     var rs = paid && window.CastAccount && CastAccount.removesSaved ? CastAccount.removesSaved() : 0;
@@ -374,10 +374,10 @@
       '</div>';
   };
 
-  /* The SC Captain step (js/app.js captainStep): the 13 is locked in; one season can be made Captain and count double.
-     The best one is chosen to start with (tap another on the field to change); the button uses one from the Vault or
-     buys one (A$4.99), and No Thanks finishes (it counts down, as Go Higher does in 1000TRIES). have: Captains in the
-     Vault; when nobody can buy (no account yet), the Captain needs a free sign-in first */
+  
+
+
+
   R.captainStep = function (S, have, signIn) {
     var p = S.slots[S.capPick] && S.slots[S.capPick].player, add = p ? p.tries_1998_plus : 0;
     return '<div class="panel-head"><span class="panel-title">&#x1F396;&#xFE0F; SC Captain</span><span class="panel-meta">13 of 13</span></div>' +
@@ -395,7 +395,7 @@
       '</div>';
   };
 
-  // Phone chooser for a season with two SC positions: club-coloured header + the spots
+  
   R.slotChooser = function (p, codes) {
     var club = p.club, c = T.club(club);
     return '<div class="chooser-card' + goatCls(p) + '" style="' + clubVars(club) + '">' +
@@ -463,7 +463,7 @@
       R.subscribeBtn('change_mode');
   };
 
-  // After a pick: his season lands with his SC points, and they go on the total
+  
   R.reveal = function (p, club) {
     return '<div class="reveal' + goatCls(p) + '" style="' + clubVars(club || p.club) + '">' + kit(club || p.club, 340, 120) +
       '<span class="reveal-name">' + nameHtml(p) + '</span>' +
@@ -471,10 +471,10 @@
       '<span class="reveal-num">' + T.fmt(p.tries_1998_plus) + '</span><span class="reveal-lbl">' + (T.isGoat(p) ? 'SC Points. The GOAT.' : T.isLegend(p) ? 'SC Points. A Legend season.' : 'SC Points') + '</span></div>';
   };
 
-  /* The leaderboard straight after a Classic game (the owner, 17 Oct 2026: no target, so the board says how good it was).
-     v: { period, score, data: { today|week|all: { top, players, me } | { failed } }, own: { period: rank } }. This game's
-     score is placed among the board's top rows (the player's own row aside), so it shows before the server has saved it:
-     the top 3 (the #1 wears the crown), then the rows either side of it, and what it takes to pass the one above */
+  
+
+
+
   var RB_TABS = [['today', 'Today'], ['week', 'This Week'], ['all', 'All Time']];
   R.resBoard = function (v) {
     var b = v.data[v.period], score = v.score, label = RB_TABS.filter(function (t) { return t[0] === v.period; })[0][1];
@@ -484,10 +484,10 @@
     var head = '<div class="rb-head"><span class="rb-kick">&#x1F451; Leaderboard</span>', body;
     if (!b) return head + '</div>' + tabs + '<p class="rb-note">Loading the board&hellip;</p>';
     if (b.failed) return head + '</div>' + tabs + '<p class="rb-note">The board didn&rsquo;t load. <button type="button" class="rb-retry" data-action="rb-retry">Try Again</button></p>';
-    // The board as it is (the player's own best row stays, marked), with this game's score placed in it
+    
     var myName = b.me && b.me.name, top = b.top || [], rows = top.map(function (r) { return myName && r.n === myName ? { n: r.n + ' (your best)', s: r.s, mine: true } : r; });
     var ahead = rows.filter(function (r) { return r.s >= score; }).length;
-    var whole = top.length < 100 || (b.players || 0) <= top.length; // the doc holds the whole board
+    var whole = top.length < 100 || (b.players || 0) <= top.length; 
     var inTop = ahead < rows.length || whole;
     var you = { n: myName ? myName + ' (this game)' : 'You', s: score, you: true };
     var list = inTop ? rows.slice(0, ahead).concat([you], rows.slice(ahead)) : rows.concat([you]);
@@ -502,7 +502,7 @@
         (i === 0 ? ' <span class="rb-crown" role="img" aria-label="SC Points King">&#x1F451;</span>' : '') + '</span><span class="rb-pts">' + T.fmt(r.s) + '</span></li>');
       prev = i;
     });
-    // the one to pass: the nearest row above that isn't the player's own best
+    
     var above = null;
     for (var k = at - 1; k >= 0; k--) if (!list[k].mine) { above = list[k]; break; }
     var pass = !above ? (rows.length ? 'Top of the board: the SC Points King &#x1F451;' : 'Nobody on this board yet: the crown is yours &#x1F451;')
@@ -554,7 +554,7 @@
         '<span class="rrow-tries">' + T.fmt(p.tries_1998_plus * (S.captain === i ? 2 : 1)) + '</span>' +
         '</li>';
     }).join('');
-    // The chase: your best on this device, and (once SC POINTS KING is launched) the crown for each board's #1
+    
     var pb = T.bestScore ? T.bestScore() : 0;
     var pbRow = !S.daily ? '<div class="result-pb' + (S.pb ? ' is-new' : '') + '"><span>Your Best</span><b>' + T.fmt(Math.max(pb, out.total)) + '</b></div>' +
       (T.crownOn && T.crownOn() ? '<p class="result-crown">&#x1F451; Each leaderboard&rsquo;s #1 wears the crown as the SC Points King.</p>' : '') : '';

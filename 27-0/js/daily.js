@@ -1,38 +1,38 @@
-/* 27-0 Daily Challenge.
-   From 29 Sep 2026 (the owner's call): every Daily is themed with a squad rating goal to tick off, and each player gets
-   their own random spins within the theme. The calendar both games share is js/cast-daily.js (edit Dailies there).
-   Before that, everyone got the same spins each day (the themes below, kept for Past Dailies). 3 goes a day, best counts.
-   Resets at midnight Sydney time. Each day has a theme:
-     same    Same Spins: the classic, best team from the same 13 spins
-     match   Match Day: spins alternate between the two clubs playing that day (1st club, 2nd, 1st...), any season
-     club    One-Club Day: every spin is the same club across the NRL era
-     target  Target Rating: build a squad rated as close to a number as possible
-     teams   Chosen Teams: every spin is one of a list of club seasons (teams: { club: [years] }), clubs taking turns
-   Only the club/season pick of each spin is seeded during a Daily; the normal game is untouched.
-   Results are kept on this device (leaderboards join once CAST accounts and server checks are live). */
+
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
 
-  var LAUNCH = '2026-09-24'; // first Daily (the number is only used internally)
+  var LAUNCH = '2026-09-24'; 
   var MAX_GOES = 3;
   var KEY = '270_daily_';
 
-  /* ---------- Themes ---------- */
-  // Planned days (edit here). Anything not listed follows the weekly pattern below.
+   
+  
   var CALENDAR = {
     '2026-09-24': { type: 'same' },
     '2026-09-25': { type: 'match', clubs: ['dolphins', 'roosters'], note: 'Preliminary final, Friday night',
       story: 'The Dolphins and Roosters meet in tonight\u2019s preliminary final, with a grand final spot on the line.' },
     '2026-09-27': { type: 'match', clubs: ['panthers', 'knights'], note: 'Preliminary final, Sunday',
       story: 'Penrith and Newcastle fight for the last grand final spot in Sunday\u2019s preliminary final.' },
-    // Easy week (28 Sep to 4 Oct, the user's call): strong clubs, a squad rating goal that most players can reach
-    // (set from each day's own spins: a good player lands about 2 above it), and Grand Final Day to finish
-    // Knights Day after Newcastle's preliminary final win (goal from Monday's own spins: good players reach 83 to 85)
+    
+    
+    
     '2026-09-28': { type: 'club', clubs: ['knights'], goal: 81, story: 'Newcastle stunned Penrith 22-14 at Accor Stadium to set up a Grand Final against the Roosters. To mark the upset, every spin today is a Knights season from 1998 to now.' },
     '2026-09-29': { type: 'club', clubs: ['storm'], goal: 86 },
-    // Grand Final week (the owner's call): the Roosters and Knights meet on Sunday, so every spin is one of their
-    // premiership-winning seasons, Roosters and Knights taking turns (a Knights spin is always 2001, their one NRL title).
-    // Goal from Wednesday's own spins: a strong player reaches 88, 88 and 89 on the three goes
+    
+    
+    
     '2026-09-30': { type: 'teams', clubs: ['roosters', 'knights'], teams: { roosters: [2002, 2013, 2018, 2019], knights: [2001] }, goal: 86,
       name: 'Premiership Teams', story: 'Grand Final week: the Roosters and the Knights meet on Sunday. Every spin today is one of their premiership-winning teams: the Knights of 2001 and the Roosters of 2002, 2013, 2018 and 2019.' },
     '2026-10-01': { type: 'club', clubs: ['roosters'], goal: 85 },
@@ -40,15 +40,15 @@
     '2026-10-03': { type: 'club', clubs: ['panthers'], goal: 84 },
     '2026-10-04': { type: 'same', goal: 'premiers', name: 'Grand Final Day', story: 'Grand Final Day. The same spins for everyone: win the premiership and the Daily is yours.' }
   };
-  // goal (optional, per day): a number is a squad rating to reach (club days); 'premiers' is win the grand final.
-  // Without one, a Daily is won with a perfect 27-0 (or the exact rating on Target Rating days).
-  // Each club's own emoji on its day
+  
+  
+  
   var MASCOT = { broncos: '\uD83D\uDC0E', bulldogs: '\uD83D\uDC36', cowboys: '\uD83E\uDD20', dolphins: '\uD83D\uDC2C', dragons: '\uD83D\uDC09',
     eels: '\uD83D\uDC0D', knights: '\uD83C\uDFF0', panthers: '\uD83D\uDC06', rabbitohs: '\uD83D\uDC07', raiders: '\uD83E\uDE93',
     roosters: '\uD83D\uDC13', seaeagles: '\uD83E\uDD85', sharks: '\uD83E\uDD88', storm: '\u26C8\uFE0F', tigers: '\uD83D\uDC2F',
     titans: '\uD83D\uDD31', warriors: '\u2694\uFE0F' };
-  // story: optional one line on why today (like 38-0). Days without one get a line from their theme.
-  // Weekly pattern (Sydney day): Sun 0 ... Sat 6
+  
+  
   var WEEK = ['same', 'club', 'target', 'club', 'same', 'same', 'target'];
   var CLUB_ROTATION = ['rabbitohs', 'broncos', 'roosters', 'storm', 'eels', 'panthers', 'dragons', 'bulldogs', 'sharks',
     'knights', 'cowboys', 'raiders', 'seaeagles', 'warriors', 'tigers', 'titans', 'dolphins'];
@@ -58,7 +58,7 @@
     sharks: 'Sharks', storm: 'Storm', tigers: 'Wests Tigers', titans: 'Titans', warriors: 'Warriors' };
 
   var NEW_FORMAT = '2026-09-29';
-  // A day on the shared calendar (js/cast-daily.js): its pool, goal, write-up and reward
+  
   function sharedTheme(date) {
     var d = CAST_DAILY.day(date), g = d.g270, era = d.key.indexOf('era:') === 0, region = d.key === 'sydney' || d.key === 'queensland';
     return { type: g.type, clubs: g.clubs || null, teams: g.teams || null, from: g.from || null, to: g.to || null, nations: g.nations || null, goal: g.goal, wins: g.wins,
@@ -100,12 +100,12 @@
     return t;
   }
 
-  // Match and club days: only those clubs' seasons. Match Day alternates by spin (spin 1 first club,
-  // spin 2 second club...), and a reroll stays on the same club.
-  /* World Cup match days (4 Oct 2026): every pick has played a Test for one of the day's nations (data/nations-nrl.json,
-     from tools/build_wc.py in the 1000TRIES repo). The spins are club seasons with at least two of them, and the squad
-     shows only them. A spin only lands where one of them is still free and fits an open spot: with so few to choose
-     from, a plain spin often showed nobody pickable and the Spin button stayed locked (most goes, in testing) */
+  
+  
+  
+
+
+
   var NAT = null, natLoading = null, natIdx = {};
   function loadNat() {
     if (NAT) return Promise.resolve(NAT);
@@ -115,10 +115,10 @@
     }).then(function (m) { NAT = m; return m; }, function (e) { natLoading = null; throw e; }));
   }
   function natOk(name, keys) {
-    var n = typeof playerKey === 'function' ? playerKey(name) : name; // a namesake's tagged name ("Ben Jones (Raiders)")
+    var n = typeof playerKey === 'function' ? playerKey(name) : name; 
     return ((NAT && NAT[n]) || []).some(function (k) { return keys.indexOf(k) >= 0; });
   }
-  // The day's Test players in each club season ('storm|2019' -> their player rows)
+  
   function natIndex(keys) {
     var key = keys.join('-');
     if (!natIdx[key]) {
@@ -154,12 +154,12 @@
   function poolFor(theme, base, spinNo) {
     if (theme && theme.type === 'nations') return NAT ? natPool(theme, base) : base;
     if (theme && (theme.from || theme.to)) base = base.filter(function (x) { return (!theme.from || x.year >= theme.from) && (!theme.to || x.year <= theme.to); });
-    if (theme && theme.type === 'clubs') { // any season of these clubs, every season as likely as the next
+    if (theme && theme.type === 'clubs') { 
       var set = theme.clubs ? base.filter(function (x) { return theme.clubs.indexOf(x.cid) !== -1; }) : base;
       return set.length ? set : base;
     }
     if (!theme || !theme.clubs) return base;
-    // Chosen Teams: only those club seasons, and the clubs take turns (spin 1 first club, spin 2 second club...)
+    
     if (theme.teams) {
       var picked = base.filter(function (x) { return (theme.teams[x.cid] || []).indexOf(+x.year) !== -1; });
       if (!picked.length) return base;
@@ -183,14 +183,14 @@
     return out;
   }
 
-  /* ---------- Sydney calendar ---------- */
+   
   function sydneyParts(d) {
     var f = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
     var o = {};
     f.formatToParts(d || new Date()).forEach(function (p) { o[p.type] = p.value; });
     return o;
   }
-  // ?dailydate=YYYY-MM-DD lets us test future days locally; it is ignored on the live site
+  
   var TEST_DATE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && (location.search.match(/[?&]dailydate=(\d{4}-\d{2}-\d{2})/) || [])[1];
   function today() { if (TEST_DATE) return TEST_DATE; var p = sydneyParts(); return p.year + '-' + p.month + '-' + p.day; }
   function dayNo(date) {
@@ -207,7 +207,7 @@
     return h ? h + 'h ' + (m % 60) + 'm' : m + 'm';
   }
 
-  /* ---------- Seeded random (same numbers for everyone) ---------- */
+   
   function hash(str) {
     var h = 2166136261;
     for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
@@ -222,23 +222,23 @@
     };
   }
 
-  /* ---------- Storage ---------- */
+   
   function load(date) {
-    try { var r = JSON.parse(localStorage.getItem(KEY + date) || 'null'); if (r && Array.isArray(r.goes)) return r; } catch (e) { /* ignore */ }
+    try { var r = JSON.parse(localStorage.getItem(KEY + date) || 'null'); if (r && Array.isArray(r.goes)) return r; } catch (e) {   }
     return { goes: [] };
   }
-  function save(date, rec) { try { localStorage.setItem(KEY + date, JSON.stringify(rec)); } catch (e) { /* ignore */ } }
+  function save(date, rec) { try { localStorage.setItem(KEY + date, JSON.stringify(rec)); } catch (e) {   } }
   function track(e, p) { if (typeof gtag !== 'undefined') gtag('event', e, p || {}); }
 
-  function better(a, b) { // is result a better than b?
+  function better(a, b) { 
     if (!b) return true;
     if (a.type === 'target') {
       if (a.diff !== b.diff) return a.diff < b.diff;
       return a.w > b.w;
     }
-    // A wins goal (13 Oct 2026, the owner: some days ask for wins): the go that reached it, then more wins
+    
     if (typeof a.winGoal === 'number') { var wa = hitGoal(a), wb = hitGoal(b); if (wa !== wb) return wa; }
-    // A squad rating goal: the go that reached it, else the higher rating (the closest miss), then more wins
+    
     if (typeof a.goal === 'number') {
       var ha = hitGoal(a), hb = hitGoal(b);
       if (ha !== hb) return ha;
@@ -252,8 +252,8 @@
     rec.goes.forEach(function (g) { if (g.done && better(g, best)) best = g; });
     return best;
   }
-  // A go that can't be beaten ends the Daily as a win: exactly on the target on a Target day, or a perfect 27-0.
-  // The other goes are only there if you haven't won yet.
+  
+  
   function hitGoal(g) {
     if (typeof g.winGoal === 'number') return (g.w || 0) >= g.winGoal || g.perfect;
     if (typeof g.goal === 'number') return (g.rating || 0) >= g.goal || g.perfect;
@@ -261,7 +261,7 @@
     return g.type === 'target' ? g.diff === 0 : g.perfect;
   }
   function wonGo(rec) { return rec.goes.filter(function (g) { return g.done && hitGoal(g); })[0] || null; }
-  // What winning looked like, for the done lines
+  
   function wonLine(won) {
     return won.type === 'target' ? '&#x1F3AF; Target hit. ' : won.perfect ? '&#x1F451; Perfect. ' : won.goal === 'premiers' ? '&#x1F3C6; Premiers! ' : typeof won.winGoal === 'number' ? '&#x2705; ' + won.w + ' wins. ' : '&#x2705; Rated ' + won.rating + '. ';
   }
@@ -270,20 +270,20 @@
   function label(g) {
     if (!g) return '';
     if (g.type === 'target') return (g.diff === 0 ? '\uD83C\uDFAF Hit ' + g.rating + ' exactly' : 'Rating ' + g.rating + ' (' + g.diff + ' off)') + ' \u00B7 ' + g.w + '-' + g.l;
-    if (typeof g.winGoal === 'number') return (hitGoal(g) ? '\u2705 ' : '') + record(g) + ' \u00B7 Rated ' + g.rating; // the season first on a wins day
-    if (typeof g.goal === 'number') return (hitGoal(g) ? '\u2705 ' : '') + 'Rated ' + g.rating + ' \u00B7 ' + record(g); // the goal first, then the season
+    if (typeof g.winGoal === 'number') return (hitGoal(g) ? '\u2705 ' : '') + record(g) + ' \u00B7 Rated ' + g.rating; 
+    if (typeof g.goal === 'number') return (hitGoal(g) ? '\u2705 ' : '') + 'Rated ' + g.rating + ' \u00B7 ' + record(g); 
     return record(g);
   }
 
-  /* ---------- The Daily game ---------- */
-  var active = null; // { date, n, go, k }
+   
+  var active = null; 
 
-  // Which spin this is: one per player already in the team (a reroll does not move it on)
+  
   function spinNo() {
     return typeof STATE !== 'undefined' && STATE.team ? STATE.team.filter(function (p) { return p; }).length : 0;
   }
 
-  // Themed days narrow the clubs (also used by the spinning reel, so it only flashes those clubs)
+  
   var origPool = window.getSpinPool;
   if (typeof origPool === 'function') {
     window.getSpinPool = function () {
@@ -292,11 +292,11 @@
     };
   }
 
-  // Seed only the club and season pick while a Daily is being played
+  
   var origFinal = window.finalSpin;
   if (typeof origFinal === 'function') {
     window.finalSpin = function () {
-      if (!active || active.theme.random) return origFinal.apply(this, arguments); // each player's own spins
+      if (!active || active.theme.random) return origFinal.apply(this, arguments); 
       var rng = mulberry32(hash('27-0|' + active.date + '|' + active.go + '|' + (active.k++)));
       var origRand = window.rand;
       window.rand = function (min, max) { return Math.floor(rng() * (max - min + 1)) + min; };
@@ -304,8 +304,8 @@
     };
   }
 
-  /* ---------- "How today's Daily works" (shown before playing from the home screen) ---------- */
-  // Why today is different (shown above the challenge)
+   
+  
   function story(th) {
     if (th.story) return esc(th.story);
     if (th.type === 'match') return 'Every spin today is a ' + NICK[th.clubs[0]] + ' or ' + NICK[th.clubs[1]] + ' season from 1998 to now.';
@@ -313,7 +313,7 @@
     if (th.type === 'target') return 'No stacking today. Too strong or too weak both cost you: land your squad as close to ' + th.target + ' as you can.';
     return 'Today\u2019s spins are the same for every player, so it all comes down to who picks best.';
   }
-  // The one line that says what today's challenge is
+  
   function challenge(th) {
     if (th.random) return th.wins ? 'Build a 13 from <b>' + esc(th.seasons) + '</b> and win <b>' + th.wins + '+</b> games.' : 'Build a 13 rated <b>' + th.goal + '+</b> from <b>' + esc(th.seasons) + '</b>.';
     if (th.type === 'match') return 'Build the best <b>' + NICK[th.clubs[0]] + '</b> and <b>' + NICK[th.clubs[1]] + '</b> 13.';
@@ -368,9 +368,9 @@
     m.style.display = 'flex';
     fillRank();
   }
-  // What to do: the challenge, the goal and goes, and the reward (the how-to and the in-game reminder; no reward on a replay).
-  // A go still being played is never Missed Out, even the last one (11 Oct 2026, the owner: go 3's reminder said he had
-  // missed it)
+  
+  
+  
   function taskBox(th, rec, replay, playing) {
     var won = !!wonGo(rec), missed = !won && !goesLeft(rec) && !playing;
     return '<div class="cp-dh-task"><p class="cp-daily-challenge">' + challenge(th) + '</p>' +
@@ -379,8 +379,8 @@
         (missed ? 'Missed Out: ' : 'Reward: ') + esc(rewardText(th)) + '</b><small>' + (won ? 'Earned today. It&rsquo;s in your Vault.' : missed ? 'Not won today, so no reward. A new Daily Challenge starts tomorrow.'
           : 'Win today&rsquo;s Daily to earn it. It goes straight to your Vault.') + '</small>' + streakBit() + '</span></div>' : '') + '</div>';
   }
-  /* The challenge again, mid-game (2 Oct 2026: the owner forgot his part way through a go). The strip at the top of every
-     game screen says it, and a tap opens this: the challenge, the goal and the reward, then straight back to the game */
+  
+
   function showReminder() {
     if (!active) return;
     var th = active.theme, m = howModal(), rec = load(active.date), cur = rec.goes[active.go - 1];
@@ -400,28 +400,28 @@
   }
   document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('[data-daily-remind]')) showReminder(); });
 
-  // The Daily reward (once rewards are on) and the other Grand Finals on this date
+  
   function rewardsOn() { return !!(window.CastAccount && CastAccount.rewardsOn && CastAccount.rewardsOn()); }
   function rewardText(th) { return th.reward && window.CAST_DAILY ? CAST_DAILY.itemsText(th.reward) : ''; }
-  // The streak reward too, under the Daily's own (signed in): "3 more days to your 10-day streak reward: 5 Rerolls"
+  
   function streakBit() {
     var s = window.CastAccount && CastAccount.streakRewardNext && CastAccount.streakRewardNext();
     return s ? '<small class="cp-daily-reward-streak">&#x1F525; ' + s.left + ' more day' + (s.left === 1 ? '' : 's') + ' to your <span class="cp-nw">' + s.days + '-day</span> streak reward: ' + esc(s.text) + '</small>' : '';
   }
-  // A score never splits over two lines ("30-" then "24"): each one is kept whole
+  
   function scores(html) { return String(html).replace(/(\d+)-(\d+)/g, '<span class="cp-nw">$1-$2</span>'); }
   function rewardIcon(th) { var k = th.reward && Object.keys(th.reward)[0]; return (k && window.CAST_DAILY && CAST_DAILY.itemIcons[k]) || '&#x1F381;'; }
-  // Other Grand Finals on this date won by one of today's two clubs ("Also on this day: Broncos 2006"). A final between
-  // two other clubs is never named: a Daily only talks about its own clubs (the owner's rule, 4 Oct 2026)
+  
+  
   function alsoLine(th) {
     var o = th.onThisDay;
     if (!o || !window.CAST_DAILY) return '';
     var fin = CAST_DAILY.finals.filter(function (f) { return f.d.slice(5) === o.date.slice(5) && f.d !== o.date && (f.w === o.w || f.w === o.l); });
     return fin.length ? '<p class="cp-daily-also">Also on this day: ' + fin.map(function (f) { return esc(CAST_DAILY.nick[f.w]) + ' ' + f.d.slice(0, 4); }).join(', ') + '</p>' : '';
   }
-  // Your place on today's leaderboard (from the CAST account), and a way in to it
+  
   function rankLine(r) {
-    // One run of text with the arrow tied to the last word: a phone never wraps the arrow onto a line by itself (7 Oct 2026)
+    
     return '<span class="cp-daily-rank-t">' + rankText(r) + '&nbsp;<span class="cp-daily-rank-go" aria-hidden="true">&rsaquo;</span></span>';
   }
   function rankText(r) {
@@ -441,11 +441,11 @@
   }
 
   function startDaily() {
-    if (signInFirst()) { CastAccount.requireSignIn(startDaily, 'daily'); return; } // the go starts once they sign in
+    if (signInFirst()) { CastAccount.requireSignIn(startDaily, 'daily'); return; } 
     var date = today(), rec = load(date);
     if (goesLeft(rec) <= 0) { renderBanner(); return; }
-    // A World Cup match day needs the Test nations list first (a small file): the go starts once it is in
-    if (themeFor(date).type === 'nations' && !NAT) { loadNat().then(startDaily, function () { /* no list, no go: nothing is used up */ }); return; }
+    
+    if (themeFor(date).type === 'nations' && !NAT) { loadNat().then(startDaily, function () {   }); return; }
     active = { date: date, n: dayNo(date), go: rec.goes.length + 1, k: 0, theme: themeFor(date) };
     rec.goes.push({ started: Date.now(), done: false });
     save(date, rec);
@@ -454,15 +454,15 @@
     launch();
   }
 
-  // Replay a past Daily (CAST Profile players): the same spins as that day's first go, never counted
-  // CAST Pass tiers (once the Pass launches): the Daily is for signed-in players, Past Dailies for CAST Pass holders
+  
+  
   function signInFirst() { return !!(window.CastAccount && CastAccount.needsSignIn && CastAccount.needsSignIn()); }
   function tierNow() { return window.CastAccount && CastAccount.tier ? CastAccount.tier() : null; }
   function canReplay() { var t = tierNow(); return t ? t === 'pass' : !!(window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn()); }
   function startReplay(date) {
     if (!date || date >= today() || dayNo(date) < 1) return;
     if (!canReplay()) { if (window.CastAccount && CastAccount.openPass) CastAccount.openPass('archive'); return; }
-    if (themeFor(date).type === 'nations' && !NAT) { loadNat().then(function () { startReplay(date); }, function () { /* try again later */ }); return; }
+    if (themeFor(date).type === 'nations' && !NAT) { loadNat().then(function () { startReplay(date); }, function () {   }); return; }
     active = { date: date, n: dayNo(date), go: 1, k: 0, theme: themeFor(date), replay: true };
     track('daily_replay', { game: '27-0', daily: active.n, theme: active.theme.type });
     launch();
@@ -470,9 +470,9 @@
 
   function launch() {
     if (typeof selectMode === 'function') selectMode('classic');
-    if (typeof setEraPreset === 'function') setEraPreset(1998); // Dailies are all-time
-    // Daily: ratings hidden in the squad list (Reveal Ratings wildcard, and they show on the pitch once picked).
-    // The player's own setting comes back when the Daily ends.
+    if (typeof setEraPreset === 'function') setEraPreset(1998); 
+    
+    
     var tog = document.getElementById('ratingsToggle');
     if (savedRatings === null && tog) savedRatings = tog.dataset.val || 'on';
     if (typeof setRatings === 'function') setRatings('off');
@@ -488,8 +488,8 @@
     if (savedRatings !== null && typeof setRatings === 'function') { setRatings(savedRatings); savedRatings = null; }
   }
 
-  // A strip at the top of every game screen, in its own space (never floats over buttons): which go it is, and today's
-  // challenge in one line. A tap brings up the whole challenge (showReminder)
+  
+  
   function setPill() {
     var top = active && active.replay ? '&#x1F4DA; Replay &middot; ' + prettyDate(active.date) + ' &middot; just for fun'
       : active ? '&#x1F4C5; Daily Challenge &middot; Go ' + active.go + ' of ' + MAX_GOES : '';
@@ -507,18 +507,18 @@
     });
   }
 
-  // Record the result when the season finishes
+  
   function afterFn(name, fx) {
     var orig = window[name];
     if (typeof orig !== 'function') return;
     window[name] = function () {
       var out = orig.apply(this, arguments);
-      try { fx.apply(this, arguments); } catch (e) { /* cosmetic */ }
+      try { fx.apply(this, arguments); } catch (e) {   }
       return out;
     };
   }
 
-  var lastCard = null; // redraw the Daily card if the same season's results screen is drawn again
+  var lastCard = null; 
   afterFn('showResults', function () {
     if (!active && lastCard && typeof STATE !== 'undefined' && lastCard.season === STATE.season) {
       if (!document.querySelector('#resultsBody .cp-daily-result')) { if (lastCard.replay) replayCard.apply(null, lastCard.replay); else resultCard.apply(null, lastCard.args); }
@@ -554,7 +554,7 @@
     lastCard = { season: STATE.season, args: [n, go, g, rec, prevBest, th] };
     resultCard(n, go, g, rec, prevBest, th);
   });
-  // Leaving a Daily part way through still uses that go
+  
   afterFn('resetGame', function () { if (active) stopDaily(); });
 
   function shareText(n, best, th) {
@@ -563,9 +563,9 @@
   }
   function share(n, best) {
     var text = shareText(n, best, themeFor(today()));
-    if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); // Invite a Mate v2: their invite code
+    if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); 
     track('daily_share', { game: '27-0', daily: n });
-    // Portrait or Story with a Daily picture (growth, 17 Oct 2026, the owner: both sizes on every Share)
+    
     var CA = window.CastAccount, th = themeFor(today());
     if (CA && CA.sharePick && CA.shareDraw) {
       CA.sharePick({ title: 'Share Your Daily', text: text, name: '27-0-daily', where: 'daily',
@@ -583,9 +583,9 @@
     setTimeout(function () { t.remove(); }, 2400);
   }
 
-  /* A Daily go's results use the page's own buttons (4 Oct 2026, the owner's call: one set of buttons, no second Play
-     Again that started Classic): Play Again is Go Again (2 left), or Play Classic once the Daily is done; Share shares the
-     Daily's best; Change Mode stays. A replay: Replay Again, and the season's own Share */
+  
+
+
   function dailyButtons(body, again, share) {
     var a = body.querySelector('.cp-res-again'), sh = body.querySelector('.cp-res-share');
     if (a && again) { a.innerHTML = again[0]; a.onclick = again[1]; }
@@ -598,8 +598,8 @@
     var isBest = better(g, prevBest);
     var box = document.createElement('div');
     box.className = 'cp-daily-result';
-    // Completed with rewards on: the reward is on its way to the Vault (the server checks the go), or a guest claims it
-    var signedIn = !!(window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn()), rt = rewardText(th), justWon = !!won && rec.goes.indexOf(won) === go - 1; // (this go is a copy in rec)
+    
+    var signedIn = !!(window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn()), rt = rewardText(th), justWon = !!won && rec.goes.indexOf(won) === go - 1; 
     var reward = justWon && rewardsOn() && rt ? '<div class="cp-daily-reward is-earned"><span class="cp-daily-reward-ico" aria-hidden="true">' + rewardIcon(th) + '</span><span><b>' +
       (signedIn ? esc(rt) + ' added to your Vault' : 'You earned ' + esc(rt)) + '</b><small>' + (signedIn ? 'Daily Challenge complete. ' + esc(CAST_DAILY.useText(th.reward)) : 'Sign in free today to claim it.') + '</small></span>' +
       (signedIn ? '' : '<button type="button" class="cp-btn cp-btn-primary cp-daily-claim" data-daily="claim">Sign In Free to Claim</button>') + '</div>' : '';
@@ -609,7 +609,7 @@
       '<div class="cp-daily-score">' + label(g) + (isBest && rec.goes.filter(function (x) { return x.done; }).length > 1 ? ' <span class="cp-daily-pb">New best</span>' : '') + '</div>' +
       '<div class="cp-daily-best">' + (typeof th.wins === 'number' && !won ? 'Goal <b>' + th.wins + '+ wins</b> &middot; ' : typeof th.goal === 'number' && !won ? 'Goal <b>' + th.goal + '+</b> &middot; ' : '') + 'Best today: <b>' + label(best) + '</b></div>' +
       goesRow(rec, go) + reward +
-      // The day's status across the full width, then the buttons full width (the next go first while there is one)
+      
       (left > 0 ? '' : won ? '<div class="cp-daily-done is-won">' + wonLine(won) + 'Daily complete! New Daily in ' + countdown() + '.</div>'
                   : '<div class="cp-daily-done">All ' + MAX_GOES + ' goes used. New Daily in ' + countdown() + '.</div>');
     body.insertBefore(box, body.firstChild);
@@ -618,7 +618,7 @@
         : ['&#x26A1; Play Classic', function () {
           track('daily_to_classic', { game: '27-0', daily: n });
           if (typeof resetGame === 'function') resetGame();
-          setTimeout(function () { (window.cpPlay || function (m) { selectMode(m); startSelectedMode(); })('classic'); }, 60); // cpPlay: Classic's defaults unless they have CAST Pass
+          setTimeout(function () { (window.cpPlay || function (m) { selectMode(m); startSelectedMode(); })('classic'); }, 60); 
         }],
       ['&#x1F4E4; Share My Best', function () { share(n, bestOf(load(today())) || g); }]);
     box.addEventListener('click', function (e) {
@@ -651,7 +651,7 @@
     if (!window.CastAccount || !CastAccount.unlock) return;
     var ids = [];
     if (rec.goes.length >= MAX_GOES && rec.goes.every(function (x) { return x.done; })) ids.push('dfull');
-    // Days in a row with a finished Daily, counting back from this one
+    
     var run = 0, p = date.split('-'), t = Date.UTC(+p[0], p[1] - 1, +p[2]);
     for (var i = 0; i < 30; i++) {
       var d = new Date(t - i * 864e5).toISOString().slice(0, 10);
@@ -662,7 +662,7 @@
     if (ids.length) CastAccount.unlock(ids);
   }
 
-  /* ---------- Past Dailies (the archive): free for CAST Profile players ---------- */
+   
   function archiveOn() { return !!(window.CastAccount && CastAccount.open); }
   function showArchive() {
     if (!archiveOn()) return;
@@ -697,7 +697,7 @@
 
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  // One line saying what wins today
+  
   function goalLine(th) {
     if (th.random) return th.wins ? 'Only <b>' + esc(th.seasons) + '</b>. Win <b>' + th.wins + '+</b> games.' : 'Only <b>' + esc(th.seasons) + '</b>. Get your squad to <b>' + th.goal + '+</b>.';
     if (th.type === 'target') return 'Build a squad rated <b>' + th.target + '</b>. Closest wins.';
@@ -707,7 +707,7 @@
     return 'Same 13 spins for everyone. Most wins takes it.';
   }
 
-  // Your goes today, one tile each (best one highlighted)
+  
   function goesRow(rec, justPlayed) {
     var best = bestOf(rec), won = wonGo(rec);
     var tiles = [];
@@ -731,14 +731,14 @@
   }
   function ordinal(n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
 
-  /* ---------- Home banner ---------- */
+   
   function renderBanner() {
     var el = document.getElementById('cpDaily');
     if (!el) return;
     var date = today(), n = dayNo(date), rec = load(date), best = bestOf(rec), used = rec.goes.length, th = themeFor(date);
     var won = wonGo(rec), left = goesLeft(rec), target = th.type === 'target', winsDay = typeof th.wins === 'number', goalDay = target || winsDay || typeof th.goal === 'number';
-    // Target and rating-goal days can be missed: every go that missed (or was left unfinished) is a red cross,
-    // the go that hit is a green tick, and goes not needed after a hit stay empty
+    
+    
     var failed = !won && !left && goalDay;
     var dots = '';
     for (var i = 0; i < MAX_GOES; i++) {
@@ -751,8 +751,8 @@
     }
     var head = th.head || (th.type === 'teams' ? (typeof th.goal === 'number' ? 'Premiership 13 rated ' + th.goal + '+' : 'Best premiership 13') : typeof th.goal === 'number' ? NICK[th.clubs[0]] + ' 13 rated ' + th.goal + '+' : th.goal === 'premiers' ? 'Win the premiership'
       : th.type === 'target' ? 'Hit a squad rating of ' + th.target : th.type === 'same' ? 'Best record wins' : th.type === 'club' ? NICK[th.clubs[0]] + ' only' : th.title);
-    // Every go used without a win: the reward was missed, in red (8 Oct 2026, the owner: it still showed the reward after
-    // three misses; "more obvious")
+    
+    
     var missed = !won && !left;
     var rw = rewardsOn() && rewardText(th) ? '<span class="cp-daily-reward-chip' + (won ? ' is-won' : missed ? ' is-missed' : '') + '">' +
       (won ? '&#x2705; Reward Earned' : missed ? '&#x274C; Missed Out: ' + esc(rewardText(th)) : rewardIcon(th) + ' ' + esc(rewardText(th))) + '</span>' : '';
@@ -769,22 +769,22 @@
       '</div>';
     fitTitle(el.querySelector('.cp-daily-title'));
   }
-  // A long title ("Rabbitohs and Bulldogs 13 rated 87+") steps down a size or two so it always fits its two lines, never cut off.
-  // A title that would leave one word alone on its second line steps down until it fits on one line, as far as 13px (the
-  // owner's no-lonely-words rule, 7 Oct 2026)
+  
+  
+  
   function fitTitle(t) {
     if (!t) return;
     var n = t.firstChild;
-    if (n && n.nodeType === 3) n.nodeValue = n.nodeValue.replace(/\u00A0/g, ' '); // a wider screen may fit it on one line again
+    if (n && n.nodeType === 3) n.nodeValue = n.nodeValue.replace(/\u00A0/g, ' '); 
     t.style.fontSize = '';
     for (var fs = 15; fs >= 12 && t.scrollHeight > t.clientHeight + 1; fs--) t.style.fontSize = fs + 'px';
     var fit = t.style.fontSize;
     for (var f2 = Math.min(15, parseFloat(getComputedStyle(t).fontSize) - 1); f2 >= 13 && lonelyEnd(t); f2--) t.style.fontSize = f2 + 'px';
-    // No size fits it on one line ("1000+ With Rabbitohs" beside a Sign In button): keep the bigger size and the last two
-    // words together instead ("1000+" over "WITH RABBITOHS")
+    
+    
     if (lonelyEnd(t)) { t.style.fontSize = fit; n.nodeValue = n.nodeValue.replace(/\s+(\S+\s*)$/, '\u00A0$1'); }
   }
-  // The title's last word sits on a line of its own ("875+ WITH" over "PANTHERS")
+  
   function lonelyEnd(el) {
     var n = el.firstChild, m = n && n.nodeType === 3 && /(\S+)\s+(\S+)\s*$/.exec(n.nodeValue);
     if (!m || !document.createRange) return false;
@@ -793,7 +793,7 @@
     r.setStart(n, i); r.setEnd(n, i + m[2].length); b = r.getBoundingClientRect();
     return b.top > a.top + 2;
   }
-  window.addEventListener('resize', function () { fitTitle(document.querySelector('.cp-daily-card.is-compact .cp-daily-title')); }); // a turned phone
+  window.addEventListener('resize', function () { fitTitle(document.querySelector('.cp-daily-card.is-compact .cp-daily-title')); }); 
 
   document.addEventListener('click', function (e) {
     var a = e.target.closest('[data-daily-home]');
@@ -809,7 +809,7 @@
     isReplay: function () { return !!(active && active.replay); },
     archive: showArchive, replay: startReplay,
     start: startDaily, themeFor: themeFor, poolFor: poolFor,
-    // The next n Dailies from today (Admin > Dailies): date, number, icon, name, title, and whether it was planned
+    
     upcoming: function (n) {
       var out = [], p = today().split('-'), d0 = Date.UTC(+p[0], p[1] - 1, +p[2]);
       for (var i = 0; i < (n || 14); i++) {
@@ -821,23 +821,23 @@
     }
   };
 
-  /* ---------- Same Daily on every device ----------
-     Goes are kept on this device, and signed-in players' goes are also saved to their CAST account.
-     When the account has more finished goes for today than this device (played on another phone or the
-     laptop), take the account's, so a Daily finished anywhere shows as finished here too. */
-  // This device's goes (how many are used, and when each started) go to the account, so every device shows the same
+  
+
+
+
+  
   function noteStarts(date, rec) {
     if (window.CastAccount && CastAccount.dailyStarted) CastAccount.dailyStarted(date, '27-0', rec.goes.length, rec.goes.map(function (g) { return g.started; }));
   }
   function syncFromAccount() {
     if (!window.CastAccount || !CastAccount.dailyAccount || !(CastAccount.isSignedIn && CastAccount.isSignedIn())) return;
-    if (active) return; // never mid-go
+    if (active) return; 
     var date = today(), th = themeFor(date);
     CastAccount.dailyAccount(date, '27-0').then(function (acc) {
       if (!acc || date !== today() || active) return;
       var rec = load(date), mine = rec.goes.filter(function (g) { return g.done; }).length, theirs = acc.slots.filter(function (s) { return s.g; }).length;
       if (acc.n > rec.goes.length || theirs > mine) {
-        // Goes used on another device, finished or left part way through: the same goes here
+        
         var goes = acc.slots.map(function (s) {
           if (!s.g) return { started: s.started, done: false, synced: true };
           var r = s.g, g = { done: true, type: th.type, w: r.w, l: r.l, premiers: !!r.premiers, perfect: !!r.perfect, rating: r.rating, started: s.started || undefined, synced: true };
@@ -851,15 +851,15 @@
         save(date, rec);
         renderBanner();
         track('daily_synced', { goes: rec.goes.length });
-      } else if (rec.goes.length > acc.n) noteStarts(date, rec); // this device knows about more: tell the account
+      } else if (rec.goes.length > acc.n) noteStarts(date, rec); 
     });
   }
-  // Signing in (or out) without a reload: the button swaps between Sign In and Play straight away
+  
   window.addEventListener('cast-account', function (e) { if (!active) renderBanner(); if (e.detail && e.detail.status === 'signed-in') syncFromAccount(); });
-  // Rewards switched on (the owner's launch): the card and the pop-up show the reward. The launch banner opens the Daily
+  
   window.addEventListener('cast:rewards', function () { if (!active) renderBanner(); });
   window.addEventListener('cast:daily-open', function () { if (!active) showHow(true); });
-  // Signed in (or out) with the challenge open: its buttons follow (as on 1000TRIES)
+  
   window.addEventListener('cast:tier', function () {
     if (active) return;
     renderBanner();
@@ -871,9 +871,9 @@
   function boot() {
     renderBanner();
     syncFromAccount();
-    setInterval(renderBanner, 60000); // keep the countdown fresh, roll over at midnight
+    setInterval(renderBanner, 60000); 
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  // Coming back to the home screen refreshes the banner (goes used, best)
+  
   afterFn('showScreen', function (id) { if (id === 'setup') { renderBanner(); syncFromAccount(); } });
 })();

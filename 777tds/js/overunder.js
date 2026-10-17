@@ -1,35 +1,35 @@
-/* HIGHER OR LOWER: NFL (15 Oct 2026): 1000TRIES's HIGHER OR LOWER: NRL for 777 TDS.
-   You see the left player's number and call whether the right
-   one's is higher or lower, against a clock: 9 seconds for the first call, then 6, 4 and 3. Right: the right card becomes
-   the left and a new player comes in. Wrong, or out of time: you're out, unless you Run It Back (a Vault item, or $0.99 /
-   3 for $1.99, the Shop's price) to play on with your streak. Stuck on a pair: Reroll it (your Vault Rerolls, or buy more).
-   No free continues (paid or Vault only), a CAST Pass holder's one free Reroll a run, like HIGHER OR LOWER: NRL.
 
-   The draw is the shared engine (js/ou-engine.js, 1000TRIES's shared/ou-engine.js): never two players on the same
-   number, pairs close in as the streak grows, and the server replays every run from its seed and calls before it reaches
-   a board. One category with its own board: Career TDs (nfltds, board 'nflou'). Its rows are data/ou.json
-   (~/cast-dev/nfl/tools/build_ou.py); the category itself lives in the shared engine's CATS (js/ou-engine.js), so the
-   mode shows only once the engine knows it. Part of 777 TDS from the start (T.ou.on): the game itself waits for the
-   owner's Launch.
-   Kept in step with 1000TRIES's js/overunder.js: a change to one is made to the other */
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   var T = window.T, E = window.OU_ENGINE;
   if (!T || !E) return;
-  // Its name (17 Oct 2026, the owner: every over/under is HIGHER OR LOWER and its sport; it was Two Point)
+  
   var NAME = 'HIGHER OR LOWER: NFL', SPORT = 'NFL';
   var GAME = 'nfl';
-  // Only the categories the shared engine knows (the owner adds nfltds to its CATS)
+  
   var CAT_ORDER = ['nfltds'].filter(function (k) { return E.CATS[k] && E.gameOf(k) === GAME; });
-  // The plate's name: the team's nickname, as the other games' plates (audit L7, 16 Oct 2026: "Los Angeles Chargers" did not fit)
+  
   var NICK = {};
-  var LS_CAT = 'tp_cat_v1', LS_BEST = 'tp_best_v1'; // not HIGHER OR LOWER: NRL's or the other games': on castgames.com.au the games share one address
+  var LS_CAT = 'tp_cat_v1', LS_BEST = 'tp_best_v1'; 
   var D = null, loading = null;
   var st = { view: 'start', cat: CAT_ORDER[0] || 'nfltds' };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {   } }
   function bests() { try { return JSON.parse(lsGet(LS_BEST) || '{}') || {}; } catch (e) { return {}; } }
   function root() { return document.getElementById('ouRoot'); }
   function A() { return window.CastAccount || null; }
@@ -44,39 +44,39 @@
     var nm = (T.CLUBS && T.CLUBS[code] && T.CLUBS[code].name) || '';
     return NICK[code] || nm.split(' ').pop();
   }
-  // A namesake's tag ("Ben Jones (Raiders)") stays off the card: the plate above already names the club (17 Oct 2026, the owner)
+  
   function shown(n) { return String(n || '').replace(/\s*\([^)]*\)\s*$/, ''); }
   function years(p) { var y = String(p[3] || '').split('-'); return !y[0] ? '' : !y[1] || y[1] === y[0] ? y[0] : y[0] + ' to ' + y[1]; }
   function unit(n) { var c = E.CATS[st.cat]; return n === 1 ? c.one : c.unit; }
 
-  // ---------- The run ----------
+  
   function start() {
     var CG = A();
-    if (CG && CG.ouGate && !CG.ouGate(function () { if (T.ou) T.ou.open(); })) { st = { view: 'start', cat: st.cat }; render(); return; } // a guest's 2 free runs a day (cast-account.js ouGate); the start screen waits behind the sign-in
+    if (CG && CG.ouGate && !CG.ouGate(function () { if (T.ou) T.ou.open(); })) { st = { view: 'start', cat: st.cat }; render(); return; } 
     var cat = st.cat;
     st = { view: 'play', cat: cat, seed: newSeed(), calls: '', streak: 0, rib: 0, rr: 0, ice: 0, iceBest: 0, ms: 0, done: false, busy: false, log: [] };
-    st.run = new E.Run(D[cat], cat, st.seed, E.VERSION); // the engine's newest draw (version 2: easy calls now and then), saved as d.ouv
-    st.first = st.run.left; // the results ladder starts with him
-    // Rerolls and Run It Backs: the Vault's first, then paid. Nothing free, CAST Pass included (the owner, 15 Oct 2026)
+    st.run = new E.Run(D[cat], cat, st.seed, E.VERSION); 
+    st.first = st.run.left; 
+    
     var CA = A(); st.rrPaid = 0;
-    if (CA && CA.useFor) CA.useFor('ou'); // this run's Run It Backs and Rerolls are noted on the server, for its check
+    if (CA && CA.useFor) CA.useFor('ou'); 
     primeVault();
     T.track('ou_start', { category: cat });
     nextCall();
   }
-  // Ask the account for the Vault's counts (it reads them once, then keeps them in step), so the buttons can say how many
+  
   function primeVault() { var CA = A(); if (CA && CA.rerollsSaved) { CA.rerollsSaved(); if (CA.itemSaved) CA.itemSaved('rib'); } }
   function rrLabel() { var CA = A(), n = CA && CA.rerollsSaved ? CA.rerollsSaved() : 0; return n ? n + ' saved' : 'Buy &middot; ' + (CA && CA.price ? CA.price('one', '$0.99') : '$0.99'); }
   function ribLabel() { var CA = A(), n = CA && CA.itemSaved ? CA.itemSaved('rib') : 0; return n ? n + ' saved' : CA && CA.price ? CA.price('rib1', '$0.99') : '$0.99'; }
-  // The Vault's counts arrived or changed: the labels change in place (a full redraw would restart the clock bar)
+  
   window.addEventListener('cast:rerolls', function () {
     var a = document.querySelector('#ouRoot .ou-rr .wc-left'), b = document.querySelector('#ouRoot .ou-decide-rib small');
     if (a) a.innerHTML = rrLabel();
     if (b) b.innerHTML = ribLabel();
   });
   function clearClock() { if (st.clock) { clearTimeout(st.clock); st.clock = null; } }
-  /* A Reroll's moment (the owner, 15 Oct 2026: "show the animation for a new player, make the wildcards special"): the
-     old card flips away under the drafts' own teal Reroll burst, then the new one flips in glowing. The clock waits */
+  
+
   function rerollShow() {
     clearClock();
     st.busy = true;
@@ -92,13 +92,13 @@
       document.body.appendChild(el);
       setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
     }
-    setTimeout(function () { st.busy = false; if (st.view === 'play') { st.rerolled = true; nextCall(st.free); } }, reduce ? 0 : 1000); // a no-clock call stays one
+    setTimeout(function () { st.busy = false; if (st.view === 'play') { st.rerolled = true; nextCall(st.free); } }, reduce ? 0 : 1000); 
   }
-  // free: no clock for this call (the first one after a Run It Back)
+  
   function nextCall(free) {
     clearClock();
     st.view = 'play'; st.reveal = null; st.secs = E.callTime(st.streak); st.free = !!free; st.callAt = Date.now();
-    st.fresh = true; render(); st.fresh = false; st.rerolled = false; // only the new player slides in (redraws never replay it)
+    st.fresh = true; render(); st.fresh = false; st.rerolled = false; 
     if (!st.free) st.clock = setTimeout(function () { call('T'); }, st.secs * 1000);
   }
   function call(c) {
@@ -109,7 +109,7 @@
     st.calls += c;
     var right = c !== 'T' && c === st.run.answer();
     st.reveal = { right: right, timeout: c === 'T' };
-    st.log.push({ p: st.run.right, c: c, ok: right, ms: Math.min(took, st.secs * 1000) }); // the results ladder, in order
+    st.log.push({ p: st.run.right, c: c, ok: right, ms: Math.min(took, st.secs * 1000) }); 
     if (right) { st.ice = took < 3000 ? st.ice + 1 : 0; st.iceBest = Math.max(st.iceBest, st.ice); } else st.ice = 0;
     render();
     setTimeout(function () {
@@ -117,10 +117,10 @@
         st.streak++;
         st.run.left = st.run.right;
         st.run.right = st.run.draw(st.streak);
-        if (st.run.right < 0) { out(); return; } // (never in practice: thousands of players in every list)
+        if (st.run.right < 0) { out(); return; } 
         nextCall();
       } else out();
-    }, right ? 450 : 1000); // quicker picks (the owner, 15 Oct 2026): a right call moves on in under half a second
+    }, right ? 450 : 1000); 
   }
   function out() {
     clearClock();
@@ -129,11 +129,11 @@
     st.newBest = st.streak > (b[st.cat] || 0);
     if (st.newBest) { b[st.cat] = st.streak; lsSet(LS_BEST, JSON.stringify(b)); }
     T.track('ou_out', { category: st.cat, streak: st.streak, why: st.reveal && st.reveal.timeout ? 'time' : 'wrong' });
-    /* Run It Back asked straight away, on the screen like 1000TRIES' Remove Player / Lock In at the end of a draft (the
-       owner, 14 Oct 2026): Run It Back or End Run, which drains over OFFER_SECS and then ends the run by itself. The
-       countdown waits while the Shop is open (st.hold). Nothing to keep at 0: straight to the results */
+    
+
+
     st.hold = false;
-    // Every player in the list called (a perfect run to the end, NRLW's ~380): it ends there, nobody left to Run It Back to
+    
     st.cleared = !!(st.run && st.run.right < 0);
     if (st.streak > 0 && !st.cleared) { st.offer = OFFER_SECS; render(); startOffer(); }
     else { st.offer = 0; finish(); render(); }
@@ -154,13 +154,13 @@
       if (!st.offer) { T.track('ou_rib_offer_timeout', { category: st.cat, streak: st.streak }); endRun(); }
     }, 1000);
   }
-  // End Run (or the countdown ran out): the run is saved and the results show
+  
   function endRun() { clearInterval(st.offerT); st.offer = 0; st.hold = false; finish(); render(); }
-  // Run It Back: a Vault one, or buy (the account's own Shop flow); then play on with the same left player
+  
   function runItBack() {
     var CA = A();
     if (!CA || !CA.buyItem || st.view !== 'out' || st.cleared) return;
-    clearInterval(st.offerT); st.hold = true; render(); // the countdown waits while they choose
+    clearInterval(st.offerT); st.hold = true; render(); 
     T.track('ou_rib_tap', { category: st.cat, streak: st.streak });
     var hook = { kicker: 'Run It Back', title: 'Keep Your Streak', line: 'Keep your ' + st.streak + ' in a row and play on with a new player.',
       foot: 'Run It Backs work in ' + NAME + ' and other CAST games. Saved ones stay on your CAST Profile.' };
@@ -168,18 +168,18 @@
       if (st.view !== 'out' || st.done) return;
       st.calls += 'B'; st.rib++; st.offer = 0; st.hold = false;
       st.log.push({ rib: 1 });
-      // the rewind plays over the pair that got them, never the next player (the owner, 15 Oct 2026: his number showed as it loaded)
+      
       st.missed = st.run.right;
       st.run.right = st.run.draw(st.streak);
       T.track('ou_rib', { category: st.cat, streak: st.streak });
-      // The rewind (the owner, 15 Oct 2026: "a cooler animation to get you back into the game"): a moment on screen, then
-      // the clock starts on the new pair
+      
+      
       st.view = 'rewind'; render();
-      // the first call back has no clock (the owner, 15 Oct 2026)
+      
       setTimeout(function () { if (st.view === 'rewind') nextCall(true); }, 1500);
     }, hook);
   }
-  // Reroll: swap the right-hand player (a Vault Reroll, or buy). The clock stops while the Shop is open
+  
   function reroll() {
     var CA = A();
     if (!CA || !CA.buyReroll || st.view !== 'play' || st.reveal) return;
@@ -197,23 +197,23 @@
       T.track('ou_reroll', { category: st.cat, streak: st.streak });
       rerollShow();
     }, { title: 'Stuck On This One?', line: 'Swap him for a new player and keep your ' + st.streak + ' in a row.' });
-    // The Shop closed without a buy (or a sign-in prompt went away): the clock starts again on the same pair
+    
     setTimeout(function () {
       if (!st.busy) return;
       watch = setInterval(function () { if (st.busy && !document.querySelector('.ca-rr:not([hidden])') && !document.documentElement.classList.contains('ca-open')) back(); }, 500);
     }, 1500);
   }
-  // The run is over for good (Play Again, Home, the board, or leaving the page): saved once, trophies, then stats
+  
   function finish() {
-    var C0 = A(); if (C0 && C0.useFor) C0.useFor(null); // the run is over (or left before a call): stop tagging uses
-    if (!st.run || st.done || !(st.view === 'out' || st.view === 'play') || !/[OUT]/.test(st.calls)) return; // nothing called yet: nothing to save
+    var C0 = A(); if (C0 && C0.useFor) C0.useFor(null); 
+    if (!st.run || st.done || !(st.view === 'out' || st.view === 'play') || !/[OUT]/.test(st.calls)) return; 
     st.done = true;
     clearClock();
     var CA = A();
     if (!CA) return;
     var d = { cat: st.cat, seed: st.seed, calls: st.calls, ms: Math.round(st.ms), ouv: st.run && st.run.v };
     if (st.rib) d.rib = st.rib;
-    if (st.rrPaid) d.rr = st.rrPaid; // every Reroll in the run (all Vault or paid), each one noted on the server
+    if (st.rrPaid) d.rr = st.rrPaid; 
     try {
       CA.record({ game: GAME, mode: 'ou', score: st.streak, result: 'out', win: false, top: false, picks: [], d: d });
       var tr = [], n = st.streak;
@@ -226,7 +226,7 @@
       if (n >= 15 && !st.rib && !st.rr) tr.push('ouclean');
       if (tr.length && CA.unlock) CA.unlock(tr);
       if (CA.refresh) CA.refresh();
-    } catch (e) { /* the run stays on this device */ }
+    } catch (e) {   }
   }
   window.addEventListener('pagehide', function () { if (st.view === 'out') finish(); });
 
@@ -236,9 +236,9 @@
     var txt = NAME + ' \u00B7 ' + c.name + '\n\uD83D\uDD25 ' + st.streak + ' in a row\n' + marks.join('') + '\nCan you beat it?';
     var url = 'https://castgames.com.au/higher-or-lower-nfl/', cq = 'cat=' + encodeURIComponent(st.cat);
     url += (url.indexOf('?') < 0 ? '?' : '&') + cq;
-    if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
+    if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); 
     T.track('ou_share', { category: st.cat, streak: st.streak });
-    // Portrait or Story with a picture of the run (growth, 17 Oct 2026, the owner: both sizes on every Share)
+    
     var CA = window.CastAccount;
     if (CA && CA.sharePick && CA.shareDraw) {
       CA.sharePick({ title: 'Share Your Streak', text: txt, url: url, name: String(NAME).toLowerCase().replace(/[^a-z0-9]+/g, '-'), where: 'ou',
@@ -246,23 +246,23 @@
       return;
     }
     if (navigator.share) { navigator.share({ text: txt, url: url }).catch(function () {}); return; }
-    try { navigator.clipboard.writeText(txt + ' ' + url); flash('Copied. Paste it anywhere.'); } catch (e) { /* no clipboard */ }
+    try { navigator.clipboard.writeText(txt + ' ' + url); flash('Copied. Paste it anywhere.'); } catch (e) {   }
   }
   function flash(msg) { st.note = msg; render(); setTimeout(function () { st.note = ''; render(); }, 2200); }
 
-  // ---------- Screens (14 Oct 2026, the owner: the teams' real colours and a better layout) ----------
+  
   var CAT_ICO = { nfltds: '&#x1F3C8;' };
   function catTiles() {
     var b = bests();
     return '<div class="ou-tiles" role="tablist" aria-label="Category">' + CAT_ORDER.filter(function (k) { return D && D[k] && D[k].length; }).map(function (k) {
       var on = k === st.cat;
-      // The best is the big number on the right (the owner picked design A, in colour, 14 Oct 2026)
+      
       return '<button type="button" role="tab" aria-selected="' + on + '" class="ou-tile ou-c-' + k + (on ? ' is-on' : '') + '" data-ou="cat" data-v="' + k + '" aria-label="' + esc(E.CATS[k].name) + (b[k] ? ', best ' + b[k] + ' in a row' : ', not played yet') + '">' +
         '<span class="ou-tile-l"><span class="ou-tile-ico" aria-hidden="true">' + CAT_ICO[k] + '</span><b>' + esc(E.CATS[k].name) + '</b></span>' +
-        '<span class="ou-tile-n' + (b[k] ? '' : ' is-new') + '" aria-hidden="true">' + (b[k] ? '<b>' + b[k] + '</b><small>Best</small>' : '<b>New</b>') + '</span></button>'; // never a dash for no best yet (17 Oct 2026)
+        '<span class="ou-tile-n' + (b[k] ? '' : ' is-new') + '" aria-hidden="true">' + (b[k] ? '<b>' + b[k] + '</b><small>Best</small>' : '<b>New</b>') + '</span></button>'; 
     }).join('') + '</div>';
   }
-  // A sample pair for the start screen: two famous players in the category's colours, the right one hidden
+  
   function demoPair() {
     var L = D[st.cat];
     if (!L || L.length < 3) return '';
@@ -276,8 +276,8 @@
       '<button type="button" class="btn btn-primary ou-play" data-ou="play">Play ' + esc(E.CATS[st.cat].name) + ' <i aria-hidden="true">&#x25B6;</i></button>' +
       '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Leaderboard</button></div>';
   }
-  // The badge's letters in black or white, whichever reads better on the team's accent (audit X5, 16 Oct 2026: on some
-  // clubs the letters could not be read)
+  
+  
   function abbrInk(code) {
     var v = T.render && T.render.clubVars ? T.render.clubVars(code) : '', m = /--club-accent:\s*#([0-9a-f]{6}|[0-9a-f]{3})\b/i.exec(v);
     if (!m) return '';
@@ -286,10 +286,10 @@
     var lum = 0.2126 * L[0] + 0.7152 * L[1] + 0.0722 * L[2];
     return ' style="color:' + ((lum + 0.05) / 0.05 >= 1.05 / (lum + 0.05) ? '#0a0a0f' : '#fff') + '"';
   }
-  // One player, in his team's colours, like the draft cards: the plate, his name and years, then the number
+  
   function card(p, known, cls, mark) {
     var code = p[2] || '', c = T.club ? T.club(code) : { abbr: code.toUpperCase(), name: where(p) }, y = years(p);
-    // A look as a small flag on a plate in its colour (never in 777 TDS: T.NO_LOOKS)
+    
     var N = !T.NO_LOOKS && window.CastNations, lk = N && N.has && N.has(code) ? '<span class="ou-flag" aria-hidden="true">' + N.svg(code, 36, 24, { level: 2 }) + '</span>' : '';
     var val = known ? '<b>' + num(p[1]) + '</b><small>' + esc(unit(p[1])) + '</small>' : '<b class="is-q">?</b><small>' + esc(E.CATS[st.cat].unit) + '</small>';
     return '<div class="ou-card ' + cls + (mark ? ' ' + mark : '') + '" style="' + (T.render && T.render.clubVars ? T.render.clubVars(code) : '') + '">' +
@@ -309,12 +309,12 @@
     h += '<p class="ou-q">Is <b>' + esc(shown(b[0])) + '</b> higher or lower than <b>' + num(a[1]) + '</b>?</p>';
     h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Higher<kbd class="ou-key" aria-hidden="true">&uarr;</kbd></button>' +
       '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Lower<kbd class="ou-key" aria-hidden="true">&darr;</kbd></button></div>';
-    // The Reroll: the drafts' own wildcard button (the owner, 15 Oct 2026: "native, like the other games")
+    
     h += '<div class="wildcards ou-wild"><button type="button" class="wc wc-reroll ou-rr" data-ou="rr"' + (rv ? ' disabled' : '') + ' title="Swap this player for a new one">' +
       '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> Reroll</span><span class="wc-left">' + rrLabel() + '</span></button></div>';
     return h;
   }
-  // The miss: the pair that got them and why, over the decision panel (Run It Back or End Run, End Run drains)
+  
   function decideView() {
     var L = D[st.cat], a = L[st.run.left], b = L[st.view === 'rewind' && st.missed != null ? st.missed : st.run.right], why = st.reveal && st.reveal.timeout;
     return '<div class="ou-out"><div class="ou-out-h">' + (why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Wrong Call') + '</div>' +
@@ -330,15 +330,15 @@
             '<span class="btn-decide-lbl">&#x1F3C1; End Run' + (st.hold ? '' : ' <b class="lock-secs">' + st.offer + '</b>') + '</span></button>' +
         '</div></div></div></div>';
   }
-  // A team chip for the ladder, in its colours
+  
   function chip(p) {
     var code = p[2] || '', N = !T.NO_LOOKS && window.CastNations, c = T.club ? T.club(code) : { abbr: code.toUpperCase() };
     var inner = N && N.has && N.has(code) ? N.svg(code, 30, 20, { level: 2 }) : '<b>' + esc(c.abbr) + '</b>';
     return '<span class="ou-chip" style="' + (T.render && T.render.clubVars ? T.render.clubVars(code) : '') + '" aria-hidden="true">' + inner + '</span>';
   }
   function secs(ms) { return (ms / 1000).toFixed(1) + 's'; }
-  /* The results (14 Oct 2026, the owner: "show the results more clear and the picks order you got right... make it
-     cool"): the score, the run as a strip of calls, three numbers, then Your Run: every player in order with the call */
+  
+
   function resultsView() {
     var L = D[st.cat], log = st.log || [], why = st.reveal && st.reveal.timeout, b = bests()[st.cat] || 0;
     var calls = log.filter(function (x) { return x.c; }), good = calls.filter(function (x) { return x.ok; });
@@ -357,14 +357,14 @@
       '<div class="ou-stats"><span><b>' + (avg ? secs(avg) : '-') + '</b><small>Avg Call</small></span>' +
         '<span><b>' + (fast ? secs(fast) : '-') + '</b><small>Fastest</small></span>' +
         '<span><b>' + (st.rib || st.rr ? (st.rib ? '&#x23EA; ' + st.rib : '') + (st.rib && st.rr ? ' ' : '') + (st.rr ? '&#x1F504; ' + st.rr : '') : '&#x2714;') + '</b><small>' + (st.rib || st.rr ? 'Wildcards Used' : 'No Wildcards') + '</small></span></div>';
-    // Play Again and Share straight under the score (the owner, 15 Oct 2026: under a long run they were too far down)
-    // The game's own results buttons (the owner: "native like the rest"): Play Again, then Share and Leaderboard, then Change Mode
+    
+    
     h += '<div class="res-acts ou-acts">' +
       '<button type="button" class="btn btn-res btn-res-again btn-block" data-ou="again"><span aria-hidden="true">&#x1F504;</span> Play Again</button>' +
       '<div class="res-two"><button type="button" class="btn btn-res btn-res-share" data-ou="share"><span aria-hidden="true">&#x1F4E4;</span> Share</button>' +
       '<button type="button" class="btn btn-res btn-res-mode" data-ou="board"><span aria-hidden="true">&#x1F3C6;</span> Leaderboard</button></div>' +
       '<button type="button" class="btn btn-res btn-res-mode btn-block" data-ou="home"><span aria-hidden="true">&#x1F3AE;</span> Change Mode</button></div>';
-    // Your Run: the first player, then each one they called, in order (a Reroll's swapped player isn't shown)
+    
     var rows = '', n = 0, prev = L[st.first];
     rows += '<li class="ou-step is-start"><span class="ou-step-i">&#x25B6;</span>' + chip(prev) + '<span class="ou-step-p"><b>' + esc(shown(prev[0])) + '</b><small>' + esc(years(prev)) + '</small></span>' +
       '<span class="ou-step-v">' + num(prev[1]) + '</span><span class="ou-tag is-start">Start</span></li>';
@@ -383,21 +383,21 @@
     return h;
   }
   function outView() { return st.done ? resultsView() : decideView(); }
-  // Run It Back: the rewind (st.view 'rewind'), over the miss, before the next pair
+  
   function rewindView() {
     return decideView() + '<div class="ou-rewind" role="status"><div class="ou-rw-rays" aria-hidden="true"></div>' +
       '<span class="ou-rw-ico" aria-hidden="true">&#x23EA;</span><b class="ou-rw-t">Run It Back</b>' +
       '<span class="ou-rw-s"><i aria-hidden="true">&#x1F525;</i>' + st.streak + ' <small>in a row saved</small></span></div>';
   }
-  // A long club name ("Los Angeles Chargers", "New South Wales") steps down in size to fit its plate, and only wraps
-  // when even the smallest size is too wide: never cut off with "..." (quality gate, 16 Oct 2026)
+  
+  
   function fitClubs(el) {
     Array.prototype.forEach.call(el.querySelectorAll('.ou-club'), function (c) {
       c.style.fontSize = ''; c.classList.remove('is-wrap');
       if (c.getAttribute('data-full')) c.textContent = c.getAttribute('data-full');
       var fs = parseFloat(getComputedStyle(c).fontSize) || 11.5;
       while (c.scrollWidth > c.clientWidth + 1 && fs > 9.5) { fs -= .5; c.style.fontSize = fs + 'px'; }
-      // still too wide: the city as its initials ("LA Chargers", "SF 49ers"), so it never wraps to one word alone
+      
       var w = (c.getAttribute('data-full') || c.textContent).split(' ');
       if (c.scrollWidth > c.clientWidth + 1 && w.length >= 3) {
         c.setAttribute('data-full', w.join(' ')); c.title = w.join(' ');
@@ -420,11 +420,11 @@
     fitClubs(el);
   }
 
-  // HIGHER OR LOWER: NFL numbers have no commas (as HIGHER OR LOWER: CRICKET, 16 Oct 2026, the owner: the comma pushed 3311 past the card's edge)
+  
   function num(n) { return String(Math.round(+n || 0)); }
   function boardId() { return { nfltds: 'nflou' }[st.cat] || 'nflou'; }
   document.addEventListener('click', function (e) {
-    // The home banner (data-ou-open): open it here, no page load
+    
     var bn = e.target.closest && e.target.closest('[data-ou-open]');
     if (bn && T.ou.on()) { e.preventDefault(); T.ou.open(); return; }
     var t = e.target.closest && e.target.closest('[data-ou]');
@@ -441,7 +441,7 @@
     else if (a === 'board') { finish(); var CA = A(); if (CA && CA.openBoards) CA.openBoards([boardId(), 'week']); if (st.view === 'out') { var c2 = st.cat; st = { view: 'start', cat: c2 }; render(); } }
     else if (a === 'home') { if (st.view === 'play' && !st.reveal && st.streak && !window.confirm('Leave this run? Your streak ends here.')) return; finish(); var c3 = st.cat; st = { view: 'start', cat: c3 }; if (T.ouHome) T.ouHome(); }
   });
-  // Keyboard on a computer (the owner, 15 Oct 2026: just up and down): Up is Higher, Down is Lower; O and U too
+  
   document.addEventListener('keydown', function (e) {
     if (st.view !== 'play' || document.body.getAttribute('data-screen') !== 'ou' || e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
@@ -451,29 +451,29 @@
 
   var opened = false;
   T.ou = {
-    // Open the start screen (the mode card, ?play=ou, the board's Play button). cat: a category to start on
+    
     open: function (cat) {
-      if (!opened) { opened = true; cat = cat || urlCat(); } // the first open takes the address's ?cat= (CAST Games' pages open with CG_MODE, no ?play=)
+      if (!opened) { opened = true; cat = cat || urlCat(); } 
       if (st.view === 'play' && !st.done) return;
-      if (!cat && st.view === 'start' && root() && root().offsetParent) return; // already open (the page's own start-up got here first)
-      if (!CAT_ORDER.length) return; // the shared engine has no HIGHER OR LOWER: NFL category yet
+      if (!cat && st.view === 'start' && root() && root().offsetParent) return; 
+      if (!CAT_ORDER.length) return; 
       st = { view: 'start', cat: CAT_ORDER.indexOf(cat) >= 0 ? cat : CAT_ORDER.indexOf(lsGet(LS_CAT)) >= 0 ? lsGet(LS_CAT) : CAT_ORDER[0] };
       if (T.showScreen) T.showScreen('ou');
       primeVault();
       render();
       load().then(render, function () { var el = root(); if (el) el.innerHTML = '<div class="ou-load">Could not load the players. Check your connection and try again.</div>'; });
     },
-    on: function () { return CAT_ORDER.length > 0; } // part of 777 TDS from the start, once the shared engine has its categories (the game itself waits for the owner's Launch)
+    on: function () { return CAT_ORDER.length > 0; } 
   };
-  // ?cat=bblwkts and the like: the category a link asks for (17 Oct 2026; the website's old addresses send theirs)
+  
   function urlCat() { var m = /[?&]cat=([a-z0-9]+)(?=&|#|$)/.exec(location.search); return m ? m[1] : null; }
-  // Tests on the preview only (localhost): the current right answer
+  
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.ou._answer = function () { return st.run && st.view === 'play' ? st.run.answer() : null; };
-  // ?play=ou (a board's Play button, a share) or the owner's private link (?po=...): straight in once the page (and the
-  // account module, which knows if it's on) has loaded
-  if (T.ouWanted || window.CG_MODE === 'ou' || /[?&](play=ou|po=[a-z0-9]+)(?=&|#|$)/.test(location.search)) { // ouWanted: the page asked before this loaded (js/app.js playMode)
-    // Straight in (17 Oct 2026: it waited for every picture on the page and showed the game's home first). The rest of
-    // the page stays hidden until it opens; if it isn't on (not launched, no private link) the home shows as before
+  
+  
+  if (T.ouWanted || window.CG_MODE === 'ou' || /[?&](play=ou|po=[a-z0-9]+)(?=&|#|$)/.test(location.search)) { 
+    
+    
     var docEl = document.documentElement, boot = document.createElement('style'), tries = 0;
     boot.textContent = 'html.ou-boot .screen:not(#screen-ou) { display: none !important; }';
     document.head.appendChild(boot);

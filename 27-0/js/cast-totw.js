@@ -1,11 +1,11 @@
-/* World Cup Team of the Week on the home page (15 Oct 2026, the owner's BUILD IT; js/cast-account.js totw, published by an
-   admin). A card in the home spot with five of the week's players on World Cup blue cards (rating and boost); a tap opens
-   all 13 on a field with Play World Cup 8-0 pinned. Shared by both games (tools/sync_shared.py):
-     27-0: second in the spot's turn; the pop-up also opens by itself once a week on the home page (the owner: "dont spam
-           people show once on pop up for 27-0"); Play World Cup 8-0 starts it
-     1000TRIES: in the spot's turn only (never opens by itself); Play on 27-0 opens 27-0's World Cup
-   Only while a week is on: it comes and goes with 'cast:totw'. GA (game: the page's): totw_view (once a visit, when the
-   spot shows it), totw_tap, totw_auto (opened by itself), totw_play, totw_close. */
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   var box = document.querySelector('[data-cast-totw]');
@@ -22,17 +22,17 @@
   function week() { var a = A(); return a && a.totw ? a.totw() : null; }
   function ga(ev, x) {
     x = x || {}; x.game = CA.game || '';
-    try { if (typeof CA.track === 'function') CA.track(ev, x); else if (typeof gtag === 'function') gtag('event', ev, x); } catch (e) { /* no analytics */ }
+    try { if (typeof CA.track === 'function') CA.track(ev, x); else if (typeof gtag === 'function') gtag('event', ev, x); } catch (e) {   }
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
   function light(h) { var c = parseInt(String(h).slice(1), 16); return ((c >> 16) * 299 + ((c >> 8) & 255) * 587 + (c & 255) * 114) / 1000 > 150; }
   function surname(n) { var p = String(n).split(' '); return p.length > 1 ? p.slice(1).join(' ') : n; }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {   } }
   function syd(ms) {
     try { return new Date(ms).toLocaleString('en-AU', { timeZone: 'Australia/Sydney', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).replace(/\s?(am|pm)/i, function (m) { return m.trim().toLowerCase(); }); } catch (e) { return ''; }
   }
-  // The squads' own ratings (27-0's data/wc-squads.json, which the other sites may read), for each card's number
+  
   function squads() {
     if (sq) return Promise.resolve(sq);
     if (sqP) return sqP;
@@ -44,7 +44,7 @@
     return sqP;
   }
   function rating(e) { var r = sq && sq[e.n]; return r ? Math.min(99, r + e.b) : null; }
-  // One player's card: his nation's colour on the tag, the new rating, the boost and his name
+  
   function card(e, big, full) {
     var n = NAT[e.k] || ['#333333', String(e.k || '').toUpperCase()], r = rating(e);
     return '<div class="cp-totw-c' + (big ? ' is-big' : '') + '" aria-label="' + esc(e.n + ', ' + POS[e.s - 1] + (r ? ', ' + r : '') + ', boosted ' + e.b) + '">' +
@@ -53,7 +53,7 @@
       '<span class="ct-r">' + (r == null ? '-' : r) + '</span>' +
       '<span class="ct-n">' + esc(surname(e.n)).replace('-', '-<wbr>') + '</span></div>';
   }
-  // The five on the card: the best rated now, the best in the middle
+  
   function five(w) {
     var by = w.set.slice().sort(function (a, b) { return (rating(b) || 0) - (rating(a) || 0) || a.s - b.s; }).slice(0, 5);
     return [by[3], by[1], by[0], by[2], by[4]].filter(Boolean);
@@ -103,7 +103,7 @@
         shut();
         if (act === 'play') {
           ga('totw_play');
-          if (IS27) { try { CA.promoPlay('wc'); } catch (x) { /* the page's own start */ } }
+          if (IS27) { try { CA.promoPlay('wc'); } catch (x) {   } }
         } else ga('totw_close');
       });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') shut(); });
@@ -111,14 +111,14 @@
     fill();
     pop.hidden = false;
     document.documentElement.classList.add('cp-totw-open');
-    if (pop.nextElementSibling) document.body.appendChild(pop); // last on the page, so it opens on top
+    if (pop.nextElementSibling) document.body.appendChild(pop); 
     var w = week();
     lsSet(LS_SEEN + w.id, '1');
     if (auto) ga('totw_auto', { week: w.id });
   }
   box.addEventListener('click', function (e) { if (e.target.closest('[data-totw="open"]')) { ga('totw_tap'); open(false); } });
 
-  // Once a week on 27-0's home page, when nothing else is open (another pop-up, the account panel, a game)
+  
   function quiet() {
     var h = document.documentElement.classList;
     if (h.contains('ca-open') || h.contains('cp-upg-open') || h.contains('cp-dual-open') || h.contains('cp-totw-open')) return false;
@@ -133,11 +133,11 @@
     autoT = setTimeout(function () {
       var w2 = week();
       if (!w2 || lsGet(LS_SEEN + w2.id)) return;
-      if (quiet()) open(true); else maybeAuto(); // try again in a moment
+      if (quiet()) open(true); else maybeAuto(); 
     }, 4000);
   }
 
-  // Seen: the spot shows it (the spot marks every other card data-spot-off)
+  
   var seen = false;
   new MutationObserver(function () {
     if (seen || box.hidden || box.hasAttribute('data-spot-off') || !box.offsetParent) return;

@@ -1,25 +1,25 @@
-/* CAST Games: the big moment (8 Oct 2026). The owner: 27-0's undefeated screen "should be ultra special", then "yes build
-   this" for 1000TRIES's Exactly 1000 too, so both games feel the same. One full-screen celebration, about 8 seconds, and a
-   tap anywhere skips to the end:
-     count-up  the score climbs with a tile for each step (27-0: the clubs beaten; 1000TRIES: the 13 and their tries)
-     slam      the final score lands: a flash, a shockwave, a small shake and a burst in the player's club colours
-     trophy    floodlights sweep the dark, the cup rises, then the stamp (Undefeated, Exactly) and the line under it
-     the 13    the score moves up and the 13 fan out into formation
-     the end   the numbers, a history line, and the button that goes on
-   Gold only on the cup and the score (the owner keeps gold for CAST Pass; the Premiers cards were the one exception).
-   Phones set to reduce motion get the end straight away. The button is there from the first frame, so 27-0's Quick Draft
-   can tap it (it keeps the class cel-continue). Anything that goes wrong goes straight on to done().
-   CastCelebrate.show(o):
-     id        the overlay's id (27-0: cel27)            label   what a screen reader hears
-     from      the count-up's first number               fmt(n)  a number as the score shows it
-     steps     [{ n, abbr, bg, fg, label }]: each step's number, its tile and the words under the score
-     big       the final score; stamp: the word under it; line: the line under that
-     colours   [c1, c2]: the player's club (else the 13's most common club)
-     cards     13 x { pos, name, val, vc, abbr, bg, fg }; rows: index rows, fullback first; teamLabel: the team's heading
-               (default 'Your 13'; 4000 GOALS passes 'Your 18')
-     stats     [{ label, value }] (4 at most); star: { label, value, extra }
-     history   { head, text, items: [words], you: words }
-     button    its words; done(): after it's tapped (the overlay is gone by then) */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   var COUNT = 1600, SLAM = 1600, TROPHY = 2400, TEAM = 4200, END = 6000, DONE = 7600;
@@ -34,8 +34,8 @@
     return [v >> 16, (v >> 8) & 255, v & 255];
   }
   function lum(hex) { var c = rgb(hex); return c ? (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255 : 0.5; }
-  // A dark club colour can't be seen against the night (Souths' green, the Roosters' navy, black): it lightens toward
-  // white, the darker the more
+  
+  
   function lit(hex) {
     var c = rgb(hex);
     if (!c) return '#e8ecf4';
@@ -92,7 +92,7 @@
     root.style.setProperty('--cc1-rgb', c1rgb.join(','));
     root.style.setProperty('--cc1-ink', lum(c1) > 0.55 ? '#0b0b14' : '#ffffff');
 
-    // The tiles that light up as the score climbs (27 across nine columns, 13 across seven)
+    
     var tcols = steps.length > 16 ? 9 : Math.min(7, Math.max(1, steps.length));
     var tilesHtml = steps.map(function (s) {
       var a = Math.random() * Math.PI * 2, r = 140 + Math.random() * 220;
@@ -148,14 +148,14 @@
     var tiles = root.querySelectorAll('.cc-tile');
     var timers = [], rainTimer = 0, raf = 0, closed = false, ended = false, counting = steps.length > 0 && !calm;
     var VW = window.innerWidth, VH = window.innerHeight;
-    // When the 13 come, the score flies from the middle of the screen into the header
+    
     function flight() {
       var a = big.getBoundingClientRect(), b = $('.cc-head .cc-big').getBoundingClientRect();
       if (!a.height || !b.height) return;
       var s = b.height / a.height, dx = (b.left + b.width / 2) - (a.left + a.width / 2), dy = (b.top + b.height / 2) - (a.top + a.height / 2);
       stage.style.transform = 'translate(-50%, -50%) translate(' + Math.round(dx) + 'px,' + Math.round(dy) + 'px) scale(' + s.toFixed(3) + ')';
     }
-    // The 13 fly in from the middle of the formation
+    
     var xiii = $('.cc-xiii');
     if (xiii) {
       var xr = xiii.getBoundingClientRect(), xc = xr.left + xr.width / 2, yc = xr.top + xr.height / 2;
@@ -167,7 +167,7 @@
       });
     }
 
-    // ---- Particles: confetti in the club's colours and white ----
+    
     var cv = $('.cc-fx'), ctx = null, parts = [], dpr = Math.min(2, window.devicePixelRatio || 1);
     if (!calm && cv.getContext) {
       cv.width = VW * dpr; cv.height = VH * dpr;
@@ -208,7 +208,7 @@
       }
     }
 
-    // ---- The count-up: slow at first, faster and faster ----
+    
     var N = steps.length, at = steps.map(function (s, i) { return Math.round(COUNT * Math.pow((i + 1) / N, 0.55)); });
     var vals = [typeof o.from === 'number' ? o.from : 0].concat(steps.map(function (s) { return s.n; }));
     var lit_ = 0, t0 = 0;
@@ -260,7 +260,7 @@
       root.classList.add('is-skip', 'is-slam', 'is-trophy', 'is-team', 'is-end', 'is-done');
       Array.prototype.forEach.call(root.querySelectorAll('.cc-stat b[data-n]'), function (el) { el.textContent = el.getAttribute('data-n'); });
       if (ctx && !rainTimer) { rain(30); rainTimer = setInterval(function () { if (!closed) rain(2); }, 240); }
-      try { btn.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+      try { btn.focus({ preventScroll: true }); } catch (e) {   }
     }
     function close() {
       if (closed) return;
@@ -280,7 +280,7 @@
     document.addEventListener('keydown', onKey, true);
 
     root.setAttribute('tabindex', '-1');
-    try { root.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+    try { root.focus({ preventScroll: true }); } catch (e) {   }
     if (calm) { toEnd(); return; }
 
     big.textContent = N ? fmt(vals[0]) : (o.big || '');
@@ -306,30 +306,30 @@
     later(END, function () {
       phase('is-end');
       countStats();
-      // A small phone: once it's all there, it glides down to the history (the score stays a swipe away)
+      
       later(900, function () { var max = scroll.scrollHeight - scroll.clientHeight; if (max > 8 && scroll.scrollTo) scroll.scrollTo({ top: max, behavior: 'smooth' }); });
     });
     later(DONE, function () {
       phase('is-done');
       ended = true;
-      try { btn.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+      try { btn.focus({ preventScroll: true }); } catch (e) {   }
     });
   }
 
   window.CastCelebrate = { show: show };
 })();
 
-/* The GOAT moment (17 Oct 2026, the owner: using the GOAT should feel "like a feature on the pokies"). One full-screen moment
-   when the GOAT item is used, about 3 seconds, the same in every CAST draft game (its own greats on the reel, its own
-   colours): the screen dims, gold lightning, a reel of the game's greats spins, slows and locks on the GOAT, then his card
-   slams in with a shine and a burst of goats. A tap anywhere skips it, phones set to reduce motion get a calm version (the
-   card fades in), the game's own Sound On/Off is respected (the page hands over its tone()), and a phone that can buzz
-   buzzes as he locks in. Anything that goes wrong goes straight on to done(), so the game never waits on it.
-     CastCelebrate.goat(o)       o.tone(freq, dur, type, when, vol): the page's sound (it stays quiet when Sound is off);
-                                 o.done(): after it closes. The GOAT, his number and the greats come from the game (window.T)
-                                 o.head: the game's own headline on his card ("IT'S TURBO TIME", SC POINTS KING, 17 Oct
-                                 2026), else window.T.GOAT_HEADLINE, else none
-     CastCelebrate.goatLand(el, o)  as his card goes into its spot: a gold ring and a small burst of goats on that spot */
+
+
+
+
+
+
+
+
+
+
+
 (function () {
   'use strict';
   var CC = window.CastCelebrate = window.CastCelebrate || {};
@@ -413,17 +413,17 @@
     var x = m[1].length === 3 ? m[1].replace(/./g, function (c) { return c + c; }) : m[1], v = parseInt(x, 16);
     return [v >> 16, (v >> 8) & 255, v & 255];
   }
-  // The game's own colour (each page's --gold: 1000TRIES gold, 4000 GOALS red, G1 WINNER blue ...)
+  
   function accent() {
     var a = '';
-    try { a = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim(); } catch (e) { /* no styles yet */ }
+    try { a = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim(); } catch (e) {   }
     return hexRgb(a) ? a : GOLD;
   }
-  function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) { /* not on this device */ } }
-  // A name never splits at its hyphen (the owner's rule): a non-breaking one
+  function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {   } }
+  
   function name(p) { return String((p && (p.name || p.record_name)) || '').replace(/\s*\((goat|legend|immortal)\)$/i, '').replace(/-/g, '\u2011'); }
   function num(p) { var T = window.T || {}, n = (p && p.tries_1998_plus) || 0; return T.fmt ? T.fmt(n) : String(n); }
-  // The game's greats for the reel: its biggest numbers, pack and Legends together, never the GOAT himself
+  
   function greats(g) {
     var T = window.T || {}, seen = {}, gk = name(g).toLowerCase();
     return (T.players || []).concat(T.LEGENDS || []).filter(function (p) {
@@ -452,7 +452,7 @@
       finished = true;
       timers.forEach(clearTimeout);
       if (root && root.parentNode) root.parentNode.removeChild(root);
-      if (typeof o.done === 'function') { try { o.done(); } catch (e) { /* the page's own step */ } }
+      if (typeof o.done === 'function') { try { o.done(); } catch (e) {   } }
     }
     try {
       var T = window.T || {}, g = o.player || (T.goatPlayer && T.goatPlayer());
@@ -461,10 +461,10 @@
       var still = calm(), acc = accent(), accRgb = hexRgb(acc) || [241, 192, 115];
       var club = T.club && T.lastClub ? T.club(T.lastClub(g)) : null;
       var tone = typeof o.tone === 'function' ? o.tone : null;
-      function play(f, d, ty, v) { if (tone) { try { tone(f, d, ty, 0, v); } catch (e) { /* audio unavailable */ } } }
+      function play(f, d, ty, v) { if (tone) { try { tone(f, d, ty, 0, v); } catch (e) {   } } }
       function later(ms, fn) { timers.push(setTimeout(function () { if (!finished) { try { fn(); } catch (e) { done(); } } }, ms)); }
 
-      // The reel: the greats shuffled, three times round, then the GOAT (and one more under him)
+      
       var gs = greats(g), list = [];
       for (var k = 0; k < 3 && gs.length; k++) list = list.concat(gs.slice().sort(function () { return Math.random() - 0.5; }));
       list = list.slice(0, 24);
@@ -502,11 +502,11 @@
         timers.push(setTimeout(done, 160));
       });
       var strip = root.querySelector('.cg-strip');
-      // A long name gets smaller until it fits its row (never cut off)
+      
       Array.prototype.forEach.call(root.querySelectorAll('.cg-row span'), function (s) {
         for (var fs = 17; s.scrollWidth > s.clientWidth + 1 && fs > 11; fs--) s.style.fontSize = fs + 'px';
       });
-      later(5200, done); // never longer than this, whatever happens
+      later(5200, done); 
 
       if (still) {
         later(30, function () { root.classList.add('is-on', 'is-card'); buzz(40); play(523, 0.2, 'triangle', 0.3); play(784, 0.4, 'triangle', 0.3); });
@@ -522,7 +522,7 @@
         strip.style.transition = 'transform ' + SPIN + 'ms cubic-bezier(.1,.62,.16,1)';
         strip.style.transform = 'translateY(' + (-(at - 1) * ROW) + 'px)';
       });
-      // The reel's clicks, slowing as it does
+      
       for (var i = 0; i < 16; i++) later(260 + Math.round(SPIN * Math.pow(i / 16, 1.9)), function () { play(1500, 0.025, 'square', 0.05); });
       later(LOCK, function () {
         root.classList.add('is-lock', 'is-shake');
@@ -536,7 +536,7 @@
     } catch (e) { done(); }
   };
 
-  // His card going into its spot: a gold ring round the spot and a small burst of goats
+  
   CC.goatLand = function (el, o) {
     try {
       if (!el || !el.getBoundingClientRect || !document.body) return;
@@ -549,7 +549,7 @@
       document.body.appendChild(ring);
       setTimeout(function () { if (ring.parentNode) ring.parentNode.removeChild(ring); }, 1200);
       buzz(30);
-      if (o && typeof o.tone === 'function') { try { o.tone(784, 0.14, 'triangle', 0, 0.3); o.tone(1175, 0.3, 'triangle', 0.09, 0.3); } catch (e) { /* audio unavailable */ } }
+      if (o && typeof o.tone === 'function') { try { o.tone(784, 0.14, 'triangle', 0, 0.3); o.tone(1175, 0.3, 'triangle', 0.09, 0.3); } catch (e) {   } }
       if (calm()) return;
       var b = document.createElement('div');
       b.className = 'cg-lbits';
@@ -557,6 +557,6 @@
       b.innerHTML = bits(12, '&#x1F410;', 90, true);
       document.body.appendChild(b);
       setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 1300);
-    } catch (e) { /* only a flourish */ }
+    } catch (e) {   }
   };
 })();

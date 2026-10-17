@@ -1,15 +1,15 @@
-/* global require */ // only on the server, where this file is loaded with require (see below)
-/* 4000 GOALS Daily calendar (12 Oct 2026): the AFL twin of the shared CAST Daily calendar (js/cast-daily.js, loaded first).
-   It keeps the shared rewards, item names and streak ladder, and swaps in AFL days: club days taking turns through the
-   18 clubs, a region day (Victorian or interstate clubs), an era day (the 1990s to the 2020s), and Sunday as the hard
-   club day, the same weekly pattern as 1000TRIES. Each player gets their own random draft within the theme.
+  
 
-   CAST_DAILY.day('YYYY-MM-DD') gives the same shape as the shared calendar:
-     { date, key, name, short, icon, title, story, who, hard, planned, onThisDay: null,
-       g1000: { target, only, years }, reward, rewardKind } */
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
-  // The shared calendar: on the page it is loaded first; on the server (firebase/functions/data, tools/sync_4000_data.py) it sits beside this file
+  
   var shared = (typeof module !== 'undefined' && module.exports && typeof require === 'function') ? require('./cast-daily.js') : (root.CAST_DAILY || {});
 
   var NICK = { ad: 'Crows', bl: 'Lions', ca: 'Blues', cw: 'Magpies', es: 'Bombers', fr: 'Dockers', ge: 'Cats', gc: 'Suns',
@@ -17,18 +17,18 @@
     wb: 'Bulldogs', bb: 'Bears', fi: 'Fitzroy' };
   var MASCOT = { ad: '🐦‍⬛', bl: '🦁', ca: '💙', cw: '🖤', es: '🔴', fr: '⚓', ge: '🐱', gc: '☀️', gw: '🧡', hw: '🤎', me: '😈',
     nm: '🦘', pa: '⚡', ri: '🐯', sk: '😇', sy: '🦢', wc: '🦅', wb: '🐶' };
-  // A club day's name where the nickname reads badly as a day (the owner, 12 Oct 2026: "Bombers Day" sounds like a hijack)
+  
   var DAY_NAME = { es: 'Essendon' };
   function dayName(c) { return DAY_NAME[c] || NICK[c]; }
-  // Today's 18 clubs (the club days take turns through them)
+  
   var CLUBS = ['cw', 'ca', 'es', 'ri', 'hw', 'ge', 'sy', 'bl', 'wc', 'ad', 'pa', 'fr', 'me', 'nm', 'sk', 'wb', 'gw', 'gc'];
-  // Regions: the Victorian clubs (Fitzroy too) and the interstate ones (the Brisbane Bears too)
+  
   var VICTORIA = ['ca', 'cw', 'es', 'ge', 'hw', 'me', 'nm', 'ri', 'sk', 'wb', 'fi'];
   var INTERSTATE = ['ad', 'bl', 'bb', 'fr', 'gc', 'gw', 'pa', 'sy', 'wc'];
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
 
-  /* Targets (12 Oct 2026 night, refitted): [normal, hard (Sundays)], set where 1000TRIES' Daily sits for the same kind of
-     player in its own game (private notes), after the retired 700+ goalkickers became Legends */
+  
+
   var TARGETS = {
     'club:ad': [4525, 4750], 'club:bl': [4425, 4600], 'club:ca': [3850, 4000], 'club:cw': [3350, 3500],
     'club:es': [3400, 3550], 'club:fr': [3475, 3625], 'club:gc': [3175, 3275], 'club:ge': [4225, 4450],
@@ -41,21 +41,21 @@
   function tgt(key, hard) { var t = TARGETS[key]; return t ? (hard ? t[1] : t[0]) : (hard ? 3500 : 3200); }
 
   var REWARDS = { keys: { '4000goals': { legend: 1 } }, wild: { '4000goals': { reveals: 1 } }, freeze: { '4000goals': { freezes: 1 } }, reroll: { '4000goals': { left: 1 } } };
-  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; // Sun ... Sat, as the shared calendar
+  var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild']; 
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  // The planned days (edit here): { key, name, short, icon, title, who, story, t (target), g1000: { only | years } }
+  
   var DAYS = {};
 
-  var WEEK = ['club', 'club', 'region', 'club', 'era', 'club', 'club']; // Sun ... Sat
+  var WEEK = ['club', 'club', 'region', 'club', 'era', 'club', 'club']; 
   var REGIONS = ['victoria', 'interstate'];
   var ERAS = [['1990s', 1990, 1999], ['2000s', 2000, 2009], ['2010s', 2010, 2019], ['2020s', 2020, 2026]];
   var ERA_LINE = { '1990s': 'the decade of Wayne Carey, Michael Voss and Essendon’s Baby Bombers',
     '2000s': 'the era of the Lions’ three-peat, Matthew Lloyd and Barry Hall',
     '2010s': 'from the Hawks’ three-peat to Buddy Franklin in red and white',
     '2020s': 'from Richmond’s dynasty to the Cats, the Pies and the Lions lifting the cup' };
-  // What a club day says about its own club, where it needs more than "every player of the AFL era"
+  
   var CLUB_LINE = { gc: 'the Suns since they joined in 2011', gw: 'the Giants since they joined in 2012', bl: 'the Lions since the merger in 1997',
     pa: 'Port Adelaide since they joined in 1997', fr: 'the Dockers since they joined in 1995' };
 
@@ -77,7 +77,7 @@
         story: 'How well do you remember the ' + e[0] + '? Every player you can draft today played between ' + e[1] + ' and ' + e[2] + ', ' + ERA_LINE[e[0]] + '.',
         g1000: { years: [e[1], e[2]] } };
     }
-    // Club days: five a week, taking turns through the 18 clubs
+    
     var slot = [0, 1, -1, 2, -1, 3, 4][wd], c = CLUBS[(week * 5 + slot) % CLUBS.length];
     return { key: 'club:' + c, name: dayName(c) + ' Day', short: dayName(c), icon: MASCOT[c] || '🏉', title: dayName(c) + ' Players Only',
       who: dayName(c) + ' players',
@@ -104,7 +104,7 @@
     return t;
   }
 
-  // Where a reward item is used, in 4000 GOALS' words (the shared one talks about 1000+ and a 13)
+  
   var ITEM_USE = { legend: 'Use it in 4000+ to swap an offer for a Legends Pick.', reveals: 'Use it in your next draft to see the hidden goals.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh roll.', removes: 'Use it to take a player out of your 18.' };
   function useText(items) {
@@ -115,6 +115,6 @@
 
   var api = Object.assign({}, shared, { day: day, finals: [], nick: NICK, mascot: MASCOT, clubs: CLUBS, victoria: VICTORIA, interstate: INTERSTATE,
     useText: useText, TARGETS: TARGETS, TARGETS_HARDER: TARGETS });
-  if (typeof module !== 'undefined' && module.exports) module.exports = api; // the server: its own copy, the shared one untouched
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; 
   else root.CAST_DAILY = api;
 })(typeof window !== 'undefined' ? window : globalThis);

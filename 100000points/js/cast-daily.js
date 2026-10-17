@@ -1,23 +1,23 @@
-/* CAST Daily calendar, shared by 1000TRIES and 27-0 (both load this before their js/daily.js) and by the server
-   (tools/sync_functions_data.py copies it to firebase/functions/data/cast-daily.js, where it checks a completed Daily
-   before its reward is given). So a day's theme, goal and reward are the same everywhere. Edit Dailies HERE, then run
-   tools/sync_shared.py (the sites) and tools/sync_functions_data.py (the server), push both sites and redeploy.
 
-   From 29 Sep 2026 (the owner's call): every Daily has a theme and a goal to tick off (✅ or ❌), and each player gets
-   their own random draft within the theme. No more "the same spins for everyone". Targets come from each game's
-   simulator, and from 7 October 2026 every day reads TARGETS_HARDER (fitted to Admin's results, below).
 
-   CAST_DAILY.day('YYYY-MM-DD') gives {
-     date, key, name, short, icon, title, story, hard, planned, onThisDay (a final, or null),
-     who ('Sydney club players', for 1000TRIES), seasons ('Sydney club seasons', for 27-0),
-     g1000: { target, only },                  1000TRIES: tries to reach, and the pool ({ club: [seasons] }, [] = any)
-     g270: { type, clubs, teams, from, to, goal }  27-0: 'clubs' (any season of these clubs; null = every club), 'final'
-                                                (two clubs taking turns), 'teams' (these club seasons), 'club' (one club);
-                                                from/to: seasons; goal: the squad rating to reach. ('premiers', win the
-                                                Grand Final, was tried for Grand Final Day, but the engine almost never
-                                                lets a random 87 squad win the final, so the hard day uses a rating too)
-     reward: { '1000tries': { legend: 1 }, '27-0': { superstar: 1 } }   into the Vault once the Daily is completed
-   } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (function (root) {
   'use strict';
 
@@ -30,18 +30,18 @@
     eels: '🐍', knights: '🏰', panthers: '🐆', rabbitohs: '🐇', raiders: '🪓',
     roosters: '🐓', seaeagles: '🦅', sharks: '🦈', storm: '⛈️', tigers: '🐯',
     titans: '🔱', warriors: '⚔️' };
-  // Today's 17 clubs (the club days take turns through them)
+  
   var CLUBS = ['rabbitohs', 'broncos', 'roosters', 'storm', 'eels', 'panthers', 'dragons', 'bulldogs', 'sharks',
     'knights', 'cowboys', 'raiders', 'seaeagles', 'warriors', 'tigers', 'titans', 'dolphins'];
-  // Sydney: today's nine Sydney clubs plus the old ones from 1998 (the owner's call, 28 Sep 2026)
+  
   var SYDNEY = ['roosters', 'rabbitohs', 'bulldogs', 'eels', 'seaeagles', 'sharks', 'tigers', 'panthers', 'dragons',
     'balmain', 'wmagpies', 'bears', 'stgeorge', 'northerneagles'];
   var QUEENSLAND = ['broncos', 'cowboys', 'titans', 'dolphins'];
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
 
-  /* Every NRL Grand Final from 1998 (fact-checked 28 Sep 2026 against Wikipedia, the ABC and Rugby League Project; 2007 and
-     2009 were stripped from Melbourne and are never used). pick: the one
-     a date's On This Day uses when finals share a date (the owner's picks, 28 Sep 2026); the others get a line. */
+  
+
+
   var FINALS = [
     { d: '2000-08-27', w: 'broncos', l: 'roosters', s: '14-6', pick: 1, line: 'Brisbane beat the Roosters 14-6 in a Grand Final brought forward to August for the Sydney Olympics.' },
     { d: '1999-09-26', w: 'storm', l: 'dragons', s: '20-18', pick: 1, line: 'Melbourne came from 14-0 down to beat St George Illawarra 20-18, sealed by a late penalty try, in only their second season.' },
@@ -71,14 +71,14 @@
     { d: '2020-10-25', w: 'storm', l: 'panthers', s: '26-20', pick: 1, line: 'Melbourne beat Penrith 26-20 in the season played through COVID.' }
   ];
   function finalFor(md) { return FINALS.filter(function (f) { return f.pick && f.d.slice(5) === md; })[0] || null; }
-  // Other finals on the date that one of the day's two clubs won: a Daily only mentions its own clubs (the owner's rule,
-  // 4 Oct 2026), so a final between two other clubs is never named
+  
+  
   function othersOn(md, pick) { return FINALS.filter(function (f) { return f !== pick && f.d.slice(5) === md && (f.w === pick.w || f.w === pick.l); }); }
 
-  /* Targets from each game's simulator. t: 1000TRIES tries,
-     g: 27-0 squad rating. Filled by the calibration run (28 Sep 2026) for every pool the calendar can use. */
+  
+
   var TARGETS = {
-    // key: [1000TRIES normal, 1000TRIES hard, 27-0 normal, 27-0 hard]
+    
     'sydney': [750, 825, 87, 88],
     'premierships': [1050, 1100, 88, 89],
     'club:storm': [775, 825, 88, 89],
@@ -130,11 +130,11 @@
     'final:2019': [875, 925, 87, 87],
     'final:2020': [800, 850, 88, 89]
   };
-  /* Harder from Wednesday 7 October 2026 (the owner's call, 5 Oct), fitted to Admin's results. Every day before 7 October
-     keeps TARGETS, so past Dailies, replays and rewards already won never change. */
+  
+
   var HARDER_FROM = '2026-10-07';
   var TARGETS_HARDER = {
-    // key: [1000TRIES normal, 1000TRIES hard, 27-0 normal, 27-0 hard]
+    
     'sydney': [850, 925, 88, 88],
     'premierships': [1150, 1200, 89, 89],
     'club:storm': [875, 925, 89, 89],
@@ -186,12 +186,12 @@
     'final:2019': [1000, 1050, 88, 88],
     'final:2020': [925, 950, 89, 89]
   };
-  /* 27-0 from Wednesday 14 October 2026 (the owner, 13 Oct: most players were finishing 27-0's Dailies). Monday, Wednesday
-     and Friday ask for a squad rating; Tuesday, Thursday, Saturday and Sunday ask for a number of wins (Sunday, the hard day,
-     a higher one). Fitted to the week before's results (private notes). Rating goals capped 14 Oct (the owner: Cowboys
-     90+ wasn't possible; the best of 122 players was 88): never above the old goal + 1, wins goals and the 1000TRIES World Cup targets set from
-     the past boards (the owner: Thursday 17+). key: [rating, wins, Sunday wins]. A pool missing here
-     takes MIX_DEFAULT. Every day before 14 October keeps its rating goal, so past Dailies and rewards never change */
+  
+
+
+
+
+
   var MIX_FROM = '2026-10-14';
   var MIX_DEFAULT = [88, 18, 20];
   var TARGETS_270 = {
@@ -209,17 +209,17 @@
     'wc:nzl-fij-aus-cok': [89, 19, 22], 'wc:png-leb-eng-ton': [82, 16, 18], 'wc:png-sam-eng-fra': [81, 16, 17],
     'wc:sam-fra': [80, 16, 17], 'wc:ton-leb': [82, 16, 18]
   };
-  // A wins day: Tuesday, Thursday, Saturday or Sunday
+  
   function winsDay(date) { return [0, 2, 4, 6].indexOf(weekday(date)) >= 0; }
-  // The 27-0 goal for a day from 14 October: { goal } (a squad rating) or { wins }
+  
   function goal270(key, date) {
     var t = TARGETS_270[key] || MIX_DEFAULT;
     if (!winsDay(date)) return { goal: t[0] };
     return { wins: weekday(date) === 0 ? t[2] : t[1] };
   }
-  /* From Sunday 18 October 2026 the GOAT (Alex Johnston) is rare in free play (js/draft.js T.goatOut), so the 1000TRIES
-     targets of the days whose pool holds him were set again from that day: [normal, hard]. 27-0's goals don't change, and
-     every day before keeps its target. The World Cup days ahead carry their own (DAYS below) */
+  
+
+
   var GOAT_FROM = '2026-10-18';
   var TARGETS_GOAT = { 'club:rabbitohs': [875, 925], 'sydney': [825, 900], 'era:2010s': [950, 1025], 'era:2020s': [875, 925], 'final:2014': [950, 975] };
   function tgt(key, hard, date) {
@@ -228,20 +228,20 @@
     return t ? { t: hard ? t[1] : t[0], g: hard ? t[3] : t[2] } : harder ? { t: 900, g: 86 } : { t: 800, g: 85 };
   }
 
-  // Rewards for completing the Daily (the owner's rotation from 30 Sep 2026: items that barely sell, a Reroll on the hard day)
+  
   var REWARDS = {
     keys: { '1000tries': { legend: 1 }, '27-0': { superstar: 1 } },
     wild: { '1000tries': { reveals: 1 }, '27-0': { ribs: 1 } },
     freeze: { '1000tries': { freezes: 1 }, '27-0': { freezes: 1 } },
     reroll: { '1000tries': { left: 1 }, '27-0': { left: 1 } }
   };
-  // Sydney weekday: Sun 0 ... Sat 6. Sunday is the hard day
+  
   var WEEK_REWARD = ['reroll', 'freeze', 'keys', 'wild', 'freeze', 'keys', 'wild'];
   function weekday(date) { var p = date.split('-'); return new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); }
   function dayNum(date) { var p = date.split('-'); return Math.round(Date.UTC(+p[0], p[1] - 1, +p[2]) / 864e5); }
 
-  /* The planned days (edit here). Anything not listed: an On This Day if a Grand Final was played on that date, else the
-     weekly pattern (club days, a region, an era; Sunday is a hard club day). */
+  
+
   var DAYS = {
     '2026-09-29': { key: 'sydney', name: 'Sydney Clubs', short: 'Sydney Clubs', icon: '🌉', t: 700, who: 'Sydney club players', seasons: 'Sydney club seasons',
       title: 'Sydney Clubs Only',
@@ -265,17 +265,17 @@
       story: 'It’s Grand Final day, and today is the hard one. Can you build a winner from the two clubs playing tonight? The Knights are in their first decider since 2001, just a year after the wooden spoon, and the Roosters are back for the first time since 2019.',
       g1000: { only: anySeason(['roosters', 'knights']) }, g270: { type: 'final', clubs: ['roosters', 'knights'] } }
   };
-  /* World Cup match days (4 Oct 2026, the owner's call): every player has played a Test for one of that day's nations, all
-     four on a double-header. NRL-era players only, so each game keeps its own pack, rewards and streaks; the server checks
-     each pick's Test nations (packs.json nat, from tools/build_wc.py). A write-up only names that day's own nations (the
-     owner's rule). The semis and the final use all ten until the real sides are known (then set them here and push).
-     t and g: each game's target, made harder with every other Daily from 7 Oct 2026 (the owner's call, 5 Oct; see
-     TARGETS_HARDER). */
+  
+
+
+
+
+
   var NATION = { aus: ['Australia', 'Kangaroos'], nzl: ['New Zealand', 'Kiwis'], eng: ['England', 'England'], fra: ['France', 'France'],
     sam: ['Samoa', 'Toa Samoa'], ton: ['Tonga', 'Tonga'], fij: ['Fiji', 'Fiji Bati'], png: ['PNG', 'Kumuls'], leb: ['Lebanon', 'Cedars'],
     cok: ['Cook Islands', 'Cook Islands'] };
   var WC10 = ['aus', 'nzl', 'eng', 'fra', 'sam', 'ton', 'fij', 'png', 'leb', 'cok'];
-  // games: the day's games; o: { hard, title, pool (the nations to draft from, when wider than the day's sides), who }
+  
   function wcDay(games, story, t, g, o) {
     o = o || {};
     var keys = [];
@@ -292,8 +292,8 @@
   DAYS['2026-10-15'] = wcDay([['aus', 'nzl']], 'The World Cup starts tonight with Australia against New Zealand at Allianz Stadium. Can you build a winner from the two sides kicking it off? Every player you can draft has played a Test for the Kangaroos or the Kiwis.', 1175, 89);
   DAYS['2026-10-16'] = wcDay([['sam', 'fra']], 'Samoa meet France at CommBank Stadium tonight. Every player you can draft has played a Test for Samoa or France, so how strong a 13 can you find?', 700, 82);
   DAYS['2026-10-17'] = wcDay([['png', 'leb'], ['eng', 'ton']], 'A World Cup double-header: PNG host Lebanon in Port Moresby, then England meet Tonga in Perth. Every player you can draft has played a Test for one of those four sides.', 950, 84);
-  // Fiji and the Cook Islands alone can't always fill a 13 (one halfback, two five-eighths in the NRL era), so the day widens to
-  // the other Pacific sides, without naming them (the write-up only names the day's own nations)
+  
+  
   DAYS['2026-10-18'] = wcDay([['fij', 'cok']], 'Fiji take on the Cook Islands in Newcastle. Every player you can draft has played a Test for Fiji, the Cook Islands or another Pacific nation, so who makes your 13?' + SUNDAY, 800, 84,
     { hard: true, pool: ['fij', 'cok', 'sam', 'ton', 'png'], who: 'Pacific Test players' });
   DAYS['2026-10-23'] = wcDay([['ton', 'leb']], 'Tonga meet Lebanon at CommBank Stadium tonight. Every player you can draft has played a Test for Tonga or Lebanon.', 775, 84);
@@ -306,7 +306,7 @@
   DAYS['2026-11-08'] = wcDay([WC10], 'The second World Cup semi final is tonight at Allianz Stadium. Every player you can draft has played a Test for one of the ten World Cup nations.' + SUNDAY, 1100, 89, { hard: true, title: 'World Cup Semi Final' });
   DAYS['2026-11-15'] = wcDay([WC10], 'It’s World Cup final day at Suncorp Stadium. Can you build a 13 fit for the final? Every player you can draft has played a Test for one of the ten World Cup nations.' + SUNDAY, 1100, 89, { hard: true, title: 'World Cup Final' });
 
-  // How an On This Day reads: why today, what happened, and who you can draft
+  
   var FINAL_STORY = {
     '2016-10-02': 'Can you end a drought like the Sharks did? On this day in 2016, after 49 years of waiting, Cronulla beat Melbourne 14-12 with Andrew Fifita crashing over late for the winning try. Every player today has played for the Sharks or the Storm.',
     '2010-10-03': 'Behind at half-time? No problem. On this day in 2010 St George Illawarra trailed the Roosters 8-6 at the break, then ran in 26 unanswered points to win 32-8 for the joint venture’s first title, with Darius Boyd taking the Clive Churchill Medal. Can you finish as strongly with only Dragons and Roosters players?',
@@ -314,11 +314,11 @@
     '2024-10-06': 'Can you build a dynasty? On this day in 2024 Penrith beat Melbourne 14-6 for a fourth straight premiership, the first four in a row since St George in the 1950s and 60s. Every player today has played for the Panthers or the Storm.'
   };
 
-  // The weekly pattern, for days with nothing planned and no Grand Final: club days take turns through the 17 clubs
-  var WEEK = ['club', 'club', 'region', 'club', 'era', 'club', 'club']; // Sun ... Sat
+  
+  var WEEK = ['club', 'club', 'region', 'club', 'era', 'club', 'club']; 
   var REGIONS = ['sydney', 'queensland'];
   var ERAS = [['2000s', 2000, 2009], ['2010s', 2010, 2019], ['2020s', 2020, 2026]];
-  // What each era day says after its question (the names people remember)
+  
   var ERA_LINE = { '2000s': 'the era of Andrew Johns, Darren Lockyer and a young Billy Slater', '2010s': 'the decade of Johnathan Thurston and the Storm’s big three',
     '2020s': 'from the Panthers’ four-peat to the arrival of the Dolphins' };
 
@@ -351,7 +351,7 @@
         story: 'How well do you remember the ' + e[0] + '? Every player you can draft today played between ' + e[1] + ' and ' + e[2] + ', ' + ERA_LINE[e[0]] + '.',
         g1000: { years: [e[1], e[2]] }, g270: { type: 'clubs', clubs: null, from: e[1], to: e[2] } };
     }
-    // Club days: four a week, taking turns through the 17 clubs
+    
     var slot = [0, 1, -1, 2, -1, 3, 4][wd], c = CLUBS[(week * 5 + slot) % CLUBS.length];
     return { key: 'club:' + c, name: NICK[c] + ' Day', short: NICK[c], icon: MASCOT[c] || '🏉', title: NICK[c] + ' Players Only',
       who: NICK[c] + ' players', seasons: NICK[c] + ' seasons',
@@ -381,11 +381,11 @@
     t.planned = !!plan;
     t.hard = !!(t.hard || (!plan && weekday(date) === 0));
     t.onThisDay = t.onThisDay || null;
-    // Targets: a planned day's own (t: 1000TRIES, g: 27-0), else the calibrated ones for its pool
+    
     var cal = tgt(t.key, t.hard, date);
     t.g1000.target = (plan && plan.t) || cal.t;
     t.g270.goal = (plan && plan.g) || cal.g;
-    if (date >= MIX_FROM) { // 27-0's rating or wins goal (MIX_FROM)
+    if (date >= MIX_FROM) { 
       var m = goal270(t.key, date);
       if (m.wins) { delete t.g270.goal; t.g270.wins = m.wins; } else t.g270.goal = m.goal;
     }
@@ -396,10 +396,10 @@
     return t;
   }
 
-  // "1 Legend Key", "1 Run It Back", "1 Reroll" (the reward line in both games)
+  
   var ITEM_NAMES = { legend: ['Legend Key', 'Legend Keys'], superstar: ['Superstar Key', 'Superstar Keys'], reveals: ['Reveal', 'Reveals'],
     ribs: ['Run It Back', 'Run It Backs'], freezes: ['Streak Freeze', 'Streak Freezes'], left: ['Reroll', 'Rerolls'], removes: ['Remove Player', 'Remove Players'],
-    ilegs: ['World Legend Pick', 'World Legend Picks'], wcps: ['88+ Pick', '88+ Picks'], imms: ['Immortal Pick', 'Immortal Picks'], goats: ['GOAT', 'GOATs'] }; // the last four: the owner's Give Items
+    ilegs: ['World Legend Pick', 'World Legend Picks'], wcps: ['88+ Pick', '88+ Picks'], imms: ['Immortal Pick', 'Immortal Picks'], goats: ['GOAT', 'GOATs'] }; 
   function itemsText(items) {
     return Object.keys(items || {}).filter(function (k) { return items[k] > 0; }).map(function (k) {
       var n = items[k], nm = ITEM_NAMES[k] || [k, k];
@@ -407,24 +407,24 @@
     }).join(' + ');
   }
   var ITEM_ICONS = { legend: '⭐', superstar: '🌟', reveals: '👀', ribs: '⏪', freezes: '🧊', left: '🔄', removes: '❌', ilegs: '👑', wcps: '🌏', imms: '🏛️', goats: '🐐' };
-  // Where a reward item is used (the result card's line under "added to your Vault"), from the Shop's own descriptions
+  
   var ITEM_USE = { legend: 'Use it in 1000+ to swap an offer for a Legends Pick.', superstar: 'Use it in 27-0 Classic or Pack: your next spin has a 95+ player.',
     reveals: 'Use it in your next draft to see the hidden numbers.', ribs: 'Use it after a 27-0 Classic season and your closest loss becomes a win.',
     freezes: 'If you miss a day, it keeps your streak alive by itself.', left: 'Use it in your next draft for a fresh roll.', removes: 'Use it to take a player out of your 13.' };
-  // A Daily reward lasts 24 hours (5 Oct 2026); a Streak Freeze keeps
+  
   function useText(items) {
     var k = Object.keys(items || {})[0], n = 0;
     Object.keys(items || {}).forEach(function (x) { if (x !== 'freezes') n += +items[x] || 0; });
     return ((k && ITEM_USE[k]) || 'It is in your Vault for your next game.') + (n > 1 ? ' They last 24 hours.' : n ? ' It lasts 24 hours.' : '');
   }
 
-  /* Streak rewards (the owner's ladder, 28 Sep 2026): every 10 days, in-game items only, growing to 50 days, then 6 Rerolls
-     and a Streak Freeze every 10 days, with the 50-day reward again at 100, 150 and so on */
+  
+
   function streakReward(days) {
     if (!days || days % 10) return null;
     if (days % 50 === 0) return { left: 10, legend: 3, superstar: 3 };
-    // One Streak Freeze at a time (2 Oct 2026, the owner's call): a prize gives one, the rest of its old freezes as Rerolls
-    // (and the server swaps that one for a Reroll too if a freeze is already waiting)
+    
+    
     if (days > 50) return { left: 6, freezes: 1 };
     return ({ 10: { left: 5 }, 20: { legend: 3, superstar: 3 }, 30: { reveals: 5, ribs: 3 }, 40: { freezes: 1, reveals: 5, left: 2 } })[days] || null;
   }

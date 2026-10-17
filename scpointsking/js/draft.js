@@ -1,6 +1,6 @@
-/* SC POINTS KING draft engine (17 Oct 2026, from the 1000TRIES engine via 100000 POINTS): modes, the 13, spin-3 offers of
-   player seasons, picks, the outcome. One season per player in a team. No target: the highest SC total wins the boards
-   and each board's #1 wears the crown. */
+
+
+
 (function (T) {
   'use strict';
 
@@ -10,22 +10,22 @@
       blurb: 'Spin 3 player seasons, pick 1. His SC points show once you pick him. Build the biggest 13 you can.',
       rule: 'high', source: 'roll', wildcards: true
     },
-    // The Daily (js/daily.js): a themed draft everyone shares that day (seeded spins, Sydney date). No wildcards, no
-    // Legend Key or GOAT. Won by reaching the day's target
+    
+    
     daily: {
       id: 'daily', event: 'daily_1000_plays', name: 'Daily', short: 'Daily',
       blurb: 'Today’s themed spins. Get your 13 to the target.',
       rule: 'high', source: 'roll', wildcards: false
     },
-    // Kept so the shared code finds them: never on in SC
+    
     wc: { id: 'wc', event: 'world_cup_200_plays', dataset: 'wc', name: 'World Cup', short: 'World Cup', blurb: '', rule: 'high', source: 'roll', wildcards: true, off: true },
     nrlw: { id: 'nrlw', event: 'nrlw_plays', dataset: 'nrlw', name: 'Second Pack', short: 'Second Pack', blurb: '', rule: 'high', source: 'roll', wildcards: true, off: true }
   };
 
-  /* Offer weighting. Offers are random, but a season's chance of turning up scales with (SC points +
-     OFFER_WEIGHT_BASE), so every season with a game can come up and the big ones come up more. */
-  T.OFFER_WEIGHT_BASE = 100; // each pack sets its own in T.DATASETS
-  // How often the first offer of a game shows a big season (top 5% of the pack)
+  
+
+  T.OFFER_WEIGHT_BASE = 100; 
+  
   T.FIRST_STAR_CHANCE = 0.7;
   T.OFFER_SIZE = 3;
   T.HARD = { weight: 100, legends: 0, immortal: 0, lifeline: 0, firstStar: 0.7 };
@@ -33,10 +33,10 @@
   T.isHard = function () { return false; };
   T.hasLegend = function () { return !!S && S.slots.some(function (s) { return s.player && s.player.tier && s.player.tier !== 'goat'; }); };
 
-  /* The GOAT in free play (17 Oct 2026, the owner: the GOAT extremely rare unless you pay, in every game): most games
-     are dealt without his season (S.goatOut): no offer, Reroll, Remove Player offer or Daily holds it. Now and then
-     (T.GOAT_FREE, seeded with the draft, so a friend's challenge deals the same) a game is dealt with him in the pack
-     as any other season. The GOAT item itself is unchanged. A Daily follows it from T.GOAT_FROM */
+  
+
+
+
   T.GOAT_FREE = 0.2;
   T.GOAT_FROM = '2026-10-18';
   T.goatOut = function (p) { return !!S && !!S.goatOut && !!p && p.id === T.GOAT_SRC; };
@@ -55,10 +55,10 @@
   T.restore = function (x) { var c = copyState(x); Object.keys(S).forEach(function (k) { delete S[k]; }); Object.assign(S, c); };
   T.adopt = function (x) { S = x; if (!S.usedP) S.usedP = {}; if (!S.known) S.known = {}; return S; };
 
-  /* Seeded draws: every game is dealt from a seed (S.seed), so a friend can be challenged to the same draft, and the
-     Daily's spins are the same for everyone (its seed is the Sydney date and the go). Each draw has its own stream,
-     and offers are chosen by weighted random keys per season, so two players with the same open spots see the same
-     cards. Without a seed it is plain Math.random. */
+  
+
+
+
   function hash32(str) {
     var h = 2166136261;
     for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
@@ -73,7 +73,7 @@
     };
   }
   T.stream = function (tag) { return S && S.seed ? mulberry32(hash32(S.seed + '|' + tag)) : Math.random; };
-  // A number in (0, 1) fixed for this seed, draw and card (each card's own hash is worked out once)
+  
   var idHash = {};
   function keyU(tag, id) {
     var h = idHash[id];
@@ -81,14 +81,14 @@
     var u = first32((hash32(S.seed + '|' + tag) ^ Math.imul(h, 0x9E3779B1)) >>> 0);
     return u > 0 ? u : 1e-12;
   }
-  // mulberry32's first number for a seed, without making a stream
+  
   function first32(a) {
     a = a + 0x6D2B79F5 | 0;
     var t = Math.imul(a ^ a >>> 15, 1 | a);
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
   }
-  // keyU for a whole pool: the draw's hash once, then each card's
+  
   function keysFor(tag, list) {
     var base = hash32(S.seed + '|' + tag), out = new Array(list.length);
     for (var i = 0; i < list.length; i++) {
@@ -105,31 +105,31 @@
     return (a[0].toString(36) + a[1].toString(36)).replace(/[^a-z0-9]/g, '').slice(0, 12) || 'seed' + Date.now().toString(36);
   };
 
-  // opts.seed: play this exact draft (a challenge, or the Daily's go); otherwise a fresh seed
+  
   T.newGame = function (modeId, opts) {
     var mode = T.MODES[modeId] || T.MODES.plus;
     S = {
       mode: mode,
       slots: T.SLOTS.map(function (code) { return { code: code, player: null }; }),
-      used: {},          // card id -> true for seasons in the 13
-      usedP: {},         // player id -> true: one season per player in a team
-      known: {},         // card id -> true when his SC points showed before he was picked (a Reveal, a Legend Key, the GOAT)
-      offer: null,       // { kind: 'roll', players: [] }
-      revealed: {},      // card id -> true while Reveal shows his SC points on the offer
+      used: {},          
+      usedP: {},         
+      known: {},         
+      offer: null,       
+      revealed: {},      
       wildcards: mode.wildcards ? { reroll: 1, scout: T.FREE_REVEALS || 0, tweak: 1 } : { reroll: 0, scout: 0, tweak: 0 },
       paidUsed: {},
       tweakMode: false,
-      scoutMode: false,  // Reveal armed: the next card tapped shows his SC points
+      scoutMode: false,  
       spinPos: null, spinSlot: null,
       picks: 0,
       finished: false,
       awaitingLock: false,
-      fullTime: false,   // Team Full is locked in: the SC Captain step, then the results
-      captain: null,     // the slot of the SC Captain (his SC points count double), once one is set
+      fullTime: false,   
+      captain: null,     
       history: [],
       seed: (opts && opts.seed) || T.newSeed(), offerNo: 0, spinNo: 0,
       challenge: !!(opts && opts.challenge),
-      daily: (opts && opts.daily) || null    // a Daily go: { date, n, go, target, only, years }
+      daily: (opts && opts.daily) || null    
     };
     S.special = null; S.specialAt = 0; S.specialDone = false; S.lifelineRoll = null; S.lifelineUsed = false;
     S.luckExp = 0; S.luckGot = 0;
@@ -144,10 +144,10 @@
   T.dailyClub = function () { return null; };
   T.hasDailyClub = function () { return true; };
 
-  // A season already in the team, or another season of a player in the team
+  
   T.taken = function (p) { return !!S && !!p && (!!S.used[p.id] || !!S.usedP[p.pid]); };
 
-  // The Legend Key's three: Legend seasons of three players not in the team who fit an open spot
+  
   function specialOffer(tag) {
     var list = T.LEGENDS.filter(function (p) { return T.isLegend(p) && !T.taken(p) && T.fitsEmpty(p); });
     if (S.seed) return list.map(function (p) { return [p, keyU(tag, p.id)]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, T.OFFER_SIZE).map(function (x) { return x[0]; });
@@ -162,7 +162,7 @@
     return out;
   };
   T.filledCount = function () { return S.slots.filter(function (s) { return s.player; }).length; };
-  // The 13's SC points, the Captain's counted twice
+  
   T.total = function () {
     return S.slots.reduce(function (sum, s, i) { return sum + (s.player ? s.player.tries_1998_plus * (S.captain === i ? 2 : 1) : 0); }, 0);
   };
@@ -171,7 +171,7 @@
     return T.positionsOf(p).some(function (c) { return empty[c]; });
   };
 
-  // Distinct empty slot codes this season can go into
+  
   T.openCodesFor = function (p) {
     var empty = T.emptyCodes(), seen = {};
     var codes = T.positionsOf(p).filter(function (c) {
@@ -179,8 +179,8 @@
       seen[c] = true;
       return true;
     });
-    // A spot running out of seasons (a themed Daily can run short of one position): when the seasons left who can fill
-    // it are no more than its open spots, someone who can fill it must go there
+    
+    
     if (codes.length > 1) {
       var open = function (c) { return S.slots.filter(function (x) { return !x.player && x.code === c; }).length; };
       var scarce = codes.filter(function (c) { var o = open(c); return T.supplyFor(c, p, o) <= o; });
@@ -188,8 +188,8 @@
     }
     return codes;
   };
-  // How many players (one count each, whatever his seasons) could still fill an open spot of this code; with cap, it
-  // stops counting once it passes cap
+  
+  
   T.supplyFor = function (code, me, cap) {
     var n = 0, seen = {}, list = T.players;
     for (var i = 0; i < list.length; i++) {
@@ -211,8 +211,8 @@
       return fits && T.inDailyPool(p);
     });
   };
-  /* A themed Daily's own pool (js/sc-daily.js): 'only' { club: [years] } (an empty list is every season at that club),
-     'years' [from, to] (seasons in those years) */
+  
+
   T.inDailyPool = function (p) {
     var d = S && S.daily;
     if (!d) return true;
@@ -232,15 +232,15 @@
   function isLow(p) { return T.LOW_CUT && p.tries_1998_plus < T.LOW_CUT; }
   T.weightOf = weightOf;
 
-  // Seeded: each season's key is u^(1/weight) (log(u) / weight here), the same weighted odds as the draw below, but a
-  // season's key stays the same whoever else is in the pool, so the same seed deals the same cards. Never two seasons
-  // of one player in an offer
+  
+  
+  
   function seededSample(pool, k, already, tag) {
     var lowTaken = (already || []).some(isLow), out = [], pids = {};
     (already || []).forEach(function (p) { pids[p.pid] = 1; });
     var u = keysFor(tag, pool), keyed = new Array(pool.length), highs = 0;
     for (var j = 0; j < pool.length; j++) { keyed[j] = [pool[j], Math.log(u[j]) / weightOf(pool[j])]; if (!isLow(pool[j])) highs++; }
-    // only the best few are ever needed: the top 24 by key, and all of them in order only if those run out
+    
     var ranked = topByKey(keyed, 24), full = ranked.length >= keyed.length;
     for (var i = 0; out.length < k; i++) {
       if (i >= ranked.length) { if (full) break; ranked = topByKey(keyed, keyed.length); full = true; if (i >= ranked.length) break; }
@@ -252,7 +252,7 @@
     }
     return out;
   }
-  // The n highest keys of [card, key] pairs, highest first (a partial sort: an offer only ever needs the first few)
+  
   function topByKey(list, n) {
     if (list.length <= n) return list.slice().sort(function (a, b) { return b[1] - a[1]; });
     var top = [];
@@ -290,10 +290,10 @@
   T.promoKind = function () { return ''; };
   T.promoTrophy = function () { return ''; };
 
-  /* Stronger wildcards (as every draft game): some of the time (T.BOOST_CHANCE) a Reroll's new offer, and the first
-     offer after Remove Player, hold T.BOOST_N season with more SC points than the best one rerolled (or the one
-     removed), when one fits your open spots, and the other cards don't beat him. Seeded. The main mode only. S.boost
-     waits for the next offer. Boosted offers stay out of the luck of the draw */
+  
+
+
+
   T.BOOST_N = 1;
   T.BOOST_CHANCE = 0.7;
   T.boostMode = function () { return !!S && !!S.mode.wildcards && !S.qd && !S.daily; };
@@ -306,7 +306,7 @@
   T.rollOffer = function () {
     var tag = 'offer' + (S.offerNo++), rng = T.stream(tag);
     S.scoutMode = false;
-    // A Legend Key (T.useLegendKey): this offer is its Legends Pick
+    
     if (S.keyPick) {
       S.keyPick = false;
       var keyed = specialOffer(tag + 'k');
@@ -342,8 +342,8 @@
     return S.offer;
   };
 
-  /* The luck of the draw, shown on the results: the SC points on every offer against what an average offer from the
-     same seasons would hold. The first offer and a Legend Key's three are left out; rerolls count. */
+  
+
   function noteLuck(pool, players) {
     var tw = 0, tt = 0;
     for (var i = 0; i < pool.length; i++) { var w = weightOf(pool[i]); tw += w; tt += w * pool[i].tries_1998_plus; }
@@ -361,9 +361,9 @@
       Math.max(0, st.tweak + (S.boughtTweaks || 0) - S.wildcards.tweak);
   };
 
-  /* The Legend Key (CAST Pass's daily key, or bought): the offer becomes a Legends Pick, three all-time great SC seasons
-     with their SC points showing. The main mode, while a Legend fits an open spot and a plain offer is showing; as many
-     as you have in one team (S.keysUsed, d.lks) */
+  
+
+
   T.legendKeyRoom = function () {
     return !!S && S.mode.id === 'plus' && !S.finished && !S.fullTime && !S.challenge && !!T.LEGENDS &&
       T.LEGENDS.some(function (p) { return !T.taken(p) && T.fitsEmpty(p); });
@@ -375,9 +375,9 @@
     return true;
   };
 
-  /* The GOAT (the Shop's one GOAT item for every CAST draft game): Tom Trbojevic's 2021, the #1 SC season, as the next
-     pick, his SC points showing. The main mode, once a game, never in a Daily or a friend's challenge, never over a
-     Legends Pick, while no season of his is in the team and an open spot fits him */
+  
+
+
   T.goatPlayer = function () { return (T.GOAT_SRC && T.byId[T.GOAT_SRC]) || null; };
   T.goatRoom = function () { var g = T.goatPlayer(); return !!S && !!g && !T.taken(g) && T.fitsEmpty(g); };
   T.goatFits = function () {
@@ -409,7 +409,7 @@
 
   T.showClub = function (p) { return T.lastClub(p); };
 
-  // Place a season. code is optional when only one open slot type fits; slotIdx (optional) is the exact spot clicked
+  
   T.pick = function (id, code, slotIdx) {
     var p = T.byId[id];
     if (!p || T.taken(p) || S.finished) return null;
@@ -422,10 +422,10 @@
       if (!S.slots[i].player && S.slots[i].code === target) { idx = i; break; }
     }
     if (idx === -1) return null;
-    // Perfect Read (a trophy): was this the biggest season on offer who could go in the team? Ties count
+    
     var offer = (S.offer && S.offer.players) || [];
     S.slots[idx].top = offer.indexOf(p) >= 0 && offer.every(function (o) { return o === p || T.taken(o) || !T.fitsEmpty(o) || o.tries_1998_plus <= p.tries_1998_plus; });
-    // His SC points were showing when he was picked (a Reveal, a Legend Key, the GOAT): they stay on his tile
+    
     if (S.revealed[p.id] || (S.offer && (S.offer.key || S.offer.goat || S.offer.paid))) S.known[p.id] = true;
     S.slots[idx].player = p;
     S.slots[idx].club = null; S.slots[idx].year = null;
@@ -438,7 +438,7 @@
     return idx;
   };
 
-  // Remove Player: pull a pick out, reopen the slot, return the season to the pool
+  
   T.removeAt = function (idx) {
     var s = S.slots[idx];
     if (!s || !s.player) return null;
@@ -451,10 +451,10 @@
     return p;
   };
 
-  /* The SC Captain (the owner, 17 Oct 2026; a Shop item, A$4.99, never free, CAST Pass included): once the 13 is full
-     and locked in, one season of the 13 can be made Captain and his SC points count double. Offered at the end of every
-     Classic game, never the Daily, a friend's challenge or Quick Draft; one a game. Taken from the Vault (or bought) only
-     when it is set (js/app.js). S.capSet: one was used (d.cap, the slot's pick) */
+  
+
+
+
   T.captainOffer = function () {
     return !!S && S.mode.id === 'plus' && !S.daily && !S.challenge && !S.qd && !S.finished && S.captain == null && T.filledCount() === S.slots.length;
   };
@@ -464,19 +464,19 @@
     S.history.push({ type: 'captain', id: S.slots[idx].player.id, slot: idx });
     return true;
   };
-  // The Captain who adds the most (the step's first choice)
+  
   T.bestCaptain = function () {
     var best = -1;
     S.slots.forEach(function (s, i) { if (s.player && (best < 0 || s.player.tries_1998_plus > S.slots[best].player.tries_1998_plus)) best = i; });
     return best;
   };
 
-  /* The outcome once the 13 is full: Classic is 'done' whatever the total (the boards rank it; no target, so never a win
-     or a miss). A Daily is won with its own target ('won') or not ('under'). force: lock in now */
+  
+
   T.outcome = function (force) {
     var total = T.total(), full = T.filledCount() === S.slots.length;
     if (!full) return null;
-    if (!force && S.mode.wildcards && S.wildcards.tweak > 0) return null; // Team Full: Remove Player or Lock In first
+    if (!force && S.mode.wildcards && S.wildcards.tweak > 0) return null; 
     if (S.daily && S.daily.target) {
       return total >= S.daily.target ? { win: true, total: total, target: S.daily.target, diff: total - S.daily.target, reason: 'won' }
         : { win: false, total: total, target: S.daily.target, diff: total - S.daily.target, reason: 'under' };

@@ -2,9 +2,11 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>(function () { function inn(t) { var b = t.closest && t.closest('.cg-art, .cg-swr-art, .cg-idle-art, .cgt-gc-art'); if (b) b.classList.add('is-in'); } document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') inn(t); }, true); document.addEventListener('error', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG') return; if (/\.webp(\?|$)/.test(t.src) && !t.getAttribute('data-png')) { t.setAttribute('data-png', '1'); t.src = t.src.replace(/\.webp(\?v=\w*)?/, '.png'); return; } inn(t); }, true); })();</script><style>body:has(.screen.is-active .ou-load) .site-footer { visibility: hidden; }</style><!-- CG_PICS -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><!-- CG_LAUNCH -->
 <script>window.CG_MODE = 'plus';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=9d1d652119b3">
+<link rel="stylesheet" href="../shared/cg.css?v=e4b6e41dc635">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -24,9 +26,9 @@
 <!-- No automatic links on numbers, dates, places or units (7 Oct 2026: Chrome on iPhone underlined some players’ nation and rating) -->
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<script>(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy'; m.content = "upgrade-insecure-requests; object-src 'none'; base-uri 'self'"; document.head.appendChild(m); })();</script>
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=6ee39b8f" data-site="1000tries"></script>
+<script src="/1000tries/js/cast-contact.js?v=b2363faf" data-site="1000tries"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -61,21 +63,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=f4555d1b">
-<link rel="stylesheet" href="css/cast-account.css?v=c8cbeee9">
-<link rel="stylesheet" href="css/bingo.css?v=fd59fbd2">
+<link rel="stylesheet" href="/1000tries/css/main.css?v=90df2817">
+<link rel="stylesheet" href="/1000tries/css/cast-account.css?v=4066998e">
+<link rel="stylesheet" href="/1000tries/css/bingo.css?v=d29b19bf">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = '1000tries'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=9d1d652119b3"></script>
+<script src="../shared/cg.js?v=e4b6e41dc635"></script>
+<script src="/shared/cg-speed.js?v=cef2eaf1" defer></script>
 
 
 <header class="site-header">
   <a class="brand" href="./" data-action="home" aria-label="1000TRIES home">
     <img class="brand-logo" src="assets/logos/cast-patrol.png" alt="The Cast Patrol" width="600" height="302" data-fallback="brand-fallback">
     <span class="brand-fallback" hidden>THE CAST PATROL</span>
-    <img class="brand-game" src="assets/logos/1000tries.png" alt="1000TRIES" width="1200" height="760">
+    <img loading="lazy" class="brand-game" src="assets/logos/1000tries.png" alt="1000TRIES" width="1200" height="760">
   </a>
   <nav class="header-nav">
     <!-- Top bar, like 27-0's: Stats, Leaderboards, Friends, Admin, Profile (Stats and Leaderboards show while accounts are on:
@@ -268,24 +271,24 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/analytics.js?v=6bf5d2f9"></script>
-<script src="js/cast-promo.js?v=f0525281"></script>
-<script src="js/data.js?v=4d0f7be4"></script>
-<script src="js/draft.js?v=8f361eff"></script>
-<script src="js/team-spin.js?v=7076fd67"></script>
-<script src="js/wildcards.js?v=32b0ba8f"></script>
-<script src="js/cast-nations.js?v=46208301"></script>
-<script src="js/cast-intl.js?v=e79b8507"></script>
-<script src="js/render.js?v=abfbe804"></script>
-<script src="js/share-card.js?v=d66d7912"></script>
-<script src="js/cast-celebrate.js?v=a92b0328"></script>
-<script src="js/app.js?v=79f2a610"></script>
-<script src="js/ou-engine.js?v=4f314a7d"></script>
-<script src="js/overunder.js?v=3902fb39"></script>
-<script src="js/bingo-engine.js?v=56861807"></script>
-<script src="js/bingo.js?v=4f18cbce"></script>
-<script src="js/cast-daily.js?v=e7382c3c"></script>
-<script src="js/daily.js?v=892c5c63"></script>
+<script src="/1000tries/js/analytics.js?v=e394c5dd"></script>
+<script src="/1000tries/js/cast-promo.js?v=8fe0a4ed"></script>
+<script src="/1000tries/js/data.js?v=5cbcee3e"></script>
+<script src="/1000tries/js/draft.js?v=765e1606"></script>
+<script src="/1000tries/js/team-spin.js?v=44fdda98"></script>
+<script src="/1000tries/js/wildcards.js?v=56432226"></script>
+<script src="/1000tries/js/cast-nations.js?v=4c4e8435"></script>
+<script src="/1000tries/js/cast-intl.js?v=5f7b4f7d"></script>
+<script src="/1000tries/js/render.js?v=f7f3088f"></script>
+<script src="/1000tries/js/share-card.js?v=30674101"></script>
+<script src="/1000tries/js/cast-celebrate.js?v=2fc44216"></script>
+<script src="/1000tries/js/app.js?v=8db13d1c"></script>
+<script src="/1000tries/js/ou-engine.js?v=d4a50fcd"></script>
+<script src="/1000tries/js/overunder.js?v=be0ed257"></script>
+<script src="/1000tries/js/bingo-engine.js?v=4441ecbf"></script>
+<script src="/1000tries/js/bingo.js?v=111299a4"></script>
+<script src="/1000tries/js/cast-daily.js?v=f0b9cc73"></script>
+<script src="/1000tries/js/daily.js?v=a6c275d7"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
@@ -296,13 +299,13 @@
     promoPlay: function (mode) { var m = mode === 'nrlw' ? 'nrlw' : mode === 'wc' ? 'wc' : 'plus', c = document.querySelector('.mode-card[data-mode="' + m + '"],.mode-mini[data-mode="' + m + '"]'); if (c) c.click(); },
     promoStat: function (name) { var p = ((window.T && T.players) || []).filter(function (x) { return x.name === name; })[0]; return p ? { v: p.tries_1998_plus, unit: 'Tries' } : null; } };
 </script>
-<script src="js/upgrades-data.js?v=13379f9a"></script>
-<script src="js/cast-upgrades.js?v=c4498892"></script>
-<script src="js/cast-dual.js?v=9b9f6910"></script>
-<script src="js/cast-prices.js?v=1f44db96"></script>
-<script src="js/cast-picks.js?v=08f42325"></script>
-<script src="js/cast-account.js?v=df4697dc"></script>
-<script src="js/cast-totw.js?v=5c338588"></script>
-<script src="js/cast-wch.js?v=da90d71b"></script>
+<script src="/1000tries/js/upgrades-data.js?v=3e734230"></script>
+<script src="/1000tries/js/cast-upgrades.js?v=97bdb0f0"></script>
+<script src="/1000tries/js/cast-dual.js?v=ffefa095"></script>
+<script src="/1000tries/js/cast-prices.js?v=d1be5481"></script>
+<script src="/1000tries/js/cast-picks.js?v=e56579c0"></script>
+<script src="/1000tries/js/cast-account.js?v=423233c5"></script>
+<script src="/1000tries/js/cast-totw.js?v=513cc917"></script>
+<script src="/1000tries/js/cast-wch.js?v=8dd07687"></script>
 </body>
 </html>

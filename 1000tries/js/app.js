@@ -1,31 +1,31 @@
-/* 1000TRIES app controller: screens, events, flow, sound, ads. */
+ 
 (function (T) {
   'use strict';
 
   var R = T.render;
   var $ = function (id) { return document.getElementById(id); };
-  var selectedMode = 'plus'; // 1000+ is the default on home
-  var busy = false;          // blocks input during spin and reveal animations
+  var selectedMode = 'plus'; 
+  var busy = false;          
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Screens */
+   
 
   function show(name) {
-    if (bootOn()) bootEnd(); // opened on a mode (index.html): the screens show from here
+    if (bootOn()) bootEnd(); 
     ['home', 'draft', 'results', 'ou', 'bingo'].forEach(function (n) {
       $('screen-' + n).classList.toggle('is-active', n === name);
     });
     document.body.setAttribute('data-screen', name);
-    // Mode skin: the mode's colour runs through the draft and results (see 'Mode skins' in main.css)
-    if (name === 'home') document.body.removeAttribute('data-mode'); else document.body.setAttribute('data-mode', name === 'bingo' ? 'bingo' : selectedMode); // NRL Bingo: its own lime (css/bingo.css)
-    // Mid-draft, footer page links open in a new tab so the current team survives
+    
+    if (name === 'home') document.body.removeAttribute('data-mode'); else document.body.setAttribute('data-mode', name === 'bingo' ? 'bingo' : selectedMode); 
+    
     Array.prototype.forEach.call(document.querySelectorAll('.footer-links a[href$=".html"]'), function (a) {
       if (name === 'draft') { a.target = '_blank'; a.rel = 'noopener'; } else { a.removeAttribute('target'); }
     });
     window.scrollTo(0, 0);
   }
 
-  /* Image fallbacks for logo slots Michael fills later */
+   
 
   function fallback(img) {
     var cls = img.getAttribute('data-fallback');
@@ -43,15 +43,15 @@
     });
   }
 
-  /* Unibet creative, same setup as 27-0: manifests list the files, duplicates weight the rotation.
-     Files live in assets/cp/ with short neutral names, because content blockers strip
-     anything whose path contains words like unibet, partners, banner or popup. */
+  
 
-  // Unibet ads are switched off (no current deal). To bring them back: set ADS_ON to true,
-  // restore assets/cp/ from git history, and re-add the Advertising section to privacy.html.
+
+
+  
+  
   var ADS_ON = false;
   var ADS_DIR = 'assets/cp/';
-  var AD_LISTS = { homepage: 'h.json', popup: 't.json' }; // h = holding banners, t = takeover popups
+  var AD_LISTS = { homepage: 'h.json', popup: 't.json' }; 
   var adLists = { homepage: [], popup: [] };
   T.ads = {
     pick: function (kind) {
@@ -66,13 +66,13 @@
       .then(function (list) { adLists[kind] = Array.isArray(list) ? list : []; })
       .catch(function () { adLists[kind] = []; });
   }
-  // Popups preload so the interstitial is instant
+  
   if (ADS_ON) loadManifest('popup').then(function () {
     adLists.popup.forEach(function (f) { var i = new Image(); i.src = ADS_DIR + encodeURIComponent(f); });
   });
   if (ADS_ON) loadManifest('homepage').then(renderHomeAd);
 
-  // CAST Pass holders see no ads: no home banner and no pop-up between games
+  
   function adFree() { return !!(window.CastAccount && CastAccount.hasPass && CastAccount.hasPass()); }
   function renderHomeAd() {
     var slot = $('homeAd');
@@ -80,8 +80,8 @@
   }
   window.addEventListener('cast:tier', function () { if (document.body.getAttribute('data-screen') === 'home') renderHomeAd(); });
 
-  // Full-screen popup with a 7s countdown (27-0 pattern). Calls done() when closed.
-  // The image is loaded first; if it is blocked or fails, the popup is skipped entirely.
+  
+  
   function interstitial(done) {
     if (adFree()) { done(); return; }
     var src = T.ads.pick('popup');
@@ -131,8 +131,8 @@
     ov.querySelector('.cp-takeover-link').addEventListener('click', function () { setTimeout(close, 50); });
   }
 
-  /* Latest YouTube videos. Reuses the media kit's feed (refreshed there by its GitHub job),
-     so there is nothing to maintain here. If it cannot load, the section stays hidden. */
+  
+
 
   var VIDEO_FEED = 'https://mediakit.thecastpatrol.com.au/data/episodes.json';
   function loadVideos() {
@@ -146,15 +146,15 @@
         $('watchTrack').innerHTML = R.videos(list);
         $('watch').hidden = false;
       })
-      .catch(function () { /* keep hidden */ });
+      .catch(function () {   });
   }
   loadVideos();
 
-  /* Sound (on by default; a player's mute choice is remembered in their browser) */
+   
 
   var sound = true;
   var ctx = null;
-  try { sound = localStorage.getItem('1000tries_sound_v2') !== 'off'; } catch (e) { /* storage blocked */ }
+  try { sound = localStorage.getItem('1000tries_sound_v2') !== 'off'; } catch (e) {   }
 
   function setSound(on) {
     sound = on;
@@ -164,12 +164,12 @@
     b.classList.toggle('is-on', on);
     var l = b.querySelector('.sound-lbl');
     if (l) l.textContent = on ? 'Sound On' : 'Sound Off';
-    try { localStorage.setItem('1000tries_sound_v2', on ? 'on' : 'off'); } catch (e) { /* ignore */ }
+    try { localStorage.setItem('1000tries_sound_v2', on ? 'on' : 'off'); } catch (e) {   }
   }
 
-  // iPhones only let a page make sound if its audio engine is created or resumed inside a tap.
-  // So: unlock on the first touch/click anywhere, re-wake after the phone sleeps or the tab
-  // is hidden, and never create the engine from a timer (that leaves it locked and silent).
+  
+  
+  
   var AC = window.AudioContext || window.webkitAudioContext;
   var master = null;
 
@@ -185,11 +185,11 @@
     return ctx;
   }
 
-  // iOS: play on the "ambient" channel, which mixes with the player's own music (Spotify, Apple Music) instead
-  // of stopping it. The trade-off: the Ring/Silent switch mutes game sounds, like most games.
+  
+  
   var unlocked = false;
   function useMediaChannel() {
-    try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) { /* not supported */ }
+    try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) {   }
   }
 
   function unlockAudio() {
@@ -197,16 +197,16 @@
     try {
       if (!unlocked) useMediaChannel();
       var c = audioReady();
-      // A one-sample silent buffer played inside the tap is what unlocks Web Audio on iOS
+      
       var buf = c.createBuffer(1, 1, 22050);
       var src = c.createBufferSource();
       src.buffer = buf;
       src.connect(c.destination);
       src.start(0);
       if (c.state === 'running') unlocked = true;
-    } catch (e) { /* audio unavailable */ }
+    } catch (e) {   }
   }
-  // Only events iOS treats as a real tap (pointerdown does not count on some versions)
+  
   ['touchend', 'click', 'keydown'].forEach(function (ev) {
     document.addEventListener(ev, unlockAudio, true);
   });
@@ -216,7 +216,7 @@
   });
 
   function tone(freq, dur, type, when, vol) {
-    if (!sound || !ctx) return; // ctx only exists once a tap has unlocked it
+    if (!sound || !ctx) return; 
     try {
       if (ctx.state !== 'running' && ctx.resume) ctx.resume().catch(function () {});
       var t0 = ctx.currentTime + 0.01 + (when || 0);
@@ -229,10 +229,10 @@
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
       o.connect(g); g.connect(master);
       o.start(t0); o.stop(t0 + dur + 0.03);
-    } catch (e) { /* audio unavailable */ }
+    } catch (e) {   }
   }
 
-  // Louder than before: phone speakers barely register quiet sine blips
+  
   var sfx = {
     tick: function () { tone(1200, 0.035, 'square', 0, 0.06); },
     pick: function () { tone(523, 0.1, 'triangle', 0, 0.35); tone(784, 0.16, 'triangle', 0.08, 0.35); },
@@ -241,7 +241,7 @@
     wild: function () { tone(660, 0.12, 'sine', 0, 0.35); tone(990, 0.16, 'sine', 0.07, 0.35); }
   };
 
-  // Hidden sound check for phones: open the site with ?audiodebug
+  
   if (/[?&]audiodebug\b/.test(location.search)) {
     var dbg = document.createElement('div');
     dbg.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;border:2px solid #f1c073;border-radius:12px;padding:10px;font:12px/1.4 monospace';
@@ -272,7 +272,7 @@
     });
   }
 
-  /* Toast + sheet */
+   
 
   var toastTimer = null;
   function toast(msg) {
@@ -294,13 +294,13 @@
   }
   function closeSheet() { $('sheet').hidden = true; $('sheet').classList.remove('is-rules', 'is-confirm'); $('sheetBody').innerHTML = ''; lockScroll(false); }
 
-  /* Home */
+   
 
   function firstVisit() {
     try {
       if (localStorage.getItem('1000tries_played')) return false;
-      // a CAST Profile is never a first visit (the owner, 15 Oct 2026: on castgames.com.au, a new address with no games
-      // saved yet, his banner sat at the bottom under the first-visit layout)
+      
+      
       if (localStorage.getItem('cast_signed_in') === '1' || signedIn()) return false;
       var g = JSON.parse(localStorage.getItem('cast_games_v1') || '[]');
       return !(Array.isArray(g) && g.some(function (x) { return x && x.game === '1000tries'; }));
@@ -315,17 +315,17 @@
     block.forEach(function (el) { ref.parentNode.insertBefore(el, ref); });
     modesUp = first;
   }
-  /* While the World Cup is on (10 Oct 2026, the owner: "keep it under classic until end of world cup"): the Daily
-     Challenge sits under the mode cards, World Cup and the main mode first; back in its own place after the final (15 Nov) */
+  
+
   var dailyMark = null;
   function placeDaily() {
     var d = $('dailyCard'), last = $('packNote');
     if (!d || !last) return;
     if (!dailyMark) { dailyMark = document.createComment(' the Daily Challenge '); d.parentNode.insertBefore(dailyMark, d); }
-    // its own place again since World Cup 200+ moved into More Modes (17 Oct 2026)
+    
     if (dailyMark.nextSibling !== d) dailyMark.parentNode.insertBefore(d, dailyMark.nextSibling);
   }
-  // Six Again's card (15 Oct 2026, the owner): straight under the Daily Challenge, wherever the Daily sits, once it's on
+  
   function placeOu() {
     var d = $('dailyCard'), c = $('ouHome');
     if (!d) return;
@@ -335,8 +335,8 @@
     c.innerHTML = on ? R.ouCard() : '';
     if (d.nextSibling !== c) d.parentNode.insertBefore(c, d.nextSibling);
   }
-  // NRL Bingo's card (17 Oct 2026): straight under Six Again's (or the Daily's), once it's on. CAST Games only (the owner,
-  // 17 Oct 2026: new games are built for castgames.com.au), so never on the old 1000tries.com.au home
+  
+  
   function placeBingo() {
     var o = $('ouHome') || $('dailyCard'), c = $('bgHome');
     if (!o) return;
@@ -347,18 +347,18 @@
     if (o.nextSibling !== c) o.parentNode.insertBefore(c, o.nextSibling);
   }
   T.firstVisit = firstVisit;
-  // World Cup 200+ (4 Oct 2026): on once the owner launches it (or ?castwc=1 for an admin's visit); signed-in players only
+  
   function wcOn() { return !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive()); }
   function signedIn() { return !!(window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn()); }
-  /* Its home card: with the other modes under More Modes (17 Oct 2026, the owner: World Cup 200+ is its own game on CAST
-     Games now, so this home no longer leads with it) */
+  
+
   function wcPlace() { return wcOn() ? 'mini' : null; }
   function renderHome() {
-    // First visit (no finished game on this phone yet): how it works in three steps, under the pitch. Gone after game one.
-    // First-timers also get the modes first (4 Oct 2026, the owner's call): they move up under the steps, above the spot
-    // and the Daily Challenge, and a guest's first visit has no spot (js/cast-account.js asks CAST_ACCOUNT.firstVisit)
+    
+    
+    
     var first = firstVisit(), fs = $('firstSteps');
-    // guest: Sign In to Play once today's free World Cup is played (Play Free until then, 12 Oct 2026)
+    
     $('modePicker').innerHTML = R.modePicker(selectedMode, { wc: wcPlace(), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
     if (fs) fs.hidden = !first;
     placeModes(first);
@@ -368,11 +368,11 @@
     var ouB = document.querySelector('.spot-promo[data-ou-open]');
     if (ouB && !ouB.getAttribute('data-rich') && R.ouBanner) { ouB.innerHTML = R.ouBanner(); ouB.setAttribute('data-rich', '1'); ouB.classList.add('is-ou'); }
     if (window.CastAccount && CastAccount.spot) CastAccount.spot();
-    if (window.CastNations && CastNations.fit) CastNations.fit($('modePicker')); // the World Cup card's flags at their real size
-    $('startBtn').setAttribute('data-pick', selectedMode); // Play now takes the picked mode's colour
+    if (window.CastNations && CastNations.fit) CastNations.fit($('modePicker')); 
+    $('startBtn').setAttribute('data-pick', selectedMode); 
   }
 
-  /* Draft */
+   
 
   var shownTotal = 0;
 
@@ -390,7 +390,7 @@
     requestAnimationFrame(step);
   }
 
-  // Animate the bar from the last total to the new one: fill, colour shift, +N chip, glow pulse
+  
   function animateBar(from, to) {
     var S = T.state();
     var fill = $('sbFill'), bar = $('sbBar'), gain = $('sbGain');
@@ -408,7 +408,7 @@
     fill.style.width = pct(from) + '%';
     fill.style.setProperty('--bar', before.color);
     fill.style.setProperty('--glow', before.glow);
-    void fill.offsetWidth; // commit the start state
+    void fill.offsetWidth; 
     fill.style.transition = '';
     fill.style.width = pct(to) + '%';
     fill.style.setProperty('--bar', after.color);
@@ -438,7 +438,7 @@
     $('pickCount').textContent = T.filledCount() + ' of 13';
   }
 
-  // Long surnames shrink to fit the slot on one line instead of being cut off
+  
   function fitNames() {
     Array.prototype.forEach.call(document.querySelectorAll('#pitch .slot-name'), function (el) {
       el.style.fontSize = ''; el.style.letterSpacing = '';
@@ -455,15 +455,15 @@
   window.addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitNames, 120); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
 
-  // Squad full with a Remove Player still in hand: Lock in drains over LOCK_SECS, then locks in by itself
+  
   T.LOCK_SECS = 10;
-  var lockTimer = null, lockLeft = null, resumeLock = null, resumeClock = null; // resume*: the seconds a draft brought back still had
+  var lockTimer = null, lockLeft = null, resumeLock = null, resumeClock = null; 
   function stopLockTimer() { if (lockTimer) { clearInterval(lockTimer); lockTimer = null; } }
   function startLockTimer(S) {
     stopLockTimer();
-    var left = resumeLock != null ? Math.max(1, resumeLock) : T.LOCK_SECS; // a draft brought back keeps its seconds
+    var left = resumeLock != null ? Math.max(1, resumeLock) : T.LOCK_SECS; 
     resumeLock = null; lockLeft = left;
-    // The gold fill steps down with the number, one second at a time (always in sync)
+    
     function paint() {
       var f = document.querySelector('#offerPanel .lock-fill');
       if (f) f.style.transform = 'scaleX(' + Math.max(left - 1, 0) / T.LOCK_SECS + ')';
@@ -483,16 +483,16 @@
     }, 1000);
   }
 
-  /* The pick clock (17 Oct 2026, the owner: no looking players up mid-draft). Exactly 1000 had it first, as its shot clock
-     (2 Oct 2026). Every pick in 1000+, Exactly 1000 and the Daily Challenge is timed: T.PICK_SECS, or Exactly 1000's
-     stricter T.EXACT_SECS. A new offer starts it again (a Reroll, a Remove Player, a Legends or Immortal Pick's three once
-     their reveal has closed). It runs on the wall clock, so a hidden tab or another app never stops it: back on the page,
-     a clock that ran out picks at once. It waits while a wildcard plays out, while Remove or Substitute is armed and while
-     any pop-up is open (the Shop, a confirm, a purchase, the Daily Challenge), so buying never costs a pick, and while it
-     waits the offer cards are covered, so a pause is never time to look anyone up. The phone's spot chooser is part of the
-     pick, so it never waits. Time up: the player you tapped goes in, else the first card that fits, in the first open spot
-     he plays. A bought Immortal Pick's three go back to your own offer first, so a Pick is never used for you. Never Team
-     Spin, NRLW, World Cup or Quick Draft. A draft brought back keeps its seconds. GA: exact_timeout, pick_timeout */
+  
+
+
+
+
+
+
+
+
+
   T.PICK_SECS = 20;
   T.EXACT_SECS = 15;
   T.CLOCK_MODES = ['plus', 'exact', 'daily'];
@@ -500,7 +500,7 @@
   T.pickSecs = function (S) { return S && S.mode && S.mode.id === 'exact' ? T.EXACT_SECS : T.PICK_SECS; };
   var clock = { offer: null, end: 0, last: 0, iv: null };
   function clockOn(S) { return T.clockMode(S) && !S.finished && !S.awaitingLock && !!S.offer && S.offer.players.length > 0 && document.body.getAttribute('data-screen') === 'draft'; }
-  // A pop-up over the draft: a sheet that isn't the spot chooser, a CAST panel (the Shop, a purchase), the Daily Challenge, a reveal
+  
   function popUpOpen() {
     var sh = $('sheet');
     if (sh && !sh.hidden && !$('sheetBody').querySelector('[data-place]')) return true;
@@ -509,17 +509,17 @@
       return d.id !== 'sheetBody' && !d.hidden && d.getClientRects().length > 0;
     });
   }
-  // Waiting with the cards covered (a long wait) or just held (a wildcard's moment, a Pick going through)
+  
   function clockPaused(S) { return !!(S.tweakMode || S.subMode) || popUpOpen(); }
-  function clockHeld(S) { return busy || !!document.querySelector('.wc-burst, .cg') || clockPaused(S); } // .cg: the GOAT moment (js/cast-celebrate.js)
+  function clockHeld(S) { return busy || !!document.querySelector('.wc-burst, .cg') || clockPaused(S); } 
   function clockStart() {
     if (!clockOn(T.state())) { clockCover(false); return; }
     if (!clock.iv) { clock.last = Date.now(); clock.iv = setInterval(clockTick, 200); }
-    clockTick(); // a redraw shows the time left straight away
+    clockTick(); 
   }
   function clockStop() { if (clock.iv) { clearInterval(clock.iv); clock.iv = null; } }
   function clockCover(on) { var p = $('offerPanel'); if (p) p.classList.toggle('is-clock-paused', !!on); }
-  // What the offer panel draws (js/render.js): the seconds a pick gets and the time left on this offer
+  
   T.clockView = function (S) {
     var secs = T.pickSecs(S), left = clock.offer === S.offer && clock.iv ? Math.max(0, clock.end - Date.now()) : secs * 1000;
     return { secs: secs, left: left, paused: clock.offer === S.offer && clockPaused(S) };
@@ -528,8 +528,8 @@
     var S = T.state(), now = Date.now();
     if (!clockOn(S)) { clockStop(); clock.offer = null; clockCover(false); return; }
     var secs = T.pickSecs(S);
-    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : secs * 1000); resumeClock = null; } // a draft brought back keeps its seconds
-    else if (clockHeld(S)) clock.end += now - clock.last; // waiting: the clock doesn't move
+    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : secs * 1000); resumeClock = null; } 
+    else if (clockHeld(S)) clock.end += now - clock.last; 
     clock.last = now;
     var left = Math.max(0, clock.end - now), paused = clockPaused(S), el = document.querySelector('#offerPanel [data-pick-clock]');
     clockCover(paused);
@@ -540,29 +540,29 @@
       el.classList.toggle('is-low', left <= 5000 && !paused);
       el.classList.toggle('is-paused', paused);
     }
-    if (left <= 0 && !clockHeld(S) && !document.hidden) timeUp(S); // off the page: it picks the moment they're back
+    if (left <= 0 && !clockHeld(S) && !document.hidden) timeUp(S); 
   }
-  // Back on the page (another tab, another app): a clock that ran out while they were away picks at once
+  
   document.addEventListener('visibilitychange', function () { if (!document.hidden && clock.iv) clockTick(); });
   window.addEventListener('pageshow', function () { if (clock.iv) clockTick(); });
   function timeUp(S) {
     clockStop(); clock.offer = null; clockCover(false);
-    if (S.offer && S.offer.paid && !S.offer.taken) T.keepOffer(); // never spend an Immortal Pick for them
+    if (S.offer && S.offer.paid && !S.offer.taken) T.keepOffer(); 
     var list = S.offer ? S.offer.players.filter(function (p) { return !S.used[p.id] && T.openCodesFor(p).length > 0; }) : [];
     var chooser = $('sheet') && !$('sheet').hidden && $('sheetBody').querySelector('[data-place]');
     var tapped = placingId || (chooser && $('sheetBody').getAttribute('data-player')) || null;
     var p = tapped && T.byId[tapped] && list.indexOf(T.byId[tapped]) >= 0 ? T.byId[tapped] : list[0];
     closeSheet(); setPlacing(null);
-    if (!p) { nextOffer(); return; } // nobody on it fits an open spot: a fresh offer
+    if (!p) { nextOffer(); return; } 
     T.track(S.mode.id === 'exact' ? 'exact_timeout' : 'pick_timeout', { mode: S.mode.name, picks: S.picks, tapped: tapped ? 'yes' : 'no' });
     toast('\u23F1\uFE0F Time\u2019s up: ' + p.name + ' goes in');
     place(p.id, T.openCodesFor(p)[0]);
   }
 
-  /* A tap right after the offers moved is ignored (11 Oct 2026, a player in World Cup 200+: "I clicked Thornett" and got the
-     player above). The first offer drew before his account had loaded, then the wildcard row under it grew (Substitute and
-     the World Legend Pick) and pushed the cards down one place as he tapped. Now a pick within 0.7 s of the cards moving
-     does nothing, so the next tap lands where the eye is */
+  
+
+
+
   var offerTop = null, offerKey = '', offerMovedAt = 0;
   function noteOffers() {
     var c = document.querySelector('#offerPanel [data-pick]');
@@ -587,11 +587,11 @@
     applyPlacing();
     applySquadSearch();
     watchSquadScroll();
-    clockStart(); // the pick clock
-    keepDraft(); // Save the draft in progress
+    clockStart(); 
+    keepDraft(); 
   }
 
-  // Team Spin: show only players whose name matches the search (group headings hide when empty)
+  
   function applySquadSearch() {
     var list = $('squadList');
     if (!list || !T.squadSearch) return;
@@ -615,7 +615,7 @@
     if (e.target && e.target.id === 'squadSearch') { T.squadSearch.q = e.target.value; applySquadSearch(); }
   });
 
-  // Team Spin: fade + "Scroll for more" cue until the player scrolls or reaches the end
+  
   function watchSquadScroll() {
     var list = $('squadList'), wrap = $('squadWrap');
     if (!list || !wrap) return;
@@ -629,8 +629,8 @@
     update();
   }
 
-  /* Desktop placing: pick a player, then click a glowing spot on the field.
-     Phones keep the bottom-sheet chooser. */
+  
+
 
   var desktopMQ = window.matchMedia ? window.matchMedia('(min-width: 900px)') : null;
   function isDesktop() { return !!(desktopMQ && desktopMQ.matches); }
@@ -641,7 +641,7 @@
     applyPlacing();
   }
 
-  // Mark the field spots a player can go into. cls is 'is-target' (placing) or 'is-preview' (hover).
+  
   function markSlots(id, cls) {
     var pitch = $('pitch');
     if (!pitch) return;
@@ -675,47 +675,47 @@
     markSlots(c ? c.getAttribute('data-pick') : null, 'is-preview');
   });
 
-  // Unibet popup cadence: every second "go again" (Play again or Change mode, mid-game or
-  // from the results page). Play now on the home page never counts. The count is kept in
-  // the browser so a refresh does not reset it.
+  
+  
+  
   var AD_EVERY = 2;
   function adDue() {
     var n = 0;
-    try { n = parseInt(localStorage.getItem('1000tries_after_game') || '0', 10) || 0; } catch (e) { /* ignore */ }
+    try { n = parseInt(localStorage.getItem('1000tries_after_game') || '0', 10) || 0; } catch (e) {   }
     n++;
-    try { localStorage.setItem('1000tries_after_game', String(n)); } catch (e) { /* ignore */ }
+    try { localStorage.setItem('1000tries_after_game', String(n)); } catch (e) {   }
     return n % AD_EVERY === 0;
   }
 
-  // Leaving the results page: maybe show the popup, then carry on
+  
   function afterResults(next) {
     if (ADS_ON && adDue()) interstitial(next);
     else next();
   }
 
-  // The Daily starts from js/daily.js (its draft for today's go), never as a plain game
+  
   T.play = function (modeId, opts) { closeSheet(); busy = false; startGame(modeId, opts); };
   function newGame(modeId) {
     if (modeId === 'daily') { if (T.dailyStart) T.dailyStart(); return; }
-    // World Cup 200+: only once it's on. A guest gets one free a day, which uses one of their free games (12 Oct 2026, the
-    // owner; CastAccount.wcGate counts it); after that it starts by itself once they've signed in
+    
+    
     if (modeId === 'wc') {
       if (!wcOn()) return;
       var gate = CastAccount.wcGate || CastAccount.requireSignIn;
       if (gate && !(CastAccount.wcGate ? gate(function () { newGame('wc'); }, 'wc') : gate(function () { newGame('wc'); }, 'wc', 'wc'))) return;
     }
-    // CAST Pass tiers: a guest's 6th game of the day waits for a free sign-in (then starts by itself)
+    
     else if (window.CastAccount && CastAccount.guestGate && !CastAccount.guestGate(function () { newGame(modeId); }, modeId)) return;
     closeSheet();
     busy = false;
     startGame(modeId);
   }
 
-  T.showScreen = show; // Six Again's own screen (js/overunder.js)
+  T.showScreen = show; 
   T.ouHome = function () { goHome(); };
-  T.bingoHome = function () { goHome(); }; // NRL Bingo's back arrow (js/bingo.js)
+  T.bingoHome = function () { goHome(); }; 
   function goHome() {
-    if (window.CG && window.CG.leave) { closeSheet(); busy = false; window.CG.leave(); return; } // CAST Games: every mode is its own page (17 Oct 2026)
+    if (window.CG && window.CG.leave) { closeSheet(); busy = false; window.CG.leave(); return; } 
     closeSheet();
     busy = false;
     renderHome();
@@ -724,7 +724,7 @@
   }
 
   function startGame(modeId, opts) {
-    // Each mode plays from its own pack (NRL or NRLW); load and switch it before the game starts
+    
     var want = (T.MODES[modeId] || T.MODES.plus).dataset || 'nrl';
     if (T.DATASET !== want && !T.useDataset(want)) {
       busy = true;
@@ -732,23 +732,23 @@
         function () { busy = false; toast('Could not load the players. Check your connection and try again.'); });
       return;
     }
-    if (modeId !== 'daily') selectedMode = modeId; // the Daily is not one of the home screen's modes
-    dropDraft(modeId); // a new game replaces its mode's saved one
-    T.newGame(modeId, opts); // opts.seed: a friend's challenge, the same draft they played
-    // Wildcards by tier once CAST Pass launches: guests none, CAST Profile 1 of each, CAST Pass 2 of each.
-    // Before that: everyone 1 of each, and CAST Profile players +1 reroll (it just shows as "2 left").
+    if (modeId !== 'daily') selectedMode = modeId; 
+    dropDraft(modeId); 
+    T.newGame(modeId, opts); 
+    
+    
     var NS = T.state(), tierW = window.CastAccount && CastAccount.wildcardCount ? CastAccount.wildcardCount() : null;
     var extra = window.CastAccount && CastAccount.profileRerolls ? CastAccount.profileRerolls() : 0;
-    // Hard Mode (Exactly 1000): no free wildcards for anyone, only paid ones (a guest signs in first)
+    
     if (NS.mode.paidOnly) { NS.wcStart = { reroll: 0, scout: 0, tweak: 0 }; NS.wcLocked = tierW === 0; }
     else if (NS.mode.wildcards && tierW !== null) setTierWildcards(NS, tierW);
     else if (NS.mode.wildcards && extra) { NS.wildcards.reroll += extra; NS.profileRerolls = extra; }
-    NS.subLeft = NS.mode.wildcards && !NS.mode.paidOnly && window.CastAccount && CastAccount.hasPass && CastAccount.hasPass() ? 1 : 0; // Substitute: CAST Pass, 1 a game
+    NS.subLeft = NS.mode.wildcards && !NS.mode.paidOnly && window.CastAccount && CastAccount.hasPass && CastAccount.hasPass() ? 1 : 0; 
     placingId = null;
     shownTotal = 0;
     busy = false;
-    // One event per mode so GA's Events list ranks the modes directly:
-    // classic_1000_plays (1000+), hard_1000_plays (Exactly 1000), team_spin_plays (Team Spin)
+    
+    
     T.track(T.MODES[modeId].event, { mode: T.MODES[modeId].name });
     show('draft');
     nextOffer();
@@ -760,7 +760,7 @@
     if (T.filledCount() === S.slots.length) { settle(); return; }
     if (S.mode.source === 'spin') {
       if (S.spinPos) spin();
-      else { S.offer = null; renderDraft(); } // player chooses a position first
+      else { S.offer = null; renderDraft(); } 
     }
     else {
       var offer = T.rollOffer();
@@ -769,23 +769,23 @@
     }
   }
 
-  /* Legends Pick / Immortal Pick: a short pack-opening moment before the three greats appear.
-     Tap anywhere to skip. Immortals get the grander version. A lifeline (a player with no real chance left) says so. */
+  
+
   function packIntro(kind, done, lifeline, paid) {
     var imm = kind === 'immortal';
     T.track(imm ? 'immortal_pick_shown' : 'legends_pick_shown', { mode: T.state().mode.name, lifeline: lifeline ? 'yes' : 'no', paid: paid ? 'yes' : 'no' });
     if (reduceMotion) { done(); return; }
-    /* The same reveal as the World Legends (8 Oct 2026, the owner: "improve legends pack pop up ... to match this",
-       js/cast-intl.js): the three greats' clubs, in their colours, flash through the clubs and land one by one, with their
-       names and positions (career tries stay hidden). Without it, the old pack card below */
+    
+
+
     var CI = window.CastIntl, S0 = T.state(), three = S0 && S0.offer ? S0.offer.players.slice(0, 3) : [];
     if (CI && CI.reveal && three.length) {
       var sides = {}, side = function (k) {
         if (!k || sides[k]) return;
         var c = T.club(k), nm = String(c.name || k), last = nm.split(' ').pop();
-        var J = ((window.CastIntl && window.CastIntl.JERSEYS) || {})[k] || {}; // the club's real jersey (js/cast-intl.js), else a V in its colours
-        sides[k] = { name: nm, short: k === 'stgeorge' ? 'St George' : nm.length <= 15 ? nm : last, // St George, not Dragons: today's Dragons are another club
-          code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: J.glow || c.primary, // Eastern Suburbs in full, Rabbitohs for South Sydney Rabbitohs
+        var J = ((window.CastIntl && window.CastIntl.JERSEYS) || {})[k] || {}; 
+        sides[k] = { name: nm, short: k === 'stgeorge' ? 'St George' : nm.length <= 15 ? nm : last, 
+          code: c.abbr, c1: c.primary, c2: c.accent || c.secondary, glow: J.glow || c.primary, 
           pattern: J.pattern, base: J.base, colors: J.colors, count: J.count, dir: J.dir, sizes: J.sizes, collar: J.collar };
       };
       var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
@@ -820,16 +820,16 @@
     setTimeout(end, imm ? 2600 : 2100);
   }
 
-  /* World Legends (8 Oct 2026, the owner's calls): the World Legend reveal (js/cast-intl.js) before they
-     show, flashing through the nations' looks and landing on his: one for a free one turning up in an offer, three for an
-     World Legend Pick. Test tries stay hidden, as on every card. Without the reveal they just show */
+  
+
+
   function ilReveal(players, paid, done) {
     var CI = window.CastIntl, list = (players || []).filter(Boolean);
     if (!CI || !CI.reveal || !list.length) { done(); return; }
     busy = true;
     try {
       CI.reveal({
-        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.positionsOf(p).join('/') : T.positionsOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), // three: short, so they line up
+        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.positionsOf(p).join('/') : T.positionsOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), 
         kicker: paid ? 'World Legend Pick' : 'World Legend', title: paid ? 'Your World Legends' : '',
         done: function () { busy = false; done(); }
       });
@@ -839,7 +839,7 @@
   function spin() {
     var S = T.state();
     var game = S;
-    var offer = T.spinOffer(); // decided up front; the reel is just theatre
+    var offer = T.spinOffer(); 
     if (!offer) { S.spinPos = null; S.spinSlot = null; S.offer = null; toast('No one left for that position. Pick another'); renderDraft(); return; }
     if (reduceMotion) { renderDraft(); return; }
     busy = true;
@@ -851,7 +851,7 @@
     var clubBox = $('offerPanel').querySelector('.reel-club');
     var clubEl = clubBox.querySelector('.reel-val');
     var n = 0, frames = 16;
-    // Only swap text and colours in place, so the layout never reflows mid-spin
+    
     var timer = setInterval(function () {
       if (T.state() !== game) { clearInterval(timer); return; }
       n++;
@@ -869,7 +869,7 @@
     }, 70);
   }
 
-  // Team Spin: lock in a position (from the buttons or an empty field spot), then spin
+  
   function choosePosition(code, slotIdx) {
     var S = T.state();
     if (!S || busy || S.finished || S.mode.source !== 'spin' || S.offer || S.spinPos) return;
@@ -882,7 +882,7 @@
   function onPick(id) {
     var S = T.state();
     if (busy || S.finished || S.tweakMode) return;
-    if (Date.now() - offerMovedAt < 700) { T.track('pick_after_shift', { mode: S.mode.id }); return; } // the cards just moved under the finger
+    if (Date.now() - offerMovedAt < 700) { T.track('pick_after_shift', { mode: S.mode.id }); return; } 
     var p = T.byId[id];
     if (!p) return;
     if (S.mode.source === 'spin' && S.spinPos) { place(id, S.spinPos, S.spinSlot); return; }
@@ -903,7 +903,7 @@
   function place(id, code, slotIdx) {
     var S = T.state();
     var p = T.byId[id];
-    // A bought Immortal or World Legend Pick (js/draft.js useImm, useIL): taken from the account only now, as he's chosen
+    
     if (S.offer && S.offer.paid && !S.offer.taken) {
       if (busy || !window.CastAccount || !CastAccount.pickUse) return;
       var item = S.offer.item || 'imm', isIL = item === 'ileg';
@@ -921,48 +921,48 @@
       });
       return;
     }
-    // The free World Legend, taken (GA)
+    
     if (p && p.il && S.il && S.il.shown === p.id && !(S.offer && S.offer.paid)) T.track('ileg_natural_taken', { mode: S.mode.name, player: p.name });
-    /* Where he came from, for the team sheet (11 Oct 2026, the owner: "differentiate between all the special cards"; the 4th
-       part of his d.sq entry, read by js/cast-account.js PICK_SRC): L a World Legend Pick, I an Immortal Pick, F the free
-       World Legend, G the GOAT, K a Legend Key's Legends Pick. Kept by player, so a swap of spots keeps it */
+    
+
+
     var src = S.offer && S.offer.paid ? (S.offer.item === 'ileg' ? 'L' : 'I') : p && p.il && S.il && S.il.shown === p.id ? 'F'
       : S.offer && S.offer.goat ? 'G' : S.offer && S.offer.key ? 'K' : '';
     var idx = T.pick(id, code, slotIdx);
     if (idx == null) return;
     S.srcOf = S.srcOf || {};
     if (src) S.srcOf[p.id] = src; else delete S.srcOf[p.id];
-    // Promos: finding a Team of the Year player or a premier earns that promo's trophy, right away
+    
     if (T.promoTier && T.promoTier(p) && window.CastAccount && window.CastAccount.unlock && !S.qd) window.CastAccount.unlock([T.promoTrophy()]);
     placingId = null;
     closeSheet();
     sfx.pick();
     busy = true;
-    // Show the reveal before moving on
+    
     $('offerPanel').innerHTML = R.reveal(p, T.slotClub(S.slots[idx]));
     renderChrome(idx);
-    // The GOAT item's card lands: a gold ring and a burst of goats on his spot (js/cast-celebrate.js)
+    
     if (src === 'G' && window.CastCelebrate && window.CastCelebrate.goatLand) window.CastCelebrate.goatLand(document.querySelector('.slot[data-slot="' + idx + '"]'), { tone: tone });
     setTimeout(function () {
-      if (T.state() !== S) return; // restarted mid-reveal
+      if (T.state() !== S) return; 
       busy = false;
       settle();
     }, reduceMotion ? 300 : 1100);
   }
 
-  // Squad full and short, with no Remove Player left: a saved one, or one to buy, can still swap a player out. So the
-  // lock-in choice and its countdown show with "Remove · $0.99" (or "2 saved"): players 15+ in the wildcard modes.
+  
+  
   function removeStillOnSale(S, out) {
     return !out.win && out.reason === 'under' && S.mode.wildcards && S.wildcards.tweak < 1 &&
       !!(window.CastAccount && CastAccount.canBuyRemove && CastAccount.canBuyRemove());
   }
-  /* Go Higher (2 Oct 2026, the owner's call): a 13 that fills at the target or over (1000+, Team Spin, NRLW 250+) asks
-     before it locks in, every time it fills, like a short one: with a Remove Player still in hand (the game's own, CAST
-     Pass's second, or saved ones) they can swap someone out and chase a bigger score; with none left, players 15+ get
-     one for $0.99 (they may keep paying to climb). The 10-second countdown locks it in if they don't tap, and the new
-     score stands even if it drops (under the target, the short choice shows as before). Not Exactly 1000, the Daily or
-     Quick Draft. Its headline and line take turns game by game (S.ghCopy). GA: go_higher_view, go_higher_remove,
-     go_higher_lock (auto: the countdown ran out) */
+  
+
+
+
+
+
+
   function goHigher(S, out) {
     if (!out.win || out.reason !== 'hit' || S.mode.rule !== 'atleast' || !S.mode.wildcards || S.daily || S.qd) return false;
     if (S.wildcards.tweak > 0) return true;
@@ -970,18 +970,18 @@
     return !!A && ((A.removesSaved && A.removesSaved() > 0) || (A.canBuyRemove && A.canBuyRemove()));
   }
   function goHigherHow(S) { return S.wildcards.tweak > 0 ? 'own' : window.CastAccount && CastAccount.removesSaved && CastAccount.removesSaved() > 0 ? 'saved' : 'buy'; }
-  // After a pick or tweak: finish, wait for a lock-in decision, or serve the next offer
+  
   function settle() {
     var S = T.state();
     var out = T.outcome(false);
     var higher = !!out && goHigher(S, out);
     if (out && !removeStillOnSale(S, out) && !higher) { finish(out); return; }
     if (higher) {
-      if (S.ghCopy == null) { var ghN = 0; try { ghN = +localStorage.getItem('1000tries_gh') || 0; localStorage.setItem('1000tries_gh', String(ghN + 1)); } catch (e) { /* storage blocked */ } S.ghCopy = ghN % 2; }
+      if (S.ghCopy == null) { var ghN = 0; try { ghN = +localStorage.getItem('1000tries_gh') || 0; localStorage.setItem('1000tries_gh', String(ghN + 1)); } catch (e) {   } S.ghCopy = ghN % 2; }
       T.track('go_higher_view', { mode: S.mode.name, total: out.total, how: goHigherHow(S) });
     }
     if (T.filledCount() === S.slots.length) {
-      S.lockHold = false; // a fresh countdown
+      S.lockHold = false; 
       S.awaitingLock = true;
       S.offer = null;
       renderDraft();
@@ -992,14 +992,14 @@
     else nextOffer();
   }
 
-  /* Wildcard theatre: using one should feel like a big moment */
+   
   var WC_FX = {
     reroll: { ico: '\uD83D\uDD04', title: 'Reroll!', sub: 'New players to choose' },
-    respin: { ico: '\uD83D\uDD04', title: 'Reroll!', sub: 'Back on the wheel' }, // the tile says Reroll in Team Spin too (17 Oct 2026)
+    respin: { ico: '\uD83D\uDD04', title: 'Reroll!', sub: 'Back on the wheel' }, 
     scout:  { ico: '\uD83D\uDC40', title: 'Reveal!', sub: 'Your decision just got easier' },
     tweak:  { ico: '\u274C', title: 'Remove!', sub: 'Tap a player in your 13' },
     removed:{ ico: '\u274C', title: 'Removed!', sub: '' },
-    sub:    { ico: '\uD83D\uDD01', title: 'Substitute', sub: '' } // in its tile's blue (17 Oct 2026: it showed Remove Player in pink)
+    sub:    { ico: '\uD83D\uDD01', title: 'Substitute', sub: '' } 
   };
   function wildcardBurst(kind, cls, sub) {
     if (reduceMotion) return false;
@@ -1015,12 +1015,12 @@
     setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
     return true;
   }
-  // The button that was just spent flashes before settling into its used state
+  
   function markUsed(key) {
     var b = document.querySelector('#offerPanel .wc-' + key);
     if (b) b.classList.add('just-used');
   }
-  // Reveal Tries: count every number up from zero, one card after another
+  
   function countRevealed() {
     Array.prototype.forEach.call(document.querySelectorAll('#offerPanel .tries-badge.is-revealed'), function (badge, i) {
       var strong = badge.querySelector('strong');
@@ -1056,13 +1056,13 @@
       sfx.wild();
       if (S.mode.source === 'spin') {
         S.wildcards.reroll--;
-        T.setBoost(T.bestOnOffer() + 1); // 7 times in 10 the new squad quietly has one who beats the best of this one (js/team-spin.js)
+        T.setBoost(T.bestOnOffer() + 1); 
         wildcardBurst('respin', 'reroll');
         spin();
         if (!S.wildcards.reroll && window.CastAccount && CastAccount.nudgeBonus) setTimeout(function () { CastAccount.nudgeBonus(grantBonus(S)); }, 2600);
       } else {
         T.useReroll();
-        var rolled = S.offer && S.offer.il ? T.byId[S.offer.il] : null; // a free World Legend dealt by the Reroll: his reveal first
+        var rolled = S.offer && S.offer.il ? T.byId[S.offer.il] : null; 
         if (rolled) { T.track('ileg_natural_shown', { mode: S.mode.name }); ilReveal([rolled], false, renderDraft); } else renderDraft();
         wildcardBurst('reroll', 'reroll');
         markUsed('reroll');
@@ -1086,7 +1086,7 @@
       if (S.tweakMode) T.armTweak(false);
       else if (T.armTweak(true)) { sfx.wild(); if (!wildcardBurst('tweak', 'tweak')) toast('Tap a player in your 13 to remove them'); }
       renderDraft();
-      // Phones: bring the field into view so the player can tap who to remove
+      
       if (S.tweakMode && !isDesktop()) {
         var pitchPanel = $('pitch');
         if (pitchPanel) pitchPanel.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
@@ -1094,7 +1094,7 @@
     }
   }
 
-  // Substitute: tap a lit-up player, then one of their lit-up open spots
+  
   function onSubSlot(idx) {
     var S = T.state(), m = S.subMode, p = S.slots[idx].player;
     if (m.from == null || (p && idx !== m.from)) {
@@ -1108,7 +1108,7 @@
     sfx.wild();
     T.track('wildcard_used', { wildcard: 'sub', mode: S.mode.name });
     if (!wildcardBurst('sub', 'sub', moved.name + ' moves to ' + T.POS_NAMES[S.slots[idx].code])) toast(moved.name + ' moves to ' + T.POS_NAMES[S.slots[idx].code]);
-    // The offer on screen may have nowhere to go now: deal a fresh one instead of leaving you stuck
+    
     if (S.offer && S.offer.players && !S.offer.players.some(function (x) { return T.openCodesFor(x).length; })) nextOffer(); else renderDraft();
   }
 
@@ -1127,12 +1127,12 @@
     if (!S || !S.tweakMode || busy) return;
     var p = T.applyTweak(idx);
     if (!p) return;
-    clock.offer = null; // the pick clock starts again for the offer that comes back
+    clock.offer = null; 
     sfx.wild();
-    // Stronger wildcards: the next offer quietly beats him (js/wildcards.js applyTweak). A mechanic only, never in the copy
+    
     if (!wildcardBurst('removed', 'tweak', p.name + ' is back in the pool')) toast(p.name + ' is back in the pool');
     settle();
-    // Back up to the new offer (the spot you cleared is lower down, on the pitch)
+    
     var panel = $('offerPanel');
     if (panel) {
       var top = panel.getBoundingClientRect().top + window.pageYOffset - 90;
@@ -1140,9 +1140,9 @@
     }
   }
 
-  /* Finish */
+   
 
-  // Trophies this game earned (the account module ignores ones already unlocked)
+  
   function trophiesFor(S, out) {
     var ids = [], total = out.total, mode = S.mode.id, nrl = mode !== 'nrlw' && mode !== 'wc';
     var players = S.slots.filter(function (x) { return x.player; }).map(function (x) { return x.player; });
@@ -1160,13 +1160,13 @@
       if (S.mode.wildcards && total >= 1000 && !usedWild) ids.push('nowild');
       if (mode === 'spin' && total >= 1000) ids.push('spin');
       if (players.some(function (p) { return p.name === 'Alex Johnston'; })) ids.push('aj');
-      // GOAT Herder: 3 of the 10 biggest NRL tryscorers in one team (Alex Johnston is the only true GOAT)
+      
       var top10 = T.players.slice().sort(function (a, b) { return b.tries_1998_plus - a.tries_1998_plus; }).slice(0, 10);
       if (players.filter(function (p) { return top10.indexOf(p) >= 0; }).length >= 3) ids.push('goats');
       if (full && total < 500) ids.push('bench');
       if (players.some(function (p) { return T.isLegend(p); })) ids.push('legend');
       if (players.some(function (p) { return T.isImmortal(p); })) ids.push('immortal');
-      // 5 Oct 2026: a 1000+ here is one that counts (not an Exactly 1000 bust)
+      
       var hit = total >= 1000 && out.reason !== 'over', luck = T.luckPct();
       if (total === 1111 && mode !== 'exact') ids.push('legs11');
       if (hit && luck != null && luck <= -15) ids.push('odds');
@@ -1179,17 +1179,17 @@
       if (total >= 250) ids.push('nrlw250');
       if (total >= 300) ids.push('nrlw300');
     }
-    // World Cup 200+ keeps to its own trophy (the World Cup branch, 4 to 5 Oct, was built before these, 5 Oct)
+    
     if (full && mode !== 'wc') {
       if (T.luckPct() != null && T.luckPct() >= 30) ids.push('lucky');
-      if (S.slots.every(function (x) { return x.top; })) ids.push('read'); // Perfect Read: js/draft.js marks each pick
+      if (S.slots.every(function (x) { return x.top; })) ids.push('read'); 
       clubTrophies(players, ids);
     }
     return ids;
   }
-  /* A 13's careers (5 Oct 2026, NRL): Time Traveller (one who started before 2000, Legends included, with one who played
-     in 2026), Fresh Faces (all started in 2020 or later), Old School (all finished by 2004), and Family Business or
-     Namesakes from the names (js/cast-account.js) */
+  
+
+
   function eraTrophies(players, ids) {
     var spans = players.map(function (p) { var m = /^(\d{4})\D+(\d{4})$/.exec(p.career_span || ''); return m ? [+m[1], +m[2]] : null; });
     if (spans.every(Boolean)) {
@@ -1200,8 +1200,8 @@
     var CA = window.CastAccount;
     if (CA && CA.nameTrophies) CA.nameTrophies(players.map(function (p) { return p.name; })).forEach(function (id) { ids.push(id); });
   }
-  // Club Legends (all 13 played for one club) and True Colours (5+ who played for the profile's club). A forerunner counts
-  // as the club it grew into: Easts are the Roosters (js/cast-account.js)
+  
+  
   function clubTrophies(players, ids) {
     var CA = window.CastAccount || {}, home = CA.homeClub || function (c) { return c; };
     var sets = players.map(function (p) { var o = {}; (p.club_years || []).forEach(function (cy) { o[home(cy.club)] = 1; }); return o; });
@@ -1210,9 +1210,9 @@
     if (fan && sets.filter(function (o) { return o[fan]; }).length >= 5) ids.push('colours');
   }
 
-  // Follow us for a free reroll (cast-account.js): add it to this game when granted
-  // Tier wildcards: every kind starts at n (guests 0, shown locked with "Sign in"). S.wcStart remembers the starting
-  // counts, so a sign-in mid-game adds the difference and wildcards already played stay played.
+  
+  
+  
   function setTierWildcards(S, n) {
     ['reroll', 'scout', 'tweak'].forEach(function (k) {
       var start = S.wcStart ? S.wcStart[k] : 1;
@@ -1221,16 +1221,16 @@
     S.wcStart = { reroll: Math.max(n, S.wcStart ? S.wcStart.reroll : 0), scout: Math.max(n, S.wcStart ? S.wcStart.scout : 0), tweak: Math.max(n, S.wcStart ? S.wcStart.tweak : 0) };
     S.wcLocked = n === 0;
   }
-  // Signed in (or bought the Pass) mid-game: unlock the wildcards in this same game
-  // Saved rerolls changed (bought or used): the Reroll button's "N saved" follows
+  
+  
   window.addEventListener('cast:rerolls', function () { var S = T.state(); if (S && !S.finished && document.body.getAttribute('data-screen') === 'draft') renderDraft(); });
-  // Midnight in Sydney: a new Legend Key (the tile was counting down to it)
+  
   window.addEventListener('cast:keys', function () { var S = T.state(); if (S && !S.finished && document.body.getAttribute('data-screen') === 'draft') renderDraft(); });
   window.addEventListener('cast:launch', function () { var S = T.state(); if (S && !S.finished && !busy && document.body.getAttribute('data-screen') === 'draft') renderDraft(); });
   window.addEventListener('cast:tier', function (e) {
     var S = T.state(), n = e.detail && e.detail.wildcards;
     if (!S || S.finished || !S.mode.wildcards || !S.wcStart || typeof n !== 'number') return;
-    if (S.mode.paidOnly) { S.wcLocked = n === 0; if (document.body.getAttribute('data-screen') === 'draft') renderDraft(); return; } // Hard Mode: still no free ones
+    if (S.mode.paidOnly) { S.wcLocked = n === 0; if (document.body.getAttribute('data-screen') === 'draft') renderDraft(); return; } 
     setTierWildcards(S, n);
     if (e.detail && e.detail.tier === 'pass' && !S.subUsed && !S.subLeft) S.subLeft = 1;
     if (document.body.getAttribute('data-screen') === 'draft') renderDraft();
@@ -1246,8 +1246,8 @@
     };
   }
 
-  /* CAST account team sheets: club colours and tries from 1000TRIES's own lists (Legends and Immortals included).
-     Attached once the page has loaded: the account config is set up after this script. */
+  
+
   function sheetHooks() {
     if (!window.CAST_ACCOUNT) return;
     window.CAST_ACCOUNT.startChallenge = function (c) { return startChallenge(c); };
@@ -1261,10 +1261,10 @@
     var wcNames = null, wcCount = -1;
     window.CAST_ACCOUNT.player = function (game, name, mode) {
       if (game !== '1000tries') return null;
-      // A World Cup 200+ team sheet: Test tries from the World Cup pack (the same names have NRL tries in the other)
+      
       if (mode === 'wc') {
         var wp = (T.DATASETS.wc && T.DATASETS.wc.pool) || null;
-        if (!wp) { T.loadDataset('wc').then(function () { if (window.CastAccount) CastAccount.refresh(); }, function () { /* no Test tries for now */ }); return null; }
+        if (!wp) { T.loadDataset('wc').then(function () { if (window.CastAccount) CastAccount.refresh(); }, function () {   }); return null; }
         if (wp.players.length !== wcCount) { wcNames = {}; wcCount = wp.players.length; wp.players.forEach(function (p) { wcNames[(p.record_name || p.name).toLowerCase()] = p; }); }
         var w = wcNames[String(name).toLowerCase()];
         return w ? { tries: w.tries_1998_plus, club: T.lastClub(w), tier: '' } : null;
@@ -1273,7 +1273,7 @@
       var n = pools[0].players.length + pools[1].players.length + (T.LEGENDS || []).length;
       if (n !== sheetCount) {
         sheetNames = {}; sheetCount = n;
-        // A renamed player's old name ('was') still finds them, for games saved before the rename
+        
         pools.forEach(function (pl) { pl.players.forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; (p.was || []).forEach(function (o) { sheetNames[String(o).toLowerCase()] = p; }); }); });
         (T.LEGENDS || []).forEach(function (p) { sheetNames[(p.record_name || p.name).toLowerCase()] = p; });
       }
@@ -1289,46 +1289,46 @@
     dropDraft(S.mode.id);
     S.tweakMode = false;
     if (!S.qd) T.track('game_end', { mode: S.mode.name, result: out.win ? 'win' : 'fail', total: out.total });
-    try { localStorage.setItem('1000tries_played', '1'); } catch (e) { /* storage blocked */ }
+    try { localStorage.setItem('1000tries_played', '1'); } catch (e) {   }
     $('results').innerHTML = R.results(S, out);
-    // CAST Games account: keep the result on this device, and sync it if signed in
+    
     if (window.CastAccount) {
       window.CastAccount.record({
-        // A themed Daily's target without its club player is a miss ('under'); won is 'won' (Daily Won)
+        
         game: '1000tries', mode: S.mode.id, score: out.total, result: out.reason === 'noclub' ? 'under' : out.reason, win: out.win, top: out.reason === 'exact',
-        // Legends and Immortals are saved as "Ken Irvine (Legend)" so the server scores them from the Legends list
+        
         picks: S.slots.filter(function (s) { return s.player; }).map(function (s) { return s.player.record_name || s.player.name; }),
-        // sq: each pick's club (Team Spin: club|season spun), in pick order, for the leaderboard team sheet.
-        // The luck of the draw goes with it: lk (percent against an average draw), lf (a lifeline pick), wc (wildcards played)
+        
+        
         d: Object.assign({ sq: S.slots.filter(function (s) { return s.player; }).map(function (s) {
           var src = S.srcOf && S.srcOf[s.player.id];
-          return (T.slotClub(s) || '') + (s.year || src ? '|' + (s.year || '') : '') + (src ? '||' + src : ''); // "nzl|||F"
+          return (T.slotClub(s) || '') + (s.year || src ? '|' + (s.year || '') : '') + (src ? '||' + src : ''); 
         }) },
           S.special && S.specialDone ? { pack: S.special } : {}, S.lifelineUsed ? { lf: 1 } : {},
           T.luckPct() != null ? { lk: T.luckPct() } : {}, T.wildcardsUsed() != null ? { wc: T.wildcardsUsed() } : {},
-          // seed: the draft, so this game can be sent to a friend as a challenge; key: boosted with a Vault key (CAST Pass)
+          
           S.seed ? { seed: S.seed } : {}, S.keyUsed ? { key: S.keyUsed } : {}, S.keysUsed ? { lks: S.keysUsed } : {}, S.qd ? { qd: 1 } : {}, S.goatUsed ? { goat: 1 } : {}, S.immUsed ? { imm: S.immUsed } : {}, S.ilegUsed ? { ileg: S.ilegUsed } : {},
           S.daily ? { daily: S.daily.n, date: S.daily.date, go: S.daily.go } : {},
-          // World Cup 200+: how many World Cup games' tries the pack had (the board adds the total up at that tally)
+          
           S.mode.id === 'wc' ? { wv: T.DATASETS.wc.wv || 0 } : {})
       });
       window.CastAccount.refresh();
       if (window.CastAccount.unlock && !S.qd) window.CastAccount.unlock(trophiesFor(S, out));
     }
-    // Build the share image now so the Share tap can hand it over instantly
+    
     shareCard = null;
     if (T.buildShareCard) T.buildShareCard(S, out).then(function (card) { if (T.state() === S) shareCard = card; });
     if (out.win) sfx.win(); else sfx.fail();
     celebrate(S, out, function () {
       show('results');
-      if (S.daily && T.dailyDone) T.dailyDone(S, out); // the Daily's own result card on top
+      if (S.daily && T.dailyDone) T.dailyDone(S, out); 
       countUp($('rtNum'), 0, out.total);
     });
   }
 
-  /* Exactly 1000 (8 Oct 2026, the owner: "yes build this", 1000TRIES's own big moment to match 27-0's 27-0): the big moment
-     both games share (js/cast-celebrate.js) before the results: the 13 in the order they went in, their tries adding up to
-     1,000, then the cup, the 13 and their numbers. Not in Quick Draft. then() shows the results. */
+  
+
+
   function celebrate(S, out, then) {
     if (out.reason !== 'exact' || S.qd || !window.CastCelebrate) { then(); return; }
     var A = window.CastAccount, C = window.CAST_ACCOUNT;
@@ -1336,7 +1336,7 @@
       var c = C && C.club ? C.club(id) : null;
       return c ? { abbr: c.abbr, bg: c.bg, fg: c.fg } : { abbr: String(id || '?').slice(0, 3).toUpperCase(), bg: '#2a2a3a', fg: '#fff' };
     };
-    // The order they went in: each spot's last pick (a swap or a pick after a Remove counts from when it went in)
+    
     var when = {};
     (S.history || []).forEach(function (h, i) { if (h && h.slot != null) when[h.slot] = i; });
     var filled = S.slots.map(function (s, i) { return { s: s, i: i }; }).filter(function (x) { return x.s.player; });
@@ -1349,7 +1349,7 @@
     });
     var last = joined[joined.length - 1], counts = {}, clubs = 0;
     filled.forEach(function (x) { var id = T.slotClub(x.s); if (!id) return; if (!counts[id]) clubs++; counts[id] = (counts[id] || 0) + 1; });
-    // The player's club (their CAST Profile), else the club most of the 13 come from
+    
     var b = A && A.myBadge ? A.myBadge() : null, colours = b && b.c1 ? [b.c1, b.c2] : null;
     if (!colours) {
       var top = Object.keys(counts).sort(function (x, y) { return counts[y] - counts[x]; })[0], tc = top && A && A.teamColours ? A.teamColours(top) : null;
@@ -1382,19 +1382,19 @@
     var out = T.outcome(true);
     if (!S || !out) return '';
     var url = 'https://castgames.com.au/1000tries/', CA = window.CastAccount;
-    if (CA && CA.inviteLink) url = CA.inviteLink(url); // Invite a Mate v2: a signed-in player's share carries their invite code
+    if (CA && CA.inviteLink) url = CA.inviteLink(url); 
     var score = out.reason === 'exact'
       ? 'I just hit exactly 1000 NRL tries on 1000TRIES \uD83C\uDFAF'
       : 'I just scored ' + T.fmt(out.total) + ' ' + T.TRY_LABEL + ' on 1000TRIES (' + S.mode.name + ') \uD83C\uDFC9';
     return score + '\nThink you can beat me? ' + url;
   }
 
-  // Share opens a small sheet with both sizes: Story (9:16) and Post (4:5)
+  
   function share() {
     var text = shareText();
     if (!text) return;
-    // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share);
-    // the sheet below is for a page whose account file is older
+    
+    
     var CA = window.CastAccount;
     if (CA && CA.sharePick && T.buildShareCard) {
       var S0 = T.state(), made = null, card = function () { var S = S0; return made || (made = T.buildShareCard(S, T.outcome(true))); };
@@ -1405,7 +1405,7 @@
     }
     var post = shareCard && shareCard.post, story = shareCard && shareCard.story;
     if (!post && !story) {
-      // Card not ready (or this browser cannot draw it): share the message on its own
+      
       if (navigator.share && !isDesktop()) { navigator.share({ text: text }).catch(function () {}); return; }
     }
     var phone = !isDesktop() && !!navigator.share;
@@ -1425,14 +1425,14 @@
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="close-sheet">Done</button>');
   }
 
-  // Inside the tap itself (iOS only allows sharing a file from a tap)
+  
   function shareCardFile(kind) {
     var text = shareText(), card = shareCard && shareCard[kind];
     var file = card && card.file;
     if (file && navigator.canShare && navigator.share) {
       var withFile = { files: [file], text: text }, ok = false;
       try { ok = navigator.canShare(withFile); } catch (e) { ok = false; }
-      if (ok) { navigator.share(withFile).catch(function () { /* cancelled */ }); T.track('share_card', { size: kind }); return; }
+      if (ok) { navigator.share(withFile).catch(function () {   }); T.track('share_card', { size: kind }); return; }
     }
     if (navigator.share) navigator.share({ text: text }).catch(function () {});
   }
@@ -1448,9 +1448,9 @@
 
 
 
-  /* Events */
+   
 
-  // Rules open in a pop-up on the game page, so nobody gets lost on a separate page
+  
   var rulesHtml = null;
   function openRules() {
     var show = function (html) {
@@ -1471,7 +1471,7 @@
     }).catch(function () { location.href = 'how-it-works.html'; });
   }
 
-  // FAQ: one question open at a time (name="faq" does this in newer browsers; this covers the rest)
+  
   document.addEventListener('toggle', function (e) {
     var d = e.target;
     if (!d.classList || !d.classList.contains('faq-item') || !d.open) return;
@@ -1485,28 +1485,28 @@
       openRules();
       return;
     }
-    // .mode-card only: the body carries data-mode during the draft and results (the mode skin), and a tap anywhere
-    // there must never start a new game
+    
+    
     var t = e.target.closest('.mode-card[data-mode],.mode-mini[data-mode],[data-pick],[data-place],[data-wildcard],[data-slot],[data-action],[data-track]');
     if (!t) return;
 
     if (t.hasAttribute('data-track')) {
       T.track(t.getAttribute('data-track'), { placement: t.getAttribute('data-where') || '' });
-      if (!t.hasAttribute('data-action')) return; // plain links keep default behaviour
+      if (!t.hasAttribute('data-action')) return; 
     }
     if (t.hasAttribute('data-mode')) {
-      // One tap plays that mode (a scroll that starts on a card is never a tap). Players still loading: it starts once
-      // they are in
+      
+      
       selectedMode = t.getAttribute('data-mode');
-      if (selectedMode === 'ou') { if (T.ou) T.ou.open(); return; } // Six Again has its own screen (js/overunder.js)
-      if (selectedMode === 'bingo') { selectedMode = 'plus'; if (T.bingo) T.bingo.open(); return; } // NRL Bingo too (js/bingo.js)
+      if (selectedMode === 'ou') { if (T.ou) T.ou.open(); return; } 
+      if (selectedMode === 'bingo') { selectedMode = 'plus'; if (T.bingo) T.bingo.open(); return; } 
       renderHome();
       if (T.players.length) newGame(selectedMode); else { startWhenReady = selectedMode; $('startBtn').hidden = false; }
       return;
     }
     if (t.hasAttribute('data-pick')) { onPick(t.getAttribute('data-pick')); return; }
     if (t.hasAttribute('data-place')) { place($('sheetBody').getAttribute('data-player'), t.getAttribute('data-place')); return; }
-    if (t.hasAttribute('data-gh') && T.state()) T.track('go_higher_remove', { mode: T.state().mode.name, total: T.total(), how: goHigherHow(T.state()) }); // Go Higher's Remove
+    if (t.hasAttribute('data-gh') && T.state()) T.track('go_higher_remove', { mode: T.state().mode.name, total: T.total(), how: goHigherHow(T.state()) }); 
     if (t.hasAttribute('data-wildcard')) { onWildcard(t.getAttribute('data-wildcard')); return; }
     if (t.hasAttribute('data-slot')) { onSlot(Number(t.getAttribute('data-slot'))); return; }
 
@@ -1525,7 +1525,7 @@
         if (T.state() && T.total() >= T.TARGET) T.track('go_higher_lock', { mode: T.state().mode.name, total: T.total(), auto: 0 });
         finish(T.outcome(true));
         break;
-      case 'play-again': { // after a Daily go: the next go (or the Daily card when all 3 are used), never a 1000+ game
+      case 'play-again': { 
         var wasDaily = !!(T.state() && T.state().daily);
         afterResults(function () { if (wasDaily && T.dailyStart) T.dailyStart(); else newGame(selectedMode); });
         break;
@@ -1552,7 +1552,7 @@
       case 'buy-reroll': {
         var bs = T.state();
         if (!bs || !window.CastAccount || !CastAccount.buyReroll) break;
-        // Where the draft is at, for the top of the sheet: "874 tries with 3 picks to go. 126 more and you hit 1000."
+        
         var bTot = T.total(), bLeft = bs.slots.filter(function (x) { return !x.player; }).length, bWord = bs.mode.id === 'spin' ? 'spin' : 'pick';
         var bHook = bTot < T.TARGET
           ? { title: 'You\u2019re One Good ' + (bWord === 'spin' ? 'Spin' : 'Pick') + ' Away', line: T.fmt(bTot) + ' tries with ' + bLeft + ' ' + bWord + (bLeft === 1 ? '' : 's') + ' to go. ' + T.fmt(T.TARGET - bTot) + ' more and you hit ' + T.fmt(T.TARGET) + '.' }
@@ -1560,15 +1560,15 @@
         CastAccount.buyReroll('1000tries', function () {
           if (T.state() !== bs) return;
           bs.wildcards.reroll += 1; bs.boughtRerolls = (bs.boughtRerolls || 0) + 1;
-          if (bs.mode.paidOnly) bs.paidUsed.reroll = true; // Hard Mode: one a game
+          if (bs.mode.paidOnly) bs.paidUsed.reroll = true; 
           onWildcard('reroll');
         }, bHook);
         break;
       }
-      case 'buy-remove': { // Remove Player used up: a saved one, or one to buy (CastAccount.buyRemove), then tap who goes
+      case 'buy-remove': { 
         var ms = T.state();
         if (!ms || !window.CastAccount || !CastAccount.buyRemove) break;
-        if (ms.awaitingLock) { ms.lockHold = true; stopLockTimer(); } // squad full: the countdown waits while they choose
+        if (ms.awaitingLock) { ms.lockHold = true; stopLockTimer(); } 
         var mTot = T.total(), mOpen = ms.slots.filter(function (x) { return !x.player; }).length, mWord = ms.mode.id === 'spin' ? 'spin' : 'pick';
         var mHook = mTot >= T.TARGET ? { title: 'Chase a Bigger Score', line: T.fmt(mTot) + ' tries already. Swap your lowest scorer for someone better and climb the leaderboard.' }
           : mOpen ? { title: 'Swap Out Your Weakest ' + (mWord === 'spin' ? 'Spin' : 'Pick'), line: T.fmt(mTot) + ' tries with ' + mOpen + ' ' + mWord + (mOpen === 1 ? '' : 's') + ' to go. Take one player out and draft that spot again.' }
@@ -1576,12 +1576,12 @@
         CastAccount.buyRemove('1000tries', function () {
           if (T.state() !== ms) return;
           ms.wildcards.tweak += 1; ms.boughtTweaks = (ms.boughtTweaks || 0) + 1;
-          if (ms.mode.paidOnly) ms.paidUsed.tweak = true; // Hard Mode: one a game
+          if (ms.mode.paidOnly) ms.paidUsed.tweak = true; 
           onWildcard('tweak');
         }, mHook);
         break;
       }
-      case 'buy-reveal': { // Reveal Tries used up: a saved one, or one to buy (CastAccount.buyItem), then the offer shows its tries
+      case 'buy-reveal': { 
         var vs = T.state();
         if (!vs || !window.CastAccount || !CastAccount.buyItem) break;
         var vTot = T.total(), vLeft = vs.slots.filter(function (x) { return !x.player; }).length;
@@ -1589,12 +1589,12 @@
         CastAccount.buyItem('reveal', '1000tries', function () {
           if (T.state() !== vs) return;
           vs.wildcards.scout += 1; vs.boughtScouts = (vs.boughtScouts || 0) + 1;
-          if (vs.mode.paidOnly) vs.paidUsed.scout = true; // Hard Mode: one a game
+          if (vs.mode.paidOnly) vs.paidUsed.scout = true; 
           onWildcard('scout');
         }, vHook);
         break;
       }
-      case 'imm': { // The Immortal Pick tile: one in hand deals three Immortals now; none, its price (then the deal)
+      case 'imm': { 
         var ims = T.state();
         if (!ims || busy || !T.immFits() || !window.CastAccount || !CastAccount.pickState) break;
         var ist = CastAccount.pickState('imm'), deal = function () {
@@ -1607,7 +1607,7 @@
         CastAccount.pickBuy('imm', '1000tries', deal, { kicker: 'Immortal Pick', title: 'Choose an Immortal', line: T.fmt(T.total()) + ' tries so far. Swap this offer for three Immortals and add one with his career tries.' });
         break;
       }
-      case 'ileg': { // The World Legend Pick tile: one in hand deals three World Legends now; none, its price (then the deal)
+      case 'ileg': { 
         var ls = T.state();
         if (!ls || busy || !T.ilFits() || !window.CastAccount || !CastAccount.pickState) break;
         var lst = CastAccount.pickState('ileg'), ldeal = function () {
@@ -1620,16 +1620,16 @@
         CastAccount.pickBuy('ileg', '1000tries', ldeal, { kicker: 'World Legend Pick', title: 'Choose a World Legend', line: T.fmt(T.total()) + ' Test tries so far. Swap this offer for three World Legends and add one with his Test tries.' });
         break;
       }
-      case 'imm-back': { // Keep My Offer: the offer they had, nothing used
+      case 'imm-back': { 
         if (!busy && T.keepOffer()) renderDraft();
         break;
       }
-      case 'goat': { // The GOAT tile: ask first (it's a $9.99 item)
+      case 'goat': { 
         if (!T.goatFits()) break;
         openSheet(R.goatSheet()); $('sheet').classList.add('is-confirm');
         break;
       }
-      case 'confirm-goat': { // use one from the Vault, then the offer becomes Alex Johnston
+      case 'confirm-goat': { 
         var gs = T.state();
         closeSheet();
         if (!gs || !T.goatFits() || !window.CastAccount || !CastAccount.buyItem) break;
@@ -1637,20 +1637,20 @@
           if (T.state() !== gs || !T.useGoat()) return;
           T.track('goat_used', { mode: gs.mode.name });
           renderDraft();
-          // The GOAT moment (js/cast-celebrate.js, 17 Oct 2026): the reel locks on him, then the toast
+          
           var said = function () { toast('\uD83D\uDC10 The GOAT is in: 240 NRL tries'); };
           if (window.CastCelebrate && window.CastCelebrate.goat) window.CastCelebrate.goat({ tone: tone, done: said }); else said();
         });
         break;
       }
-      case 'buy-key': { // no Legend Key to use: buy one ($1.99, or 3 for $4.99); once it's in the Vault the tile says Ready
+      case 'buy-key': { 
         var ks = T.state();
         if (!ks || !window.CastAccount || !CastAccount.buyKey) break;
         var kTot = T.total();
         CastAccount.buyKey('legend', '1000tries', { title: 'Swap for a Legends Pick', line: T.fmt(kTot) + ' tries so far. Swap this offer for a Legends Pick and add a Legend\u2019s career tries.' });
         break;
       }
-      case 'shop-removes': { // squad full, own Remove Player still in hand: stock up (the countdown waits meanwhile)
+      case 'shop-removes': { 
         var ss = T.state();
         if (!ss || !window.CastAccount || !CastAccount.shopRemoves) break;
         if (ss.awaitingLock) { ss.lockHold = true; stopLockTimer(); renderDraft(); }
@@ -1663,7 +1663,7 @@
       case 'legend-key': useLegendKey(); break;
       case 'legend-key-pass': if (window.CastAccount && CastAccount.openPass) CastAccount.openPass('vault'); break;
       case 'sub-pass': T.track('wildcard_locked_tap', { wildcard: 'sub' }); if (window.CastAccount && CastAccount.openPass) CastAccount.openPass('substitute'); break;
-      case 'wc-signin': // a guest taps a locked wildcard: sign in free, and they unlock in this game
+      case 'wc-signin': 
         if (window.CastAccount && CastAccount.requireSignIn) CastAccount.requireSignIn(null, 'wildcards');
         break;
       case 'spin-pos': choosePosition(t.getAttribute('data-pos')); break;
@@ -1684,8 +1684,8 @@
   });
 
   document.addEventListener('keydown', function (e) {
-    // Desktop keys (16 Oct 2026, the owner): 1, 2 and 3 pick that card (the Team Spin list too); while choosing a spot,
-    // the same keys choose among the spots he can go into. Never while typing, in a pop-up or a sheet
+    
+    
     var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
     if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
         $('sheet').hidden && !document.documentElement.classList.contains('ca-open') && !$('offerPanel').classList.contains('is-clock-paused')) {
@@ -1709,13 +1709,13 @@
     if (T.players.length) newGame(selectedMode);
   });
 
-  // "Play" from the leaderboards' Not Ranked Yet box (the cast:play event from js/cast-account.js), or a link from
-  // 27-0 (?play=exact): straight into that mode, asking first if a team is half built
-  /* A Daily Challenge link (?play=daily: the CAST Games home's Daily Challenge cards) can be read before js/daily.js and
-     the account have run, as the players often arrive first, and then the Daily never started (17 Oct 2026, the bug hunt:
-     the game's own card showed instead, for guests and signed-in players alike). It starts once both are there */
-  // and once the account knows who is playing and whether its game is launched, so a guest gets the Daily's sign-in rather
-  // than a go of the Daily (a first visit has no launch list yet: cast_launch_v1); after 8 s it starts anyway
+  
+  
+  
+
+
+  
+  
   var acctSeen = !window.CAST_ACCOUNT;
   window.addEventListener('cast-account', function (e) { var s = e.detail && e.detail.status; if (s === 'signed-in' || s === 'guest') acctSeen = true; });
   function launchKnown() { try { return !!localStorage.getItem('cast_launch_v1'); } catch (e) { return true; } }
@@ -1726,21 +1726,21 @@
   }
   function playMode(modeId) {
     if (modeId === 'daily') { dailyWhenReady(); return; }
-    // Six Again (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
+    
     if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
-    // NRL Bingo (js/bingo.js), one endless game ('bingod': an old Daily Bingo link opens it too)
+    
     if (modeId === 'bingo' || modeId === 'bingod') { if (!T.bingo) T.bingoWanted = 'go'; else if (T.bingo.on()) T.bingo.open('go'); return; }
     if (!T.MODES[modeId]) return;
-    if (!T.players.length) { startWhenReady = modeId; return; } // back from signing in on a phone before the players loaded
+    if (!T.players.length) { startWhenReady = modeId; return; } 
     var mid = document.body.getAttribute('data-screen') === 'draft' && !T.state().finished && T.filledCount() > 0;
     if (mid && !window.confirm('Leave this team and start ' + T.MODES[modeId].name + '?')) return;
     newGame(modeId);
   }
   window.addEventListener('cast:play', function (e) { var d = e.detail || {}; if (d.game === '1000tries') playMode(d.mode); });
-  // World Cup launched (or taken down), or a sign-in: the home page redraws its World Cup card
+  
   function homeAgain() { if (document.body.getAttribute('data-screen') === 'home') renderHome(); }
   window.addEventListener('cast:launch', function (e) { if (e.detail && e.detail.game === 'wc') { wcBits(); homeAgain(); } if (e.detail && (e.detail.game === 'ou' || e.detail.game === 'bingo')) homeAgain(); });
-  // The home FAQ's World Cup 200+ entry ([data-cast-wc]): shows once World Cup mode is on, like the How It Works notes
+  
   function wcBits() {
     var on = !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive());
     Array.prototype.forEach.call(document.querySelectorAll('[data-cast-wc]'), function (n) { n.hidden = !on; });
@@ -1748,15 +1748,15 @@
   setTimeout(wcBits, 0);
   window.addEventListener('cast:tier', homeAgain);
 
-  /* The Vault (CAST Pass): the server takes today's Legend Key, then this offer becomes a Legends Pick */
+   
   function useLegendKey() {
     var S = T.state();
     if (busy || !T.legendKeyFits() || !window.CastAccount || !CastAccount.useKey) return;
     busy = true;
     CastAccount.useKey('legend', 'plus').then(function () {
       busy = false;
-      // The key is already spent: if the game moved on meanwhile, say so (the review, 9 Oct 2026; it was silent)
-      // The Contact Us form opens for them, ready to send (17 Oct 2026: it was an email address in the toast)
+      
+      
       if (T.state() !== S || !T.useLegendKey()) {
         toast('The offer changed before your Legend Key opened. Send us a message and we\u2019ll put it back.');
         if (window.CastContact) setTimeout(function () { window.CastContact.open('pay', { msg: 'My Legend Key was used, but the offer changed before it opened. Please put it back. ' }); }, 1400);
@@ -1768,11 +1768,11 @@
     }, function (err) { busy = false; toast((err && err.message) || 'The Vault did not open. Try again.'); renderDraft(); });
   }
 
-  /* A friend's challenge (from the CAST Profile, or a ?challenge= link): the same mode and the same draft (seed).
-     Attached in sheetHooks, once the account config exists (it is set up after this script). */
+  
+
   function startChallenge(c) {
     if (!c || !T.MODES[c.mode]) return false;
-    if (!T.players.length) { setTimeout(function () { startChallenge(c); }, 400); return true; } // players still loading
+    if (!T.players.length) { setTimeout(function () { startChallenge(c); }, 400); return true; } 
     var S0 = T.state(), mid = document.body.getAttribute('data-screen') === 'draft' && S0 && !S0.finished && T.filledCount() > 0;
     if (mid && !window.confirm('Leave this team and play ' + (c.from || 'your friend') + '\u2019s challenge?')) return false;
     closeSheet();
@@ -1781,15 +1781,15 @@
     return true;
   }
 
-  /* Quick Draft (the owner's challenges, from the CAST Profile): drafts the strongest team from the challenge's own
-     seeded offers, then finishes the game for real, so the result is checked and settled like any other. Later offers
-     depend on earlier picks, so it searches ahead in the real engine (T.snapshot / T.restore): a beam of the best few
-     drafts, each scored by finishing it greedily. 1000+, NRLW and Team Spin go for the most tries (under the server's
-     cap); Exactly 1000 for the most without going over. In 1000+ and NRLW it may spend your tier's rerolls on weak
-     offers. Marked qd (private): off the leaderboards, no trophies or stats. */
+  
+
+
+
+
+
   var QD_CAP = { nrl: 1450, nrlw: 330 };
-  // The choices at this state: each offered player in each open spot they play (Team Spin: each open spot's spin,
-  // its best few players). Exactly 1000 leaves out any card that would go over.
+  
+  
   function qdOptions(snap, spin, exact, per, codes) {
     T.restore(snap);
     var S = T.state(), out = [], room = T.TARGET - T.total();
@@ -1798,7 +1798,7 @@
         if (exact && p.tries_1998_plus > room) return;
         T.openCodesFor(p).forEach(function (code) { out.push({ id: p.id, code: code, t: p.tries_1998_plus }); });
       });
-      if (T.canUse('reroll')) out.push({ reroll: true, t: -1 }); // bin this offer for the next one
+      if (T.canUse('reroll')) out.push({ reroll: true, t: -1 }); 
       return out;
     }
     (codes || Object.keys(T.emptyCodes())).forEach(function (code) {
@@ -1813,7 +1813,7 @@
     });
     return out;
   }
-  // Make one choice from a copied state; returns the next copy (with the next offer dealt, as the game deals it)
+  
   function qdApply(snap, o, spin) {
     T.restore(snap);
     var S = T.state();
@@ -1823,7 +1823,7 @@
     if (!spin && T.filledCount() < S.slots.length) T.rollOffer();
     return T.snapshot();
   }
-  // Finish greedily (the biggest card each time; Team Spin takes the first open spot's spin): { plan, total } or null
+  
   function qdRollout(snap, spin, exact) {
     var plan = [], s = snap;
     for (var guard = 0; guard < 20; guard++) {
@@ -1861,7 +1861,7 @@
         kids.sort(function (a, b) { return b.score - a.score; });
         beam = kids.filter(function (k) { return !k.full; }).slice(0, width);
         if (!beam.length || (exact && best && best.total === T.TARGET)) { T.restore(root); return ok(best); }
-        setTimeout(depth, 0); // one depth at a time, so the page keeps breathing
+        setTimeout(depth, 0); 
       })();
     });
   }
@@ -1873,7 +1873,7 @@
     if (qdOn) return Promise.reject(new Error('Quick Draft is already drafting.'));
     var want = T.MODES[c.mode].dataset || 'nrl';
     qdOn = true;
-    // The Legends list decides 1000+'s Legends and Immortal Picks, so it must be in before the draft is dealt
+    
     return Promise.all([T.players.length ? null : T.loadPlayers(), T.loadLegends()]).then(function () {
       if (T.DATASET !== want && !T.useDataset(want)) return T.loadDataset(want).then(function () { T.useDataset(want); });
       return null;
@@ -1884,12 +1884,12 @@
       var S = T.state();
       if (S.seed !== c.seed || S.mode.id !== c.mode) throw new Error('The challenge did not start. It is still waiting.');
       S.qd = true;
-      // Your tier's wildcards, as a normal game gets them (CAST Pass: 2 rerolls)
+      
       var tierW = window.CastAccount && CastAccount.wildcardCount ? CastAccount.wildcardCount() : null;
       if (S.mode.wildcards && !S.mode.paidOnly && tierW !== null) setTierWildcards(S, tierW);
-      busy = true; // no taps while it drafts
+      busy = true; 
       var spin = S.mode.source === 'spin', exact = S.mode.rule === 'exact';
-      if (!spin) T.rollOffer(); // the first offer, as the game deals it
+      if (!spin) T.rollOffer(); 
       return qdSearch(spin, exact, spin ? 2 : 4).then(function (best) {
         if (!best) throw new Error('Quick Draft could not find a team for this draft. It is still waiting.');
         var s = T.snapshot();
@@ -1901,36 +1901,36 @@
     }).then(function () { qdOn = false; }, function (e) { qdOn = false; busy = false; throw e; });
   }
 
-  /* Save the draft in progress (9 Oct 2026, the owner, after two paying players lost a team to a page reload the same
-     night): every change to the draft is kept on this phone, so a refresh, a flat battery or a trip to the checkout and
-     back offers it again. It was dealt from its seed, so bringing it back deals nothing new. Players are kept by id and
-     the mode by name; the promo is worked out again from the seed. Not the Daily (its goes are its own) or Quick
-     Draft. Dropped when the game ends, when a new one starts, when Change Mode leaves it, after a day, and never
-     offered to a different account. */
+  
+
+
+
+
+
   var LS_DRAFT = '1000tries_draft_v1', DRAFT_MS = 24 * 3600000;
-  /* One saved draft per mode (17 Oct 2026, the owner: on CAST Games every mode is its own game, each with its own
-     Continue). The main mode keeps the first key and every other mode adds its name to it; a draft kept under the first
-     key before then is still found by its mode */
+  
+
+
   function draftKey(mode) { return !mode || mode === 'plus' ? LS_DRAFT : LS_DRAFT + '_' + mode; }
   function draftModeOf(d) { return (d && (d.mode || d.sel)) || 'plus'; }
-  function dropKey(k) { try { if (k) localStorage.removeItem(k); } catch (e) { /* storage blocked */ } }
-  // Each page is its own tab: a draft carried on in another tab ends here (no peeking at the next offer in a copy)
+  function dropKey(k) { try { if (k) localStorage.removeItem(k); } catch (e) {   } }
+  
   var DRAFT_TAB = Math.random().toString(36).slice(2, 10);
   function draftWho() { return (window.CastAccount && CastAccount.uid && CastAccount.uid()) || 'guest'; }
   function draftRaw(mode) { try { return JSON.parse(localStorage.getItem(draftKey(mode)) || 'null'); } catch (e) { return null; } }
-  // Worth keeping: a pick made, or anything used or paid for before the first one (a key, a reroll, a Pick)
+  
   function draftWorth(S) {
     return T.filledCount() > 0 || S.offerNo > 1 || S.spinNo > 1 || !!(S.keysUsed || S.keyUsed || S.immUsed || S.ilegUsed || S.goatUsed || S.subUsed ||
       S.boughtRerolls || S.boughtScouts || S.boughtTweaks || Object.keys(S.paidUsed || {}).length);
   }
   function keepDraft() {
     var S = T.state();
-    // Not the Daily, Quick Draft or a friend's challenge (its answer is only recorded in the tab it started in)
+    
     if (!S || S.finished || S.daily || S.qd || S.challenge || !S.mode || !draftWorth(S)) return;
     if (!S.draftId) S.draftId = Math.random().toString(36).slice(2, 12);
     var cur = draftRaw(S.mode.id), me = draftWho();
     if (cur && cur.id === S.draftId && cur.tab !== DRAFT_TAB) { draftTaken(); return; }
-    if (cur && cur.id === S.draftId && cur.who !== 'guest' && cur.who !== me) { dropDraft(S.mode.id); return; } // signed out (or someone else): never handed on
+    if (cur && cur.id === S.draftId && cur.who !== 'guest' && cur.who !== me) { dropDraft(S.mode.id); return; } 
     try {
       var s = JSON.stringify(S, function (k, v) {
         if (k === 'promoDef') return undefined;
@@ -1941,9 +1941,9 @@
       var clockLeft = clock.iv && clock.offer === S.offer ? Math.max(0, clock.end - Date.now()) : null;
       localStorage.setItem(draftKey(S.mode.id), JSON.stringify({ v: 1, id: S.draftId, tab: DRAFT_TAB, who: me, at: Date.now(), ds: T.DATASET, target: T.TARGET, sel: selectedMode, mode: S.mode.id,
         name: S.mode.name, picks: T.filledCount(), clock: clockLeft, lock: S.awaitingLock && lockTimer ? lockLeft : null, s: s }));
-    } catch (e) { /* storage full or blocked: no resume */ }
+    } catch (e) {   }
   }
-  // Another tab took this draft over: this copy stops, so the draft only ever moves forward in one place
+  
   function draftTaken() {
     var S = T.state();
     if (!S || S.finished) return;
@@ -1959,7 +1959,7 @@
     if (S && !S.finished && S.draftId && d && d.id === S.draftId && d.tab !== DRAFT_TAB) draftTaken();
   });
   function dropDraft(mode) { dropKey(draftKey(mode)); }
-  // The saved draft for a mode (or, with no mode, the newest of them), each checked and the stale ones cleared
+  
   function savedDraft(mode) {
     var keys = [], best = null;
     try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k === LS_DRAFT || (k && k.indexOf(LS_DRAFT + '_') === 0)) keys.push(k); } } catch (e) { return null; }
@@ -1989,7 +1989,7 @@
       T.adopt(S);
       if (d.target) T.TARGET = d.target;
       resumeClock = typeof d.clock === 'number' ? d.clock : null; resumeLock = typeof d.lock === 'number' ? d.lock : null;
-      try { var mine = Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now(), mode: S.mode.id }); delete mine.key; localStorage.setItem(draftKey(S.mode.id), JSON.stringify(mine)); if (d.key && d.key !== draftKey(S.mode.id)) dropKey(d.key); } catch (e) { /* storage blocked */ } // this tab owns it now
+      try { var mine = Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now(), mode: S.mode.id }); delete mine.key; localStorage.setItem(draftKey(S.mode.id), JSON.stringify(mine)); if (d.key && d.key !== draftKey(S.mode.id)) dropKey(d.key); } catch (e) {   } 
       selectedMode = d.sel || S.mode.id;
       placingId = null; shownTotal = 0; busy = false;
       T.track('draft_resume', { mode: S.mode.name, picks: T.filledCount() });
@@ -2001,11 +2001,11 @@
     T.loadDataset(d.ds).then(function () { busy = false; T.useDataset(d.ds); go(); },
       function () { busy = false; toast('Could not load the players. Check your connection and try again.'); });
   }
-  /* Opened on a mode (?play=, or a CAST Games page for one mode, window.CG_MODE): straight into play, never the home
-     first (17 Oct 2026, the owner). The same player's saved draft for that mode carries on, else a new game starts. A
-     link that opens something else (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it.
-     When nothing could start (a sign-in wall closed, a mode that isn't on yet), CAST Games shows its own card for the
-     mode (window.CG.bootIdle) and the game's own site shows its home */
+  
+
+
+
+
   var bootMode = null, bootWait = false;
   function bootOn() { return document.documentElement.classList.contains('play-boot'); }
   function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && window.CG.bootDone) window.CG.bootDone(); }
@@ -2020,15 +2020,15 @@
     try {
       new MutationObserver(soon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
       new MutationObserver(soon).observe($('sheet'), { attributes: true, attributeFilter: ['hidden'] });
-    } catch (e) { /* very old browser: the timers above */ }
+    } catch (e) {   }
   }
   function bootPlay(mode) {
-    if (mode === 'aflw') mode = 'nrlw'; // the women's mode's other name (4000 GOALS)
+    if (mode === 'aflw') mode = 'nrlw'; 
     bootMode = mode;
     bootIdleWatch();
     if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|vs)=/.test(location.search)) return;
-    // A mode behind a launch (Higher or Lower, the World Cup): a first visit has no saved launch list yet, so wait up to 8 s
-    // for the account to say it's on before trying (the mode's card shows if it never is)
+    
+    
     var gated = mode === 'ou' ? function () { return !T.ou || T.ou.on(); } : mode === 'wc' ? wcOn : null;
     if (gated && !gated()) {
       bootWait = true;
@@ -2047,9 +2047,9 @@
       var now = savedDraft(mode);
       if (now && draftWho() === now.who) resumeDraft(now); else playMode(mode);
     };
-    // A guest's save: only once we know this visit is a guest too (a returning player's sign-in may still be loading)
+    
     var signedBefore = false;
-    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) { /* storage blocked */ }
+    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) {   }
     if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { decide(); return; }
     var on = function (e) {
       var st = e.detail && e.detail.status;
@@ -2058,16 +2058,16 @@
       decide();
     };
     window.addEventListener('cast-account', on);
-    setTimeout(decide, 6000); // a page whose accounts are off never says
+    setTimeout(decide, 6000); 
   }
-  // On load: their saved draft, once we know who is signed in (a signed-in player's waits for the sign-in to finish)
-  var offered = null; // the draft the resume sheet is offering
+  
+  var offered = null; 
   function offeredDraft() { return offered ? savedDraft(draftModeOf(offered)) : savedDraft(); }
   function offerResume() {
     var d = savedDraft();
     if (!d || /#(challenge|cast-profile|leaderboards|cast-pass)/.test(location.hash)) return;
     var ask = function () {
-      if (document.documentElement.classList.contains('ca-open')) { setTimeout(ask, 1500); return; } // a CAST pop-up first (a gift, the Pass page)
+      if (document.documentElement.classList.contains('ca-open')) { setTimeout(ask, 1500); return; } 
       var now = savedDraft(draftModeOf(d));
       if (!now || now.at !== d.at || draftWho() !== d.who || document.body.getAttribute('data-screen') !== 'home' || !$('sheet').hidden) return;
       T.track('draft_resume_offer', { mode: d.name, picks: d.picks });
@@ -2075,9 +2075,9 @@
       openSheet(R.resumeSheet(d.name, d.picks));
       $('sheet').classList.add('is-confirm');
     };
-    // A guest's save: only once we know this visit is a guest too (a returning player's sign-in may still be loading)
+    
     var signedBefore = false;
-    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) { /* storage blocked */ }
+    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) {   }
     if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { setTimeout(ask, 400); return; }
     var on = function (e) {
       var st = e.detail && e.detail.status;
@@ -2087,35 +2087,35 @@
     };
     window.addEventListener('cast-account', on);
   }
-  window.addEventListener('cast-account', function () { setTimeout(homeAgain, 0); }); // signed in or out: the home's layout follows (first visit or not)
+  window.addEventListener('cast-account', function () { setTimeout(homeAgain, 0); }); 
   document.addEventListener('visibilitychange', function () { if (document.hidden) keepDraft(); });
   window.addEventListener('pagehide', keepDraft);
 
-  /* Boot */
+   
 
   setSound(sound);
   checkImages();
   renderHome();
   document.body.setAttribute('data-screen', 'home');
 
-  var startWhenReady = null; // a mode tapped before the players loaded
+  var startWhenReady = null; 
   T.loadPlayers().then(function (players) {
     var btn = $('startBtn');
     btn.disabled = false;
     btn.textContent = 'Play now';
     btn.hidden = true;
-    homeAgain(); // the account has loaded by now: World Cup's card (when it's on) and Sign In to Play
+    homeAgain(); 
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
-    // NRL Bingo's links (?play=bingo, its Daily, the owner's private ?bingo=): it opens itself (js/bingo.js), never under the
-    // draft's resume pop-up
+    
+    
     if (/[?&](play=(bingo|bingod|bingo-daily)|bingo=[a-z0-9]+)(?=&|#|$)/.test(location.search) || /^bingo/.test(window.CG_MODE || '')) {
-      if (bootOn()) { bootMode = 'bingo'; bootIdleWatch(); } // CAST Games' page for it: its card if it can't open (not launched yet)
+      if (bootOn()) { bootMode = 'bingo'; bootIdleWatch(); } 
       return;
     }
-    var play = /[?&]play=(plus|exact|spin|nrlw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]ou=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null) || (window.CG_MODE ? [0, window.CG_MODE] : null); // ?ou=: the owner's private Six Again link
+    var play = /[?&]play=(plus|exact|spin|nrlw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]ou=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null) || (window.CG_MODE ? [0, window.CG_MODE] : null); 
     if (!play) offerResume();
     if (play) {
-      try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address as it is */ }
+      try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) {   }
       bootPlay(play[1]);
     }
   }).catch(function () {
