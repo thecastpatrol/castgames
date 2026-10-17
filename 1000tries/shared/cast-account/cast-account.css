@@ -965,6 +965,7 @@ html.ca-open, html.ca-open body { overflow: hidden; }
 /* Both games' boards (27-0 once 1000TRIES is launched): a 27-0 | 1000TRIES switch above the board tabs */
 .ca-lb-games { margin: 0 0 8px; }
 .ca-lb-games .ca-seg-btn { min-height: 32px; font-size: 13px; letter-spacing: .2px; }
+.ca-lb-games .ca-seg-btn.is-on { background: rgba(var(--sc, 255, 255, 255), .34); box-shadow: inset 0 -3px 0 rgb(var(--sc, 255, 255, 255)); color: #fff; } /* its sport's colour (17 Oct 2026) */
 @media (max-width: 560px) { .ca-lb-games { margin-bottom: 6px; } .ca-lb-games .ca-seg-btn { min-height: 30px; font-size: 12.5px; } }
 
 /* ---- Team sheets: the luck of the draw ---- */

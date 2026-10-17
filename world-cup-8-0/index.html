@@ -5,14 +5,14 @@
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <script>window.CG_MODE = 'wc';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
+<link rel="stylesheet" href="../shared/cg.css?v=c3488f38aba1">
 <style>html.cg-in-game .cp-site-header, .screen > .header .header-logo, .screen > .header .cp-new-tab, .screen > .header [data-cast-account], .screen > .header [data-cast-friends], .screen > .header .cp-right, .nf-head, .site-header { display: none !important; }</style>
 
 <meta charset="UTF-8">
 <!-- Opened on a mode (?play=, or a CAST Games page for one mode): the home never shows on the way in, only the game
      itself once it opens (17 Oct 2026, the owner: "straight into play"). js/theme-fx.js ends html.play-boot -->
 <script>(function(){try{if(/[?&]play=(classic|pack|hard|daily|wc)(?=&|#|$)/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
-<style>html.play-boot .screen{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
+<style>html.play-boot .screen{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle-on::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#090910}</style>
@@ -25,9 +25,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=2">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SFNZY7BFYW"></script>
-<script src="js/cast-promo.js?v=20261005.2"></script>
-<script src="js/game-core.js?v=20260927.26"></script>
-<script src="js/ga.js"></script>
+<script src="js/cast-promo.js?v=f0525281"></script>
+<script src="js/game-core.js?v=926d4514"></script>
+<script src="js/ga.js?v=896743d6"></script>
   
   
   
@@ -41,7 +41,7 @@
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=20261017.2" data-site="27-0"></script>
+<script src="js/cast-contact.js?v=0426147b" data-site="27-0"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover.
   // In a browser tab (e.g. Chrome on iPhone) cover let the page slide under the address bar and clipped the top.
@@ -77,19 +77,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/legacy-1.css">
+<link rel="stylesheet" href="css/legacy-1.css?v=5e4a94d0">
 
 <!-- ╔══════════════════════════════════════════════════════╗
      ║       27-0 IMPECCABLE REDESIGN: Visual Layer         ║
      ╚══════════════════════════════════════════════════════╝ -->
-<link rel="stylesheet" href="css/legacy-2.css?v=20261004.5">
-<link rel="stylesheet" href="css/theme.css?v=20260927.141">
+<link rel="stylesheet" href="css/legacy-2.css?v=1f88f4a9">
+<link rel="stylesheet" href="css/theme.css?v=cb23cb67">
 
-<link rel="stylesheet" href="css/cast-account.css?v=ef1407e9">
+<link rel="stylesheet" href="css/cast-account.css?v=dbb2d501">
 </head>
 <body>
 <script>window.CG_GAME = 'world-cup-8-0'; window.CG_PLAY = function (dry) { var b = document.querySelector('.screen.active .cp-new-tab'); if (b) { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=1af3df3d8a21"></script>
+<script src="../shared/cg.js?v=c3488f38aba1"></script>
 
 
 <div id="setup" class="screen">
@@ -128,10 +128,10 @@
         <span class="spot-promo-txt"><b>Can You Draft 1000+ NRL Tries?</b><small>Our new game: roll 3, pick 1 and build a 13.</small></span>
         <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
-      <!-- Six Again (14 Oct 2026): hidden until the owner presses Launch in Admin (config/launch "ou") -->
+      <!-- HIGHER OR LOWER: NRL (14 Oct 2026): hidden until the owner presses Launch in Admin (config/launch "ou") -->
       <a class="spot-promo" data-cast-launch="ou" hidden style="--sp:56,189,248" href="https://castgames.com.au/1000tries/?play=ou&amp;utm_source=27-0&amp;utm_medium=spot&amp;utm_campaign=over_or_under" onclick="if(typeof gtag!=='undefined')gtag('event','click_over_or_under',{placement:'spot'})">
         <img class="spot-promo-logo" src="assets/img/1000tries-logo.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
-        <span class="spot-promo-txt"><b>New: Six Again</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
+        <span class="spot-promo-txt"><b>HIGHER OR LOWER: NRL</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
         <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
       <!-- 4000 GOALS (13 Oct 2026): our AFL game, shown once it's launched (js/cast-account.js showLaunchBits). No pop-up -->
@@ -284,7 +284,7 @@
       <h2 class="cp-section-title" id="faqTitle">Frequently Asked Questions</h2>
       <div id="faqList"></div>
     </section>
-    <script src="js/faq.js?v=20261016.2"></script>
+    <script src="js/faq.js?v=b7006d72"></script>
   </div>
 
   <footer id="siteFooter" class="cp-footer">
@@ -545,8 +545,8 @@
   </div>
 </div>
 
-<script src="js/game-data-sim.js?v=20260927.59"></script>
-<script src="js/finals-live.js?v=20261007.13"></script>
+<script src="js/game-data-sim.js?v=c89d75f0"></script>
+<script src="js/finals-live.js?v=8ac65573"></script>
 
 
 
@@ -811,8 +811,8 @@
 </div>
 
 <script src="js/cast-celebrate.js?v=155b2d28"></script>
-<script src="js/celebration.js?v=20260927.9"></script>
-<script src="js/share-story.js?v=20260925.12"></script>
+<script src="js/celebration.js?v=04207b32"></script>
+<script src="js/share-story.js?v=78c3ce41"></script>
 
   
 
@@ -875,7 +875,7 @@
 </div>
 
 
-<script src="js/site-extras.js"></script>
+<script src="js/site-extras.js?v=420d412a"></script>
 <!-- Analytics notice removed 2026-09-24: covered by the Privacy Policy -->
 <script>
   window.CAST_ACCOUNT = {
@@ -903,24 +903,24 @@
     privacyUrl: 'privacy.html', termsUrl: 'terms.html'
   };
 </script>
-<script src="js/upgrades-data.js?v=20261006.4"></script>
-<script src="js/cast-upgrades.js?v=20261006.1"></script>
-<script src="js/cast-dual.js?v=20261014.3"></script>
-<script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=ab2f8ce7"></script>
-<script src="js/cast-totw.js?v=20261015.1"></script>
-<script src="js/cast-wch.js?v=20261015.1"></script>
-<script src="js/theme-fx.js?v=20260927.52"></script>
+<script src="js/upgrades-data.js?v=13379f9a"></script>
+<script src="js/cast-upgrades.js?v=c4498892"></script>
+<script src="js/cast-dual.js?v=9b9f6910"></script>
+<script src="js/cast-picks.js?v=08f42325"></script>
+<script src="js/cast-account.js?v=c67e7b92"></script>
+<script src="js/cast-totw.js?v=b12c6173"></script>
+<script src="js/cast-wch.js?v=da90d71b"></script>
+<script src="js/theme-fx.js?v=cc859426"></script>
 <script src="js/cast-daily.js?v=e7382c3c"></script>
-<script src="js/daily.js?v=20260927.40"></script>
-<script src="js/daily-wild.js?v=20260927.60"></script>
-<script src="js/picks.js?v=20261001.48"></script>
-<script src="js/hard-mode.js?v=20260927.5"></script>
-<script src="js/mode-skin.js?v=20260927.6"></script>
-<script src="js/cast-nations.js?v=20261005.13"></script>
+<script src="js/daily.js?v=ee4ee0f7"></script>
+<script src="js/daily-wild.js?v=3e7b813c"></script>
+<script src="js/picks.js?v=0280009e"></script>
+<script src="js/hard-mode.js?v=c6046a91"></script>
+<script src="js/mode-skin.js?v=c62cea94"></script>
+<script src="js/cast-nations.js?v=46208301"></script>
 <script src="js/cast-intl.js?v=e79b8507"></script>
-<script src="js/wc-engine.js?v=20261004.38"></script>
-<script src="js/world-cup.js?v=20261004.108"></script>
-<script src="js/draft-save.js?v=20261009.6"></script>
+<script src="js/wc-engine.js?v=68137dbc"></script>
+<script src="js/world-cup.js?v=e111038b"></script>
+<script src="js/draft-save.js?v=8ebedfe3"></script>
 </body>
 </html>

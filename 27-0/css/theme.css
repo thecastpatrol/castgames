@@ -615,20 +615,8 @@ body.cp-daily-on #rerollBtn { display: none !important; }
 /* Not usable yet: dimmed but still tappable, and a tap says when it will be (cpw-hint) */
 .cpw.is-wait { opacity: .5; animation: none !important; }
 .cpw.is-wait::after { display: none; }
-/* A guest's wildcards (Classic, once the CAST tiers are on): full colour, a tap asks them to sign in free */
-.cpw.is-lock .cpw-left { color: #f1c073 !important; }
-.cpw.is-bonus { border-color: #f1c073; }
-.cpw.is-bonus .cpw-left { color: #f1c073 !important; }
-/* Wildcards sit in one row, however many there are; on phones four or five take short names (Reroll, Remove, Sub, Key) */
-.cpw-bar.is-2, .cpw-bar.is-4, .cpw-bar.is-5 { grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); }
-.cpw-short { display: none; }
-@media (max-width: 560px) {
-  .cpw-bar.is-4, .cpw-bar.is-5 { gap: 6px; }
-  .cpw-bar.is-4 .cpw, .cpw-bar.is-5 .cpw { min-height: 48px; padding: 6px 2px; }
-  .cpw-bar.is-4 .cpw-full, .cpw-bar.is-5 .cpw-full { display: none; }
-  .cpw-bar.is-4 .cpw-short, .cpw-bar.is-5 .cpw-short { display: inline; }
-  .cpw-bar.is-4 .cpw-left, .cpw-bar.is-5 .cpw-left { font-size: 9.5px; letter-spacing: .3px; text-align: center; }
-}
+/* A guest's wildcards (Classic, once the CAST tiers are on): full colour, a tap asks them to sign in free. The bar's
+   layout, names and colours: "Standard wildcard tiles" at the end of this file */
 /* The Picks (js/picks.js, 1 Oct 2026). The Team of the Year Pick (the Dally M promo): Dally M navy with an icy edge. With a
    Pick the bar is rows of three (six make two full rows) and the last row shares its width evenly */
 .cpw-bar.has-pick { grid-template-columns: repeat(6, minmax(0, 1fr)); } /* each button spans two (js/daily-wild.js) */
@@ -814,10 +802,10 @@ body.cp-daily-on #rerollBtn { display: none !important; }
 .cpw-note.cpw-note-sub { border-color: #a16207; background: #241c0c; color: #fdf3dc; }
 .cpw-note.cpw-note-sub .cpw-cancel { border-color: #f1c073; color: #f1c073; }
 #nrlField.cpw-subbing .fp-filled { cursor: pointer; }
-#nrlField .cpw-sub-from { box-shadow: 0 0 0 3px #f1c073 !important; }
-#nrlField .cpw-sub-to { box-shadow: 0 0 0 3px rgba(241, 192, 115, .8) !important; animation: cpwWiggle 1.2s ease-in-out infinite; cursor: pointer; }
+#nrlField .cpw-sub-from { box-shadow: 0 0 0 3px #93c5fd !important; } /* Substitute's blue, as in every game (17 Oct 2026) */
+#nrlField .cpw-sub-to { box-shadow: 0 0 0 3px rgba(96, 165, 250, .85) !important; animation: cpwWiggle 1.2s ease-in-out infinite; cursor: pointer; }
 /* Picking who to move: players who can move glow, one-position players (or with nowhere open) fade back */
-#nrlField .cpw-sub-can { box-shadow: 0 0 0 3px #f1c073, 0 0 16px rgba(241, 192, 115, .55) !important; animation: cpwWiggle 1.2s ease-in-out infinite; cursor: pointer; }
+#nrlField .cpw-sub-can { box-shadow: 0 0 0 3px #3b82f6, 0 0 16px rgba(59, 130, 246, .55) !important; animation: cpwWiggle 1.2s ease-in-out infinite; cursor: pointer; }
 #nrlField .cpw-sub-no { opacity: .35; filter: grayscale(.5); }
 .cpw-hint { margin-top: 8px; padding: 8px 12px; border-radius: 10px; background: #1a1a2e; border: 1px solid #2a2a4a; color: #d8d8e6; font-size: 12.5px; font-weight: 600; text-align: center;
   animation: cpwHintIn .2s ease-out; }
@@ -1837,3 +1825,75 @@ body.cp-wc #spinClubSlot.has-look.cp-landed::after { content: ""; position: abso
 .wc-sp-box button small { color: #7dd3fc; font-weight: 800; }
 .wc-sp-box .wc-sp-x { background: none; border-color: transparent; color: #a2a2b8; }
 @media (min-width: 900px) { .wc-share-pick { align-items: center; } .wc-sp-box { border-radius: 20px; border: 1px solid rgba(125, 211, 252, .3); } }
+
+/* ---------------- Standard wildcard tiles, 17 Oct 2026 ----------------
+   The owner: "WILDCARDS IDENTICAL IN EVERY GAME". 27-0's bar (js/daily-wild.js) takes the draft games' tiles: the same
+   colours, sizes, names and layout as the "Standard wildcard tiles" block at the end of every draft game's css/main.css.
+   Reroll teal, Reveal yellow, Remove pink, Substitute blue, the Superstar Key in the Legend Key's violet, then the Picks
+   (the Immortal and World Legend Picks as 1000TRIES draws them; the World Cup and promo Picks keep their own looks).
+   Explicit colours only. The CAST Pass tag stays CAST Pass gold; "Sign in free", the free bonus Reroll, "Buy" and
+   "N left" keep their tile's own colours. Layout: six columns, spans set by js/daily-wild.js */
+.cpw-bar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.cpw-bar .cpw { --wc: #ffffff; --wc-rgb: 255, 255, 255; min-height: 52px; padding: 8px 6px; border-radius: 10px; border-width: 1.5px; color: #fff; }
+.cpw-bar .cpw .cpw-label { display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; font-size: 12px; font-weight: 900; line-height: 1.15; text-align: center; }
+.cpw-bar .cpw .cpw-left { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #a99be0; }
+.cpw-bar .cpw-ico { display: inline-block; font-size: 13px; }
+.cpw-bar.is-stack .cpw .cpw-label { flex-direction: column; gap: 3px; flex-wrap: nowrap; }
+.cpw-bar.is-stack .cpw.is-wide .cpw-label { flex-direction: row; gap: 6px; }
+.cpw-bar.is-stack .cpw-ico { font-size: 17px; line-height: 1; }
+@media (max-width: 899px) {
+  .cpw-bar { gap: 6px; }
+  .cpw-bar .cpw { min-height: 40px; padding: 5px 4px; }
+  .cpw-bar .cpw .cpw-label { font-size: 11.5px; line-height: 1.2; }
+}
+.cpw-bar .cpw.cpw-reroll { --wc: #2dd4bf; --wc-rgb: 45, 212, 191; border-color: #14b8a6; background: linear-gradient(160deg, rgba(20, 184, 166, .22), rgba(20, 184, 166, .06)); }
+.cpw-bar .cpw.cpw-reroll .cpw-left { color: #5eead4; }
+.cpw-bar .cpw.cpw-reveal { --wc: #facc15; --wc-rgb: 250, 204, 21; border-color: #facc15; background: linear-gradient(160deg, rgba(250, 204, 21, .2), rgba(250, 204, 21, .05)); }
+.cpw-bar .cpw.cpw-reveal .cpw-left { color: #fde047; }
+.cpw-bar .cpw.cpw-remove { --wc: #f472b6; --wc-rgb: 244, 114, 182; border-color: #ec4899; background: linear-gradient(160deg, rgba(236, 72, 153, .22), rgba(236, 72, 153, .06)); }
+.cpw-bar .cpw.cpw-remove .cpw-left { color: #f9a8d4; }
+.cpw-bar .cpw.cpw-sub { --wc: #60a5fa; --wc-rgb: 96, 165, 250; border-color: #3b82f6; background: linear-gradient(160deg, rgba(59, 130, 246, .22), rgba(59, 130, 246, .05)); }
+.cpw-bar .cpw.cpw-sub .cpw-left { color: #93c5fd; }
+.cpw-bar .cpw.cpw-key { --wc: #a78bfa; --wc-rgb: 167, 139, 250; border-color: #a78bfa; background: linear-gradient(160deg, rgba(167, 139, 250, .22), rgba(167, 139, 250, .05)); }
+.cpw-bar .cpw.cpw-key .cpw-left { color: #c4b5fd; }
+.cpw-bar .cpw.cpw-key:not([class*="is-"]) { box-shadow: 0 0 10px rgba(167, 139, 250, .28), inset 0 0 0 1px rgba(167, 139, 250, .45); }
+.cpw-bar .cpw.cpw-imm { --wc: #f1c073; --wc-rgb: 241, 192, 115; border-color: #f1c073; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .12), transparent 60%), linear-gradient(160deg, #2b2a33, #121219 85%); }
+.cpw-bar .cpw.cpw-ileg { --wc: #f1c073; --wc-rgb: 241, 192, 115; border-color: #f1c073; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .1), transparent 60%), linear-gradient(160deg, #1d1b26, #0b0a11 85%); }
+.cpw-bar .cpw.cpw-imm .cpw-left, .cpw-bar .cpw.cpw-ileg .cpw-left { color: #ffe2a8; font-weight: 900; }
+.cpw-bar .cpw.cpw-imm.is-have .cpw-left { display: inline-block; align-self: center; padding: 2px 8px; border-radius: 999px; color: #14161d;
+  background: linear-gradient(135deg, #8e97a6 0%, #dfe4ec 26%, #ffffff 50%, #dfe4ec 74%, #8e97a6 100%); background-size: 200% 100%; }
+/* Hover: a lighter rim of the tile's own colour */
+@media (hover: hover) {
+  .cpw-bar .cpw:hover:not(:disabled) { border-color: rgba(255, 255, 255, .55); }
+  .cpw-bar .cpw.cpw-reroll:hover:not(:disabled) { border-color: #5eead4; }
+  .cpw-bar .cpw.cpw-reveal:hover:not(:disabled) { border-color: #fde047; }
+  .cpw-bar .cpw.cpw-remove:hover:not(:disabled) { border-color: #f9a8d4; }
+  .cpw-bar .cpw.cpw-sub:hover:not(:disabled) { border-color: #93c5fd; }
+  .cpw-bar .cpw.cpw-key:hover:not(:disabled) { border-color: #c4b5fd; }
+  .cpw-bar .cpw.cpw-imm:hover:not(:disabled), .cpw-bar .cpw.cpw-ileg:hover:not(:disabled) { border-color: #fff1c4; }
+}
+/* Armed: Remove goes red, Substitute keeps its blue with a glow, a Superstar Key in use glows violet */
+.cpw-bar .cpw.is-armed, .cpw-bar .cpw.cpw-remove.is-armed { border-color: #f87171; background: #2a1116; opacity: 1; }
+.cpw-bar .cpw.cpw-sub.is-armed { border-color: #93c5fd; background: linear-gradient(160deg, rgba(59, 130, 246, .22), rgba(59, 130, 246, .05)); box-shadow: 0 0 14px rgba(59, 130, 246, .45); }
+.cpw-bar .cpw.cpw-key.is-armed { border-color: #c4b5fd; background: linear-gradient(160deg, rgba(167, 139, 250, .22), rgba(167, 139, 250, .05)); box-shadow: 0 0 14px rgba(167, 139, 250, .45); }
+/* Not usable right now (still tappable for its hint), then used up; the Superstar Key's countdown stays readable */
+.cpw-bar .cpw:disabled, .cpw-bar .cpw.is-wait { opacity: .4; }
+.cpw-bar .cpw.is-spent { opacity: .3; }
+.cpw-bar .cpw.cpw-key.is-spent { opacity: .8; }
+/* The CAST Pass tag (Substitute and the Superstar Key for a free profile) */
+.cpw-bar .cpw.is-pass .cpw-left { display: inline-block; padding: 2px 7px; border-radius: 999px; color: #f1c073; box-shadow: inset 0 0 0 1px rgba(241, 192, 115, .6); background: rgba(241, 192, 115, .14); font-size: 9.5px; letter-spacing: .6px; }
+/* The burst when one fires, in its tile's colour */
+.cpw-burst-reveal .cp-burst-ring { border-color: #facc15; }
+.cpw-burst-reveal::before { background: radial-gradient(circle at 50% 50%, rgba(250, 204, 21, .28), rgba(7, 7, 11, .35) 55%, transparent 80%); }
+.cpw-burst-sub .cp-burst-ring { border-color: #60a5fa; }
+.cpw-burst-sub::before { background: radial-gradient(circle at 50% 50%, rgba(96, 165, 250, .28), rgba(7, 7, 11, .35) 55%, transparent 80%); }
+.cpw-burst-key .cp-burst-ring { border-color: #a78bfa; }
+.cpw-burst-key::before { background: radial-gradient(circle at 50% 50%, rgba(167, 139, 250, .28), rgba(7, 7, 11, .35) 55%, transparent 80%); }
+
+/* Custom Seasons on CAST Games (17 Oct 2026): a CAST Pass member's button in the draft, opening the same settings */
+.cp-cs-btn { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; margin: 0 0 10px; padding: 8px 14px; box-sizing: border-box; border-radius: 12px;
+  border: 1px solid rgba(241, 192, 115, .55); background: rgba(241, 192, 115, .08); color: #fff; font: 800 13.5px/1.2 'Inter', sans-serif; text-align: left; cursor: pointer; }
+.cp-cs-btn[hidden] { display: none; }
+.cp-cs-btn small { margin-left: auto; color: #a2a2b8; font: 700 12px/1.2 'Inter', sans-serif; text-align: right; }
+@media (hover: hover) { .cp-cs-btn:hover { border-color: #f1c073; } }
+#cpCsModal .cp-options-body { border-top: 0; padding: 0 0 12px; }

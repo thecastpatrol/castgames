@@ -994,10 +994,11 @@
   /* Wildcard theatre: using one should feel like a big moment */
   var WC_FX = {
     reroll: { ico: '\uD83D\uDD04', title: 'Reroll!', sub: 'New players to choose' },
-    respin: { ico: '\uD83D\uDD04', title: 'Respin!', sub: 'Back on the wheel' },
-    scout:  { ico: '\uD83D\uDC40', title: 'Tries revealed', sub: 'Your decision just got easier' },
-    tweak:  { ico: '\u274C', title: 'Remove Player', sub: 'Tap a player in your 13' },
-    removed:{ ico: '\u274C', title: 'Removed!', sub: '' }
+    respin: { ico: '\uD83D\uDD04', title: 'Reroll!', sub: 'Back on the wheel' }, // the tile says Reroll in Team Spin too (17 Oct 2026)
+    scout:  { ico: '\uD83D\uDC40', title: 'Reveal!', sub: 'Your decision just got easier' },
+    tweak:  { ico: '\u274C', title: 'Remove!', sub: 'Tap a player in your 13' },
+    removed:{ ico: '\u274C', title: 'Removed!', sub: '' },
+    sub:    { ico: '\uD83D\uDD01', title: 'Substitute', sub: '' } // in its tile's blue (17 Oct 2026: it showed Remove Player in pink)
   };
   function wildcardBurst(kind, cls, sub) {
     if (reduceMotion) return false;
@@ -1105,7 +1106,7 @@
     if (!moved) return;
     sfx.wild();
     T.track('wildcard_used', { wildcard: 'sub', mode: S.mode.name });
-    if (!wildcardBurst('tweak', 'tweak', moved.name + ' moves to ' + T.POS_NAMES[S.slots[idx].code])) toast(moved.name + ' moves to ' + T.POS_NAMES[S.slots[idx].code]);
+    if (!wildcardBurst('sub', 'sub', moved.name + ' moves to ' + T.POS_NAMES[S.slots[idx].code])) toast(moved.name + ' moves to ' + T.POS_NAMES[S.slots[idx].code]);
     // The offer on screen may have nowhere to go now: deal a fresh one instead of leaving you stuck
     if (S.offer && S.offer.players && !S.offer.players.some(function (x) { return T.openCodesFor(x).length; })) nextOffer(); else renderDraft();
   }
@@ -1981,12 +1982,12 @@
      link that opens something else (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it.
      When nothing could start (a sign-in wall closed, a mode that isn't on yet), CAST Games shows its own card for the
      mode (CG.bootIdle) and the game's own site shows its home */
-  var bootMode = null;
+  var bootMode = null, bootWait = false;
   function bootOn() { return document.documentElement.classList.contains('play-boot'); }
   function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && CG.bootDone) CG.bootDone(); }
   function bootIdleWatch() {
     var check = function () {
-      if (!bootOn() || busy || !T.players.length || document.documentElement.classList.contains('ca-open') || !$('sheet').hidden) return;
+      if (!bootOn() || bootWait || busy || !T.players.length || document.documentElement.classList.contains('ca-open') || !$('sheet').hidden) return;
       if (document.body.getAttribute('data-screen') !== 'home') return;
       if (window.CG && CG.bootIdle) CG.bootIdle(function () { playMode(bootMode); }); else bootEnd();
     };
@@ -2002,6 +2003,18 @@
     bootMode = mode;
     bootIdleWatch();
     if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|vs)=/.test(location.search)) return;
+    // A mode behind a launch (Higher or Lower, the World Cup): a first visit has no saved launch list yet, so wait up to 8 s
+    // for the account to say it's on before trying (the mode's card shows if it never is)
+    var gated = mode === 'ou' ? function () { return !T.ou || T.ou.on(); } : mode === 'wc' ? wcOn : null;
+    if (gated && !gated()) {
+      bootWait = true;
+      var n = 0;
+      (function wait() { if (gated() || ++n > 40) { bootWait = false; bootGo(mode); return; } setTimeout(wait, 200); })();
+      return;
+    }
+    bootGo(mode);
+  }
+  function bootGo(mode) {
     var d = mode === 'daily' || mode === 'ou' ? null : savedDraft(mode);
     if (!d) { playMode(mode); return; }
     var done = false, decide = function () {

@@ -5,14 +5,14 @@
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <script>window.CG_MODE = 'wc';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
+<link rel="stylesheet" href="../shared/cg.css?v=c3488f38aba1">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
 <!-- Opened on a mode (?play=, or a CAST Games page for one mode): the game's home never shows on the way in, only the
      game itself once it opens (17 Oct 2026, the owner: "straight into play"). js/app.js ends html.play-boot -->
 <script>(function(){try{if(/[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.test(location.search)||/[?&](ou|po)=[a-z0-9]+/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
-<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
+<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle-on::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#0a0a0f}</style>
@@ -25,7 +25,7 @@
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=20261017.2" data-site="1000tries"></script>
+<script src="js/cast-contact.js?v=0426147b" data-site="1000tries"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -64,14 +64,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=e1e13ba0">
-<link rel="stylesheet" href="css/cast-account.css?v=ef1407e9">
+<link rel="stylesheet" href="css/main.css?v=19a80553">
+<link rel="stylesheet" href="css/cast-account.css?v=dbb2d501">
 <link rel="stylesheet" href="css/bingo.css?v=0747a473">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = 'world-cup-200'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=1af3df3d8a21"></script>
+<script src="../shared/cg.js?v=c3488f38aba1"></script>
 
 
 <header class="site-header">
@@ -132,10 +132,10 @@
           <span class="spot-promo-txt"><b>Can You Draft 4000 AFL Goals?</b><small>Our new AFL game: roll 3, pick 1 and build an 18.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
-        <!-- Six Again (15 Oct 2026, the owner: "no pop up, just the banner for now"): opens Six Again here (js/overunder.js data-ou-open) -->
+        <!-- HIGHER OR LOWER: NRL (15 Oct 2026, the owner: "no pop up, just the banner for now"): opens it here (js/overunder.js data-ou-open) -->
         <a class="spot-promo" data-cast-launch="ou" data-ou-open hidden style="--sp:56,189,248" href="?play=ou" data-track="click_over_or_under" data-where="spot">
           <span class="spot-promo-logo spot-promo-mark" aria-hidden="true">&#x25B2;&#x25BC;</span>
-          <span class="spot-promo-txt"><b>New: Six Again</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
+          <span class="spot-promo-txt"><b>HIGHER OR LOWER: NRL</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
           <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
         </a>
         <div data-cast-upgrades hidden></div>
@@ -227,7 +227,7 @@
   </section>
 
   <!-- SIX AGAIN (14 Oct 2026, js/overunder.js) -->
-  <section id="screen-ou" class="screen" aria-label="Six Again">
+  <section id="screen-ou" class="screen" aria-label="HIGHER OR LOWER: NRL">
     <div class="wrap" id="ouRoot"></div>
   </section>
 
@@ -271,24 +271,24 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/analytics.js?v=20260924.29"></script>
-<script src="js/cast-promo.js?v=20261005.4"></script>
-<script src="js/data.js?v=20260927.35"></script>
-<script src="js/draft.js?v=20260927.55"></script>
-<script src="js/team-spin.js?v=20260927.13"></script>
-<script src="js/wildcards.js?v=20260927.20"></script>
-<script src="js/cast-nations.js?v=20261005.13"></script>
+<script src="js/analytics.js?v=6bf5d2f9"></script>
+<script src="js/cast-promo.js?v=f0525281"></script>
+<script src="js/data.js?v=cf1937bd"></script>
+<script src="js/draft.js?v=5f0a6b95"></script>
+<script src="js/team-spin.js?v=5246328b"></script>
+<script src="js/wildcards.js?v=32b0ba8f"></script>
+<script src="js/cast-nations.js?v=46208301"></script>
 <script src="js/cast-intl.js?v=e79b8507"></script>
-<script src="js/render.js?v=20260927.92"></script>
-<script src="js/share-card.js?v=20260927.5"></script>
-<script src="js/cast-celebrate.js?v=20261008.7"></script>
-<script src="js/app.js?v=571e54df"></script>
-<script src="js/ou-engine.js?v=20261015.6"></script>
-<script src="js/overunder.js?v=20261015.16"></script>
+<script src="js/render.js?v=dc93c023"></script>
+<script src="js/share-card.js?v=d66d7912"></script>
+<script src="js/cast-celebrate.js?v=155b2d28"></script>
+<script src="js/app.js?v=0d51daa3"></script>
+<script src="js/ou-engine.js?v=1fae24fe"></script>
+<script src="js/overunder.js?v=f3cc0421"></script>
 <script src="js/bingo-engine.js?v=2f9dffce"></script>
-<script src="js/bingo.js?v=50425d87"></script>
-<script src="js/cast-daily.js?v=20260929.18"></script>
-<script src="js/daily.js?v=20260927.32"></script>
+<script src="js/bingo.js?v=29fecf38"></script>
+<script src="js/cast-daily.js?v=e7382c3c"></script>
+<script src="js/daily.js?v=a8547baa"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
@@ -299,12 +299,12 @@
     promoPlay: function (mode) { var m = mode === 'nrlw' ? 'nrlw' : mode === 'wc' ? 'wc' : 'plus', c = document.querySelector('.mode-card[data-mode="' + m + '"],.mode-mini[data-mode="' + m + '"]'); if (c) c.click(); },
     promoStat: function (name) { var p = ((window.T && T.players) || []).filter(function (x) { return x.name === name; })[0]; return p ? { v: p.tries_1998_plus, unit: 'Tries' } : null; } };
 </script>
-<script src="js/upgrades-data.js?v=20261006.1"></script>
-<script src="js/cast-upgrades.js?v=20261006.1"></script>
-<script src="js/cast-dual.js?v=20261014.3"></script>
-<script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=ab2f8ce7"></script>
-<script src="js/cast-totw.js?v=20261015.1"></script>
-<script src="js/cast-wch.js?v=20261015.1"></script>
+<script src="js/upgrades-data.js?v=13379f9a"></script>
+<script src="js/cast-upgrades.js?v=c4498892"></script>
+<script src="js/cast-dual.js?v=9b9f6910"></script>
+<script src="js/cast-picks.js?v=08f42325"></script>
+<script src="js/cast-account.js?v=c67e7b92"></script>
+<script src="js/cast-totw.js?v=b12c6173"></script>
+<script src="js/cast-wch.js?v=da90d71b"></script>
 </body>
 </html>

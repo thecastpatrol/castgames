@@ -93,13 +93,13 @@
     spin:  { ico: '&#x1F3B0;', line: 'Pick a position, then spin', chips: ['Spin, Pick 1', '3 Wildcards'] },
     nrlw:  { ico: '&#x2B50;', line: 'The AFLW stars. Get to ' + T.DATASETS.nrlw.target + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'AFLW Players'] },
     wc:    { ico: '&#x1F30F;', line: 'Get to ' + T.DATASETS.wc.target + ' Test goals or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'Test Players'] },
-    ou:    { ico: '&#x2195;&#xFE0F;', line: 'More or fewer? Call it before the clock runs out' } // Play On (15 Oct 2026)
+    ou:    { ico: '&#x2195;&#xFE0F;', line: 'More or fewer? Call it before the clock runs out' } // HIGHER OR LOWER: AFL (15 Oct 2026)
   };
 
   /* Home modes (29 Sep 2026, the user's call): 4000+ is the main mode, one big card with a clear Play button; the others
      are three small buttons in a row under it (each keeps its colour and one tag). A tap on any of them starts it. */
   var MINI_TAG = { exact: 'Hard Mode', spin: 'Know Your Squads', nrlw: 'AFLW', wc: 'Test Goals', ou: 'New &middot; Beat the Clock' };
-  /* Play On's home card (15 Oct 2026, the owner: "lower, under the Daily, it shouldn't take away from the other modes"):
+  /* HIGHER OR LOWER: AFL's home card (15 Oct 2026, the owner: "lower, under the Daily, it shouldn't take away from the other modes"):
      its own full-width card under the Daily Challenge (js/app.js placeOu), not in More Modes */
   R.ouCard = function () {
     // A small live look at the game (the owner, 15 Oct 2026: "more exciting, actual visuals"): two mini player cards in
@@ -107,10 +107,10 @@
     var mini = function (club, nm, num) {
       return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>'; // the player's name in his club's colours (the owner)
     };
-    return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play Play On">' +
+    return '<button type="button" class="mode-mini is-ou oup" data-mode="ou" aria-label="Play HIGHER OR LOWER: AFL">' +
       '<span class="oup-new">New</span>' +
       '<span class="oup-pair" aria-hidden="true">' + mini('ge', 'Cameron', '777') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('sy', 'Curnow', '') + '</span>' +
-      '<span class="oup-t"><b>Play On</b><small>More goals or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
+      '<span class="oup-t"><b>HIGHER OR LOWER:&nbsp;AFL</b><small>More goals or fewer? Beat the clock.</small></span><span class="oup-go" aria-hidden="true">&#x25B6;</span></button>';
   };
   // The same live look for its banner in the home slider (the owner, 15 Oct 2026: "more enticing, like the card below")
   R.ouBanner = function () {
@@ -118,7 +118,7 @@
       return '<span class="oup-card' + (num ? '' : ' is-q') + '" style="' + clubVars(club) + '"><i>' + esc(nm.toUpperCase()) + '</i><b>' + (num || '?') + '</b></span>';
     };
     return '<span class="oup-pair" aria-hidden="true">' + mini('ge', 'Cameron', '777') + '<span class="oup-arrows"><em class="is-up">&#x25B2;</em><em class="is-dn">&#x25BC;</em></span>' + mini('sy', 'Curnow', '') + '</span>' +
-      '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>Play On</b><small>More goals or fewer? Beat the clock.</small></span><span class="oup-play" aria-hidden="true">&#x25B6;</span>';
+      '<span class="spot-promo-txt"><em class="oup-kick">New Mode</em><b>HIGHER OR LOWER:&nbsp;AFL</b><small>More goals or fewer? Beat the clock.</small></span><span class="oup-play" aria-hidden="true">&#x25B6;</span>';
   };
   /* World Cup 200+ (4 Oct 2026, the owner's call): once launched, a big card the same size as 4000+ until the final on
      15 Nov, in the World Cup nations' colours (flags when the owner's designs arrive), then a small one with the others.
@@ -153,9 +153,9 @@
       '<span class="mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>' +
       '</button>';
     var wc = opt.wc === 'top' || opt.wc === 'under' ? R.wcCard(selected, opt.guest, opt.free) : '';
-    // Play On (15 Oct 2026, 1000TRIES's Six Again for AFL): first in More Modes once it's on (launched, or the private link)
+    // HIGHER OR LOWER: AFL (15 Oct 2026, 1000TRIES's HIGHER OR LOWER: NRL for AFL): first in More Modes once it's on (launched, or the private link)
     var more = (opt.ou ? ['ou'] : []).concat(['exact', 'spin', 'nrlw']).concat(opt.wc === 'mini' ? ['wc'] : []).filter(function (id) { return id !== 'nrlw' || T.DATASETS.nrlw.live; }).map(function (id) {
-      var mm = T.MODES[id] || { name: 'Play On' };
+      var mm = T.MODES[id] || { name: 'HIGHER OR LOWER: AFL' };
       return '<button type="button" class="mode-mini is-' + id + (id === selected ? ' is-on' : '') + '" data-mode="' + id + '" aria-label="Play ' + esc(mm.name) + '">' +
         '<span class="mm-ico" aria-hidden="true">' + MODE_CARD[id].ico + '</span><span class="mm-name">' + esc(mm.name) + '</span><span class="mm-tag">' + MINI_TAG[id] + '</span></button>';
     });
@@ -246,9 +246,9 @@
     if (!S.mode.wildcards) return '';
     var sub = R.subButton(S), key = R.keyTile(S), goat = R.goatTile(S), imm = R.immTile(S), il = R.ilTile(S), extras = (sub ? 1 : 0) + (key ? 1 : 0) + (goat ? 1 : 0) + (imm ? 1 : 0) + (il ? 1 : 0), five = extras >= 2;
     var paid = !!S.mode.paidOnly;
-    // Five tools (4000+ with a CAST Profile): Reroll, Reveal and Remove across the top with short one-word names, so the
-    // three are exactly even on a phone, then Substitute and the Legend Key underneath
-    var SHORT = { reroll: 'Reroll', scout: 'Reveal', tweak: 'Remove' };
+    // One-word names on the tiles in every game and mode, Team Spin's Reroll too (the owner, 17 Oct 2026: identical
+    // wildcards, no "Reveal Tries", "Remove Player" or "Respin" on a tile). Titles, the Shop and the Terms keep the full names
+    var TILE = { reroll: 'Reroll', scout: 'Reveal', tweak: 'Remove' };
     // The game's own and the saved ones as one total from the first pick ("13 left"), so a bought pack is never out of sight
     // (11 Oct 2026: a player thought his 12 Remove Players were gone)
     var savedN = function (k) {
@@ -264,13 +264,13 @@
         // Hard Mode: one paid use of each a game, then it's done
         if (paid && !left && (S.paidUsed || {})[k] && !(k === 'tweak' && S.tweakMode)) {
           return '<button type="button" class="wc wc-' + k + ' is-spent" disabled title="One of each wildcard a game in Exactly 4000">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(five ? SHORT[k] : T.WILDCARDS[k].label) + '</span>' +
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(TILE[k]) + '</span>' +
             '<span class="wc-left">Used</span></button>';
         }
         // A guest once CAST Pass launches: wildcards come with a free CAST Profile (sign in and they unlock in this game)
         if (S.wcLocked && !left && !S.finished) {
           return '<button type="button" class="wc wc-' + k + ' wc-lock" data-action="wc-signin" title="Sign in free to use wildcards">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(k === 'reroll' && S.mode.source === 'spin' ? 'Respin' : T.WILDCARDS[k].label) + '</span>' +
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">' + { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k] + '</span> ' + esc(TILE[k]) + '</span>' +
             '<span class="wc-left"><span aria-hidden="true">&#x1F512;</span> Sign in free</span></button>';
         }
         // Rerolls used up: a saved one ("2 saved") or one to buy, in a pop-up over the game (CastAccount.buyReroll)
@@ -278,29 +278,29 @@
           // Just bought: "N ready", glowing, so they tap it and watch the roll
           var sv = CastAccount.rerollsSaved(), live = !!(S.offer && S.offer.players.length), fresh = !!(sv && CastAccount.rerollsFresh && CastAccount.rerollsFresh());
           return '<button type="button" class="wc wc-reroll wc-buy' + (fresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reroll"' + (live ? '' : ' disabled') + ' title="' + (sv ? 'Use one of your saved rerolls' : 'Buy an extra reroll') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + (S.mode.source === 'spin' ? 'Respin' : 'Reroll') + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + TILE.reroll + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
         }
         // Remove Player used up: a saved one ("2 saved") or one to buy, the same way (CastAccount.buyRemove)
         if (k === 'tweak' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.canBuyRemove && (CastAccount.canBuyRemove() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.removesSaved() > 0))) {
           var rs = CastAccount.removesSaved(), can = T.filledCount() > 0 && !S.subMode, rfresh = !!(rs && CastAccount.removesFresh && CastAccount.removesFresh());
           return '<button type="button" class="wc wc-tweak wc-buy' + (rfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-remove"' + (can ? '' : ' disabled') + ' title="' + (rs ? 'Use one of your saved Remove Players' : 'Buy an extra Remove Player') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x274C;</span> ' + esc(five ? SHORT.tweak : T.WILDCARDS.tweak.label) + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x274C;</span> ' + TILE.tweak + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
         }
         // Reveal Goals used up: a saved one or one to buy, the same way (CastAccount.buyItem('reveal')), while the offer is hidden
         if (k === 'scout' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.buyItem && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.itemSaved('reveal') > 0))) {
           var vs = CastAccount.itemSaved('reveal'), hidden = !!(S.offer && S.offer.players.some(function (p) { return !R.triesShown(S, p); }));
           var vok = hidden && !S.tweakMode && !S.subMode, vfresh = !!(vs && CastAccount.itemFresh('reveal'));
           return '<button type="button" class="wc wc-scout wc-buy' + (vfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reveal"' + (vok ? '' : ' disabled') + ' title="' + (vs ? 'Use one of your saved Reveals' : 'Buy an extra Reveal') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F440;</span> ' + esc(five ? SHORT.scout : T.WILDCARDS.scout.label) + '</span><span class="wc-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F440;</span> ' + TILE.scout + '</span><span class="wc-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
         }
         // Rerolls used up: the same button offers one more (YouTube subscribe, or sign in first); never in Hard Mode
         if (k === 'reroll' && !left && !S.finished && !paid && window.CastAccount && CastAccount.bonusState && CastAccount.bonusState() !== 'none') {
           var guest = CastAccount.bonusState() === 'signin';
           return '<button type="button" class="wc wc-reroll wc-bonus" data-action="bonus-reroll" title="' + (guest ? 'Sign in for an extra reroll every game' : 'Subscribe on YouTube for a free extra reroll') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + (S.mode.source === 'spin' ? 'Respin' : 'Reroll') + '</span><span class="wc-left">' + (guest ? '+1: sign in' : '&#x25B6; +1 free') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + TILE.reroll + '</span><span class="wc-left">' + (guest ? '+1: sign in' : '&#x25B6; +1 free') + '</span></button>';
         }
         var armed = k === 'tweak' && S.tweakMode;
-        var label = k === 'reroll' && S.mode.source === 'spin' ? 'Respin' : five ? SHORT[k] : T.WILDCARDS[k].label;
+        var label = TILE[k];
         var ico = { reroll: '&#x1F504;', scout: '&#x1F440;', tweak: '&#x274C;' }[k];
         return '<button type="button" class="wc wc-' + k + (left ? '' : ' is-spent') + (armed ? ' is-armed' : '') + '" data-wildcard="' + k + '"' +
           ((usable || armed) ? '' : ' disabled') + ' title="' + esc(T.WILDCARDS[k].desc) + '">' +

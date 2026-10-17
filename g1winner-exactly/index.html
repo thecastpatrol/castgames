@@ -5,14 +5,14 @@
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <script>window.CG_MODE = 'exact';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
+<link rel="stylesheet" href="../shared/cg.css?v=c3488f38aba1">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
 <!-- Opened on a mode (?play=, or a CAST Games page for one mode): the game's home never shows on the way in, only the
      game itself once it opens (17 Oct 2026, the owner: "straight into play"). js/app.js ends html.play-boot -->
 <script>(function(){try{if(/[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.test(location.search)||/[?&](ou|po)=[a-z0-9]+/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
-<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
+<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle-on::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#04110a}</style>
@@ -58,13 +58,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=0643c8b4">
-<link rel="stylesheet" href="css/cast-account.css?v=dfa752fb">
+<link rel="stylesheet" href="css/main.css?v=94a851ec">
+<link rel="stylesheet" href="css/cast-account.css?v=dbb2d501">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = 'g1winner-exactly'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=1af3df3d8a21"></script>
+<script src="../shared/cg.js?v=c3488f38aba1"></script>
 
 
 <header class="site-header">
@@ -141,7 +141,7 @@
           <summary class="faq-fold-sum"><h2 class="faq-title" id="faqTitle">Frequently Asked Questions</h2><span class="faq-ico" aria-hidden="true">+</span></summary>
           <details class="faq-item" name="faq"><summary><span>What is G1 WINNER SPINNER?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>A free horse racing game by The Cast Patrol. Draft 8 jockeys with their Group 1 wins hidden, then add them up. Can your card reach 550 Group 1 wins combined?</p></details>
           <details class="faq-item" name="faq"><summary><span>How do you play G1 WINNER SPINNER?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random jockeys at a time. Choose one without seeing their wins. You have 20 seconds to pick, or the first option goes in. Repeat until all 8 races on your Group 1 card are filled. Any jockey can ride any race. Your total is revealed as you go.</p></details>
-          <details class="faq-item" name="faq"><summary><span>What are the modes?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p><strong>550+</strong>: reach 550 Group 1 wins or more, with one of each wildcard. <strong>Exactly 550</strong>: land on 550 on the dot, under or over is a miss, and it&rsquo;s Hard Mode: no free wildcards, only paid ones, one of each a game. <strong>Photo Finish</strong>: call Over or Under against the clock.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What are the modes?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p><strong>550+</strong>: reach 550 Group 1 wins or more, with one of each wildcard. <strong>Exactly 550</strong>: land on 550 on the dot, under or over is a miss, and it&rsquo;s Hard Mode: no free wildcards, only paid ones, one of each a game. <strong>HIGHER OR LOWER: RACING</strong>: call Higher or Lower against the clock.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are Legends?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>550+</strong>, one offer is a <strong>Legends Pick</strong>: three great retired jockeys, like Damien Oliver, Shane Dye and Glen Boss. Their wins are hidden like everyone else&rsquo;s, and they count their Group 1 wins since 1983 too. You get one at most per game, and it can turn up late in a game, just when you need it most.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="racing" hidden><summary><span>How do the leaderboards work?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Sign in free with a CAST Profile and pick a username. Your best game in every mode goes up automatically on today&rsquo;s, this week&rsquo;s and the all-time boards. Tap any name to see the card behind the score, with the luck of their draw. Exactly 550 ranks the most exact hits, then the closest card.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="racing" hidden><summary><span>Do I need an account?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. You can play as a guest, and your games stay on this device. A free CAST Profile (Google or Apple, for ages 13 and over) saves your history, stats and trophies across every CAST game, puts you on the leaderboards and gives you wildcards every game.</p></details>
@@ -180,8 +180,8 @@
     <div class="wrap" id="results"></div>
   </section>
 
-  <!-- PHOTO FINISH (15 Oct 2026, js/overunder.js: 1000TRIES's Six Again for racing) -->
-  <section id="screen-ou" class="screen" aria-label="Photo Finish">
+  <!-- HIGHER OR LOWER: RACING (15 Oct 2026, js/overunder.js: 1000TRIES's HIGHER OR LOWER: NRL for racing) -->
+  <section id="screen-ou" class="screen" aria-label="HIGHER OR LOWER: RACING">
     <div class="wrap" id="ouRoot"></div>
   </section>
 
@@ -224,15 +224,15 @@
 
 <script src="js/analytics.js?v=f90196c4"></script>
 <script src="js/cast-promo.js?v=f0525281"></script>
-<script src="js/data.js?v=25840f81"></script>
+<script src="js/data.js?v=4ffd6292"></script>
 <script src="js/draft.js?v=256811f6"></script>
 <script src="js/wildcards.js?v=6a5e9b9c"></script>
 <script src="js/cast-nations.js?v=46208301"></script>
 <script src="js/cast-intl.js?v=b6194356"></script>
-<script src="js/render.js?v=bef5a7cd"></script>
+<script src="js/render.js?v=03b2d323"></script>
 <script src="js/share-card.js?v=f199fbbe"></script>
 <script src="js/cast-celebrate.js?v=155b2d28"></script>
-<script src="js/app.js?v=07ab3de2"></script>
+<script src="js/app.js?v=948c2eea"></script>
 <script src="js/cast-daily.js?v=e7382c3c"></script>
 <script src="js/racing-daily.js?v=fa9e5cf0"></script>
 <script src="js/daily.js?v=fdaa4447"></script>
@@ -249,8 +249,8 @@
     promoStat: function (name) { var p = ((window.T && T.players) || []).filter(function (x) { return x.name === name; })[0]; return p ? { v: p.tries_1998_plus, unit: 'Wins' } : null; } };
 </script>
 <script src="js/cast-picks.js?v=08f42325"></script>
-<script src="js/ou-engine.js?v=fc6246d6"></script>
-<script src="js/overunder.js?v=2f698585"></script>
-<script src="js/cast-account.js?v=bf638a8a"></script>
+<script src="js/ou-engine.js?v=1fae24fe"></script>
+<script src="js/overunder.js?v=b52c0f69"></script>
+<script src="js/cast-account.js?v=c67e7b92"></script>
 </body>
 </html>

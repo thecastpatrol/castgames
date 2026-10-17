@@ -1287,12 +1287,12 @@
   function bootOn() { return document.documentElement.classList.contains('play-boot'); }
   function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && CG.bootDone) CG.bootDone(); }
   function activeId() { var a = document.querySelector('.screen.active'); return a ? a.id : ''; }
-  var bootMode = null, watching = false, rebootT = 0;
+  var bootMode = null, watching = false, rebootT = 0, bootWait = false;
   function bootIdleWatch() {
     if (watching) return;
     watching = true;
     var check = function () {
-      if (!bootOn() || activeId() !== 'setup' || document.documentElement.classList.contains('ca-open')) return;
+      if (!bootOn() || bootWait || activeId() !== 'setup' || document.documentElement.classList.contains('ca-open')) return;
       if (Array.prototype.some.call(document.querySelectorAll('.cp-confirm'), function (m) { return m.style.display === 'flex'; })) return;
       if (window.CG && CG.bootIdle) CG.bootIdle(function () { bootPlay(bootMode); }); else bootEnd();
     };
@@ -1306,6 +1306,14 @@
     bootIdleWatch();
     if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|ch|vs)=/.test(location.search)) return;
     if ((mode === 'classic' || mode === 'hard' || mode === 'pack') && window.cpDraftSave && cpDraftSave.resumeFor) { cpDraftSave.resumeFor(mode, function () { playMode(mode); }); return; }
+    // World Cup 8-0: a first visit has no saved launch list yet, so wait up to 8 s for the account to say it's on
+    var live = function () { return !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive()); };
+    if (mode === 'wc' && !live()) {
+      bootWait = true;
+      var n = 0;
+      (function wait() { if (live() || ++n > 40) { bootWait = false; playMode(mode); return; } setTimeout(wait, 200); })();
+      return;
+    }
     playMode(mode);
   }
   // Every screen change ends the boot. On CAST Games the home itself never shows: Play Again passes through it (the next
@@ -1322,6 +1330,62 @@
       return out;
     };
   })();
+  /* Custom Seasons on CAST Games (17 Oct 2026, the owner): 27-0 CLASSIC's page has no home, so a CAST Pass member opens the
+     same settings (era and ratings) from a button in the draft. Play With These Settings starts a fresh Classic season
+     with them (the season under way is lost, and the pop-up says so) */
+  function csOn() { return cgPage() && window.CG_MODE === 'classic' && passOn() && typeof STATE !== 'undefined' && !!STATE && STATE.gameMode === 'classic' && !(window.CastDaily && CastDaily.isActive && CastDaily.isActive()); }
+  function csPaint() {
+    var spot = document.querySelector('#draft .spin-zone'), b = document.getElementById('cpCsBtn');
+    if (!spot) return;
+    if (!b) {
+      b = document.createElement('button');
+      b.type = 'button'; b.id = 'cpCsBtn'; b.className = 'cp-cs-btn';
+      b.addEventListener('click', csOpen);
+      spot.parentNode.insertBefore(b, spot);
+    }
+    b.hidden = !csOn();
+    var sum = document.getElementById('cpOptSummary');
+    b.innerHTML = '<span aria-hidden="true">&#x2699;&#xFE0F;</span><b>Custom Seasons</b><small>' + esc(sum ? sum.textContent : '') + '</small>';
+  }
+  function csOpen() {
+    var body = document.querySelector('#cpOptions .cp-options-body'), m = document.getElementById('cpCsModal');
+    if (!body) return;
+    if (!m) {
+      m = document.createElement('div');
+      m.id = 'cpCsModal'; m.className = 'cp-confirm'; m.style.display = 'none';
+      m.innerHTML = '<div class="cp-confirm-backdrop" data-cs="close"></div><div class="cp-confirm-body" role="dialog" aria-modal="true" aria-labelledby="cpCsTitle">' +
+        '<button type="button" class="cp-confirm-x" data-cs="close" aria-label="Close">&#x2715;</button>' +
+        '<div class="cp-confirm-kicker">CAST Pass</div><h2 class="cp-confirm-title" id="cpCsTitle">Custom Seasons</h2>' +
+        '<p class="cp-confirm-sub" id="cpCsSub"></p><div class="cp-cs-slot"></div>' +
+        '<button type="button" class="cp-btn cp-btn-primary" data-cs="go">Play With These Settings</button>' +
+        '<button type="button" class="cp-btn cp-btn-ghost" data-cs="close">Keep Playing</button></div>';
+      document.body.appendChild(m);
+      m.addEventListener('click', function (e) {
+        var a = e.target.closest('[data-cs]');
+        if (!a) return;
+        csClose();
+        if (a.getAttribute('data-cs') === 'go') {
+          if (typeof gtag !== 'undefined') gtag('event', 'custom_seasons_play', { game: '27-0' });
+          afterHome = function () { if (typeof selectMode === 'function') selectMode('classic'); if (typeof startSelectedMode === 'function') startSelectedMode(); };
+          goHome();
+        }
+      });
+    }
+    var picks = typeof STATE !== 'undefined' && STATE ? (STATE.team || []).filter(Boolean).length : 0;
+    document.getElementById('cpCsSub').textContent = picks ? 'Pick your era and ratings. Playing with them starts a new season, and this one will be lost.' : 'Pick your era and ratings, then play a season with them.';
+    m.querySelector('.cp-cs-slot').appendChild(body); // the panel's own controls, moved here while it's open
+    m.style.display = 'flex';
+  }
+  function csClose() {
+    var m = document.getElementById('cpCsModal'), body = m && m.querySelector('.cp-options-body'), home = document.getElementById('cpOptions');
+    if (body && home) home.appendChild(body);
+    if (m) m.style.display = 'none';
+    csPaint();
+  }
+  window.addEventListener('cast:tier', function () { setTimeout(csPaint, 0); });
+  window.addEventListener('cast-account', function () { setTimeout(csPaint, 0); });
+  after('startGame', function () { setTimeout(csPaint, 0); });
+
   function boot() {
     addSoundButtons(); addModeButtons(); decorate(); syncMode(); loadVideos(); optionsSummary(); customGate(); keepLastWords();
     var play = /[?&]play=(classic|pack|hard|daily|wc)(?=&|#|$)/.exec(location.search) || (window.CG_MODE ? [0, window.CG_MODE] : null);

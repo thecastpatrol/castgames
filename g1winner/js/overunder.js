@@ -1,8 +1,9 @@
-/* Photo Finish (15 Oct 2026): 1000TRIES's Six Again for the racing game, from the CAST over/under engine. You see the left
-   card's number and call whether the right one's is over or under it, against a clock: 9 seconds for the first call, then
+/* HIGHER OR LOWER: RACING (15 Oct 2026): 1000TRIES's HIGHER OR LOWER: NRL for the racing game, from the CAST over/under engine.
+   You see the left
+   card's number and call whether the right one's is higher or lower, against a clock: 9 seconds for the first call, then
    6, 4 and 3. Right: the right card becomes the left and a new one comes in. Wrong, or out of time: you're out, unless you
    Run It Back (a Vault item, or $0.99 / 3 for $1.99, the Shop's price) to play on with your streak. Stuck on a pair:
-   Reroll it (your Vault Rerolls, or buy more). No free continues (paid or Vault only), like Six Again.
+   Reroll it (your Vault Rerolls, or buy more). No free continues (paid or Vault only), like HIGHER OR LOWER: NRL.
 
    The draw is the shared engine (js/ou-engine.js, 1000TRIES's shared/ou-engine.js): never two players on the same
    number, pairs close in as the streak grows, and the server replays every run from its seed and calls before it reaches
@@ -14,6 +15,8 @@
   'use strict';
   var T = window.T, E = window.OU_ENGINE;
   if (!T || !E) return;
+  // Its name (17 Oct 2026, the owner: every over/under is HIGHER OR LOWER and its sport; it was Photo Finish)
+  var NAME = 'HIGHER OR LOWER: RACING', SPORT = 'Racing';
   /* The racing categories in the shared engine (js/ou-engine.js CATS, game 'racing'). The shared file gets these lines
      with the server hookup; until then they are added here, the same values, so the draw is the same either way */
   var RC_CATS = {
@@ -180,7 +183,7 @@
     clearInterval(st.offerT); st.hold = true; render(); // the countdown waits while they choose
     T.track('ou_rib_tap', { category: st.cat, streak: st.streak });
     var hook = { kicker: 'Run It Back', title: 'Keep Your Streak', line: 'Keep your ' + st.streak + ' in a row and play on with a new card.',
-      foot: 'Run It Backs work in Photo Finish and other CAST games. Saved ones stay on your CAST Profile.' };
+      foot: 'Run It Backs work in ' + NAME + ' and other CAST games. Saved ones stay on your CAST Profile.' };
     CA.buyItem('rib', 'racing', function () {
       if (st.view !== 'out' || st.done) return;
       st.calls += 'B'; st.rib++; st.offer = 0; st.hold = false;
@@ -250,8 +253,9 @@
   function share() {
     var c = E.CATS[st.cat], marks = (st.log || []).filter(function (x) { return x.c; }).map(function (x) { return !x.ok ? '\u274C' : x.c === 'O' ? '\u2B06\uFE0F' : '\u2B07\uFE0F'; });
     if (marks.length > 30) marks = marks.slice(0, 29).concat(['\u2026', marks[marks.length - 1]]);
-    var txt = 'Photo Finish \u00B7 ' + c.name + '\n\uD83D\uDD25 ' + st.streak + ' in a row\n' + marks.join('') + '\nCan you beat it?';
-    var url = 'https://castgames.com.au/' + T.GAME_SLUG + '/?play=ou';
+    var txt = NAME + ' \u00B7 ' + c.name + '\n\uD83D\uDD25 ' + st.streak + ' in a row\n' + marks.join('') + '\nCan you beat it?';
+    var url = 'https://castgames.com.au/higher-or-lower-racing/', cq = 'cat=' + encodeURIComponent(st.cat);
+    url += (url.indexOf('?') < 0 ? '?' : '&') + cq;
     if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
     T.track('ou_share', { category: st.cat, streak: st.streak });
     if (navigator.share) { navigator.share({ text: txt, url: url }).catch(function () {}); return; }
@@ -278,11 +282,12 @@
     return '<div class="ou-pair is-demo" aria-hidden="true">' + card(L[0], true, 'is-left') + '<span class="ou-vs">VS</span>' + card(L[2], false, 'is-right') + '</div>';
   }
   function startView() {
-    return '<div class="ou-start"><h1 class="ou-logo"><span class="ou-up" aria-hidden="true">&#x25B2;</span> Photo Finish <span class="ou-dn" aria-hidden="true">&#x25BC;</span></h1>' +
-      '<p class="ou-lede">You know the first number. Is the second one <b>Over</b> or <b>Under</b>? Group 1 wins in Australia and New Zealand since 1983. One wrong call and you&rsquo;re out.</p>' +
+    return '<div class="ou-start"><h1 class="ou-logo" aria-label="' + esc(NAME) + '"><span class="ou-logo-t" aria-hidden="true"><span class="ou-up">&#x25B2;</span> Higher or Lower <span class="ou-dn">&#x25BC;</span></span>' +
+        '<span class="ou-logo-s" aria-hidden="true">' + esc(SPORT) + '</span></h1>' +
+      '<p class="ou-lede">You know the first number. Is the second one <b>Higher</b> or <b>Lower</b>? Group 1 wins in Australia and New Zealand since 1983. One wrong call and you&rsquo;re out.</p>' +
       demoPair() + catTiles() +
       '<button type="button" class="btn btn-primary ou-play" data-ou="play">Play ' + esc(E.CATS[st.cat].name) + ' <i aria-hidden="true">&#x25B6;</i></button>' +
-      '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Photo Finish Leaderboard</button></div>';
+      '<button type="button" class="ou-link" data-ou="board">&#x1F3C6; Leaderboard</button></div>';
   }
   // One jockey or horse in its silks (or neutral), like the draft cards: the plate (a jockey's with the signature horse's
   // name in a pill), the name and years, then the number
@@ -305,12 +310,12 @@
     var h = topBar() + (st.free ? '<div class="ou-clock is-free"><span>&#x23EA; No Clock This Call</span></div>' : '<div class="ou-clock' + (rv ? ' is-stop' : '') + '"><i style="animation-duration:' + st.secs + 's"></i></div>');
     h += '<div class="ou-pair">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' +
       card(b, !!rv, 'is-right', (rv ? (rv.right ? 'is-good' : 'is-bad') : '') + (st.fresh ? (st.rerolled ? ' is-new is-rerolled' : ' is-new') : '')) + '</div>';
-    h += '<p class="ou-q">Is <b>' + esc(shown(b[0])) + '</b> over or under <b>' + num(a[1]) + '</b>?</p>';
-    h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Over<kbd class="ou-key" aria-hidden="true">&uarr;</kbd></button>' +
-      '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Under<kbd class="ou-key" aria-hidden="true">&darr;</kbd></button></div>';
+    h += '<p class="ou-q">Is <b>' + esc(shown(b[0])) + '</b> higher or lower than <b>' + num(a[1]) + '</b>?</p>';
+    h += '<div class="ou-calls"><button type="button" class="ou-call is-over" data-ou="O"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25B2;</span> Higher<kbd class="ou-key" aria-hidden="true">&uarr;</kbd></button>' +
+      '<button type="button" class="ou-call is-under" data-ou="U"' + (rv ? ' disabled' : '') + '><span aria-hidden="true">&#x25BC;</span> Lower<kbd class="ou-key" aria-hidden="true">&darr;</kbd></button></div>';
     // The Reroll: the drafts' own wildcard button (the owner, 15 Oct 2026: "native, like the other games")
     h += '<div class="wildcards ou-wild"><button type="button" class="wc wc-reroll ou-rr" data-ou="rr"' + (rv ? ' disabled' : '') + ' title="Swap this card for a new one">' +
-      '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> Reroll This One</span><span class="wc-left">' + rrLabel() + '</span></button></div>';
+      '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> Reroll</span><span class="wc-left">' + rrLabel() + '</span></button></div>';
     return h;
   }
   // The miss: the pair that got them and why, over the decision panel (Run It Back or End Run, End Run drains)
@@ -318,7 +323,7 @@
     var L = D[st.cat], a = L[st.run.left], b = L[st.view === 'rewind' && st.missed != null ? st.missed : st.run.right], why = st.reveal && st.reveal.timeout;
     return '<div class="ou-out"><div class="ou-out-h">' + (why ? '&#x23F0; Time&rsquo;s Up' : '&#x274C; Wrong Call') + '</div>' +
       '<div class="ou-pair is-small">' + card(a, true, 'is-left') + '<span class="ou-vs">VS</span>' + card(b, true, 'is-right', 'is-bad') + '</div>' +
-      '<p class="ou-out-why">' + esc(shown(b[0])) + ' was ' + (b[1] > a[1] ? 'over' : 'under') + ', with ' + num(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +
+      '<p class="ou-out-why">' + esc(shown(b[0])) + ' was ' + (b[1] > a[1] ? 'higher' : 'lower') + ', with ' + num(b[1]) + ' ' + esc(unit(b[1])) + '.</p>' +
       '<div class="panel ou-decide"><div class="panel-head"><span class="panel-title">Run It Back?</span><span class="panel-meta">' + esc(E.CATS[st.cat].name) + '</span></div>' +
         '<div class="decision is-over"><p class="decision-big">' + st.streak + ' <small>in a row</small></p>' +
         '<p>Keep your streak and play on with a new card.</p>' +
@@ -370,10 +375,10 @@
       if (x.rib) { rows += '<li class="ou-step-note">&#x23EA; Ran It Back</li>'; return; }
       if (!x.c) return;
       var p = L[x.p], dir = p[1] > prev[1] ? 'O' : 'U';
-      var tag = x.ok ? '<span class="ou-tag is-' + (dir === 'O' ? 'o' : 'u') + '">' + (dir === 'O' ? '&#x25B2; Over' : '&#x25BC; Under') + '</span>'
-        : '<span class="ou-tag is-x">' + (x.c === 'T' ? '&#x23F0; No Call' : '&#x2715; ' + (x.c === 'O' ? 'Over' : 'Under')) + '</span>';
+      var tag = x.ok ? '<span class="ou-tag is-' + (dir === 'O' ? 'o' : 'u') + '">' + (dir === 'O' ? '&#x25B2; Higher' : '&#x25BC; Lower') + '</span>'
+        : '<span class="ou-tag is-x">' + (x.c === 'T' ? '&#x23F0; No Call' : '&#x2715; ' + (x.c === 'O' ? 'Higher' : 'Lower')) + '</span>';
       rows += '<li class="ou-step ' + (x.ok ? 'is-good' : 'is-bad') + '"><span class="ou-step-i">' + (x.ok ? ++n : '&#x2715;') + '</span>' + chip(p) +
-        '<span class="ou-step-p"><b>' + esc(shown(p[0])) + '</b><small>' + (x.ok ? esc(years(p)) : 'It was ' + (dir === 'O' ? 'over' : 'under')) + '</small></span><span class="ou-step-v">' + num(p[1]) + '</span>' + tag + '</li>';
+        '<span class="ou-step-p"><b>' + esc(shown(p[0])) + '</b><small>' + (x.ok ? esc(years(p)) : 'It was ' + (dir === 'O' ? 'higher' : 'lower')) + '</small></span><span class="ou-step-v">' + num(p[1]) + '</span>' + tag + '</li>';
       if (x.ok) prev = p;
     });
     h += '<div class="panel ou-run"><div class="panel-head"><span class="panel-title">Your Run</span><span class="panel-meta">' + esc(E.CATS[st.cat].unit) + '</span></div><ol class="ou-ladder">' + rows + '</ol></div>';
@@ -410,7 +415,7 @@
   function render() {
     var el = root();
     if (!el) return;
-    var h = '<div class="ou-head"><button type="button" class="ou-back" data-ou="home" aria-label="Back to home">&larr;</button>' + (st.view === 'start' ? '' : '<span>Photo Finish</span>') + '</div>';
+    var h = '<div class="ou-head"><button type="button" class="ou-back" data-ou="home" aria-label="Back to home">&larr;</button>' + (st.view === 'start' ? '' : '<span>' + esc(NAME) + '</span>') + '</div>';
     if (!D) h += '<div class="ou-load">Loading the form guide&hellip;</div>';
     else h += st.view === 'play' ? playView() : st.view === 'out' ? outView() : st.view === 'rewind' ? rewindView() : startView();
     if (st.note) h += '<p class="ou-note" role="status">' + esc(st.note) + '</p>';
@@ -439,7 +444,7 @@
     else if (a === 'board') { finish(); var CA = A(); if (CA && CA.openBoards) CA.openBoards([boardId(), 'week']); if (st.view === 'out') { var c2 = st.cat; st = { view: 'start', cat: c2 }; render(); } }
     else if (a === 'home') { if (st.view === 'play' && !st.reveal && st.streak && !window.confirm('Leave this run? Your streak ends here.')) return; finish(); var c3 = st.cat; st = { view: 'start', cat: c3 }; if (T.ouHome) T.ouHome(); }
   });
-  // Keyboard on a computer (the owner, 15 Oct 2026: just up and down): Up is Over, Down is Under; O and U too
+  // Keyboard on a computer (the owner, 15 Oct 2026: just up and down): Up is Higher, Down is Lower; O and U too
   document.addEventListener('keydown', function (e) {
     if (st.view !== 'play' || document.body.getAttribute('data-screen') !== 'ou' || e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
@@ -447,12 +452,14 @@
     else if (k === 'ArrowDown' || k === 'u' || k === 'U') { e.preventDefault(); call('U'); }
   });
 
+  var opened = false;
   T.ou = {
     // Open the start screen (the mode card, ?play=ou, the board's Play button). cat: a category to start on
     open: function (cat) {
+      if (!opened) { opened = true; cat = cat || urlCat(); } // the first open takes the address's ?cat= (CAST Games' pages open with CG_MODE, no ?play=)
       if (st.view === 'play' && !st.done) return;
       if (!cat && st.view === 'start' && root() && root().offsetParent) return; // already open (the page's own start-up got here first)
-      st = { view: 'start', cat: E.CATS[cat] && E.gameOf(cat) === 'racing' ? cat : E.CATS[lsGet(LS_CAT)] && E.gameOf(lsGet(LS_CAT)) === 'racing' ? lsGet(LS_CAT) : 'jockeyg1' };
+      st = { view: 'start', cat: CAT_ORDER.indexOf(cat) >= 0 ? cat : CAT_ORDER.indexOf(lsGet(LS_CAT)) >= 0 ? lsGet(LS_CAT) : CAT_ORDER[0] };
       if (T.showScreen) T.showScreen('ou');
       primeVault();
       render();
@@ -460,11 +467,13 @@
     },
     on: function () { return true; } // part of the racing game from the start (the game itself waits for the owner's Launch)
   };
+  // ?cat=bblwkts and the like: the category a link asks for (17 Oct 2026; the website's old addresses send theirs)
+  function urlCat() { var m = /[?&]cat=([a-z0-9]+)(?=&|#|$)/.exec(location.search); return m ? m[1] : null; }
   // Tests on the preview only (localhost): the current right answer
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.ou._answer = function () { return st.run && st.view === 'play' ? st.run.answer() : null; };
   // ?play=ou (a board's Play button, a share) or the owner's private link (?po=...): straight in once the page (and the
   // account module, which knows if it's on) has loaded
-  if (T.ouWanted || /[?&](play=ou|po=[a-z0-9]+)(?=&|#|$)/.test(location.search)) { // ouWanted: the page asked before this loaded (js/app.js playMode)
+  if (T.ouWanted || window.CG_MODE === 'ou' || /[?&](play=ou|po=[a-z0-9]+)(?=&|#|$)/.test(location.search)) { // ouWanted: the page asked before this loaded (js/app.js playMode)
     // Straight in (17 Oct 2026: it waited for every picture on the page and showed the game's home first). The rest of
     // the page stays hidden until it opens; if it isn't on (not launched, no private link) the home shows as before
     var docEl = document.documentElement, boot = document.createElement('style'), tries = 0;

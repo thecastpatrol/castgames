@@ -1,4 +1,4 @@
-/* Over or Under (14 Oct 2026, the owner's BUILD IT): a higher-or-lower run for 1000TRIES (Six Again) and 4000 GOALS (Play On). Two players: you see the left
+/* HIGHER OR LOWER (14 Oct 2026, the owner's BUILD IT; one name for every sport since 17 Oct 2026): a higher-or-lower run for every CAST game. Two players: you see the left
    one's number and call whether the right one's is Over or Under it. Right, and the right card becomes the left with a new
    player in; wrong (or out of time), and you're out, unless you Run It Back.
 
@@ -17,24 +17,24 @@
     caps: { name: 'Test Caps', unit: 'Tests', one: 'Test', base: 120, step: 40 },
     ttries: { name: 'Test Tries', unit: 'Test tries', one: 'Test try', base: 90, step: 30 },
     nrlw: { name: 'NRLW Tries', unit: 'tries', one: 'try', base: 45, step: 14 },
-    // Play On (15 Oct 2026): 4000 GOALS's version, since 1990 (the AFL era) like the game itself. game: the site whose
+    // HIGHER OR LOWER: AFL (15 Oct 2026): 4000 GOALS's version, since 1990 (the AFL era) like the game itself. game: the site whose
     // board it is (the others are 1000TRIES's)
     goals: { name: 'AFL-Era Goals', unit: 'AFL-era goals', one: 'AFL-era goal', base: 150, step: 45, game: '4000goals' },
     games: { name: 'AFL-Era Games', unit: 'AFL-era games', one: 'AFL-era game', base: 150, step: 45, game: '4000goals' },
     aflw: { name: 'AFLW Goals', unit: 'goals', one: 'goal', base: 45, step: 14, game: '4000goals' },
-    // Free Hit (15 Oct 2026): 25000 RUNS' version, career BBL runs and wickets since 2011/12
+    // HIGHER OR LOWER: CRICKET's BBL half (15 Oct 2026): 25000 RUNS' version, career BBL runs and wickets since 2011/12
     bblruns: { name: 'BBL Runs', unit: 'BBL runs', one: 'BBL run', base: 45, step: 14, game: 'bigbash' },
     bblwkts: { name: 'BBL Wickets', unit: 'BBL wickets', one: 'BBL wicket', base: 40, step: 10, game: 'bigbash' },
-    // Follow On (16 Oct 2026): 60000 RUNS' version, career Test runs and wickets
+    // HIGHER OR LOWER: CRICKET's Test half (16 Oct 2026): 60000 RUNS' version, career Test runs and wickets
     testruns: { name: 'Test Runs', unit: 'Test runs', one: 'Test run', base: 150, step: 45, game: 'tests' },
     testwkts: { name: 'Test Wickets', unit: 'Test wickets', one: 'Test wicket', base: 120, step: 40, game: 'tests' },
-    // Two Point (16 Oct 2026): 777 TDS' version, career scored touchdowns (never passing TDs)
+    // HIGHER OR LOWER: NFL (16 Oct 2026): 777 TDS' version, career scored touchdowns (never passing TDs)
     nfltds: { name: 'Career TDs', unit: 'career TDs', one: 'career TD', base: 150, step: 45, game: 'nfl' },
-    // Photo Finish (16 Oct 2026): G1 WINNER SPINNER's version, Group 1 wins in Australia and New Zealand since 1983
+    // HIGHER OR LOWER: RACING (16 Oct 2026): G1 WINNER SPINNER's version, Group 1 wins in Australia and New Zealand since 1983
     jockeyg1: { name: 'Jockey Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 40, step: 12, game: 'racing' },
     bigrace: { name: 'Big Race Wins', unit: 'big race wins', one: 'big race win', base: 30, step: 8, game: 'racing' },
     horseg1: { name: 'Horses\u2019 Group 1 Wins', unit: 'Group 1 wins', one: 'Group 1 win', base: 45, step: 14, game: 'racing' },
-    // Extra Time (17 Oct 2026): 650 GOALS' version, career Premier League goals, assists and appearances since 1992-93
+    // HIGHER OR LOWER: PREMIER LEAGUE (17 Oct 2026): 650 GOALS' version, career Premier League goals, assists and appearances since 1992-93
     plgoals: { name: 'Premier League Goals', unit: 'PL goals', one: 'PL goal', base: 150, step: 45, game: 'epl' },
     plassists: { name: 'Premier League Assists', unit: 'PL assists', one: 'PL assist', base: 150, step: 45, game: 'epl' },
     plapps: { name: 'Premier League Appearances', unit: 'PL games', one: 'PL game', base: 150, step: 45, game: 'epl' }

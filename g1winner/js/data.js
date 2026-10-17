@@ -45,7 +45,7 @@
 
   /* Silks (the owner, 16 Oct 2026): every jockey wears the silks of his or her signature horse (data/players.json silks
      { horse, colours: [body, pattern], pattern, words, letter?, emblem?, epaulettes? }, built by
-     tools/make_game_files.py; James McDonald wears Verry Elleegant). The horses' Photo Finish cards wear their own
+     tools/make_game_files.py; James McDonald wears Verry Elleegant). The horses' HIGHER OR LOWER: RACING cards wear their own
      (data/silks.json, js/overunder.js), drawn by the same T.silksBg. A jockey without confirmed silks gets one neutral
      racing look: royal blue, no pattern */
   T.NEUTRAL_SILKS = { colours: ['#1f4fbf', '#ffffff'], pattern: 'plain' };

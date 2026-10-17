@@ -42,7 +42,8 @@
   }
   function ratingsHidden() { return !!on() || !STATE.showRatings; }
   // Substitute: CAST Pass only, 1 a Classic season ('pass' when they have it, 'profile' or 'guest' see it locked)
-  function subTier() { return classicOn() ? tierNow() : null; }
+  // Substitute: CAST Pass, with a free profile seeing it locked; never shown to a guest, as in every draft game (17 Oct 2026)
+  function subTier() { var t = classicOn() ? tierNow() : null; return t === 'guest' ? null : t; }
   function W() { if (!STATE.__wc) STATE.__wc = { hardUsed: {}, revealN: 0, removeN: 0, subN: 0, sub: null, arming: false, revealSpin: null, sort: 'pos', dir: 1, q: '', qSpin: null, searching: false, slot: null }; return STATE.__wc; }
   // The squad list tools (sort, search, pick a spot) run in the Daily and in Hard mode
   function tools() { return !!document.getElementById('draft') && (on() || STATE.gameMode === 'hard') && STATE.gameMode !== 'pack'; }
@@ -113,12 +114,12 @@
     var items = [['reroll', '&#x1F504;', 'Reroll', rrLeft, rrLeft && spinOn(), 'Spin first, then Reroll swaps the squad you get.']];
     // Reveal Ratings: bought ones used this season add to it (w.revealExtra)
     var rvN = n + (w.revealExtra || 0);
-    if (ratingsHidden()) items.push(['reveal', '&#x1F440;', 'Reveal Ratings', Math.max(0, rvN - w.revealN), rvN - w.revealN > 0 && spinOn() && !revealedNow(),
+    if (ratingsHidden()) items.push(['reveal', '&#x1F440;', 'Reveal', Math.max(0, rvN - w.revealN), rvN - w.revealN > 0 && spinOn() && !revealedNow(),
       revealedNow() ? 'Every rating in this squad is already showing.' : 'Spin first, then reveal every rating in the squad.']);
     // Remove Player works any time there is someone in your 13, even with a squad showing (like 1000TRIES); bought ones
     // used this season add to it (w.removeExtra)
     var rmN = n + (w.removeExtra || 0);
-    items.push(['remove', '&#x274C;', 'Remove Player', Math.max(0, rmN - w.removeN), rmN - w.removeN > 0 && filled() > 0, 'Place a player first, then you can remove one.']);
+    items.push(['remove', '&#x274C;', 'Remove', Math.max(0, rmN - w.removeN), rmN - w.removeN > 0 && filled() > 0, 'Place a player first, then you can remove one.']);
     var st = subTier(), canMove = st === 'pass' ? movable().length : 0;
     if (st) items.push(['sub', '&#x1F501;', 'Substitute', st === 'pass' ? Math.max(0, 1 - w.subN) : 1, st === 'pass' && 1 - w.subN > 0 && canMove > 0,
       filled() >= 13 ? 'Your 13 is full. Substitute moves a player into an open spot.' : !filled() ? 'Place a player first, then you can move them to another spot they play.'
@@ -131,14 +132,13 @@
        gap and two Picks side by side get half each (8 Oct 2026: "World Cup Pick" wrapped in a third) */
     var picks = window.cpPicks && window.cpPicks.bars ? window.cpPicks.bars() : [], pk = {};
     picks.forEach(function (p) { pk[p.k] = p; items.push([p.k, p.ico, p.name, 1, true, '']); });
+    /* The draft games' layout (17 Oct 2026, the owner: identical wildcards in every game): rows of three, four as two rows
+       of two, the last row sharing its width evenly; from five tiles the icon sits above the name (css/theme.css) */
+    var n = items.length;
     b.classList.toggle('has-pick', picks.length > 0);
-    b.classList.toggle('is-2', !picks.length && items.length === 2);
-    b.classList.toggle('is-4', !picks.length && items.length === 4);
-    b.classList.toggle('is-5', !picks.length && items.length === 5);
-    b.style.setProperty('--n', items.length); // one row, however many there are
-    // Each button's name: in full, and short for phones (four or five in a row)
-    var SHORT = { reroll: 'Reroll', reveal: 'Reveal', remove: 'Remove', sub: 'Sub', key: 'Key', toty: 'Team of the Year Pick', prem: 'Premiers Pick', imm: 'Immortal Pick', wcp: '88+ Pick', ileg: 'World Legend Pick', wch: 'World Champions Pick' };
-    var lab = function (it) { return '<span class="cpw-label"><span aria-hidden="true">' + it[1] + '</span> <span class="cpw-full">' + it[2] + '</span><span class="cpw-short">' + SHORT[it[0]] + '</span></span>'; };
+    b.classList.toggle('is-stack', n >= 5);
+    // One name a tile, the same in every game: Reroll, Reveal, Remove, Substitute, Superstar Key, then the Picks' own names
+    var lab = function (it) { return '<span class="cpw-label"><span class="cpw-ico" aria-hidden="true">' + it[1] + '</span> ' + it[2] + '</span>'; };
     b.innerHTML = items.map(function (it) {
       var armed = (it[0] === 'remove' && w.arming) || (it[0] === 'sub' && !!w.sub), isBonus = it[0] === 'reroll' && bonus;
       var tp = pk[it[0]];
@@ -188,10 +188,13 @@
         (state === ' is-wait' ? ' data-hint="' + it[5] + '"' : '') + '>' + lab(it) +
         '<span class="cpw-left">' + sub + '</span></button>';
     }).join('');
-    // With a Pick: six columns, two each, and the last row's buttons share all six (one: the row, two: half each)
-    if (picks.length) {
-      var bs = b.children, r = bs.length - 3 * Math.floor((bs.length - 1) / 3);
-      for (var j = 0; j < bs.length; j++) bs[j].style.gridColumn = 'span ' + (j >= bs.length - r ? 6 / r : 2);
+    // Six columns: two each, four as two rows of two, and the last row's tiles share all six (one: the row, two: half each).
+    // A tile across the whole row keeps its icon beside the name, as 1000TRIES' seventh tile does
+    var bs = b.children, r = n - 3 * Math.floor((n - 1) / 3);
+    for (var j = 0; j < bs.length; j++) {
+      var span = n === 4 ? 3 : j >= n - r ? 6 / r : 2;
+      bs[j].style.gridColumn = 'span ' + span;
+      if (span === 6 && n >= 5) bs[j].classList.add('is-wide');
     }
   }
   function reveal() {

@@ -354,7 +354,7 @@
       st.view = 'rewind'; render();
       setTimeout(function () { if (st.view === 'rewind') { st.view = 'play'; st.note = ''; nextCard(); } }, 1500);
     }, { kicker: 'Run It Back', title: 'One More Life', line: 'Keep your ' + b.filled + (b.filled === 1 ? ' tile' : ' tiles') + ' and play on with a new player.',
-      foot: 'Run It Backs work in NRL Bingo, Six Again and 27-0. Saved ones stay on your CAST Profile.' });
+      foot: 'Run It Backs work in NRL Bingo, HIGHER OR LOWER: NRL and 27-0. Saved ones stay on your CAST Profile.' });
     // The Shop closed without a buy: the countdown carries on
     var w = setInterval(function () {
       if (st.view !== 'out' || st.done) { clearInterval(w); return; }
@@ -649,7 +649,7 @@
     }
   });
 
-  // The 1000TRIES home card (js/app.js placeBingo), under Six Again's: a small card of jerseys with a few ticks
+  // The 1000TRIES home card (js/app.js placeBingo), under HIGHER OR LOWER: NRL's: a small card of jerseys with a few ticks
   if (T.render) T.render.bingoCard = function () {
     var fill = { 1: 1, 6: 1, 8: 1, 13: 1, 17: 1 }, h = '';
     for (var t = 0; t < E.N; t++) h += '<span class="bg-mini' + (fill[t] ? ' is-filled' : '') + '">' + kitSvg(E.TILES[t][0]) + (fill[t] ? '<i>&#x2705;</i>' : '') + '</span>';

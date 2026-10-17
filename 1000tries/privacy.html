@@ -3,7 +3,7 @@
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
+<link rel="stylesheet" href="../shared/cg.css?v=c3488f38aba1">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -13,7 +13,7 @@
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=20261017.2" data-site="1000tries"></script>
+<script src="js/cast-contact.js?v=0426147b" data-site="1000tries"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -43,11 +43,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=e1e13ba0">
+<link rel="stylesheet" href="css/main.css?v=19a80553">
 </head>
 <body>
 <script>window.CG_GAME = '1000tries'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=1af3df3d8a21"></script>
+<script src="../shared/cg.js?v=c3488f38aba1"></script>
 
 
 <header class="site-header">
@@ -139,6 +139,6 @@
 document.querySelectorAll('.doc p, .doc li, .footer-legal').forEach(function (el) { var n = el.lastChild; while (n && n.nodeType !== 3) n = n.lastChild; if (n && /\S\s+\S+\s*$/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\s+(\S+\s*)$/, '\u00A0$1'); });</script>
 </footer>
 
-<script src="js/analytics.js?v=20260924.29"></script>
+<script src="js/analytics.js?v=6bf5d2f9"></script>
 </body>
 </html>
