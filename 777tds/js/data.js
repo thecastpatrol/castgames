@@ -221,7 +221,7 @@
      T.GOAT_SRC: the player the GOAT item brings. A Legend comes as his own GOAT card (T.goatCard: "Name (GOAT)", tier
      'goat', the server's lib/goat.js), never beside his Legend card. T.GOAT_ID: who always wears the goat */
   T.GOAT_SRC = 'legend-jerry-rice';
-  T.GOAT_ID = '';
+  T.GOAT_ID = 'legend-jerry-rice'; // his Legend card wears the goat too, when a Legends Pick deals him (17 Oct 2026, the owner)
   T.isGoat = function (p) {
     return !!p && (p.tier === 'goat' || (!!T.GOAT_ID && p.id === T.GOAT_ID));
   };

@@ -680,7 +680,8 @@
   if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.bingo._fits = function () { var b = st.board; return b && st.view === 'play' && !st.auto && !st.busy && !b.over() ? b.openFits(b.order[b.pos]) : null; };
   // ?play=bingo (a board's Play button, a share, CAST Games' /nrl-bingo/) or the owner's private link (?bingo=...): straight
   // in once the account module (which knows if it's on) has loaded; the rest of the page stays hidden until it opens
-  var want = /[?&](play=(bingo|bingod|bingo-daily)|bingo=[a-z0-9]+)(?=&|#|$)/.exec(location.search);
+  // (or CAST Games' page for it, window.CG_MODE 'bingo' or 'bingo-daily', 17 Oct 2026: every mode its own page)
+  var want = /[?&](play=(bingo|bingod|bingo-daily)|bingo=[a-z0-9]+)(?=&|#|$)/.exec(location.search) || (/^bingo/.test(window.CG_MODE || '') ? [0, 0, window.CG_MODE] : null);
   if (T.bingoWanted || want) {
     var docEl = document.documentElement, boot = document.createElement('style'), tries = 0, mode = want && (want[2] === 'bingo-daily' || want[2] === 'bingod') ? 'daily' : null;
     boot.textContent = 'html.bg-boot .screen:not(#screen-bingo) { display: none !important; }';

@@ -1363,8 +1363,10 @@
   function paintHome() {
     var big = document.getElementById('modeWcBtn'), mini = document.getElementById('modeWcMini'), main = document.getElementById('modeClassicBtn');
     if (!big || !mini || !main) return;
-    var live = on(), late = today() > '2026-11-15', s = live && signedIn() ? savedRun() : null, where = s ? resumeWhere(s) : '';
-    placeDaily(live);
+    // late: the small card under More Modes. Since 17 Oct 2026 always (the owner: World Cup 8-0 is its own game on CAST
+    // Games, so 27-0's home no longer leads with it), and the Daily Challenge keeps its own place
+    var live = on(), late = true, s = live && signedIn() ? savedRun() : null, where = s ? resumeWhere(s) : '';
+    placeDaily(false);
     var nb = document.getElementById('wcNewBtn');
     Array.prototype.forEach.call(document.querySelectorAll('[data-cast-wc]'), function (n) { n.hidden = !live; }); // the FAQ's World Cup question
     big.hidden = !live || late;

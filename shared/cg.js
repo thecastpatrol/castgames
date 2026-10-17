@@ -62,7 +62,7 @@
     // NRL Bingo (17 Oct 2026): a Coming Soon card until the owner's Launch ('bingo') or on a device that opened his private
     // link; its Daily's link is ?play=bingo-daily (dplay)
     { id: 'nrl-bingo', sport: 'nrl', name: 'NRL BINGO', path: 'nrl-bingo/', folder: '1000tries', mode: 'bingo', logo: '', mark: '&#x2705;', status: 'live', launch: 'bingo',
-      line: 'Tap his clubs, fill the card', long: 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.', board: 'bingo', daily: true, dplay: 'bingo-daily' },
+      line: 'Tap his clubs, fill the card', long: 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.', board: 'bgfree', daily: true, dplay: 'bingo-daily' },
     { id: 'sc', sport: 'nrl', name: 'SC', path: '', logo: '', mark: '&#x1F4C8;', status: 'soon', line: 'Spin 3 seasons, top the SC points' },
     // AFL
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', folder: '4000goals', mode: 'plus', logo: L + '4000goals.png', status: 'live',
@@ -342,10 +342,10 @@
     var d = e.detail || {}, here = currentGame();
     if (!here || !here.folder || d.mode === 'daily') return;
     var folder = { '1000tries': '1000tries', '27-0': '27-0', '4000goals': '4000goals', bigbash: '25000runs', tests: '60000runs', nfl: '777tds', racing: 'g1winner', epl: '650goals' }[d.game] || d.game;
-    var m = d.mode === 'aflw' ? 'nrlw' : d.mode, g = forMode(folder, m);
+    var m = d.mode === 'aflw' ? 'nrlw' : d.mode === 'bingod' ? 'bingo' : d.mode, g = forMode(folder, m);
     if (!g || g.id === here.id || !g.path) return;
     e.stopImmediatePropagation();
-    location.href = url(g.path);
+    location.href = url(g.path) + (d.mode === 'bingod' ? '?play=bingo-daily' : '');
   });
 
   /* A page for one mode (window.CG_MODE, tools/build.py): the game opens straight into it (its js/app.js or theme-fx.js

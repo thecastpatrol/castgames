@@ -11,6 +11,7 @@
   /* Screens */
 
   function show(name) {
+    if (bootOn()) bootEnd(); // opened on a mode (index.html): the screens show from here
     ['home', 'draft', 'results', 'ou', 'bingo'].forEach(function (n) {
       $('screen-' + n).classList.toggle('is-active', n === name);
     });
@@ -321,8 +322,8 @@
     var d = $('dailyCard'), last = $('packNote');
     if (!d || !last) return;
     if (!dailyMark) { dailyMark = document.createComment(' the Daily Challenge '); d.parentNode.insertBefore(dailyMark, d); }
-    if (wcOn() && sydneyToday() <= '2026-11-15') { if (last.nextSibling !== d) last.parentNode.insertBefore(d, last.nextSibling); }
-    else if (dailyMark.nextSibling !== d) dailyMark.parentNode.insertBefore(d, dailyMark.nextSibling);
+    // its own place again since World Cup 200+ moved into More Modes (17 Oct 2026)
+    if (dailyMark.nextSibling !== d) dailyMark.parentNode.insertBefore(d, dailyMark.nextSibling);
   }
   // Six Again's card (15 Oct 2026, the owner): straight under the Daily Challenge, wherever the Daily sits, once it's on
   function placeOu() {
@@ -348,21 +349,16 @@
   // World Cup 200+ (4 Oct 2026): on once the owner launches it (or ?castwc=1 for an admin's visit); signed-in players only
   function wcOn() { return !!(window.CastAccount && CastAccount.wcLive && CastAccount.wcLive()); }
   function signedIn() { return !!(window.CastAccount && CastAccount.isSignedIn && CastAccount.isSignedIn()); }
-  var SYD = window.Intl && Intl.DateTimeFormat ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit' }) : null;
-  function sydneyToday() { return SYD ? SYD.format(new Date()) : new Date().toISOString().slice(0, 10); }
-  // Its home card: big until the final (15 Nov 2026), then small with the other modes. A guest's first visit keeps 1000+ first
-  function wcPlace(first) {
-    if (!wcOn()) return null;
-    if (sydneyToday() > '2026-11-15') return 'mini';
-    return first && !signedIn() ? 'under' : 'top';
-  }
+  /* Its home card: with the other modes under More Modes (17 Oct 2026, the owner: World Cup 200+ is its own game on CAST
+     Games now, so this home no longer leads with it) */
+  function wcPlace() { return wcOn() ? 'mini' : null; }
   function renderHome() {
     // First visit (no finished game on this phone yet): how it works in three steps, under the pitch. Gone after game one.
     // First-timers also get the modes first (4 Oct 2026, the owner's call): they move up under the steps, above the spot
     // and the Daily Challenge, and a guest's first visit has no spot (js/cast-account.js asks CAST_ACCOUNT.firstVisit)
     var first = firstVisit(), fs = $('firstSteps');
     // guest: Sign In to Play once today's free World Cup is played (Play Free until then, 12 Oct 2026)
-    $('modePicker').innerHTML = R.modePicker(selectedMode, { wc: wcPlace(first), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
+    $('modePicker').innerHTML = R.modePicker(selectedMode, { wc: wcPlace(), guest: !signedIn() && !(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()), free: !signedIn() && !!(window.CastAccount && CastAccount.wcFreeLeft && CastAccount.wcFreeLeft()) });
     if (fs) fs.hidden = !first;
     placeModes(first);
     placeDaily();
@@ -718,6 +714,7 @@
   T.ouHome = function () { goHome(); };
   T.bingoHome = function () { goHome(); }; // NRL Bingo's back arrow (js/bingo.js)
   function goHome() {
+    if (window.CG && CG.leave) { closeSheet(); busy = false; CG.leave(); return; } // CAST Games: every mode is its own page (17 Oct 2026)
     closeSheet();
     busy = false;
     renderHome();
@@ -735,7 +732,7 @@
       return;
     }
     if (modeId !== 'daily') selectedMode = modeId; // the Daily is not one of the home screen's modes
-    dropDraft(); // a new game replaces a saved one
+    dropDraft(modeId); // a new game replaces its mode's saved one
     T.newGame(modeId, opts); // opts.seed: a friend's challenge, the same draft they played
     // Wildcards by tier once CAST Pass launches: guests none, CAST Profile 1 of each, CAST Pass 2 of each.
     // Before that: everyone 1 of each, and CAST Profile players +1 reroll (it just shows as "2 left").
@@ -1287,7 +1284,7 @@
   function finish(out) {
     var S = T.state();
     S.finished = true;
-    dropDraft();
+    dropDraft(S.mode.id);
     S.tweakMode = false;
     if (!S.qd) T.track('game_end', { mode: S.mode.name, result: out.win ? 'win' : 'fail', total: out.total });
     try { localStorage.setItem('1000tries_played', '1'); } catch (e) { /* storage blocked */ }
@@ -1508,8 +1505,8 @@
         break;
       case 'results-home': afterResults(goHome); break;
       case 'close-sheet': closeSheet(); break;
-      case 'resume-draft': { var rd = savedDraft(); closeSheet(); if (rd) resumeDraft(rd); break; }
-      case 'drop-draft': { var dd = savedDraft(); T.track('draft_resume_skip', { mode: dd && dd.name || '' }); dropDraft(); closeSheet(); break; }
+      case 'resume-draft': { var rd = offeredDraft(); closeSheet(); if (rd) resumeDraft(rd); break; }
+      case 'drop-draft': { var dd = offeredDraft(); T.track('draft_resume_skip', { mode: dd && dd.name || '' }); if (dd) dropKey(dd.key); closeSheet(); break; }
       case 'cancel-tweak': T.armTweak(false); renderDraft(); break;
       case 'lock-in':
         stopLockTimer();
@@ -1528,7 +1525,7 @@
         closeSheet();
         placingId = null;
         if (T.state()) { selectedMode = T.state().mode.id; T.state().finished = true; }
-        dropDraft();
+        dropDraft(selectedMode);
         afterResults(goHome);
         break;
       case 'confirm-restart': {
@@ -1886,10 +1883,16 @@
      Draft. Dropped when the game ends, when a new one starts, when Change Mode leaves it, after a day, and never
      offered to a different account. */
   var LS_DRAFT = '1000tries_draft_v1', DRAFT_MS = 24 * 3600000;
+  /* One saved draft per mode (17 Oct 2026, the owner: on CAST Games every mode is its own game, each with its own
+     Continue). The main mode keeps the first key and every other mode adds its name to it; a draft kept under the first
+     key before then is still found by its mode */
+  function draftKey(mode) { return !mode || mode === 'plus' ? LS_DRAFT : LS_DRAFT + '_' + mode; }
+  function draftModeOf(d) { return (d && (d.mode || d.sel)) || 'plus'; }
+  function dropKey(k) { try { if (k) localStorage.removeItem(k); } catch (e) { /* storage blocked */ } }
   // Each page is its own tab: a draft carried on in another tab ends here (no peeking at the next offer in a copy)
   var DRAFT_TAB = Math.random().toString(36).slice(2, 10);
   function draftWho() { return (window.CastAccount && CastAccount.uid && CastAccount.uid()) || 'guest'; }
-  function draftRaw() { try { return JSON.parse(localStorage.getItem(LS_DRAFT) || 'null'); } catch (e) { return null; } }
+  function draftRaw(mode) { try { return JSON.parse(localStorage.getItem(draftKey(mode)) || 'null'); } catch (e) { return null; } }
   // Worth keeping: a pick made, or anything used or paid for before the first one (a key, a reroll, a Pick)
   function draftWorth(S) {
     return T.filledCount() > 0 || S.offerNo > 1 || S.spinNo > 1 || !!(S.keysUsed || S.keyUsed || S.immUsed || S.ilegUsed || S.goatUsed || S.subUsed ||
@@ -1900,9 +1903,9 @@
     // Not the Daily, Quick Draft or a friend's challenge (its answer is only recorded in the tab it started in)
     if (!S || S.finished || S.daily || S.qd || S.challenge || !S.mode || !draftWorth(S)) return;
     if (!S.draftId) S.draftId = Math.random().toString(36).slice(2, 12);
-    var cur = draftRaw(), me = draftWho();
+    var cur = draftRaw(S.mode.id), me = draftWho();
     if (cur && cur.id === S.draftId && cur.tab !== DRAFT_TAB) { draftTaken(); return; }
-    if (cur && cur.id === S.draftId && cur.who !== 'guest' && cur.who !== me) { dropDraft(); return; } // signed out (or someone else): never handed on
+    if (cur && cur.id === S.draftId && cur.who !== 'guest' && cur.who !== me) { dropDraft(S.mode.id); return; } // signed out (or someone else): never handed on
     try {
       var s = JSON.stringify(S, function (k, v) {
         if (k === 'promoDef') return undefined;
@@ -1911,7 +1914,7 @@
         return v;
       });
       var clockLeft = clock.iv && clock.offer === S.offer ? Math.max(0, clock.end - Date.now()) : null;
-      localStorage.setItem(LS_DRAFT, JSON.stringify({ v: 1, id: S.draftId, tab: DRAFT_TAB, who: me, at: Date.now(), ds: T.DATASET, target: T.TARGET, sel: selectedMode,
+      localStorage.setItem(draftKey(S.mode.id), JSON.stringify({ v: 1, id: S.draftId, tab: DRAFT_TAB, who: me, at: Date.now(), ds: T.DATASET, target: T.TARGET, sel: selectedMode, mode: S.mode.id,
         name: S.mode.name, picks: T.filledCount(), clock: clockLeft, lock: S.awaitingLock && lockTimer ? lockLeft : null, s: s }));
     } catch (e) { /* storage full or blocked: no resume */ }
   }
@@ -1925,17 +1928,24 @@
     goHome();
   }
   window.addEventListener('storage', function (e) {
-    if (e.key !== LS_DRAFT) return;
+    if (!e.key || (e.key !== LS_DRAFT && e.key.indexOf(LS_DRAFT + '_') !== 0)) return;
     var S = T.state(), d = null;
     try { d = JSON.parse(e.newValue || 'null'); } catch (x) { d = null; }
     if (S && !S.finished && S.draftId && d && d.id === S.draftId && d.tab !== DRAFT_TAB) draftTaken();
   });
-  function dropDraft() { try { localStorage.removeItem(LS_DRAFT); } catch (e) { /* storage blocked */ } }
-  function savedDraft() {
-    var d = null;
-    try { d = JSON.parse(localStorage.getItem(LS_DRAFT) || 'null'); } catch (e) { d = null; }
-    if (!d || d.v !== 1 || typeof d.s !== 'string' || !(Date.now() - d.at < DRAFT_MS)) { if (d) dropDraft(); return null; }
-    return d;
+  function dropDraft(mode) { dropKey(draftKey(mode)); }
+  // The saved draft for a mode (or, with no mode, the newest of them), each checked and the stale ones cleared
+  function savedDraft(mode) {
+    var keys = [], best = null;
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k === LS_DRAFT || (k && k.indexOf(LS_DRAFT + '_') === 0)) keys.push(k); } } catch (e) { return null; }
+    keys.forEach(function (k) {
+      var d = null;
+      try { d = JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { d = null; }
+      if (!d || d.v !== 1 || typeof d.s !== 'string' || !(Date.now() - d.at < DRAFT_MS)) { if (d) dropKey(k); return; }
+      d.key = k;
+      if ((!mode || draftModeOf(d) === mode) && (!best || d.at > best.at)) best = d;
+    });
+    return best;
   }
   function resumeDraft(d) {
     var go = function () {
@@ -1949,12 +1959,12 @@
           return v;
         });
       } catch (e) { miss = true; }
-      if (miss || !S || !S.mode || !Array.isArray(S.slots) || S.finished) { dropDraft(); toast('That draft could not be brought back. Sorry!'); return; }
+      if (miss || !S || !S.mode || !Array.isArray(S.slots) || S.finished) { dropKey(d.key); toast('That draft could not be brought back. Sorry!'); return; }
       S.promoDef = window.CAST_PROMO && window.CAST_PROMO.of ? window.CAST_PROMO.of(S.seed) : null;
       T.adopt(S);
       if (d.target) T.TARGET = d.target;
       resumeClock = typeof d.clock === 'number' ? d.clock : null; resumeLock = typeof d.lock === 'number' ? d.lock : null;
-      try { var mine = Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now() }); localStorage.setItem(LS_DRAFT, JSON.stringify(mine)); } catch (e) { /* storage blocked */ } // this tab owns it now
+      try { var mine = Object.assign({}, d, { tab: DRAFT_TAB, at: Date.now(), mode: S.mode.id }); delete mine.key; localStorage.setItem(draftKey(S.mode.id), JSON.stringify(mine)); if (d.key && d.key !== draftKey(S.mode.id)) dropKey(d.key); } catch (e) { /* storage blocked */ } // this tab owns it now
       selectedMode = d.sel || S.mode.id;
       placingId = null; shownTotal = 0; busy = false;
       T.track('draft_resume', { mode: S.mode.name, picks: T.filledCount() });
@@ -1966,15 +1976,65 @@
     T.loadDataset(d.ds).then(function () { busy = false; T.useDataset(d.ds); go(); },
       function () { busy = false; toast('Could not load the players. Check your connection and try again.'); });
   }
+  /* Opened on a mode (?play=, or a CAST Games page for one mode, window.CG_MODE): straight into play, never the home
+     first (17 Oct 2026, the owner). The same player's saved draft for that mode carries on, else a new game starts. A
+     link that opens something else (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it.
+     When nothing could start (a sign-in wall closed, a mode that isn't on yet), CAST Games shows its own card for the
+     mode (CG.bootIdle) and the game's own site shows its home */
+  var bootMode = null;
+  function bootOn() { return document.documentElement.classList.contains('play-boot'); }
+  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && CG.bootDone) CG.bootDone(); }
+  function bootIdleWatch() {
+    var check = function () {
+      if (!bootOn() || busy || !T.players.length || document.documentElement.classList.contains('ca-open') || !$('sheet').hidden) return;
+      if (document.body.getAttribute('data-screen') !== 'home') return;
+      if (window.CG && CG.bootIdle) CG.bootIdle(function () { playMode(bootMode); }); else bootEnd();
+    };
+    var soon = function () { setTimeout(check, 400); };
+    setTimeout(check, 2500); setTimeout(check, 7000);
+    try {
+      new MutationObserver(soon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      new MutationObserver(soon).observe($('sheet'), { attributes: true, attributeFilter: ['hidden'] });
+    } catch (e) { /* very old browser: the timers above */ }
+  }
+  function bootPlay(mode) {
+    if (mode === 'aflw') mode = 'nrlw'; // the women's mode's other name (4000 GOALS)
+    bootMode = mode;
+    bootIdleWatch();
+    if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|vs)=/.test(location.search)) return;
+    var d = mode === 'daily' || mode === 'ou' ? null : savedDraft(mode);
+    if (!d) { playMode(mode); return; }
+    var done = false, decide = function () {
+      if (done) return;
+      done = true;
+      var now = savedDraft(mode);
+      if (now && draftWho() === now.who) resumeDraft(now); else playMode(mode);
+    };
+    // A guest's save: only once we know this visit is a guest too (a returning player's sign-in may still be loading)
+    var signedBefore = false;
+    try { signedBefore = localStorage.getItem('cast_signed_in') === '1'; } catch (e) { /* storage blocked */ }
+    if (draftWho() === d.who && !(d.who === 'guest' && signedBefore)) { decide(); return; }
+    var on = function (e) {
+      var st = e.detail && e.detail.status;
+      if (st !== 'signed-in' && st !== 'guest') return;
+      window.removeEventListener('cast-account', on);
+      decide();
+    };
+    window.addEventListener('cast-account', on);
+    setTimeout(decide, 6000); // a page whose accounts are off never says
+  }
   // On load: their saved draft, once we know who is signed in (a signed-in player's waits for the sign-in to finish)
+  var offered = null; // the draft the resume sheet is offering
+  function offeredDraft() { return offered ? savedDraft(draftModeOf(offered)) : savedDraft(); }
   function offerResume() {
     var d = savedDraft();
     if (!d || /#(challenge|cast-profile|leaderboards|cast-pass)/.test(location.hash)) return;
     var ask = function () {
       if (document.documentElement.classList.contains('ca-open')) { setTimeout(ask, 1500); return; } // a CAST pop-up first (a gift, the Pass page)
-      var now = savedDraft();
+      var now = savedDraft(draftModeOf(d));
       if (!now || now.at !== d.at || draftWho() !== d.who || document.body.getAttribute('data-screen') !== 'home' || !$('sheet').hidden) return;
       T.track('draft_resume_offer', { mode: d.name, picks: d.picks });
+      offered = d;
       openSheet(R.resumeSheet(d.name, d.picks));
       $('sheet').classList.add('is-confirm');
     };
@@ -2011,12 +2071,15 @@
     if (startWhenReady) { var go = startWhenReady; startWhenReady = null; newGame(go); return; }
     // NRL Bingo's links (?play=bingo, its Daily, the owner's private ?bingo=): it opens itself (js/bingo.js), never under the
     // draft's resume pop-up
-    if (/[?&](play=(bingo|bingod|bingo-daily)|bingo=[a-z0-9]+)(?=&|#|$)/.test(location.search)) return;
-    var play = /[?&]play=(plus|exact|spin|nrlw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]ou=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null); // ?ou=: the owner's private Six Again link
+    if (/[?&](play=(bingo|bingod|bingo-daily)|bingo=[a-z0-9]+)(?=&|#|$)/.test(location.search) || /^bingo/.test(window.CG_MODE || '')) {
+      if (bootOn()) { bootMode = 'bingo'; bootIdleWatch(); } // CAST Games' page for it: its card if it can't open (not launched yet)
+      return;
+    }
+    var play = /[?&]play=(plus|exact|spin|nrlw|wc|daily|ou)(?=&|#|$)/.exec(location.search) || (/[?&]ou=[a-z0-9]+/.test(location.search) ? [0, 'ou'] : null) || (window.CG_MODE ? [0, window.CG_MODE] : null); // ?ou=: the owner's private Six Again link
     if (!play) offerResume();
     if (play) {
       try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address as it is */ }
-      playMode(play[1]);
+      bootPlay(play[1]);
     }
   }).catch(function () {
     $('startBtn').textContent = 'Could not load players';

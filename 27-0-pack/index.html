@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<base href="../27-0/">
+<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>window.CG_MODE = 'pack';</script>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
+<style>html.cg-in-game .cp-site-header, .screen > .header .header-logo, .screen > .header .cp-new-tab, .screen > .header [data-cast-account], .screen > .header [data-cast-friends], .screen > .header .cp-right, .nf-head, .site-header { display: none !important; }</style>
+
+<meta charset="UTF-8">
+<!-- Opened on a mode (?play=, or a CAST Games page for one mode): the home never shows on the way in, only the game
+     itself once it opens (17 Oct 2026, the owner: "straight into play"). js/theme-fx.js ends html.play-boot -->
+<script>(function(){try{if(/[?&]play=(classic|pack|hard|daily|wc)(?=&|#|$)/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
+<style>html.play-boot .screen{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
+<!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
+<meta name="color-scheme" content="dark">
+<style>html{background:#090910}</style>
+<!-- Signed in on a phone (11 Oct 2026): html.ca-in from the first frame, so the big logo never flashes before the banner
+     and the modes (js/cast-account.js keeps it right once the account answers; app browsers wait for that) -->
+<script>try{if(localStorage.getItem('cast_signed_in')==='1'&&!/FBAN|FBAV|FB_IAB|Instagram|Barcelona|musical_ly|Bytedance|TikTok|Snapchat|LinkedInApp|Line\//i.test(navigator.userAgent))document.documentElement.classList.add('ca-in')}catch(e){}</script>
+<link rel="icon" href="favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=2">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SFNZY7BFYW"></script>
+<script src="js/cast-promo.js?v=20261005.2"></script>
+<script src="js/game-core.js?v=20260927.26"></script>
+<script src="js/ga.js"></script>
+  
+  
+  
+  <meta name="apple-mobile-web-app-title" content="27-0">
+  <meta name="theme-color" content="#090910">
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%2227-0%3A%20Build%20the%20Ultimate%20NRL%20Era%20Team%22%2C%22short_name%22%3A%2227-0%22%2C%22start_url%22%3A%22./%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090910%22%2C%22theme_color%22%3A%22%23090910%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22/apple-touch-icon.png%22%2C%22sizes%22%3A%22180x180%22%2C%22type%22%3A%22image/png%22%7D%2C%7B%22src%22%3A%22/favicon.png%22%2C%22sizes%22%3A%2232x32%22%2C%22type%22%3A%22image/png%22%7D%5D%7D">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- No automatic links on numbers, dates, places or units (7 Oct 2026: Chrome on iPhone underlined some players’ nation and rating) -->
+<meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
+<!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=20261017.2" data-site="27-0"></script>
+<script>
+  // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover.
+  // In a browser tab (e.g. Chrome on iPhone) cover let the page slide under the address bar and clipped the top.
+  // No apple-mobile-web-app-status-bar-style (2026-09-26): newer iOS draws "black-translucent" as a frosted bar that
+  // smeared the header's glow. Like 1000TRIES, the status bar now sits clear over the page's own dark strip.
+  if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) {
+    document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+  }
+</script>
+<title>27-0 PACK MODE | Rip Open 7 Packs, Go 27-0 | CAST Games</title>
+<meta name="description" content="Rip open 7 packs of NRL players, build your 13 and go undefeated.">
+<meta name="keywords" content="NRL game, NRL draft game, Rugby League game, NRL era team, The Cast Patrol, 27-0, NRL fantasy, NRL legends">
+<meta name="author" content="The Cast Patrol">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://castgames.com.au/27-0-pack/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://castgames.com.au/27-0-pack/">
+<meta property="og:title" content="27-0 PACK MODE | Rip Open 7 Packs, Go 27-0 | CAST Games">
+<meta property="og:description" content="Rip open 7 packs of NRL players, build your 13 and go undefeated.">
+<meta property="og:site_name" content="CAST Games">
+<meta property="og:image" content="https://castgames.com.au/27-0/assets/img/og-image.png">
+<meta name="twitter:image" content="https://castgames.com.au/27-0/assets/img/og-image.png">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="27-0 PACK MODE | Rip Open 7 Packs, Go 27-0 | CAST Games">
+<meta name="twitter:description" content="Rip open 7 packs of NRL players, build your 13 and go undefeated.">
+<meta name="twitter:site" content="@thecastpatrol">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"27-0: Build the Ultimate NRL Era Team","url":"https://castgames.com.au/27-0/","description":"Spin the wheel to get a random NRL club and season, draft one player to your Best Starting 13, and simulate a full 27-round season. Can you go undefeated?","applicationCategory":"Game","operatingSystem":"Any","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},"publisher":{"@type":"Organization","name":"The Cast Patrol","url":"https://thecastpatrol.com.au"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/legacy-1.css">
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║       27-0 IMPECCABLE REDESIGN: Visual Layer         ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<link rel="stylesheet" href="css/legacy-2.css?v=20261004.5">
+<link rel="stylesheet" href="css/theme.css?v=20260927.141">
+
+<link rel="stylesheet" href="css/cast-account.css?v=ef1407e9">
+</head>
+<body>
+<script>window.CG_GAME = '27-0-pack'; window.CG_PLAY = function (dry) { var b = document.querySelector('.screen.active .cp-new-tab'); if (b) { if (!dry) b.click(); return true; } return false; };</script>
+<script src="../shared/cg.js?v=1af3df3d8a21"></script>
+
+
+<div id="setup" class="screen">
+  <header class="cp-site-header">
+    <a class="cp-brand" href="./" aria-label="27-0 home"><img class="cp-brand-cast" src="assets/img/cast-wordmark.png" alt="The Cast Patrol" width="600" height="302"><img class="cp-brand-game" src="assets/img/27-0-logo.png" alt="27-0" width="601" height="358"></a>
+    <button type="button" class="ca-nav-tab cp-stats-btn" onclick="if (window.CastAccount) CastAccount.openProfile('stats')" aria-label="Your stats"><span aria-hidden="true">&#x1F4CA;</span><span class="ca-nav-lbl">Stats</span></button>
+  </header>
+  <div class="setup-inner cp-home">
+    <div class="cp-hero">
+      <h1 class="cp-hero-title"><span class="cast-logo-fx"><img class="cp-hero-logo" src="assets/img/27-0-logo.png" alt="27-0: Build the Ultimate NRL Era Team" width="601" height="358"></span></h1>
+      <p class="cp-hero-pitch">Rugby League&rsquo;s most addictive game. Spin, draft your <strong>NRL era 13</strong> and simulate a full season. Win every game and you go <strong>27-0</strong>.</p>
+    </div>
+
+    <!-- First visit only (js/theme-fx.js firstVisit): how it works in three steps. Gone once they finish a season -->
+    <ol class="first-steps" id="cpFirstSteps" hidden aria-label="How it works">
+      <li><span class="fs-ico" aria-hidden="true">&#x1F3B0;</span><b>Spin</b><small>A random club and season</small></li>
+      <li><span class="fs-ico" aria-hidden="true">&#x1F3C9;</span><b>Pick</b><small>One player for your 13</small></li>
+      <li><span class="fs-ico" aria-hidden="true">&#x1F3C6;</span><b>Go 27-0</b><small>Win all 27 games of the season</small></li>
+    </ol>
+
+    <!-- Above the Daily Challenge (30 Sep 2026, the owner's call). One spot, one card at a time (29 Sep 2026, like 1000TRIES): challenges waiting, the creator to beat, news, CAST Pass
+         and 1000TRIES take turns (js/cast-account.js spotRefresh). The dots under it pick one; a swipe works too -->
+    <div class="ca-home-spot" data-cast-spot style="margin-top:10px">
+      <div data-cast-promo hidden></div>
+      <!-- World Champions (15 Oct 2026, js/cast-wch.js): only once the owner launches it on World Cup final night -->
+      <div data-cast-wch hidden></div>
+      <div data-cast-upgrades hidden></div>
+      <div data-cast-dual hidden></div>
+      <div data-cast-totw hidden></div>
+      <div data-cast-challenges hidden></div>
+      <div data-cast-wild hidden></div>
+      <div data-cast-pass-banner hidden></div>
+      <div data-cast-wild2 hidden></div>
+      <a class="spot-promo" data-cast-launch="1000tries" hidden style="--sp:241,192,115" href="https://castgames.com.au/1000tries/?utm_source=27-0&amp;utm_medium=spot&amp;utm_campaign=1000tries_launch" onclick="if(typeof gtag!=='undefined')gtag('event','click_1000tries',{placement:'spot'})">
+        <img class="spot-promo-logo" src="assets/img/1000tries-logo.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
+        <span class="spot-promo-txt"><b>Can You Draft 1000+ NRL Tries?</b><small>Our new game: roll 3, pick 1 and build a 13.</small></span>
+        <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <!-- Six Again (14 Oct 2026): hidden until the owner presses Launch in Admin (config/launch "ou") -->
+      <a class="spot-promo" data-cast-launch="ou" hidden style="--sp:56,189,248" href="https://castgames.com.au/1000tries/?play=ou&amp;utm_source=27-0&amp;utm_medium=spot&amp;utm_campaign=over_or_under" onclick="if(typeof gtag!=='undefined')gtag('event','click_over_or_under',{placement:'spot'})">
+        <img class="spot-promo-logo" src="assets/img/1000tries-logo.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
+        <span class="spot-promo-txt"><b>New: Six Again</b><small>More tries or fewer? Call it before the clock runs out.</small></span>
+        <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <!-- 4000 GOALS (13 Oct 2026): our AFL game, shown once it's launched (js/cast-account.js showLaunchBits). No pop-up -->
+      <a class="spot-promo" data-cast-launch="4000goals" hidden style="--sp:241,192,115" href="https://castgames.com.au/4000goals/?utm_source=27-0&amp;utm_medium=spot&amp;utm_campaign=4000goals_launch" onclick="if(typeof gtag!=='undefined')gtag('event','click_4000goals',{placement:'spot'})">
+        <img class="spot-promo-logo" src="assets/img/4000goals-logo.png" alt="4000 GOALS" width="1200" height="760" loading="lazy">
+        <span class="spot-promo-txt"><b>Can You Draft 4000 AFL Goals?</b><small>Our new AFL game: roll 3, pick 1 and build an 18.</small></span>
+        <span class="spot-promo-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+    </div>
+    <div id="cpDaily" class="cp-daily-wrap"></div>
+
+    <!-- Guests name their team here (signed in, the team plays as their username and this row hides) -->
+    <div class="cp-team-row" id="cpTeamRow"><label for="teamNameInput">Your Team</label>
+      <input id="teamNameInput" class="cp-team-input" type="text" maxlength="40" placeholder="Name your team" aria-label="Team name"
+        onkeydown="if(event.key==='Enter')(window.cpPlay||function(m){selectMode(m);startSelectedMode();})('classic')"></div>
+    <!-- Choose Your Mode: a tap on a card starts that mode (a scroll over the cards never does) -->
+    <div class="cp-mode-kicker" id="cpModeKicker">Choose Your Mode</div>
+    <div class="cp-mode-picker" aria-labelledby="cpModeKicker">
+      <!-- World Cup 8-0 (4 Oct 2026): hidden until the owner launches World Cup mode (js/world-cup.js shows it, big until the
+           final on 15 Nov, then the small one under More Modes). Nation colours only: flags wait for the owner's designs -->
+      <button id="modeWcBtn" class="cp-mode-card cp-mode-main is-wc" hidden onclick="(window.wcHome||window.cpPlay||function(m){selectMode(m);startSelectedMode();})('wc')" aria-label="Play World Cup 8-0">
+        <span class="cp-mode-tag cp-mode-tag-wc">World Cup</span>
+        <span class="cp-wc-strip" aria-hidden="true"><i style="--n1:#00843D;--n2:#FFCD00;--n3:#FFCD00">AUS</i><i style="--n1:#000000;--n2:#FFFFFF;--n3:#FFFFFF">NZL</i><i style="--n1:#FFFFFF;--n2:#CE1124;--n3:#CE1124">ENG</i><i style="--n1:#002395;--n2:#FFFFFF;--n3:#ED2939">FRA</i><i style="--n1:#002B7F;--n2:#FFFFFF;--n3:#CE1126">SAM</i><i style="--n1:#C10000;--n2:#FFFFFF;--n3:#FFFFFF">TON</i><i style="--n1:#FFFFFF;--n2:#000000;--n3:#62B5E5">FIJ</i><i style="--n1:#CE1126;--n2:#FCD116;--n3:#000000">PNG</i><i style="--n1:#ED1C24;--n2:#FFFFFF;--n3:#00A651">LEB</i><i style="--n1:#FFFFFF;--n2:#185818;--n3:#F8D000">COK</i></span>
+        <span class="cp-mode-ico" aria-hidden="true">&#x1F30F;</span>
+        <div class="cp-mode-name">World Cup 8-0</div>
+        <div class="cp-mode-line">Spin a nation, pick from its 2026 squad, then win all eight</div>
+        <span class="cp-mode-chips"><span class="cp-mode-chip">Spin, Pick 1</span><span class="cp-mode-chip">2026 Squads</span><span class="cp-mode-chip">2 Wildcards</span></span>
+        <span class="cp-mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>
+      </button>
+      <button id="modeClassicBtn" class="cp-mode-card cp-mode-main is-on" onclick="(window.cpPlay||function(m){selectMode(m);startSelectedMode();})('classic')" aria-label="Play Classic">
+        <span class="cp-mode-tag">Classic</span>
+        <span class="cp-mode-ico" aria-hidden="true">&#x1F3B0;</span>
+        <div class="cp-mode-name">Classic</div>
+        <div class="cp-mode-line">Spin a club and season, pick your player</div>
+        <span class="cp-mode-chips"><span class="cp-mode-chip">Spin, Pick 1</span><span class="cp-mode-chip">Ratings Shown</span><span class="cp-mode-chip">2 Wildcards</span></span>
+        <span class="cp-mode-go" aria-hidden="true">Play Now <i>&#x25B6;</i></span>
+      </button>
+      <!-- Classic is the same for everyone (all-time, ratings on). Custom Seasons is a CAST Pass perk: this row for everyone else -->
+      <button type="button" class="cp-custom-lock" id="cpCustomLock" hidden onclick="if (window.CastAccount && CastAccount.openPass) CastAccount.openPass('custom')"><span aria-hidden="true">&#x1F512;</span><span class="cp-custom-txt"><b>Custom Seasons</b><small>Pick your era and hide ratings in Classic</small></span><span class="cp-custom-tag">CAST Pass</span></button>
+      <details class="cp-options" id="cpOptions" hidden>
+        <summary class="cp-options-sum">
+          <span class="cp-options-ico" aria-hidden="true">&#x2699;&#xFE0F;</span>
+          <span class="cp-options-txt"><strong>Custom Seasons</strong><small id="cpOptSummary">All-time &middot; Ratings on</small></span>
+          <span class="cp-options-edit"><span class="lbl-closed">Edit</span><span class="lbl-open">Done</span></span>
+        </summary>
+        <div class="cp-options-body">
+  
+
+      <div style="margin-top:12px;width:100%;max-width:340px;margin-left:auto;margin-right:auto" id="ratingsToggle" data-val="on">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.5px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;text-align:center">Show Ratings</div>
+        <div class="rat-pill-wrap">
+          <span id="ratLabelOff" class="rat-pill-label" style="text-align:right">Off</span>
+          <div class="rat-pill on" id="ratPill" onclick="setRatings(document.getElementById('ratingsToggle').dataset.val==='on'?'off':'on')">
+            <div class="rat-pill-thumb"></div>
+          </div>
+          <span id="ratLabelOn" class="rat-pill-label active">On</span>
+        </div>
+        <div id="ratSubtext" style="margin-top:8px;display:flex;justify-content:center"><span style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.5px">Player ratings visible</span></div>
+      </div>
+      <div id="eraOptions">
+      <!-- ERA SELECTOR -->
+      <div style="margin-top:10px;width:100%;max-width:340px;margin-left:auto;margin-right:auto">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;text-align:center">Era</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px">
+          <div id="eraAll" onclick="setEraPreset(1998)" style="background:rgba(245,197,24,0.15);border:2px solid var(--gold);border-radius:10px;padding:9px 4px;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--gold);transition:all .2s">All-Time</div>
+          <div id="era2000" onclick="setEraPreset(2000)" style="background:var(--card2);border:2px solid #333;border-radius:10px;padding:9px 4px;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--text);transition:all .2s">2000s+</div>
+          <div id="era2010" onclick="setEraPreset(2010)" style="background:var(--card2);border:2px solid #333;border-radius:10px;padding:9px 4px;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--text);transition:all .2s">2010s+</div>
+          <div id="era2020" onclick="setEraPreset(2020)" style="background:var(--card2);border:2px solid #333;border-radius:10px;padding:9px 4px;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--text);transition:all .2s">2020s+</div>
+        </div>
+        <!-- Dual-handle year range slider -->
+        <div style="position:relative;height:36px;margin:4px 8px 0">
+          <div style="position:absolute;top:50%;left:0;right:0;height:4px;background:#2a2a3a;border-radius:2px;transform:translateY(-50%)">
+            <div id="eraFill" style="position:absolute;height:100%;background:#22c55e;border-radius:2px;left:0%;width:100%"></div>
+          </div>
+          <input type="range" id="eraSliderFrom" min="1998" max="2026" value="1998" step="1" oninput="onEraSlider('from')" aria-label="Era starts in"
+            style="position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);-webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;margin:0;z-index:2">
+          <input type="range" id="eraSliderTo" min="1998" max="2026" value="2026" step="1" oninput="onEraSlider('to')" aria-label="Era ends in"
+            style="position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);-webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;margin:0;z-index:3">
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 4px">
+          <span id="eraFromLbl" style="font-size:12px;font-weight:700;color:#22c55e">1998</span>
+          <span id="eraToLbl" style="font-size:12px;font-weight:700;color:#22c55e">2026</span>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px">
+          <div style="height:1px;flex:1;background:linear-gradient(to right,transparent,#2a2a4a)"></div>
+          <div id="eraCountLbl" style="display:flex;align-items:center;gap:5px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.5px;white-space:nowrap">
+            <span style="font-size:13px">👤</span> <span id="eraCountNum">460</span> players in pool
+          </div>
+          <div style="height:1px;flex:1;background:linear-gradient(to left,transparent,#2a2a4a)"></div>
+        </div>
+      </div>
+      </div>
+        <p class="cp-options-note">Your CAST Pass perk. The era applies to Hard too. Ratings are Classic only (Hard hides them).</p>
+        </div>
+      </details>
+      <!-- More modes (29 Sep 2026, like 1000TRIES): Hard and Pack as two small buttons, each in its own colour -->
+      <div class="cp-mode-more-kicker">More Modes</div>
+      <div class="cp-mode-more">
+        <button id="modeHardBtn" class="cp-mode-mini is-hard" onclick="(window.cpPlay||function(m){selectMode(m);startSelectedMode();})('hard')" aria-label="Play Hard">
+          <span class="cpm-ico" aria-hidden="true">&#x1F9E0;</span><span class="cpm-name">Hard</span><span class="cpm-tag">No Ratings, Paid Wildcards</span>
+        </button>
+        <button id="modeWcMini" class="cp-mode-mini is-wc" hidden onclick="(window.wcHome||window.cpPlay||function(m){selectMode(m);startSelectedMode();})('wc')" aria-label="Play World Cup 8-0">
+          <span class="cpm-ico" aria-hidden="true">&#x1F30F;</span><span class="cpm-name">World Cup</span><span class="cpm-tag">The 8-0 Long Road</span>
+        </button>
+        <button id="modePackBtn" class="cp-mode-mini is-pack" onclick="(window.cpPlay||function(m){selectMode(m);startSelectedMode();})('pack')" aria-label="Play Pack">
+          <span class="cpm-ico" aria-hidden="true">&#x1F4E6;</span><span class="cpm-name">Pack</span><span class="cpm-tag">Rip Open 7 Packs</span>
+        </button>
+      </div>
+    </div>
+
+
+
+    <!-- CAST Games leaderboards: top 5, filled by js/cast-account.js (guests are asked to sign in) -->
+    <section data-cast-board aria-label="Leaderboards" hidden></section>
+
+    <div class="cp-rules-row">
+    <a class="cp-rules-btn" href="#faq"><span class="cp-rules-ico" aria-hidden="true">&#x1F4D6;</span><span class="cp-rules-txt"><strong>Full Rules &amp; FAQ</strong><small>Modes, ratings, eras and scoring</small></span><span class="cp-rules-arrow" aria-hidden="true">&rarr;</span></a>
+    <button type="button" class="cp-rules-btn cp-install-btn" onclick="showInstallModal()"><span class="cp-rules-ico" aria-hidden="true">&#x1F4F1;</span><span class="cp-rules-txt"><strong>Get 27-0 on Your Phone</strong><small>Add it to your home screen, free</small></span><span class="cp-rules-arrow" aria-hidden="true">&rarr;</span></button>
+    </div>
+
+<!-- 1000TRIES launch: home promo, hidden until the owner presses Launch -->
+    <a class="cp-promo" data-cast-launch="1000tries" hidden href="https://castgames.com.au/1000tries/?utm_source=27-0&amp;utm_medium=home&amp;utm_campaign=1000tries_launch" onclick="if(typeof gtag!=='undefined')gtag('event','click_1000tries',{placement:'home'})">
+      <img class="cp-promo-logo" src="assets/img/1000tries-logo.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
+      <span class="cp-promo-kicker">New From The Cast Patrol</span>
+      <span class="cp-promo-title">Can You Draft 1000 NRL Tries?</span>
+      <span class="cp-promo-sub">Roll 3, pick 1, tries hidden. Legends, Immortals and live leaderboards.</span>
+      <span class="cp-promo-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <section class="cp-watch" id="watch" hidden aria-labelledby="watchTitle">
+      <div class="cp-watch-head">
+        <h2 class="cp-watch-title" id="watchTitle">Watch the Latest</h2>
+        <a class="cp-watch-all" href="https://www.youtube.com/@thecastpatrol/videos" target="_blank" rel="noopener">See All &rarr;</a>
+      </div>
+      <p class="cp-watch-sub">Weekly NRL previews, tips and predictions from The Cast Patrol.</p>
+      <div class="cp-watch-track" id="watchTrack"></div>
+    </section>
+
+    <section class="cp-proof" aria-labelledby="proofTitle">
+      <h2 class="cp-section-title" id="proofTitle">As Seen Across Rugby League Social Media</h2>
+      <p class="cp-proof-text">27-0 started as a simple idea: what is the greatest NRL era team you could ever build? Created by The Cast Patrol, it has grown into one of Rugby League&rsquo;s most-shared online games. Settle the debate with your mates, build your all-time 13 and see if they can go&nbsp;undefeated.</p>
+      <div class="cp-proof-stats">
+        <div><b>180K+</b><span>Users</span></div>
+        <div><b>8.6M+</b><span>Seasons</span></div>
+        <div><b>$0</b><span>Cost to play</span></div>
+      </div>
+    </section>
+
+    <section class="cp-faq" id="faq" aria-labelledby="faqTitle">
+      <h2 class="cp-section-title" id="faqTitle">Frequently Asked Questions</h2>
+      <div id="faqList"></div>
+    </section>
+    <script src="js/faq.js?v=20261016.2"></script>
+  </div>
+
+  <footer id="siteFooter" class="cp-footer">
+    <div class="cp-socials">
+      <a href="https://www.instagram.com/thecastpatrol" target="_blank" class="soc-link" title="Instagram" onclick="if(typeof gtag!=='undefined')gtag('event','social_click',{platform:'instagram'})">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@thecastpatrolpodcast" target="_blank" class="soc-link" title="TikTok" onclick="if(typeof gtag!=='undefined')gtag('event','social_click',{platform:'tiktok'})">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.14 8.14 0 0 0 4.76 1.52V6.75a4.85 4.85 0 0 1-.99-.06z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/thecastpatrol/" target="_blank" class="soc-link" title="Facebook" onclick="if(typeof gtag!=='undefined')gtag('event','social_click',{platform:'facebook'})">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <a href="https://www.youtube.com/@thecastpatrol/videos" target="_blank" class="soc-link" title="YouTube">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
+      </a>
+    </div>
+    <p class="cp-footer-links">
+      <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
+      <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
+      <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
+      <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+      <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
+    </p>
+    <p class="cp-footer-credit">Inspired by and with thanks to <a href="https://38-0.app/game" target="_blank" rel="noopener noreferrer">38-0.app</a> and <a href="https://82-0.com/" target="_blank" rel="noopener noreferrer">82-0.com</a></p>
+    <p class="cp-footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
+    <p class="cp-footer-legal">27-0 is an independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, sponsored by, or associated with the NRL, any NRL club, competition, league, governing body or organisation. Club and player names are used for informational and descriptive purposes only. Player ratings are the opinion of The Cast Patrol.</p>
+  </footer>
+  <script>document.querySelectorAll('[data-year]').forEach(function (e) { e.textContent = new Date().getFullYear(); });</script>
+</div>
+
+<div id="draft" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>Spin for a squad, then pick your best player</p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <div class="draft-layout">
+    <div class="draft-left-col">
+      <div class="draft-strength-bar" id="draftStrengthBar">
+        <div class="dsb-main">
+          <div class="dsb-label">TEAM STRENGTH</div>
+          <div class="dsb-track"><div class="dsb-fill" id="dsbFill"></div></div>
+          <div class="dsb-val" id="dsbVal">-</div>
+        </div>
+        <div class="dsb-subs">
+          <div class="dsb-sub"><div class="dsb-slabel">Backs</div><div class="dsb-sval" id="dsbBacks">-</div></div>
+          <div class="dsb-sub"><div class="dsb-slabel">Forwards</div><div class="dsb-sval" id="dsbFwds">-</div></div>
+          <div class="dsb-sub"><div class="dsb-slabel">Spine</div><div class="dsb-sval" id="dsbSpine">-</div></div>
+        </div>
+      </div>
+      <div class="nrl-field-wrap" id="nrlField">
+        <!-- rendered by renderField() -->
+      </div>
+    </div>
+    <div class="draft-right">
+      <div class="spin-zone">
+        <div class="spin-slots">
+          <div class="spin-slot" id="spinClubSlot">
+            <div class="spin-slot-lbl" id="spinClubLbl">Club</div>
+            <div class="spin-slot-val" id="spinClubVal">-</div>
+          </div>
+          <span class="spin-x">×</span>
+          <div class="spin-slot" id="spinYearSlot">
+            <div class="spin-slot-lbl">Season</div>
+            <div class="spin-slot-val ssv-gold" id="spinYearVal">-</div>
+          </div>
+        </div>
+        <div class="spin-row-btns">
+          <button class="reroll-btn" id="rerollBtn" onclick="useReroll()" style="display:none">🔄 Reroll <span id="rerollCount" style="font-size:10px;opacity:0.7">(1 left)</span></button>
+          <button class="btn btn-sm" id="spinBtn" onclick="doSpin()" style="flex:1">🎰 Spin the Wheel</button>
+        </div>
+      </div>
+      <div id="draftProgress" style="display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--bg);border-top:1px solid rgba(255,255,255,0.05);flex-shrink:0">
+        <div style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.1);overflow:hidden">
+          <div id="draftProgressBar" style="height:100%;width:0%;background:var(--gold);border-radius:2px;transition:width 0.3s ease"></div>
+        </div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);white-space:nowrap;min-width:54px;text-align:right"><span id="draftPicksDone" style="color:var(--gold);font-weight:700">0</span> / 13 picks</div>
+      </div>
+      <div class="player-section" id="playerSection">
+        <div id="spinPrompt" style="margin:20px 16px;padding:16px;border-radius:12px;background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #2a2a4a;text-align:center">
+  <div style="font-size:28px;margin-bottom:8px">⬆️</div>
+  <div style="color:#f5c518;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Spin to Select a Player</div>
+  <div style="color:var(--muted);font-size:11px">Tap the button above to get started</div>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="posModal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 id="modalPlayerName"></h3>
+    <p id="modalPlayerInfo"></p>
+    <div class="pos-options" id="posOptions"></div>
+    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div id="squad-complete" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>Squad Complete: Your Best Starting 13 Is Set</p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <div class="squad-complete-inner" style="margin-top:12px">
+    <div class="team-strength-bar" style="padding:10px 12px;margin-bottom:10px">
+      <div class="tsb-label" style="font-size:9px;margin-bottom:5px">Team Strength</div>
+      <div class="tsb-row">
+        <div class="tsb-track" style="height:6px"><div class="tsb-fill" id="strengthFill" style="width:0%"></div></div>
+        <div class="tsb-val" id="strengthVal" style="font-size:15px;width:30px">-</div>
+      </div>
+    </div>
+    <div class="sub-ratings-row" style="gap:7px;margin:0 0 10px">
+      <div class="sr-item" style="padding:6px 4px"><div class="sr-label">Backs</div><div class="sr-val" id="srBacks" style="font-size:18px">-</div></div>
+      <div class="sr-item" style="padding:6px 4px"><div class="sr-label">Forwards</div><div class="sr-val" id="srForwards" style="font-size:18px">-</div></div>
+      <div class="sr-item" style="padding:6px 4px"><div class="sr-label">Spine</div><div class="sr-val" id="srSpine" style="font-size:18px">-</div></div>
+    </div>
+    <div class="odds-card" style="padding:12px 14px;margin-bottom:10px;background:linear-gradient(135deg,#0d1020 0%,#141830 100%)">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);font-weight:800;margin-bottom:10px;opacity:0.85">⚡ Pre-Season Prediction</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <div style="background:rgba(241,192,115,0.07);border:1px solid rgba(241,192,115,0.18);border-radius:8px;padding:10px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Projected</div>
+          <div class="o-value gold" id="oddsFinish" style="font-size:22px;font-family:'Inter',sans-serif">-</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Top 4</div>
+          <div class="o-value" id="oddsTop4" style="font-size:22px;font-family:'Inter',sans-serif">-</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Finals</div>
+          <div class="o-value" id="oddsFinals" style="font-size:22px;font-family:'Inter',sans-serif">-</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;padding:10px 0 6px">
+      <button class="btn" onclick="startSeason()">▶ START SEASON</button>
+      <button class="btn" id="wcStartBtn" hidden onclick="wcStart()">▶ START THE WORLD CUP</button>
+    </div>
+    <!-- World Cup 8-0: the road instead of the season odds (js/world-cup.js), under its Start button so the button is on
+         screen as the squad completes (7 Oct 2026, the owner) -->
+    <div class="wc-road" id="wcRoad" hidden></div>
+    <div class="lineup-display" id="lineupDisplay"></div>
+  </div>
+</div>
+
+<div id="season" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>Season Underway: <span id="seasonTeamLabel"></span></p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <div class="season-content">
+    <div class="season-controls">
+      <button class="btn" id="nextGameBtn" onclick="playNextGame()" style="flex:1;padding:9px 8px;font-size:11px;letter-spacing:.5px">▶ Next Game</button>
+      <button class="btn btn-outline" id="autoPlayBtn" onclick="toggleAutoPlay()" style="flex:1;padding:9px 8px;font-size:11px;letter-spacing:.5px">⚡ Auto Play</button>
+      <button class="btn btn-outline" onclick="skipAll()" style="flex:1;padding:9px 8px;font-size:11px;letter-spacing:.5px">⏭ Skip All</button>
+    </div>
+    <div class="season-record-bar">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="srb-record" id="recordDisplay">0-0</div>
+        <div class="srb-label">W-L</div>
+      </div>
+      <div class="srb-sep"></div>
+      <div class="srb-stat"><span class="srb-label">Points For</span><span class="srb-val" id="sStatPF">0</span></div>
+      <div class="srb-stat"><span class="srb-label">Points Against</span><span class="srb-val" id="sStatPA">0</span></div>
+      <div class="srb-stat"><span class="srb-label">Tries</span><span class="srb-val" id="sStatTries">0</span></div>
+      <div class="srb-stat"><span class="srb-label">Streak</span><span class="srb-val" id="sStatStreak">-</span></div>
+      <div class="srb-stat"><span class="srb-label">Ladder</span><span class="srb-pos" id="sStatPos">18th</span></div>
+    </div>
+    <div class="season-body">
+      <div class="fixture-grid" id="fixtureList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- World Cup 8-0 (4 Oct 2026): the tournament, one game at a time (js/world-cup.js) -->
+<div id="wc-season" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>World Cup Underway: <span id="wcTeamLabel"></span></p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <!-- Match days (5 Oct 2026): the road, the match card, then the ladders and the other scores (js/world-cup.js) -->
+  <div class="season-content wc-day">
+    <div id="wcStrip"></div>
+    <div id="wcMatch"></div>
+    <div class="wc-day-acts">
+      <button class="btn btn-outline" id="wcPoolsBtn" onclick="wcSkipPools()">⏩ Skip to the Knockouts</button>
+      <button class="btn btn-outline" onclick="wcSkipTap(this)">⏭ Skip to the End</button>
+    </div>
+    <div id="wcSide"></div>
+  </div>
+  <!-- The match's buttons, pinned in one spot through every phase (5 Oct 2026, the owner's call) -->
+  <div class="wc-actbar" id="wcActs"></div>
+</div>
+
+<div id="finals-viewer" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>Finals Underway</p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <!-- The finals, watched live (7 Oct 2026, World Cup 8-0's view): the match card, then its buttons pinned (js/finals-live.js) -->
+  <div class="season-content wc-day fl" id="flRoot"></div>
+  <div class="wc-actbar fl-bar" id="flActs"></div>
+</div>
+<!-- Made Finals popup -->
+<div class="fv-overlay" id="fvMadeFinalsPopup" style="display:none">
+  <div class="fv-popup" style="max-width:340px">
+    <div class="fv-popup-icon">🏆</div>
+    <div class="fv-popup-title" id="fvMFTitle">You've Made the Top 8!</div>
+    <div style="display:flex;gap:8px;margin:12px 0">
+      <div style="flex:1;background:#1a1a2e;border:1px solid rgba(241,192,115,0.3);border-radius:8px;padding:10px 6px;text-align:center">
+        <div style="font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Regular Season</div>
+        <div style="font-size:24px;font-weight:900;font-family:'Inter',sans-serif;color:#fff" id="fvMFRecord">-</div>
+      </div>
+      <div style="flex:1;background:#1a1a2e;border:1px solid rgba(241,192,115,0.3);border-radius:8px;padding:10px 6px;text-align:center">
+        <div style="font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Ladder Finish</div>
+        <div style="font-size:24px;font-weight:900;font-family:'Inter',sans-serif;color:var(--gold)" id="fvMFPos">-</div>
+      </div>
+    </div>
+    <div style="font-size:10px;font-weight:800;color:#aaa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:left">Top 8</div>
+    <div id="fvMFLadder" style="background:#0e0e1a;border-radius:8px;padding:6px 8px;margin-bottom:14px;font-size:11px"></div>
+    <div class="fv-popup-sub" style="color:#ccc;font-size:12px;margin-bottom:12px" id="fvMFSub">Time to go all the way.</div>
+    <button class="fv-popup-btn primary" onclick="fvDismissMadeFinalsPopup()">Proceed to Finals 🏆</button>
+  </div>
+</div>
+<div id="results" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>Season Complete: <span id="resultsTeamLabel"></span></p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <div class="results-inner">
+    <div id="resultHero"></div>
+    <div id="resultsBody"></div>
+<!-- 1000TRIES launch: results promo, hidden until the owner presses Launch -->
+    <a class="cp-promo cp-promo-results" data-cast-launch="1000tries" hidden href="https://castgames.com.au/1000tries/?utm_source=27-0&amp;utm_medium=results&amp;utm_campaign=1000tries_launch" onclick="if(typeof gtag!=='undefined')gtag('event','click_1000tries',{placement:'results'})">
+      <img class="cp-promo-logo" src="assets/img/1000tries-logo.png" alt="1000TRIES" width="1200" height="760" loading="lazy">
+      <span class="cp-promo-kicker">Next Up</span>
+      <span class="cp-promo-title">Now Try to Hit 1000 Tries</span>
+      <span class="cp-promo-sub">Draft a 13 whose NRL tries add up to 1000.</span>
+      <span class="cp-promo-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</div>
+
+<!-- World Cup 8-0: the result -->
+<div id="wc-results" class="screen">
+  <div class="header">
+    <img src="assets/img/27-0-logo.png" class="header-logo" alt="27-0" width="601" height="358" style="height:32px;width:auto;object-fit:contain">
+    <div class="header-title"><p>World Cup Complete</p></div>
+    <button class="btn btn-sm btn-outline" onclick="showSocialPrompt()" style="font-size:11px;padding:6px 14px;letter-spacing:0.5px">🔄 Play Again</button>
+  </div>
+  <div class="results-inner">
+    <div id="wcHero"></div>
+    <div id="wcResultsBody"></div>
+  </div>
+</div>
+
+<script src="js/game-data-sim.js?v=20260927.59"></script>
+<script src="js/finals-live.js?v=20261007.13"></script>
+
+
+
+
+<div id="pack-setup" class="screen">
+  <div style="padding:32px 16px;max-width:480px;margin:0 auto;width:100%;box-sizing:border-box;text-align:center;position:relative">
+    <button onclick="showScreen('setup')" style="position:absolute;top:-8px;left:0;background:none;border:none;color:#8a8aa0;font-size:13px;font-weight:700;cursor:pointer;padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:4px">← Back</button>
+    <div style="font-size:11px;font-weight:900;letter-spacing:3px;color:#888;text-transform:uppercase;margin-bottom:8px">Game Mode</div>
+    <div style="font-size:32px;font-weight:900;color:var(--gold);font-family:'Inter',sans-serif;margin-bottom:8px">PACK MODE</div>
+    <div style="font-size:12px;color:#8a8aa0;font-weight:700;letter-spacing:.5px;margin-bottom:20px">6 packs · 6 players each · build your best 13</div>
+    <div style="margin-bottom:24px">
+      <input id="packTeamNameInput" type="text" maxlength="40" placeholder="Name your team (optional)"
+        style="background:var(--card2);border:2px solid #333;border-radius:10px;padding:12px 16px;font-size:16px;font-weight:700;color:var(--text);width:100%;text-align:center;outline:none;letter-spacing:0.5px;transition:border-color .2s;box-sizing:border-box"
+        oninput="this.style.borderColor=this.value.trim()?'var(--gold)':'#333'"
+        onkeydown="if(event.key==='Enter')startPackOpening()">
+    </div>
+    <button onclick="startPackOpening()" style="width:100%;padding:18px;border:none;border-radius:12px;background:linear-gradient(135deg,#1e3a8a,#3b5bdb);color:#fff;font-size:18px;font-weight:900;cursor:pointer;letter-spacing:.5px;font-family:'Inter',sans-serif;box-shadow:0 4px 20px rgba(59,91,219,0.5);touch-action:manipulation">📦 OPEN PACKS</button>
+  </div>
+</div>
+
+<div id="pack-opening" class="screen" style="display:flex;flex-direction:column;height:100%">
+  <div id="packOpeningInner" style="flex:1;overflow-y:auto;min-height:0;width:100%;box-sizing:border-box;display:flex;flex-direction:column"></div>
+  <div id="packOpeningFooter" style="flex-shrink:0;background:#0d0d1f;border-top:1px solid #1a1a2e;padding:12px 16px"></div>
+</div>
+
+<div id="pack-squad" class="screen" style="display:flex;flex-direction:column">
+  <!-- Header row: rating bar (shared, always full-width) -->
+  <div id="packRatingBar" class="spin-zone" style="flex-shrink:0;padding:10px 14px">
+    <div class="draft-strength-bar" style="margin:0">
+      <div class="dsb-main">
+        <div class="dsb-label">TEAM STRENGTH</div>
+        <div class="dsb-track"><div class="dsb-fill" id="packRatingFill"></div></div>
+        <div class="dsb-val" id="packLiveRating">-</div>
+      </div>
+      <div class="dsb-subs">
+        <div class="dsb-sub"><div class="dsb-slabel">Backs</div><div class="dsb-sval" id="packSubBacks">-</div></div>
+        <div class="dsb-sub"><div class="dsb-slabel">Forwards</div><div class="dsb-sval" id="packSubFwds">-</div></div>
+        <div class="dsb-sub"><div class="dsb-slabel">Spine</div><div class="dsb-sval" id="packSubSpine">-</div></div>
+      </div>
+    </div>
+    <div id="packSlotCount" style="font-size:10px;color:#8a8aa0;margin-top:4px;font-weight:700;text-align:center">0 / 13 players</div>
+  </div>
+  <!-- Two-column draft-layout (mirrors classic mode on desktop) -->
+  <div class="ps-content" style="flex:1;display:flex;flex-direction:column;min-height:0">
+    <div class="draft-layout">
+      <!-- Left: NRL field -->
+      <div class="draft-left-col">
+        <div id="packSquadField" class="nrl-field-wrap" style="cursor:pointer"></div>
+        <!-- Bottom action buttons (left col on desktop) -->
+        <div class="ps-footer" style="flex-shrink:0;border-top:1px solid #1a1a2e;padding:10px 12px">
+          <div style="display:flex;gap:8px">
+            <button onclick="packResetTeam()" style="padding:10px 12px;border-radius:9px;background:#2a1010;border:1px solid #5a2020;color:#f87171;font-size:12px;font-weight:900;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">RESET</button>
+            <button onclick="packAutoBuild()" style="flex:1;padding:10px 12px;border:none;border-radius:9px;background:#1e3a8a;color:#93c5fd;font-size:12px;font-weight:900;cursor:pointer;font-family:'Inter',sans-serif">AUTO FILL</button>
+            <button id="packStartBtn" class="pk-start" onclick="packLockTeam()" style="flex:2;padding:10px 14px;border:none;border-radius:9px;background:var(--gold);color:#111;font-size:14px;font-weight:900;cursor:pointer;font-family:'Inter',sans-serif">&#9654; START SEASON</button>
+          </div>
+        </div>
+      </div>
+      <!-- Right: player list -->
+      <div class="draft-right">
+        <div class="player-section" id="packSquadScroll">
+          <div id="packPlayerListHdr" style="font-size:12px;font-weight:700;letter-spacing:0.5px;color:#888;text-transform:uppercase;margin-bottom:8px;padding:4px 0">All Players</div>
+          <div id="packPlayerList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pack-squad-complete" class="screen">
+  <div style="padding:24px 16px;max-width:480px;margin:0 auto;width:100%;box-sizing:border-box;text-align:center">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;color:#888;text-transform:uppercase;margin-bottom:8px">Team Locked</div>
+    <div style="font-size:32px;font-weight:900;color:var(--gold);font-family:'Inter',sans-serif;margin-bottom:4px" id="pscTeamName"></div>
+    <div style="font-size:64px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;line-height:1;margin-bottom:4px" id="pscRating"></div>
+    <div style="font-size:12px;color:#888;margin-bottom:24px">Team Rating</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:28px">
+      <div style="background:#12122a;border-radius:10px;padding:14px 8px">
+        <div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Backs</div>
+        <div style="font-size:24px;font-weight:900;color:var(--gold)" id="pscBacks"></div>
+      </div>
+      <div style="background:#12122a;border-radius:10px;padding:14px 8px">
+        <div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Forwards</div>
+        <div style="font-size:24px;font-weight:900;color:#fff" id="pscForwards"></div>
+      </div>
+      <div style="background:#12122a;border-radius:10px;padding:14px 8px">
+        <div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Spine</div>
+        <div style="font-size:24px;font-weight:900;color:#fff" id="pscSpine"></div>
+      </div>
+    </div>
+    <button onclick="startSeason()" style="width:100%;padding:18px;border:none;border-radius:12px;background:var(--gold);color:#111;font-size:18px;font-weight:900;cursor:pointer;letter-spacing:.5px">▶ START SEASON</button>
+  </div>
+</div>
+<div id="shareModal" onclick="if(event.target===this)smClose()">
+  <div class="sm-sheet">
+    <div class="sm-handle"></div>
+    <div class="sm-head">
+      <h2>Share Your <span>Team</span></h2>
+      <button class="sm-close" onclick="smClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="sm-fmt-row">
+      <button id="sm-fmt-4x5" class="sm-fmt-btn active" onclick="smSetFormat('4x5')">Portrait (4:5)</button>
+      <button id="sm-fmt-story" class="sm-fmt-btn" onclick="smSetFormat('story')">Story (9:16)</button>
+    </div>
+    <div class="sm-preview-wrap">
+      <img id="sm-preview" class="sm-preview" src="" alt="Season Card">
+    </div>
+    <button class="sm-share-img-btn" onclick="smShareImage()">&#x1F4E4; Share Image</button>
+    <div class="sm-divider"></div>
+    <div class="sm-section-label">Share on</div>
+    <div class="sm-social-grid">
+      <button class="sm-soc sm-soc-x" onclick="smSocial('x')">&#x1D54F; X</button>
+      <button class="sm-soc sm-soc-instagram" onclick="smSocial('instagram')">📷 Instagram</button>
+      <button class="sm-soc sm-soc-whatsapp" onclick="smSocial('whatsapp')">WhatsApp</button>
+      <button class="sm-soc sm-soc-facebook" onclick="smSocial('facebook')">Facebook</button>
+    </div>
+    <div class="sm-bottom-row">
+      <button class="sm-copy-btn" onclick="smSaveImage()">&#x1F4BE; Save Image</button>
+      <button id="sm-copy-btn" class="sm-copy-btn" onclick="smCopyLink()">&#x1F517; Copy Share Text</button>
+    </div>
+  </div>
+</div>
+
+<div id="packPromoModal" onclick="if(event.target===this)closePackPromoModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:linear-gradient(160deg,#0d0d1f,#0a0a18);border:2px solid #6688ff;border-radius:20px;max-width:380px;width:100%;box-sizing:border-box;padding:28px 24px 26px;position:relative;box-shadow:0 20px 60px rgba(100,130,255,0.25)">
+    <button onclick="closePackPromoModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#8a8aa0;font-size:22px;cursor:pointer;padding:6px;line-height:1">✕</button>
+    <div style="text-align:center;margin-bottom:6px">
+      <div style="font-size:11px;font-weight:900;letter-spacing:3px;color:#f1c073;text-transform:uppercase;margin-bottom:10px">New Game Mode</div>
+      <div style="font-size:54px;margin-bottom:6px;filter:drop-shadow(0 4px 12px rgba(100,130,255,0.4))">🏉</div>
+      <div style="font-size:26px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:1px;margin-bottom:10px">PACK MODE</div>
+      <p style="font-size:13px;color:#9aa;line-height:1.6;margin:0 0 22px">Open 7 packs from the entire NRL era database, instead of the classic spinner mode. Pull a range of cards and build your ultimate team and chase that 27-0 record.</p>
+    </div>
+    <button onclick="tryPackModeNow()" style="width:100%;background:linear-gradient(135deg,#1e3a8a,#3b5bdb);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:900;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.5px;box-shadow:0 6px 24px rgba(100,130,255,0.4);margin-bottom:10px">📦 Try Pack Mode Now</button>
+    <button onclick="closePackPromoModal()" style="width:100%;background:none;border:none;color:#8a8aa0;font-size:12px;font-weight:700;padding:6px;cursor:pointer">Maybe later</button>
+  </div>
+</div>
+
+<div id="installModal" onclick="if(event.target===this)closeInstallModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;align-items:flex-end;justify-content:center;padding:0">
+  <div style="background:#0d0d1f;border-top:2px solid var(--gold);border-radius:20px 20px 0 0;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-sizing:border-box;padding:0 0 40px;position:relative">
+    <div style="width:40px;height:4px;background:#2a2a4a;border-radius:2px;margin:14px auto 0"></div>
+    <button onclick="closeInstallModal()" aria-label="Close" style="position:absolute;top:10px;right:16px;background:none;border:none;color:#8a8aa0;font-size:22px;cursor:pointer;padding:6px">&#x2715;</button>
+
+    <div style="padding:20px 24px 0">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <img src="assets/img/27-0-logo.png" alt="27-0" width="54" height="54" style="width:54px;height:54px;object-fit:contain;flex-shrink:0">
+        <div>
+          <div style="font-size:20px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;line-height:1.1">Get 27-0 on Your Phone</div>
+          <div style="font-size:12px;color:var(--gold);font-weight:700;margin-top:3px">Play like a real app. No download needed.</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#888;line-height:1.65;margin:0 0 20px">Add 27-0 to your home screen and it opens full-screen like an app, one tap away whenever you want a season. Takes about 10 seconds.</p>
+
+      <div style="background:#12122a;border:1px solid #2a2a4a;border-radius:12px;padding:14px 16px;margin-bottom:22px">
+        <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:6px">Will there be an official app?</div>
+        <div style="font-size:12px;color:#8a8aa0;line-height:1.6">That's the plan. We're working on it. For now, the home screen shortcut is the real deal: it plays exactly like an app, and when a proper App Store release lands, you'll hear about it here first.</div>
+      </div>
+    </div>
+
+    <div style="padding:0 24px">
+
+      <!-- iPhone Safari -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <span style="font-size:18px">&#128247;</span>
+        <div style="font-size:14px;font-weight:900;color:#fff">On iPhone or iPad (Safari)</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Open <strong style="color:#fff">castgames.com.au/27-0/</strong> in Safari.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap the <strong style="color:var(--gold)">Share &#x2B06;</strong> button at the bottom of the screen.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Scroll the menu and tap <strong style="color:#fff">Add to Home Screen</strong>.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">4</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap <strong style="color:#fff">Add</strong> in the top-right corner.</div>
+        </div>
+      </div>
+
+      <div style="height:1px;background:#1a1a2e;margin-bottom:20px"></div>
+
+      <!-- iPhone Chrome -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <span style="font-size:18px">&#128247;</span>
+        <div style="font-size:14px;font-weight:900;color:#fff">On iPhone or iPad (Chrome)</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Open <strong style="color:#fff">castgames.com.au/27-0/</strong> in Chrome.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap the <strong style="color:var(--gold)">Share</strong> button at the bottom of the screen.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap <strong style="color:#fff">Add to Home Screen</strong>.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">4</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap <strong style="color:#fff">Add</strong> to confirm.</div>
+        </div>
+      </div>
+
+      <div style="height:1px;background:#1a1a2e;margin-bottom:20px"></div>
+
+      <!-- Android -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <span style="font-size:18px">&#129302;</span>
+        <div style="font-size:14px;font-weight:900;color:#fff">On Android</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:#3b5bdb;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Open <strong style="color:#fff">castgames.com.au/27-0/</strong> in Chrome.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:#3b5bdb;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap the <strong style="color:#fff">three-dot menu</strong> in the top-right corner.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:24px;height:24px;border-radius:50%;background:#3b5bdb;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+          <div style="font-size:13px;color:#aaa;line-height:1.5">Tap <strong style="color:#fff">Add to Home screen</strong> and confirm.</div>
+        </div>
+      </div>
+
+      <div style="background:#0a1a0a;border:1px solid #1a3a1a;border-radius:12px;padding:14px 16px;margin-bottom:22px">
+        <div style="font-size:13px;color:#4ade80;line-height:1.6">&#10003; The 27-0 icon lands on your home screen. Tap it any time to play.</div>
+      </div>
+
+      <div id="installPromptBtn" style="display:none;margin-bottom:16px">
+        <button onclick="triggerPWAInstall()" style="width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,#c8952a,#f1c073);color:#111;font-size:16px;font-weight:900;cursor:pointer;letter-spacing:.3px">Install App Now</button>
+        <div style="font-size:11px;color:#8a8aa0;text-align:center;margin-top:6px">Chrome detected a shortcut you can install with one tap</div>
+      </div>
+
+      <button onclick="closeInstallModal()" style="width:100%;padding:15px;border:1px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.3px">&#8592; Back to 27-0</button>
+    </div>
+  </div>
+</div>
+<div id="socialModal" class="cp-confirm" style="display:none">
+  <div class="cp-confirm-backdrop" onclick="document.getElementById('socialModal').style.display='none'"></div>
+  <div class="cp-confirm-body" role="dialog" aria-modal="true" aria-labelledby="socialTitle">
+    <button type="button" class="cp-confirm-x" onclick="document.getElementById('socialModal').style.display='none'" aria-label="Close">&#x2715;</button>
+    <div class="cp-confirm-grab" aria-hidden="true"></div>
+    <div class="cp-confirm-ico" aria-hidden="true">&#x1F504;</div>
+    <div class="cp-confirm-kicker">Good game</div>
+    <h2 class="cp-confirm-title" id="socialTitle">Play Again?</h2>
+    <p class="cp-confirm-sub">Start fresh and try to build a better side. Can you go 27&#8209;0?</p>
+    <button type="button" class="cp-btn cp-btn-primary" onclick="document.getElementById('socialModal').style.display='none';resetGame();setTimeout(function(){(window.cpPlay||function(){startSelectedMode();})(STATE.gameMode)},60)">&#x1F3B0; Start New Season</button>
+    <button type="button" class="cp-btn cp-btn-ghost" onclick="document.getElementById('socialModal').style.display='none'">Keep going</button>
+    <a class="yt-sub" href="https://www.youtube.com/@thecastpatrol?sub_confirmation=1" target="_blank" rel="noopener"
+      onclick="if(typeof gtag!=='undefined')gtag('event','social_click',{platform:'youtube_subscribe'})">
+      <img class="yt-avatar" src="assets/img/cast-patrol-avatar.jpg" alt="" width="40" height="40" loading="lazy">
+      <span class="yt-text"><span class="yt-kicker">Enjoying 27-0?</span><span class="yt-label">Subscribe to The Cast Patrol</span></span>
+      <svg class="yt-logo" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fff"/><path d="M11 5.5v9l8-4.5z" fill="#FF0000"/></svg>
+    </a>
+  </div>
+</div>
+
+<script src="js/cast-celebrate.js?v=155b2d28"></script>
+<script src="js/celebration.js?v=20260927.9"></script>
+<script src="js/share-story.js?v=20260925.12"></script>
+
+  
+
+
+
+<div id="privacyModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:flex-end;justify-content:center;padding:0">
+  <div style="background:#0e0e1c;border-top:1px solid #2a2a3a;border-radius:16px 16px 0 0;max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:24px 20px 32px;position:relative">
+    <button onclick="document.getElementById('privacyModal').style.display='none'" aria-label="Close" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#8a8aa0;font-size:20px;cursor:pointer;line-height:1;padding:2px 6px">✕</button>
+    <h3 style="color:var(--gold);font-size:16px;margin:0 0 4px">Privacy Policy</h3>
+    <p style="color:#8a8aa0;font-size:10px;margin:0 0 16px">Last updated: 17 October 2026</p>
+    <div style="color:#aaa;font-size:12px;line-height:1.7">
+      <p><strong style="color:#ccc">27-0</strong> is a free browser game available at <strong style="color:#ccc;white-space:nowrap">castgames.com.au/27-0/</strong>, made by The Cast Patrol. We collect very little personal data, accounts are optional, and we do not sell your data.</p>
+      <p><strong style="color:#ccc">Analytics</strong><br>We use Google Analytics 4 (GA4) to understand how the game is played, including pages viewed, device and browser type, approximate location, and in-game interactions (for example games started, seasons completed, share card opens). This data is collected automatically when you use the site. You can opt out at any time using the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" style="color:var(--gold)">Google Analytics Opt-out Browser Add-on</a>.</p>
+      <p><strong style="color:#ccc">Advertising</strong><br>Our games don’t show ads. If that ever changes, we’ll update this policy first.</p>
+      <p><strong style="color:#ccc">Playing as a Guest</strong><br>If you play without an account, we do not collect your name, email or any personally identifiable information. Your game history is saved in your own browser only. If you send us a message, see Contact Us and Bug Reports below. The one exception: after your first finished game, that game&rsquo;s score and team (with no name or account) are sent once so we can show where it would rank on today&rsquo;s leaderboard. We don&rsquo;t keep it.</p>
+      <p id="cast-account"><strong style="color:#ccc">CAST Games Accounts (Optional)</strong><br>You can create a free CAST Games account to back up your game history and see your stats across 27-0 and other Cast games. Accounts are optional and are for people aged 13 and over. You sign in with Google or Apple, and we never see or store your password.</p>
+      <p><strong style="color:#ccc">What We Store</strong><br>Your email address and a unique account ID from your sign-in provider (your email is held by our sign-in service, not stored with your game data, and only shared with our email provider if you opt in to emails; with Apple you can hide your real email). Your date of birth, used to confirm you are 13 or over and to keep betting advertising and partner offers away from anyone under 18. It is private to you and never shown publicly. Your email choice and when you made it. One opt-in covers CAST Games news and offers from our partners and sponsors (which can include betting partners); partner offers are only ever sent to adults 18+, so under-18s who opt in get CAST Games news only. Your favourite NRL team (or no team), your country, and your state if you are in Australia, which you give when you sign up and which place you on the club, country and state leaderboards. Your optional fan profile answers (gender, and whether you listen to The Cast Patrol podcast). Your game history and stats for each Cast game you play while signed in (for example mode, score, result and the players you picked), including games played on the same device before signing in.</p>
+      <p><strong style="color:#ccc">Where It Is Stored and Who Can See It</strong><br>Accounts use Google Firebase (Firebase Authentication and Cloud Firestore), with game data stored in Google&rsquo;s Sydney, Australia region. Google processes this data on our behalf. Only you can see your data, apart from the leaderboard details below: our database rules only allow each account to read its own data. We never show your email publicly and we do not sell or share your personal data. We use combined, anonymous figures (for example the share of players who support each club) to understand our audience and show sponsors who plays; these never identify you. Your favourite team, location and podcast answer are sent to Google Analytics for reporting; your date of birth, gender, name and email are not. Your first name (from Google or Apple, or typed in by you) is kept by our sign-in service, shown only to you, and not stored with your game data.</p>
+      <p><strong style="color:#ccc">Leaderboards</strong><br>Every CAST Games account picks a username. It appears on the public CAST Games leaderboards next to your best scores and your favourite team's badge. Anyone viewing a leaderboard can tap your row to see the team behind that score: the players you picked and the result, nothing else. Nothing else about you is shown next to your name: never your real name, email, age or location. Your favourite team, country and (in Australia) state also place you on club, country and state leaderboards, so other players can see which of those boards you appear on. Usernames are checked for offensive words, and we may remove any that are offensive or impersonate someone. Scores are checked by our server before they are ranked. You can hide yourself from every leaderboard, or change your username, in your CAST Profile at any time. Deleting your account removes you, and those teams, from every leaderboard.</p>
+      <p><strong style="color:#ccc">Friends and Challenges</strong><br>If you add friends, they can see your username, team badge, ticks, your stats totals and most-picked players, your best leaderboard rankings and your last few games (with the teams you picked). They never see your email, date of birth or location. A challenge shares your result with the friend you send it to. Players can find you by searching your username, unless you hide yourself from the leaderboards. You can remove a friend at any time, and deleting your account removes you from every friends list.</p>
+      <p><strong style="color:#ccc">Emails and Your Choices</strong><br>We only email you if you tick the opt-in box. The same opt-in covers offers from our partners and sponsors, for adults 18+ only, sent by us: we never pass your email to partners. Every email has an unsubscribe link. We send emails with Kit (kit.com), our email provider. If you opt in, we send Kit your email address, first name, favourite team, state, country and podcast answer, plus which of our games you play, so we can send you relevant emails. Kit stores this in the United States and handles it on our behalf only. We never send Kit your date of birth, gender or game history. If you switch every email option off, we unsubscribe you in Kit straight away. If you delete your account we also unsubscribe you; email us if you want your record removed from Kit entirely. In your CAST Profile you can switch emails off, download a copy of your data, sign out, or permanently delete your account, game history and stats. We keep account data until you delete your account or ask us to.</p>
+      <p id="cast-pass"><strong style="color:#ccc">CAST Pass Payments</strong><br>If you buy CAST Pass, the payment is handled by Stripe (stripe.com), which receives your card details, your email address (for receipts) and your billing country under its own privacy policy. We never see or store your card number. We keep a small record with your account: whether you have a Pass, your plan, when it renews or ends, and the Stripe customer and subscription numbers that link it to your account. If you delete your account, we cancel the subscription and delete that record. Stripe keeps its own payment records as the law requires.</p>
+      <p id="contact-form"><strong style="color:#ccc">Contact Us and Bug Reports</strong><br>When you send us a message with the Contact Us or Report a Bug form, we receive what you write, the topic you pick and your email address so we can reply. If you are signed in, we use the email on your CAST Profile and also see your account ID and username. To help us fix problems, the form also sends which game and page you were on, the game&rsquo;s version, your browser and device type, your screen size and the last few error messages from that page. The form shows you this before you send. It never sends your game data, passwords or payment details. Messages are stored in Cloud Firestore in Google&rsquo;s Sydney, Australia region. Only The Cast Patrol&rsquo;s admins can read them, and we only use them to answer you and fix what you tell us about. To stop the form being flooded, we keep a scrambled code made from your internet connection&rsquo;s address with the times of your last few messages; the address itself is never stored. We keep messages until we have dealt with them and no longer need them, and you can ask us to delete yours at any time.</p>
+      <p><strong style="color:#ccc">Hosting</strong><br>27-0 is a static website. Standard technical information (IP addresses, browser info, request logs) may be processed by our hosting and CDN provider for security and performance purposes.</p>
+      <p><strong style="color:#ccc">Changes</strong><br>We may update this policy from time to time. The date above reflects the latest update.</p>
+      <p><strong style="color:#ccc">Contact</strong><br>Questions about this policy? Email us at <strong>cast@thecastpatrol.com.au</strong>, or send us a message here.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid #2a2a3a">
+        <h3 style="color:var(--gold);font-size:16px;margin:0 0 4px" id="terms-of-use">Terms of Use</h3>
+        <p style="color:#8a8aa0;font-size:10px;margin:0 0 16px">Last updated: 17 October 2026</p>
+        <div style="color:#aaa;font-size:12px;line-height:1.7">
+          <p><strong style="color:#ccc">Fan-Made Game</strong><br>27-0 is an independent, fan-made browser game created by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the NRL, any NRL club, competition, league, governing body, organisation, game publisher, or ratings provider. All trademarks and intellectual property belong to their respective owners.</p>
+          <p><strong style="color:#ccc">Player Ratings</strong><br>All player ratings in 27-0 are editorial opinions created by The Cast Patrol. They do not represent official NRL ratings, club assessments, or any other third-party view.</p>
+          <p><strong style="color:#ccc">No Wagering</strong><br>27-0 is free to play and involves no wagering or gambling. Purchases are optional: the CAST Pass supporter subscription and the in-game items below.</p>
+          <p><strong style="color:#ccc">CAST Games Accounts</strong><br>Accounts are optional, free and for people aged 13 and over. Do not use accounts to cheat, tamper with scores or interfere with the games. We may remove accounts that do, and remove leaderboard scores that look tampered with. Leaderboard usernames must not be offensive or impersonate anyone; we may change or remove any that are. You can delete your account at any time in your CAST Profile.</p>
+          <p id="cast-pass-terms"><strong style="color:#ccc">CAST Pass</strong><br>CAST Pass is an optional supporter subscription for CAST Games accounts, sold by The Cast Patrol. It costs A$5.99 a month or A$49.99 a year for members who join from 18 October 2026 (A$4.99 a month or A$39.99 a year before then), in Australian dollars. Members keep the price they joined at for as long as their subscription continues. The Cast Patrol is not registered for GST, so no GST is charged. It renews automatically at the end of each month or year until you cancel. A monthly Pass can switch to yearly from the CAST Pass page: you pay the yearly price that goes with your monthly price then, less the days left in your current month, and your year starts that day. You can cancel at any time in your CAST Profile (Manage or Cancel), and you keep your Pass until the end of the time you have paid for. We do not refund part-used months or years, but nothing in these terms limits your rights under the Australian Consumer Law. The perks are listed on the CAST Pass page. Perks marked Coming Soon are planned, without a fixed date. The custom video comes with the yearly plan. It is made by The Cast Patrol when you ask for it (by Instagram message or email, as shown on the CAST Pass page once you have it), while your Pass is active, and can take a few weeks. We may decline a request that is offensive, involves betting, or features someone without their consent. CAST Pass holders can add their own profile photo. Only use a photo you have the right to share: nothing offensive, explicit or about betting, and nobody else without their okay. We can remove any photo, and it shows only while your Pass is active. We will not take away a perk you have paid for during your current month or year, and we will tell you before a price change applies to you. CAST Pass never buys prize entries. Payments are processed by Stripe, and we never see your card details. If you delete your account, your CAST Pass is cancelled at the same time and no more payments are taken. If you are under 18, ask a parent or guardian before you buy. Questions or refund requests: email <strong>cast@thecastpatrol.com.au</strong> or send us a message with Contact Us (pick Payment or Purchase).</p>
+          <p><strong style="color:#ccc">Extra Rerolls</strong><br>players 15 and over can buy extra rerolls for 27-0 Classic and 1000TRIES, $0.99 each, 5 for $2.99 or 12 for $5.99 (Australian dollars; The Cast Patrol is not registered for GST, so no GST is charged). They are a one-off purchase through Stripe, not a subscription. They stay on your CAST Games account until you use them, in either game. They have no cash value and can't be moved to another account. Nothing here limits your rights under the Australian Consumer Law.</p>
+          <p><strong style="color:#ccc">Vault Keys</strong><br>players 15 and over can also buy Legend Keys (1000TRIES 1000+) or Superstar Keys (27-0 Classic and Pack), $1.99 each or 3 for $4.99; CAST Pass holders get 4 keys in a 3-key pack for the same price. Your daily CAST Pass key is always used before a bought one. Keys follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Remove Player Packs</strong><br>players 15 and over can also buy extra Remove Players for 27-0 Classic and 1000TRIES, $0.99 each, 5 for $2.99 or 12 for $6.99. One is only used once your free Remove Player for that game is gone. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Reveals</strong><br>players 15 and over can also buy extra Reveals (Reveal Tries in 1000TRIES, Reveal Ratings in 27-0 Classic), $0.99 each or 5 for $2.99. One is only used once your free Reveal for that game is gone. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Run It Back</strong><br>players 15 and over can buy Run It Backs for 27-0 Classic, $0.99 each or 3 for $1.99. One runs a finished season back with one loss turned into a win: a lost Grand Final first, otherwise the closest regular-season loss. It can be used once a season. A season run back shows a boost mark on the leaderboards, and a run-back 27-0 counts as a Perfect Season. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Team of the Year Picks</strong><br>during the 2026 Dally M promotion (until 8 am Saturday 3 October 2026, Sydney time), players 15 and over can buy Team of the Year Picks for 27-0, $3.99 each or 3 for $8.99. One puts a 2026 Dally M Team of the Year player you choose from three into your 13 in Classic, Hard or Packs, rated 95 (the Dally M Medal winner 99). CAST Pass holders get one free. Picks not used by the end of the promotion become 3 Superstar Keys each. A game that uses one shows a boost mark on the leaderboards and can&rsquo;t be sent as a challenge. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Hard Mode Wildcards</strong><br>In Hard Mode (Exactly 1000 in 1000TRIES, Hard in 27-0) there are no free wildcards for anyone, including CAST Pass holders. You can use one of each wildcard (Reroll, Reveal and Remove Player) per game, from your Vault or bought on the spot at the prices above.</p>
+          <p><strong style="color:#ccc">The GOAT</strong><br>players 15 and over can buy the GOAT for 1000TRIES, $9.99. It makes your next offer Alex Johnston (240 NRL tries) in a 1000+ or Exactly 1000 game: once per game, never in the Daily Challenge or a friend&rsquo;s challenge, and only if he fits an open spot. A game that uses it shows a boost mark on the leaderboards. It follows the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Streak Freezes</strong><br>players 15 and over can buy a Streak Freeze for $2.99. You can hold one at a time. If you miss a day, it is used automatically overnight so your CAST streak carries on. CAST Pass holders also get one free each month, on top of the one they hold and used before it. A Streak Freeze won from a reward while you already hold one comes as a Reroll instead. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Streak Restore</strong><br>if your CAST streak of 3 days or more ends because you missed a day without a Streak Freeze, players 15 and over are offered a Streak Restore for $4.99 once, on your next visit. It brings your streak back as if the missed days were covered. The offer ends if you decline it, close it or play a game first. It follows the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Immortal Picks</strong><br>when they are on sale, players 15 and over can buy Immortal Picks, $4.99 each or 3 for $11.99. One puts an Immortal you choose from three into your 13: in 27-0 Classic, Hard or Packs he is rated 99, and in 1000TRIES 1000+, Exactly 1000 or Team Spin he brings his career tries. They are never used in a Daily Challenge or a friend&rsquo;s challenge. A game that uses one shows a boost mark on the leaderboards and can&rsquo;t be sent as a challenge. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">88+ Picks</strong><br>players 15 and over can buy 88+ Picks for 27-0, $3.99 each or 3 for $8.99. One puts a player rated 88 or more from the 2026 World Cup squads, chosen from three, into your 13 in World Cup 8-0, at his own rating. CAST Pass holders get one free, once. A game that uses one shows a boost mark on the leaderboards. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">World Legend Picks</strong><br>players 15 and over can buy World Legend Picks, $4.99 each or 3 for $11.99, used in 27-0 World Cup 8-0 and 1000TRIES World Cup 200+. One puts a World Legend you choose from three into your 13: at his World Cup rating in 27-0, with his Test tries in 1000TRIES. CAST Pass holders get one free, once. A game that uses one shows a boost mark on the leaderboards. They follow the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Gameday Bag</strong><br>Players 15 and over can put several Shop items in one Gameday Bag and pay for them once, through Stripe. Each item is priced at its own pack prices, then the bag gets 5% off from A$10 and 10% off from A$20 (Australian dollars). CAST Pass members get another 5% off a bag once one of those discounts applies. Promotional Picks can only go in a bag while their promotion runs, and a Streak Restore can&rsquo;t go in a bag. The discount shows on the Stripe checkout and on your receipt. If a bag is refunded or reversed by your bank, everything in it is removed from your account. Everything in a bag follows the same rules as extra rerolls.</p>
+          <p><strong style="color:#ccc">Daily Challenge and Streak Rewards</strong><br>Completing a Daily Challenge, or every 10 days of a CAST streak, can earn free in-game items such as keys, Reveals, Run It Backs, Streak Freezes or rerolls. Joining our emails for the first time earns one free Reveal, once per CAST Profile. They go into the Vault on your CAST Games account, have no cash value, can't be moved to another account, and are only given for games played fairly. We may change or end rewards at any time without taking back items already given.</p>
+          <p><strong style="color:#ccc">Invite Rewards</strong><br>Your invite link (from Friends, and the links in your share cards while you&rsquo;re signed in) works for every CAST game. A new player who signs up with it gets 3 free rerolls after their first game. Their invite counts for you once they have played 3 games in any CAST game (Quick Draft games don&rsquo;t count). For each mate who counts you get 3 free rerolls (up to 10 mates a month), and as more mates count you also get: a Legend Key at 3 mates; 3 Legend Keys at 5 mates; and The GOAT plus the Recruiter trophy in 27-0 and 1000TRIES at 10 mates. Each of these is given once per account. New Game Boost: a mate who joins a new CAST game in its first 14 days after launch earns you that game&rsquo;s bonus item once they count (shown on your Invite a Mate screen while it runs).</p>
+          <p>Invites only count for genuine new players with a finished CAST Profile (a leaderboard name and date of birth), and invite rewards are for players 15 and over. Inviting yourself, or accounts that invite each other, doesn&rsquo;t count. Sign-ups from a creator&rsquo;s link are counted for that creator and don&rsquo;t earn invite rewards. Invite rewards, like all items, have no cash value, can&rsquo;t be sold, traded or moved to another account, and can&rsquo;t be swapped for money. We may hold back or remove rewards from invites that aren&rsquo;t genuine, and we may change or end invite rewards at any time without taking back items already given.</p>
+          <p><strong style="color:#ccc">Items and Rewards</strong><br>Everything you buy, win or are given in CAST Games (items, rewards and Gameday Bags) has no cash value and can&rsquo;t be sold, traded, swapped for money or moved to another account. In-game items are refunded only when a bug or fault stopped them working as described, or where the Australian Consumer Law requires it. We don&rsquo;t refund items because a Pick, Reroll or other item didn&rsquo;t give the result you hoped for, or because they&rsquo;ve been used. If a purchase is refunded or reversed by your bank, everything it gave is removed from your account. Nothing here limits your rights under the Australian Consumer Law.</p>
+          <p><strong style="color:#ccc">Use of the Site</strong><br>Use of 27-0 is at your own risk. The Cast Patrol makes no warranties about the accuracy or completeness of content. We reserve the right to modify or discontinue the game at any time.</p>
+          <p><strong style="color:#ccc">Contact</strong><br>Email us at <strong>cast@thecastpatrol.com.au</strong>, or send us a message here.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="js/site-extras.js"></script>
+<!-- Analytics notice removed 2026-09-24: covered by the Privacy Policy -->
+<script>
+  window.CAST_ACCOUNT = {
+    // 1000TRIES stays hidden on 27-0 (stats, trophies, boards, promos) until the owner presses Launch in the Admin tab.
+    // The launch switch lifts hideGames and shows everything marked data-cast-launch (see js/cast-account.js).
+    hideGames: ['1000tries'],
+    launch: '1000tries',
+    promoLogo: 'assets/img/1000tries-logo.png',
+    game: '27-0',
+    // A game in progress (any screen but home and results): sign-in keeps the pop-up, since a same-tab sign-in reloads the page
+    inGame: function () { var a = document.querySelector('.screen.active'); return !!a && a.id !== 'setup' && a.id !== 'results'; },
+    onHome: function () { var a = document.querySelector('.screen.active'); return !a || a.id === 'setup'; }, // the home page (pop-ups wait for it)
+    firstVisit: function () { return !!(window.cpFirstVisit && window.cpFirstVisit()); }, // no season finished here yet (js/theme-fx.js): no spot for a guest
+    // The promo pop-up (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): its button opens Packs (a CAST
+    // Pass holder's thank-you: Play Now starts a Classic season, where their free Pick waits), and each card shows the
+    // promo rating, counting up from the player's own
+    // The promo pop-up's play button: straight into Classic (the owner, 5 Oct 2026; it opened Packs, the Team of the Year's rare packs)
+    promoPlay: function (m) { (window.cpPlay || function (x) { selectMode(x); startSelectedMode(); })(m === 'wc' ? 'wc' : 'classic'); },
+    promoStat: function (name, tier) {
+      var r = typeof RAW_PLAYERS !== 'undefined' ? RAW_PLAYERS.filter(function (x) { return x[0] === name; })[0] : null; // counts up from their own rating
+      return { v: tier === 'medal' ? 99 : Math.max(95, r ? r[3] : 0), from: r ? Math.max(67, r[3]) : 0, unit: 'Rating' };
+    },
+    track: function (e, p) { if (typeof gtag !== 'undefined') gtag('event', e, p); },
+    // the policy pages, as the other games (16 Oct 2026: the old pop-up's Terms were out of date)
+    privacyUrl: 'privacy.html', termsUrl: 'terms.html'
+  };
+</script>
+<script src="js/upgrades-data.js?v=20261006.4"></script>
+<script src="js/cast-upgrades.js?v=20261006.1"></script>
+<script src="js/cast-dual.js?v=20261014.3"></script>
+<script src="js/cast-picks.js?v=20261001.3"></script>
+<script src="js/cast-account.js?v=ab2f8ce7"></script>
+<script src="js/cast-totw.js?v=20261015.1"></script>
+<script src="js/cast-wch.js?v=20261015.1"></script>
+<script src="js/theme-fx.js?v=20260927.52"></script>
+<script src="js/cast-daily.js?v=e7382c3c"></script>
+<script src="js/daily.js?v=20260927.40"></script>
+<script src="js/daily-wild.js?v=20260927.60"></script>
+<script src="js/picks.js?v=20261001.48"></script>
+<script src="js/hard-mode.js?v=20260927.5"></script>
+<script src="js/mode-skin.js?v=20260927.6"></script>
+<script src="js/cast-nations.js?v=20261005.13"></script>
+<script src="js/cast-intl.js?v=e79b8507"></script>
+<script src="js/wc-engine.js?v=20261004.38"></script>
+<script src="js/world-cup.js?v=20261004.108"></script>
+<script src="js/draft-save.js?v=20261009.6"></script>
+</body>
+</html>

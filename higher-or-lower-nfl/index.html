@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<base href="../777tds/">
+<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>window.CG_MODE = 'ou';</script>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
+<style>html.cg-in-game .site-header { display: none !important; }</style>
+
+<meta charset="utf-8">
+<!-- Opened on a mode (?play=, or a CAST Games page for one mode): the game's home never shows on the way in, only the
+     game itself once it opens (17 Oct 2026, the owner: "straight into play"). js/app.js ends html.play-boot -->
+<script>(function(){try{if(/[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.test(location.search)||/[?&](ou|po)=[a-z0-9]+/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
+<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
+<!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
+<meta name="color-scheme" content="dark">
+<style>html{background:#050a18}</style>
+<!-- Signed in on a phone (11 Oct 2026): html.ca-in from the first frame, so the big logo never flashes before the banner
+     and the modes (js/cast-account.js keeps it right once the account answers; app browsers wait for that) -->
+<script>try{if(localStorage.getItem('cast_signed_in')==='1'&&!/FBAN|FBAV|FB_IAB|Instagram|Barcelona|musical_ly|Bytedance|TikTok|Snapchat|LinkedInApp|Line\//i.test(navigator.userAgent))document.documentElement.classList.add('ca-in')}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- No automatic links on numbers, dates, places or units (7 Oct 2026: Chrome on iPhone underlined some players’ team and rating) -->
+<meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
+<!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=0426147b" data-site="nfl"></script>
+<script>
+  // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
+  // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
+  if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) {
+    document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
+  }
+</script>
+<title>HIGHER OR LOWER: NFL | Career Touchdowns, vs the Clock | CAST Games</title>
+<meta name="description" content="Higher or lower? Call NFL players’ career touchdowns before the clock runs out.">
+<link rel="canonical" href="https://castgames.com.au/higher-or-lower-nfl/">
+<meta name="theme-color" content="#050a18">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://castgames.com.au/higher-or-lower-nfl/">
+<meta property="og:site_name" content="CAST Games">
+<meta property="og:title" content="HIGHER OR LOWER: NFL | Career Touchdowns, vs the Clock | CAST Games">
+<meta property="og:description" content="Higher or lower? Call NFL players’ career touchdowns before the clock runs out.">
+<meta property="og:image" content="https://castgames.com.au/777tds/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HIGHER OR LOWER: NFL | Career Touchdowns, vs the Clock | CAST Games">
+<meta name="twitter:description" content="Higher or lower? Call NFL players’ career touchdowns before the clock runs out.">
+<meta name="twitter:image" content="https://castgames.com.au/777tds/assets/og-image.png">
+
+<link rel="icon" href="favicon.ico?v=7" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=7">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png?v=7">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=7">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css?v=78e13b5b">
+<link rel="stylesheet" href="css/cast-account.css?v=dfa752fb">
+<!-- Google AdSense (publisher pub-7181866336117456) -->
+</head>
+<body>
+<script>window.CG_GAME = 'higher-or-lower-nfl'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
+<script src="../shared/cg.js?v=1af3df3d8a21"></script>
+
+
+<header class="site-header">
+  <a class="brand" href="./" data-action="home" aria-label="777 TDS home">
+    <img class="brand-logo" src="assets/logos/cast-patrol.png" alt="The Cast Patrol" width="600" height="302" data-fallback="brand-fallback">
+    <span class="brand-fallback" hidden>THE CAST PATROL</span>
+    <img class="brand-game" src="assets/logos/777tds.png?v=1" alt="777 TDS" width="1200" height="760">
+  </a>
+  <nav class="header-nav">
+    <!-- Top bar, like 27-0's: Stats, Leaderboards, Friends, Admin, Profile (Stats and Leaderboards show while accounts are on:
+         from the Launch switch, or ?castaccount=1). How It Works lives on the home page and in the footer -->
+    <button type="button" class="nav-lb ca-nav-tab" data-cast-enabled hidden aria-label="Your stats" onclick="if (window.CastAccount) CastAccount.openProfile('stats')"><span aria-hidden="true">&#x1F4CA;</span><span class="ca-nav-lbl">Stats</span></button>
+    <button type="button" class="nav-lb ca-nav-tab" data-cast-enabled hidden aria-label="Leaderboards" onclick="if (window.CastAccount) { if (typeof gtag !== 'undefined') gtag('event', 'leaderboard_open', { game: 'nfl', where: 'header' }); CastAccount.openBoards(null); }"><span aria-hidden="true">&#x1F3C6;</span><span class="ca-nav-lbl"><span class="ca-lbl-l">Leaderboards</span><span class="ca-lbl-s">Rankings</span></span></button>
+    <!-- Mid-draft: one New Game tab (29 Sep 2026, the user's call: Mode and Again were two buttons). Its pop-up offers Play
+         Again, Change Mode or Keep Playing, the same as 27-0's -->
+    <button type="button" class="ca-nav-tab nav-new" data-action="new-game" aria-label="New game"><span aria-hidden="true">&#x2699;&#xFE0F;</span><span class="ca-nav-lbl">New Game</span></button>
+    <button type="button" data-cast-friends aria-label="Friends" hidden></button>
+    <button type="button" data-cast-account aria-label="Sign in to save your history"></button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section id="screen-home" class="screen is-active" aria-labelledby="homeTitle">
+    <div class="wrap">
+      <div class="hero">
+        <h1 id="homeTitle" class="hero-title">
+          <span class="cast-logo-fx"><img class="hero-logo" src="assets/logos/777tds.png?v=1" alt="777 TDS" width="1200" height="760" data-fallback="hero-wordmark">
+          <span class="hero-wordmark" hidden><span class="wm-num">777</span><span class="wm-word">TDS</span></span></span>
+        </h1>
+        <p class="hero-pitch">The Cast Patrol brings you <strong>777 TDS</strong>. Draft an NFL offence of 10 from every touchdown scorer since 1999 and the Legends before them, and attempt to hit <strong>777+ career TDs</strong> combined.</p>
+      </div>
+
+      <!-- First visit only (js/app.js firstVisit): how it works in three steps. Gone once they finish a game -->
+      <ol class="first-steps" id="firstSteps" hidden aria-label="How it works">
+        <li><span class="fs-ico" aria-hidden="true">&#x1F3B2;</span><b>Roll 3</b><small>Three random NFL players</small></li>
+        <li><span class="fs-ico" aria-hidden="true">&#x1F3C8;</span><b>Pick 1</b><small>Their TDs stay hidden</small></li>
+        <li><span class="fs-ico" aria-hidden="true">&#x1F3AF;</span><b>Hit 777+</b><small>Your team&rsquo;s TDs add up</small></li>
+      </ol>
+
+      <!-- Above the Daily Challenge (30 Sep 2026, the owner's call). One spot, one card at a time (29 Sep 2026): challenges waiting, the creator to beat, news, CAST Pass and 27-0 take
+           turns (js/cast-account.js spotRefresh). The dots under it pick one; a swipe works too -->
+      <div class="ca-home-spot" data-cast-spot>
+        <div data-cast-promo hidden></div>
+        <div data-cast-challenges hidden></div>
+        <div data-cast-wild hidden></div>
+        <div data-cast-pass-banner hidden></div>
+        <div data-cast-wild2 hidden></div>
+      </div>
+
+      <!-- Today's Daily (js/daily.js): shown from Daily #1, Monday 28 September 2026 -->
+      <div class="dly-home" id="dailyCard" hidden></div>
+      <!-- Choose Your Mode: a tap on a card starts that mode (a scroll over the cards never does) -->
+      <div class="mode-kicker" id="modeKicker">Choose Your Mode</div>
+      <div class="mode-picker" aria-labelledby="modeKicker" id="modePicker"></div>
+
+      <!-- Loading and error notes only: a mode starts with a tap on its card -->
+      <button class="btn btn-primary btn-block" id="startBtn" type="button" disabled hidden>Loading players</button>
+      <p class="pack-note" id="packNote"></p>
+
+      <!-- CAST Games leaderboards: top 5 of each mode, filled by js/cast-account.js once accounts are launched -->
+      <section data-cast-board aria-label="Leaderboards" hidden></section>
+
+      <a class="rules-btn" href="how-it-works.html"><span class="rules-ico" aria-hidden="true">&#x1F4D6;</span><span class="rules-txt"><strong>Full Rules</strong><small>Modes, wildcards and scoring</small></span><span class="rules-arrow" aria-hidden="true">&rarr;</span></a>
+
+      <div id="homeAd"></div>
+
+
+
+      <!-- The questions start folded away so the home page stays short: tap the heading to open them -->
+      <section class="faq" id="faq" aria-labelledby="faqTitle">
+        <details class="faq-fold">
+          <summary class="faq-fold-sum"><h2 class="faq-title" id="faqTitle">Frequently Asked Questions</h2><span class="faq-ico" aria-hidden="true">+</span></summary>
+          <details class="faq-item" name="faq"><summary><span>What is 777 TDS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>A free NFL game by The Cast Patrol. Draft an offence of 10 with their career touchdowns hidden, then add them up. Can your team reach 777 touchdowns combined?</p></details>
+          <details class="faq-item" name="faq"><summary><span>How do you play 777 TDS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random NFL players at a time. Choose one for your team without seeing their touchdowns. You have 20 seconds to pick, or the first option goes in. Repeat until every spot is filled: a quarterback, two running backs, four wide receivers, a tight end and two FLEX spots (a running back, receiver or tight end). Your total is revealed as you go.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What are the modes?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p><strong>777+</strong>: reach 777 career TDs or more, with one of each wildcard. <strong>Exactly 777</strong>: land on 777 on the dot, under or over is a miss, and it&rsquo;s Hard Mode: no free wildcards, only paid ones, one of each a game. <strong>Team Spin</strong>: choose a position, then spin a team and season and pick from that roster. <strong>Two Point</strong>: is the next player&rsquo;s number over or under? Call it before the clock runs out.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What are Legends?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>777+</strong>, one offer is a <strong>Legends Pick</strong>: three of the greats whose careers were mostly before 1999, like Jerry Rice, Emmitt Smith and Walter Payton. Their touchdowns are hidden like everyone else&rsquo;s, and they count their whole careers. You get one at most per game, and it can turn up late in a game, just when you need it most.</p></details>
+          <details class="faq-item" name="faq" data-cast-launch="nfl" hidden><summary><span>How do the leaderboards work?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Sign in free with a CAST Profile and pick a username. Your best game in every mode goes up automatically on today&rsquo;s, this week&rsquo;s and the all-time boards. Tap any name to see the team behind the score, with the luck of their draw. Exactly 777 ranks the most exact hits, then the closest team.</p></details>
+          <details class="faq-item" name="faq" data-cast-launch="nfl" hidden><summary><span>Do I need an account?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. You can play as a guest, and your games stay on this device. A free CAST Profile (Google or Apple, for ages 13 and over) saves your history, stats and trophies across every CAST game, puts you on the leaderboards and gives you wildcards every game.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What does the Luck number mean?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>After each game we compare the touchdowns on every card you were offered with what an average game deals you. <strong>Luck +23%</strong> means you drew 23% more touchdowns than usual; a minus number means a tough draw. Your first offer and any Legends Pick are left out. You see it on your results and on leaderboard team sheets.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What are wildcards?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Reroll (Respin in Team Spin) gives you a fresh offer, Reveal TDs shows the touchdowns for everyone on the current offer, and Remove Player takes one player out of your team so you can draft again. Each can be used once per game.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Which touchdowns count?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Every touchdown a player scored himself in the NFL regular season, over his whole career: rushing, receiving, kick and punt returns, and interception and fumble returns. Passing touchdowns never count, so a quarterback scores only the ones he ran in (or caught). Playoff games are not included. The pool is every running back, receiver, tight end and quarterback with 5 or more scored touchdowns who played since 1999, plus 30 Legends.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Where do the numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Seasons from 1999 on come from <a href="https://github.com/nflverse" target="_blank" rel="noopener">nflverse</a> player stats, checked against Wikipedia. Seasons before 1999 and the Legends&rsquo; careers come from Wikipedia. The numbers are up to date as of Week 5 of the 2026 season. Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
+          <details class="faq-item" name="faq"><summary><span>How do I contact you or report a bug?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Use the form: pick what it&rsquo;s about, tell us what happened and we&rsquo;ll reply by email. Every message gets a reference number, so nothing gets lost.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
+          <details class="faq-item" name="faq"><summary><span>Is 777 TDS free to play?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Completely free. No download needed. Open your browser, draft your team and play.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Who made 777 TDS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the team behind CAST Games.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Is 777 TDS affiliated with the NFL?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. 777 TDS is an independent, fan-made game. It is not affiliated with, endorsed by, or associated with the NFL, the NFLPA or any team.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Where can I listen to The Cast Patrol podcast?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Search The Cast Patrol wherever you get your podcasts, or watch on <a href="https://www.youtube.com/@thecastpatrol/videos" target="_blank" rel="noopener">YouTube</a>.</p></details>
+        </details>
+      </section>
+
+    </div>
+  </section>
+
+  <!-- DRAFT -->
+  <section id="screen-draft" class="screen" aria-label="Draft">
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="wrap wrap-wide draft-grid">
+      <div class="panel offer-panel" id="offerPanel" aria-live="polite"></div>
+      <div class="panel pitch-panel">
+        <div class="panel-head">
+          <span class="panel-title">Your Team</span>
+          <span class="panel-meta" id="pickCount"></span>
+        </div>
+        <div class="pitch" id="pitch"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="screen-results" class="screen" aria-labelledby="resultTitle">
+    <div class="wrap" id="results"></div>
+  </section>
+
+  <!-- TWO POINT (15 Oct 2026, js/overunder.js: 1000TRIES's Six Again for the NFL) -->
+  <section id="screen-ou" class="screen" aria-label="Two Point">
+    <div class="wrap" id="ouRoot"></div>
+  </section>
+
+
+</main>
+
+<footer class="site-footer">
+  <div class="socials">
+    <a href="https://www.instagram.com/thecastpatrol" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+    <a href="https://www.tiktok.com/@thecastpatrolpodcast" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.14 8.14 0 0 0 4.76 1.52V6.75a4.85 4.85 0 0 1-.99-.06z"/></svg></a>
+    <a href="https://www.facebook.com/thecastpatrol/" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+    <a href="https://www.youtube.com/@thecastpatrol/videos" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#050a18"/></svg></a>
+  </div>
+  <p class="footer-sound">
+    <button class="icon-btn sound-foot" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound on" title="Sound">
+      <svg class="ico-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      <svg class="ico-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      <span class="sound-lbl">Sound On</span>
+    </button>
+  </p>
+  <p class="footer-links">
+    <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
+    <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
+    <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
+  </p>
+  <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
+  <p class="footer-legal">Player stats from <a href="https://github.com/nflverse" target="_blank" rel="noopener">nflverse</a> (CC BY 4.0) and <a href="https://en.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a> (CC BY-SA 4.0); team colours from nflverse.</p>
+  <p class="footer-legal">777 TDS is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the NFL, the NFLPA or any team. Team and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>
+<script>document.querySelectorAll('[data-year]').forEach(function (e) { e.textContent = new Date().getFullYear(); });</script>
+</footer>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-backdrop" data-action="close-sheet"></div>
+  <div class="sheet-body" role="dialog" aria-modal="true" id="sheetBody"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/analytics.js?v=df60647e"></script>
+<script src="js/cast-promo.js?v=f0525281"></script>
+<script src="js/data.js?v=9bea1754"></script>
+<script src="js/draft.js?v=1d18b705"></script>
+<script src="js/team-spin.js?v=38bcb00e"></script>
+<script src="js/wildcards.js?v=f92924c2"></script>
+<script src="js/cast-nations.js?v=46208301"></script>
+<script src="js/cast-intl.js?v=b6194356"></script>
+<script src="js/kits-data.js?v=82d72438"></script>
+<script src="js/cast-kits.js?v=0ac19225"></script>
+<script src="js/render.js?v=8ad570db"></script>
+<script src="js/share-card.js?v=3a7aec13"></script>
+<script src="js/cast-celebrate.js?v=155b2d28"></script>
+<script src="js/app.js?v=e7c0a9c4"></script>
+<script src="js/cast-daily.js?v=e7382c3c"></script>
+<script src="js/nfl-daily.js?v=9fcc2017"></script>
+<script src="js/daily.js?v=5d7ec1ae"></script>
+<script>
+  // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
+  // 777 TDS: not connected to CAST accounts yet (its own game id, boards and server checks come next); 'launch' names a
+  // game that is never launched, so accounts stay off and nothing reaches the other games' boards
+  window.CAST_ACCOUNT = { enabled: false, launch: 'nfl', game: 'nfl', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
+    inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; }, // a game in progress: sign-in keeps the pop-up (no reload)
+    onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
+    firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); }, // no game finished here yet (js/app.js): no spot for a guest
+    // The promo pop-up (js/cast-promo.js): its button starts 777+, and each card shows the player's career TDs
+    promoPlay: function (mode) { var m = mode === 'nrlw' ? 'nrlw' : mode === 'wc' ? 'wc' : 'plus', c = document.querySelector('.mode-card[data-mode="' + m + '"],.mode-mini[data-mode="' + m + '"]'); if (c) c.click(); },
+    promoStat: function (name) { var p = ((window.T && T.players) || []).filter(function (x) { return x.name === name; })[0]; return p ? { v: p.tries_1998_plus, unit: 'TDs' } : null; } };
+</script>
+<script src="js/cast-picks.js?v=08f42325"></script>
+<script src="js/ou-engine.js?v=fc6246d6"></script>
+<script src="js/overunder.js?v=f6587f63"></script>
+<script src="js/cast-account.js?v=bf638a8a"></script>
+</body>
+</html>

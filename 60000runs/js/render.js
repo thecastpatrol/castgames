@@ -86,8 +86,8 @@
   /* HOME */
 
   var MODE_CARD = {
-    exact: { ico: '&#x1F3AF;', line: 'Hit 60000 on the dot. Not 59,999, not 60001', chips: ['Roll 3, Pick 1', '15s a Pick', 'Paid Wildcards'] },
-    plus:  { ico: '&#x1F3CF;', line: 'Get to 60000 or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] },
+    exact: { ico: '&#x1F3AF;', line: 'Hit 60000 on the dot. Not 59999, not 60001', chips: ['Roll 3, Pick 1', '15s a Pick', 'Paid Wildcards'] },
+    plus:  { ico: '&#x1F3CF;', line: 'Get to 60000 or more', chips: ['Roll 3, Pick 1', '20s a Pick', '3 Wildcards'] },
     spin:  { ico: '&#x1F3B0;', line: 'Pick a position, then spin', chips: ['Spin, Pick 1', '3 Wildcards'] },
     nrlw:  { ico: '&#x2B50;', line: 'Get to ' + T.DATASETS.nrlw.target + ' or more', chips: ['Roll 3, Pick 1', '3 Wildcards'] }, // the hidden second pack
     wc:    { ico: '&#x1F30F;', line: 'Get to ' + T.DATASETS.wc.target + ' Test runs or more', chips: ['Roll 3, Pick 1', '3 Wildcards', 'Test Players'] },
@@ -424,6 +424,17 @@
     return d && d.club && T.playedFor(p, d.club) ? '<span class="pcard-dc" title="Has played for the ' + esc(d.clubName) + '">' + d.icon + ' ' + esc(d.clubName) + '</span>' : '';
   }
 
+  /* The pick clock (js/app.js clockTick runs it): a bar that runs down over the offer, red for the last five seconds,
+     and Paused while a pop-up is open (the cards are covered then) */
+  R.pickClock = function (S) {
+    if (!T.clockMode || !T.clockMode(S) || S.tweakMode || !S.offer || !S.offer.players.length) return '';
+    var v = T.clockView(S), left = Math.ceil(v.left / 1000);
+    return '<div class="pick-clock' + (v.paused ? ' is-paused' : v.left <= 5000 ? ' is-low' : '') + '" data-pick-clock role="timer" aria-label="Time to pick">' +
+      '<i style="width:' + Math.min(100, v.left / (v.secs * 10)).toFixed(1) + '%"></i>' +
+      '<span class="pc-lbl"><span class="pc-run">&#x23F1;&#xFE0F; Time to Pick</span><span class="pc-wait">&#x23F8;&#xFE0F; Paused</span></span>' +
+      '<b>' + left + 's</b></div>';
+  };
+
   R.offerRoll = function (S) {
     if (S.tweakMode) return R.removeMode(S);
     var players = S.offer ? S.offer.players : [];
@@ -432,8 +443,7 @@
         '<span class="panel-title">' + (S.offer && S.offer.goat ? '&#x1F410; The GOAT' : special === 'ilegend' ? '&#x1F451; Your World Legend Pick' : S.offer && S.offer.paid ? '&#x1F3DB;&#xFE0F; Your Legend Pick' : special === 'immortal' ? '&#x1F410; Legend Pick' : special ? '&#x2B50; Legends Pick' : 'Pick 1') + '</span>' +
         '<span class="panel-meta">' + (special === 'ilegend' ? 'Pick 1 of 3 World Legends &middot; Test runs shown' : special ? 'Pick 1 of 3 ' + (S.offer.paid || S.offer.key ? 'Legends' : 'greats') + (S.offer.paid || S.offer.key ? ' &middot; career runs shown' : ' &middot; career runs, hidden') : S.offer && S.offer.goat ? 'Career runs shown' : dailyRule(S) || 'Runs hidden until you pick') + '</span>' +
       '</div>' +
-      // Exactly 4000's shot clock (js/app.js clockTick fills it in)
-      (S.mode.id === 'exact' && !S.tweakMode && players.length ? '<div class="pick-clock" data-pick-clock role="timer" aria-label="Time to pick"><i></i><b>' + T.EXACT_SECS + 's</b></div>' : '') +
+      R.pickClock(S) +
       R.wildcardBar(S) +
       R.tweakBanner(S) +
       '<div class="offer-cards">' + players.map(function (p, n) {
@@ -628,11 +638,11 @@
   R.newGameSheet = function (S) {
     var daily = S.mode.id === 'daily' || !!S.daily;
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
-      '<div class="confirm-ico" aria-hidden="true">&#x1F504;</div>' +
+      '<div class="confirm-ico" aria-hidden="true">&#x2699;&#xFE0F;</div>' +
       '<div class="sheet-kicker">New Game</div>' +
       '<h2 class="sheet-title center">Start a New Game?</h2>' +
       '<p class="sheet-sub center">' + (daily ? 'This Daily Challenge go still counts as used.' : 'This team will be lost.') + ' Go again or pick another mode.</p>' +
-      '<button type="button" class="btn btn-primary btn-block" data-action="confirm-restart"><span aria-hidden="true">&#x1F504;</span>' + (daily ? 'Play Again' : 'Play ' + esc(S.mode.name) + ' Again') + '</button>' +
+      '<button type="button" class="btn btn-primary btn-block" data-action="confirm-restart"><span aria-hidden="true">&#x2699;&#xFE0F;</span>' + (daily ? 'Play Again' : 'Play ' + esc(S.mode.name) + ' Again') + '</button>' +
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="confirm-change-mode"><span aria-hidden="true">&#x1F3AE;</span>Change Mode</button>' +
       '<button type="button" class="btn btn-quiet btn-block" data-action="close-sheet">Keep Playing</button>' +
       R.subscribeBtn('new_game');
@@ -641,7 +651,7 @@
   // Mid-game restart, same idea as the 27-0 Play Again prompt
   R.restartSheet = function () {
     return '<div class="sheet-grab" aria-hidden="true"></div>' +
-      '<div class="confirm-ico" aria-hidden="true">&#x1F504;</div>' +
+      '<div class="confirm-ico" aria-hidden="true">&#x2699;&#xFE0F;</div>' +
       '<div class="sheet-kicker">Play again?</div>' +
       '<h2 class="sheet-title center">Not happy with your selections?</h2>' +
       '<p class="sheet-sub center">This team will be lost and you start a new team in the same mode.</p>' +
@@ -755,7 +765,7 @@
       // Play Again on its own, Share and Change Mode side by side under it (4 Oct 2026, the owner's call; 27-0 the same).
       // A Daily go turns them into Go Again and Share My Best (js/daily.js)
       '<div class="res-acts">' +
-        '<button type="button" class="btn btn-res btn-res-again btn-block" data-action="play-again"><span aria-hidden="true">&#x1F504;</span> Play Again</button>' +
+        '<button type="button" class="btn btn-res btn-res-again btn-block" data-action="play-again"><span aria-hidden="true">&#x2699;&#xFE0F;</span> Play Again</button>' +
         '<div class="res-two">' +
           '<button type="button" class="btn btn-res btn-res-share" data-action="share"><span aria-hidden="true">&#x1F4E4;</span> Share</button>' +
           '<button type="button" class="btn btn-res btn-res-mode" data-action="results-home"><span aria-hidden="true">&#x1F3AE;</span> Change Mode</button>' +

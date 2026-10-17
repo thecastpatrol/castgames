@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script>document.documentElement.classList.add("cg-soon-on");</script>
-<style>html.cg-soon-on body > *:not(.cg-bar):not(#cgSoon):not(script) { display: none !important; }#cgSoon { display: grid; place-items: center; min-height: calc(100vh - var(--cg-bar-h, 112px)); min-height: calc(100dvh - var(--cg-bar-h, 112px)); padding: 32px 16px; box-sizing: border-box; background: radial-gradient(70% 50% at 50% 20%, rgba(var(--soon-rgb), .35), transparent 70%), #0a0a0f; color: #fff; font-family: Inter, -apple-system, system-ui, sans-serif; }#cgSoon[hidden] { display: none; }.cg-soon-box { width: 100%; max-width: 420px; display: grid; gap: 12px; justify-items: center; text-align: center; }.cg-soon-mark { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 22px; background: linear-gradient(160deg, var(--c1), var(--c2)); border: 1px solid rgba(255, 255, 255, .14); font: 900 30px/1 Inter, sans-serif; }.cg-soon-k { font: 900 11px/1 Inter, sans-serif; letter-spacing: 1.3px; text-transform: uppercase; color: #a2a2b8; }#cgSoon h1 { margin: 0; font: 900 28px/1.15 Inter, sans-serif; text-wrap: balance; }#cgSoon p { margin: 0; color: #c9c9d8; font: 600 15px/1.45 Inter, sans-serif; text-wrap: balance; }.cg-soon-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 50px; margin-top: 8px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 15px/1 Inter, sans-serif; text-decoration: none; }.cg-soon-alt { display: inline-flex; align-items: center; min-height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: #fff; font: 800 13px/1 Inter, sans-serif; text-decoration: none; }</style>
-
 <base href="../1000tries/">
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>window.CG_MODE = 'bingo';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=7e48fa75e243">
+<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
+<!-- Opened on a mode (?play=, or a CAST Games page for one mode): the game's home never shows on the way in, only the
+     game itself once it opens (17 Oct 2026, the owner: "straight into play"). js/app.js ends html.play-boot -->
+<script>(function(){try{if(/[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.test(location.search)||/[?&](ou|po)=[a-z0-9]+/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
+<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#0a0a0f}</style>
@@ -31,20 +33,20 @@
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
   }
 </script>
-<title>NRL Bingo | Fill the Card | CAST Games</title>
-<meta name="description" content="A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House. A free NRL game from The Cast Patrol.">
+<title>NRL BINGO | Tap His Clubs, Fill the Card | CAST Games</title>
+<meta name="description" content="A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.">
 <link rel="canonical" href="https://castgames.com.au/nrl-bingo/">
 <meta name="theme-color" content="#0a0a0f">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://castgames.com.au/nrl-bingo/">
 <meta property="og:site_name" content="CAST Games">
-<meta property="og:title" content="NRL Bingo | Fill the Card | CAST Games">
-<meta property="og:description" content="A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House. A free NRL game from The Cast Patrol.">
+<meta property="og:title" content="NRL BINGO | Tap His Clubs, Fill the Card | CAST Games">
+<meta property="og:description" content="A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.">
 <meta property="og:image" content="https://castgames.com.au/1000tries/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="NRL Bingo | Fill the Card | CAST Games">
-<meta name="twitter:description" content="A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House. A free NRL game from The Cast Patrol.">
+<meta name="twitter:title" content="NRL BINGO | Tap His Clubs, Fill the Card | CAST Games">
+<meta name="twitter:description" content="A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.">
 <meta name="twitter:image" content="https://castgames.com.au/1000tries/assets/og-image.png">
 
 <link rel="icon" href="favicon.ico?v=3" sizes="any">
@@ -69,10 +71,7 @@
 </head>
 <body>
 <script>window.CG_GAME = 'nrl-bingo'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script>if (!/[?&](play=(bingo|bingod|bingo-daily)|bingo=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=bingo" + location.hash); document.documentElement.classList.add("bg-boot");</script>
-<style>html.bg-boot .screen:not(#screen-bingo) { display: none !important; }</style>
-<script src="../shared/cg.js?v=7e48fa75e243"></script>
-<script>window.addEventListener("load", function () { if (window.T && window.CG) T.bingoHome = function () { location.href = CG.url(""); }; });</script>
+<script src="../shared/cg.js?v=1af3df3d8a21"></script>
 
 
 <header class="site-header">
@@ -307,12 +306,5 @@
 <script src="js/cast-account.js?v=ab2f8ce7"></script>
 <script src="js/cast-totw.js?v=20261015.1"></script>
 <script src="js/cast-wch.js?v=20261015.1"></script>
-<div id="cgSoon" style="--c1:#2b3a12;--c2:#0c1206;--soon-rgb:163,230,53"><div class="cg-soon-box"><span class="cg-soon-mark" aria-hidden="true">&#x2705;</span><span class="cg-soon-k">New Game</span><h1>NRL Bingo Opens Soon</h1><p>A player comes up: tap a club he played for. Fill all 20 tiles for a Full House.</p><a class="cg-soon-btn" href="/1000tries/">Play 1000TRIES</a><a class="cg-soon-alt" href="/">All Games</a></div></div>
-<script>(function () {
-  var el = document.getElementById("cgSoon");
-  function on() { var A = window.CastAccount; try { return !!(A && A.bingoOn && A.bingoOn()); } catch (e) { return false; } }
-  function check() { var off = !on(); el.hidden = !off; document.documentElement.classList.toggle("cg-soon-on", off); }
-  check(); document.addEventListener("DOMContentLoaded", check); window.addEventListener("load", check); window.addEventListener("cast:launch", check);
-})();</script>
 </body>
 </html>

@@ -133,7 +133,8 @@ body[data-screen="draft"] .header-nav .btn-again { display: inline-flex; }
 .btn-sm { min-height: 36px; padding: 6px 14px; font-size: 12px; }
 .btn-row { display: flex; gap: 10px; margin: 16px 0 10px; }
 .btn-row .btn { flex: 1; min-width: 0; }
-@media (max-width: 380px) { .btn-row .btn-decide { font-size: 14px; letter-spacing: 0; padding-left: 8px; padding-right: 8px; white-space: normal; } .btn-row .btn-decide-lbl { text-wrap: balance; } } /* Remove Player and Lock In fit side by side at 360px (17 Oct 2026) */
+@media (max-width: 380px) { .btn-row .btn-decide { font-size: 12.5px; letter-spacing: 0; padding-left: 4px; padding-right: 4px; } .btn-row .btn-decide-lbl { gap: 4px; } .btn-row .btn-decide-lock .btn-decide-lbl { padding: 6px 10px; } } /* Remove Player and Lock In fit side by side at 360px, each label on one line (17 Oct 2026) */
+@media (max-width: 340px) { .btn-row:has(> .btn-decide) { flex-wrap: wrap; } .btn-row .btn-decide { flex-basis: 100%; } } /* narrower still: one above the other */
 /* Stand-alone links are small buttons, never underlined text */
 .text-link {
   display: flex; width: max-content; max-width: 100%; align-items: center; justify-content: center; min-height: 36px; margin: 10px auto 0; padding: 8px 16px; box-sizing: border-box;
@@ -1582,15 +1583,31 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .imm-back { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 12px 0 0; text-align: center; }
 .imm-back small { color: #c8ffe0; font-size: 11.5px; font-weight: 700; }
 
-/* Exactly 1000's shot clock (2 Oct 2026): 15 seconds a pick, a bar that runs down, red for the last five */
-.pick-clock { position: relative; display: flex; align-items: center; justify-content: flex-end; height: 22px; margin: 0 0 10px; padding: 0 8px; border-radius: 999px; overflow: hidden;
-  background: rgba(239, 68, 68, .12); border: 1px solid rgba(239, 68, 68, .35); }
-.pick-clock i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, #b91c1c, #ef4444); opacity: .55; transition: width .2s linear; }
-.pick-clock b { position: relative; font: 900 12px/1 Inter, sans-serif; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: .3px; }
-.pick-clock.is-low { border-color: #fca5a5; animation: pickClockPulse .6s ease-in-out infinite alternate; }
-.pick-clock.is-low i { opacity: .85; }
-@keyframes pickClockPulse { to { box-shadow: 0 0 14px rgba(248, 113, 113, .6); } }
+/* The pick clock (17 Oct 2026, as 1000TRIES; Exactly's shot clock since 2 Oct): a white bar that runs down over the offer, red
+   for the last five seconds (never gold: gold is CAST Pass), and Paused while a pop-up is open */
+.pick-clock { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 28px; margin: 0 0 10px; padding: 0 11px;
+  border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .2); transition: background .2s, border-color .2s; }
+.pick-clock i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, rgba(255, 255, 255, .3), rgba(255, 255, 255, .16)); transition: width .2s linear, background .2s; }
+.pick-clock .pc-lbl, .pick-clock b { position: relative; color: #fff; white-space: nowrap; }
+.pick-clock .pc-lbl { font: 800 12px/1 Inter, sans-serif; letter-spacing: .3px; }
+.pick-clock .pc-wait { display: none; }
+.pick-clock b { font: 900 14px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: .3px; }
+.pick-clock.is-low { background: rgba(220, 38, 38, .2); border-color: #fca5a5; animation: pickClockPulse .6s ease-in-out infinite alternate; }
+.pick-clock.is-low i { background: linear-gradient(90deg, #b91c1c, #ef4444); }
+.pick-clock.is-low b { font-size: 15px; }
+.pick-clock.is-paused { border-style: dashed; border-color: rgba(255, 255, 255, .35); }
+.pick-clock.is-paused i { opacity: .45; }
+.pick-clock.is-paused .pc-run { display: none; }
+.pick-clock.is-paused .pc-wait { display: inline; }
+@keyframes pickClockPulse { to { box-shadow: 0 0 14px rgba(248, 113, 113, .65); } }
 @media (prefers-reduced-motion: reduce) { .pick-clock i { transition: none; } .pick-clock.is-low { animation: none; } }
+/* While the clock waits the offer is covered: no names, years or numbers to look up */
+#offerPanel.is-clock-paused .offer-cards { position: relative; }
+#offerPanel.is-clock-paused .offer-cards .pcard { pointer-events: none; user-select: none; -webkit-user-select: none; }
+#offerPanel.is-clock-paused .offer-cards .pcard > * { filter: blur(12px); opacity: .3; }
+#offerPanel.is-clock-paused .offer-cards::after { content: '\23F8\FE0F  Clock Paused'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2;
+  padding: 9px 16px; border-radius: 999px; background: rgba(8, 10, 18, .88); border: 1px solid rgba(255, 255, 255, .3); color: #fff;
+  font: 900 13px/1 Inter, sans-serif; letter-spacing: .4px; white-space: nowrap; pointer-events: none; }
 
 /* A Daily go: today's challenge under the scoreboard's bar, always in view, and a tap opens the whole challenge
    (2 Oct 2026: the owner forgot his part way through a go). The Daily's orange, like its card */
@@ -1882,6 +1899,9 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .mode-main .mode-ico.is-logo { display: grid; place-items: center; }
 .mode-main .mode-logo { display: block; width: 112px; height: auto; }
 @media (max-width: 420px) { .mode-main .mode-logo { width: 92px; } }
+
+/* The GOAT wears 1000TRIES' gold in every game, his free Legend card too (17 Oct 2026, the owner) */
+.pcard.is-goat, .reveal.is-goat, .slot.is-goat, .rrow.is-goat, .srow.is-goat, .chooser-card.is-goat { --gold: #f1c073; --gold-dark: #c9953a; }
 
 /* Wildcard rims: each tile its own colour (17 Oct 2026, the owner: in 25000 RUNS Reveal, Substitute, Legend Key and the
    GOAT all read orange). Reroll teal, Reveal yellow, Remove pink, Substitute blue, Legend Key violet, the GOAT gold */

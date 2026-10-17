@@ -1079,6 +1079,9 @@
   }
   var afterHome = null; // a mode to start once home (picked from the leaderboards)
   function goHome() {
+    // CAST Games: every mode is its own page, so leaving a game goes back to CAST Games (17 Oct 2026, the owner); Play
+    // Again (afterHome) starts the mode again here without the home showing (the showScreen wrap in boot)
+    if (cgPage() && !afterHome) { CG.leave(); return; }
     if (typeof resetGame === 'function') resetGame();
     firstSteps(); // a first season just ended: the usual home again
     var then = afterHome;
@@ -1274,12 +1277,57 @@
       if (n && /\S\s+\S+\s*$/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\s+(\S+\s*)$/, '\u00A0$1');
     });
   }
+  /* Opened on a mode (?play=, or a CAST Games page for one mode, window.CG_MODE): straight into play, the home never
+     shows (17 Oct 2026, the owner; index.html sets html.play-boot). Classic, Hard and Pack bring back this player's saved
+     draft for that mode (js/draft-save.js), the World Cup its saved run (js/world-cup.js wcHome). A link that opens
+     something else (the leaderboards, a profile, the Pass, a friend's challenge) leaves the screen to it. When nothing
+     could start (a sign-in wall closed, the World Cup not on), CAST Games shows its own card for the mode (CG.bootIdle)
+     and the game's own site shows its home */
+  function cgPage() { return !!(window.CG && CG.leave && window.CG_MODE); }
+  function bootOn() { return document.documentElement.classList.contains('play-boot'); }
+  function bootEnd() { document.documentElement.classList.remove('play-boot'); if (window.CG && CG.bootDone) CG.bootDone(); }
+  function activeId() { var a = document.querySelector('.screen.active'); return a ? a.id : ''; }
+  var bootMode = null, watching = false, rebootT = 0;
+  function bootIdleWatch() {
+    if (watching) return;
+    watching = true;
+    var check = function () {
+      if (!bootOn() || activeId() !== 'setup' || document.documentElement.classList.contains('ca-open')) return;
+      if (Array.prototype.some.call(document.querySelectorAll('.cp-confirm'), function (m) { return m.style.display === 'flex'; })) return;
+      if (window.CG && CG.bootIdle) CG.bootIdle(function () { bootPlay(bootMode); }); else bootEnd();
+    };
+    var soon = function () { setTimeout(check, 400); };
+    setTimeout(check, 2500); setTimeout(check, 7000);
+    try { new MutationObserver(soon).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); } catch (e) { /* the timers above */ }
+    document.addEventListener('click', soon, true);
+  }
+  function bootPlay(mode) {
+    bootMode = mode;
+    bootIdleWatch();
+    if (/#(challenge|cast-profile|my-cast|leaderboards|cast-pass|join|admin)/.test(location.hash) || /[?&](challenge|ch|vs)=/.test(location.search)) return;
+    if ((mode === 'classic' || mode === 'hard' || mode === 'pack') && window.cpDraftSave && cpDraftSave.resumeFor) { cpDraftSave.resumeFor(mode, function () { playMode(mode); }); return; }
+    playMode(mode);
+  }
+  // Every screen change ends the boot. On CAST Games the home itself never shows: Play Again passes through it (the next
+  // mode starts within a moment), anything else starts this page's mode again
+  (function () {
+    var orig = window.showScreen;
+    if (typeof orig !== 'function') return;
+    window.showScreen = function (id) {
+      var out = orig.apply(this, arguments);
+      if (id !== 'setup' || !cgPage()) { bootEnd(); return out; }
+      document.documentElement.classList.add('play-boot');
+      clearTimeout(rebootT);
+      rebootT = setTimeout(function () { if (activeId() === 'setup' && !afterHome && bootOn()) bootPlay(window.CG_MODE); }, 600);
+      return out;
+    };
+  })();
   function boot() {
     addSoundButtons(); addModeButtons(); decorate(); syncMode(); loadVideos(); optionsSummary(); customGate(); keepLastWords();
-    var play = /[?&]play=(classic|pack|hard|daily|wc)(?=&|#|$)/.exec(location.search);
+    var play = /[?&]play=(classic|pack|hard|daily|wc)(?=&|#|$)/.exec(location.search) || (window.CG_MODE ? [0, window.CG_MODE] : null);
     if (play) {
       try { history.replaceState(null, '', location.pathname + location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); } catch (e) { /* keep the address as it is */ }
-      setTimeout(function () { playMode(play[1]); }, 300);
+      setTimeout(function () { bootPlay(play[1]); }, 300);
     }
     var nm = document.getElementById('teamNameInput');
     if (nm) nm.addEventListener('input', optionsSummary);

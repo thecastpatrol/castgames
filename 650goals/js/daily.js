@@ -317,7 +317,7 @@
   function dailyButtons(host, left) {
     var again = host.querySelector('[data-action="play-again"]'), share = host.querySelector('.btn-res-share');
     if (again) {
-      if (left) again.innerHTML = '<span aria-hidden="true">&#x1F504;</span> Go Again (' + left + ' left)';
+      if (left) again.innerHTML = '<span aria-hidden="true">&#x2699;&#xFE0F;</span> Go Again (' + left + ' left)';
       else { again.removeAttribute('data-action'); again.setAttribute('data-dly', 'plus'); again.innerHTML = '<span aria-hidden="true">&#x26A1;</span> Play 4000+'; }
     }
     if (share) { share.removeAttribute('data-action'); share.setAttribute('data-dly', 'share'); share.innerHTML = '<span aria-hidden="true">&#x1F4E4;</span> Share My Best'; }

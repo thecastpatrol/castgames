@@ -2,11 +2,16 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>window.CG_MODE = 'classic';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=7e48fa75e243">
+<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
 <style>html.cg-in-game .cp-site-header, .screen > .header .header-logo, .screen > .header .cp-new-tab, .screen > .header [data-cast-account], .screen > .header [data-cast-friends], .screen > .header .cp-right, .nf-head, .site-header { display: none !important; }</style>
 
 <meta charset="UTF-8">
+<!-- Opened on a mode (?play=, or a CAST Games page for one mode): the home never shows on the way in, only the game
+     itself once it opens (17 Oct 2026, the owner: "straight into play"). js/theme-fx.js ends html.play-boot -->
+<script>(function(){try{if(/[?&]play=(classic|pack|hard|daily|wc)(?=&|#|$)/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
+<style>html.play-boot .screen{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#090910}</style>
@@ -45,8 +50,8 @@
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
   }
 </script>
-<title>27-0 | Build an NRL 13 and Go Undefeated | CAST Games</title>
-<meta name="description" content="Build your ultimate NRL dream team, simulate a full Rugby League season, and try to go 27-0. Free browser game by The Cast Patrol.">
+<title>27-0 CLASSIC | Build a 13, Go Undefeated | CAST Games</title>
+<meta name="description" content="Spin a club and season, draft a 13 from any NRL season since 1998 and go undefeated.">
 <meta name="keywords" content="NRL game, NRL draft game, Rugby League game, NRL era team, The Cast Patrol, 27-0, NRL fantasy, NRL legends">
 <meta name="author" content="The Cast Patrol">
 <meta name="robots" content="index, follow">
@@ -54,15 +59,15 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://castgames.com.au/27-0/">
-<meta property="og:title" content="27-0 | Build an NRL 13 and Go Undefeated | CAST Games">
-<meta property="og:description" content="Build your ultimate NRL dream team, simulate a full Rugby League season, and try to go 27-0. Free browser game by The Cast Patrol.">
+<meta property="og:title" content="27-0 CLASSIC | Build a 13, Go Undefeated | CAST Games">
+<meta property="og:description" content="Spin a club and season, draft a 13 from any NRL season since 1998 and go undefeated.">
 <meta property="og:site_name" content="CAST Games">
 <meta property="og:image" content="https://castgames.com.au/27-0/assets/img/og-image.png">
 <meta name="twitter:image" content="https://castgames.com.au/27-0/assets/img/og-image.png">
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="27-0 | Build an NRL 13 and Go Undefeated | CAST Games">
-<meta name="twitter:description" content="Build your ultimate NRL dream team, simulate a full Rugby League season, and try to go 27-0. Free browser game by The Cast Patrol.">
+<meta name="twitter:title" content="27-0 CLASSIC | Build a 13, Go Undefeated | CAST Games">
+<meta name="twitter:description" content="Spin a club and season, draft a 13 from any NRL season since 1998 and go undefeated.">
 <meta name="twitter:site" content="@thecastpatrol">
 <!-- Structured Data -->
 <script type="application/ld+json">
@@ -83,7 +88,7 @@
 </head>
 <body>
 <script>window.CG_GAME = '27-0'; window.CG_PLAY = function (dry) { var b = document.querySelector('.screen.active .cp-new-tab'); if (b) { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=7e48fa75e243"></script>
+<script src="../shared/cg.js?v=1af3df3d8a21"></script>
 
 
 <div id="setup" class="screen">

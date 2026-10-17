@@ -2,11 +2,16 @@
 <html lang="en-AU">
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
+<script>window.CG_MODE = 'plus';</script>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=7e48fa75e243">
+<link rel="stylesheet" href="../shared/cg.css?v=1af3df3d8a21">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
+<!-- Opened on a mode (?play=, or a CAST Games page for one mode): the game's home never shows on the way in, only the
+     game itself once it opens (17 Oct 2026, the owner: "straight into play"). js/app.js ends html.play-boot -->
+<script>(function(){try{if(/[?&]play=(plus|exact|spin|nrlw|aflw|wc|daily|ou)(?=&|#|$)/.test(location.search)||/[?&](ou|po)=[a-z0-9]+/.test(location.search)||window.CG_MODE)document.documentElement.classList.add('play-boot')}catch(e){}})();</script>
+<style>html.play-boot .screen,html.play-boot .site-footer{display:none!important}html.play-boot::after{content:"";position:fixed;left:50%;top:50%;z-index:1;width:36px;height:36px;margin:-18px 0 0 -18px;box-sizing:border-box;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:rgba(255,255,255,.85);animation:playBoot .8s linear infinite}html.play-boot.cg-idle::after{display:none}@keyframes playBoot{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){html.play-boot::after{animation:none}}</style>
 <!-- A dark page from the first frame (5 Oct 2026): no white flash before the styles load -->
 <meta name="color-scheme" content="dark">
 <style>html{background:#04110a}</style>
@@ -27,20 +32,20 @@
     document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
   }
 </script>
-<title>G1 WINNER SPINNER | Draft 550 Group 1 Wins | CAST Games</title>
-<meta name="description" content="Draft 8 jockeys with their Australian and New Zealand Group 1 wins hidden. Can you get to 550? A free horse racing game by The Cast Patrol.">
+<title>G1 WINNER SPINNER | 8 Jockeys to 550 Group 1s | CAST Games</title>
+<meta name="description" content="Draft 8 jockeys for a Group 1 card with their wins hidden and reach 550 Group 1 wins.">
 <link rel="canonical" href="https://castgames.com.au/g1winner/">
 <meta name="theme-color" content="#04110a">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://castgames.com.au/g1winner/">
 <meta property="og:site_name" content="CAST Games">
-<meta property="og:title" content="G1 WINNER SPINNER | Draft 550 Group 1 Wins | CAST Games">
-<meta property="og:description" content="Roll, spin and draft an 8-race Group 1 card of jockeys. Their wins stay hidden until you pick. Free horse racing game by The Cast Patrol.">
+<meta property="og:title" content="G1 WINNER SPINNER | 8 Jockeys to 550 Group 1s | CAST Games">
+<meta property="og:description" content="Draft 8 jockeys for a Group 1 card with their wins hidden and reach 550 Group 1 wins.">
 <meta property="og:image" content="https://castgames.com.au/g1winner/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="G1 WINNER SPINNER | Draft 550 Group 1 Wins | CAST Games">
-<meta name="twitter:description" content="Roll, spin and draft 8 jockeys. Their Group 1 wins stay hidden until you pick.">
+<meta name="twitter:title" content="G1 WINNER SPINNER | 8 Jockeys to 550 Group 1s | CAST Games">
+<meta name="twitter:description" content="Draft 8 jockeys for a Group 1 card with their wins hidden and reach 550 Group 1 wins.">
 <meta name="twitter:image" content="https://castgames.com.au/g1winner/assets/og-image.png">
 
 <link rel="icon" href="favicon.ico?v=5" sizes="any">
@@ -52,13 +57,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=e873a196">
+<link rel="stylesheet" href="css/main.css?v=0643c8b4">
 <link rel="stylesheet" href="css/cast-account.css?v=dfa752fb">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = 'g1winner'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=7e48fa75e243"></script>
+<script src="../shared/cg.js?v=1af3df3d8a21"></script>
 
 
 <header class="site-header">
@@ -74,7 +79,7 @@
     <button type="button" class="nav-lb ca-nav-tab" data-cast-enabled hidden aria-label="Leaderboards" onclick="if (window.CastAccount) { if (typeof gtag !== 'undefined') gtag('event', 'leaderboard_open', { game: 'racing', where: 'header' }); CastAccount.openBoards(null); }"><span aria-hidden="true">&#x1F3C6;</span><span class="ca-nav-lbl"><span class="ca-lbl-l">Leaderboards</span><span class="ca-lbl-s">Rankings</span></span></button>
     <!-- Mid-draft: one New Game tab (29 Sep 2026, the user's call: Mode and Again were two buttons). Its pop-up offers Play
          Again, Change Mode or Keep Playing, the same as 27-0's -->
-    <button type="button" class="ca-nav-tab nav-new" data-action="new-game" aria-label="New game"><span aria-hidden="true">&#x1F504;</span><span class="ca-nav-lbl">New Game</span></button>
+    <button type="button" class="ca-nav-tab nav-new" data-action="new-game" aria-label="New game"><span aria-hidden="true">&#x2699;&#xFE0F;</span><span class="ca-nav-lbl">New Game</span></button>
     <button type="button" data-cast-friends aria-label="Friends" hidden></button>
     <button type="button" data-cast-account aria-label="Sign in to save your history"></button>
   </nav>
@@ -134,9 +139,9 @@
         <details class="faq-fold">
           <summary class="faq-fold-sum"><h2 class="faq-title" id="faqTitle">Frequently Asked Questions</h2><span class="faq-ico" aria-hidden="true">+</span></summary>
           <details class="faq-item" name="faq"><summary><span>What is G1 WINNER SPINNER?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>A free horse racing game by The Cast Patrol. Draft 8 jockeys with their Group 1 wins hidden, then add them up. Can your card reach 550 Group 1 wins combined?</p></details>
-          <details class="faq-item" name="faq"><summary><span>How do you play G1 WINNER SPINNER?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random jockeys at a time. Choose one without seeing their wins, and repeat until all 8 races on your Group 1 card are filled. Any jockey can ride any race. Your total is revealed as you go.</p></details>
+          <details class="faq-item" name="faq"><summary><span>How do you play G1 WINNER SPINNER?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random jockeys at a time. Choose one without seeing their wins. You have 20 seconds to pick, or the first option goes in. Repeat until all 8 races on your Group 1 card are filled. Any jockey can ride any race. Your total is revealed as you go.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are the modes?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p><strong>550+</strong>: reach 550 Group 1 wins or more, with one of each wildcard. <strong>Exactly 550</strong>: land on 550 on the dot, under or over is a miss, and it&rsquo;s Hard Mode: no free wildcards, only paid ones, one of each a game. <strong>Photo Finish</strong>: call Over or Under against the clock.</p></details>
-          <details class="faq-item" name="faq"><summary><span>What are Legends?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>550+</strong>, one offer is a <strong>Legends Pick</strong>: three great retired jockeys, like Damien Oliver, Shane Dye and Glen Boss. Their wins are hidden like everyone else&rsquo;s, and they count their Group 1 wins since 1983 too. You get one at most per game, and a player who has fallen well behind late in a game is sometimes thrown one as a lifeline.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What are Legends?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>550+</strong>, one offer is a <strong>Legends Pick</strong>: three great retired jockeys, like Damien Oliver, Shane Dye and Glen Boss. Their wins are hidden like everyone else&rsquo;s, and they count their Group 1 wins since 1983 too. You get one at most per game, and it can turn up late in a game, just when you need it most.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="racing" hidden><summary><span>How do the leaderboards work?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Sign in free with a CAST Profile and pick a username. Your best game in every mode goes up automatically on today&rsquo;s, this week&rsquo;s and the all-time boards. Tap any name to see the card behind the score, with the luck of their draw. Exactly 550 ranks the most exact hits, then the closest card.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="racing" hidden><summary><span>Do I need an account?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. You can play as a guest, and your games stay on this device. A free CAST Profile (Google or Apple, for ages 13 and over) saves your history, stats and trophies across every CAST game, puts you on the leaderboards and gives you wildcards every game.</p></details>
           <details class="faq-item" name="faq"><summary><span>What does the Luck number mean?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>After each game we compare the wins on every card you were offered with what an average game deals you. <strong>Luck +23%</strong> means you drew 23% more wins than usual; a minus number means a tough draw. Your first offer and any Legends Pick are left out. You see it on your results and on leaderboard team sheets.</p></details>
@@ -218,18 +223,18 @@
 
 <script src="js/analytics.js?v=f90196c4"></script>
 <script src="js/cast-promo.js?v=f0525281"></script>
-<script src="js/data.js?v=dc231c41"></script>
-<script src="js/draft.js?v=e09f5950"></script>
+<script src="js/data.js?v=25840f81"></script>
+<script src="js/draft.js?v=256811f6"></script>
 <script src="js/wildcards.js?v=6a5e9b9c"></script>
 <script src="js/cast-nations.js?v=46208301"></script>
-<script src="js/cast-intl.js?v=0168399a"></script>
-<script src="js/render.js?v=5a09f2ca"></script>
+<script src="js/cast-intl.js?v=b6194356"></script>
+<script src="js/render.js?v=bef5a7cd"></script>
 <script src="js/share-card.js?v=f199fbbe"></script>
-<script src="js/cast-celebrate.js?v=eacfb009"></script>
-<script src="js/app.js?v=5df52886"></script>
-<script src="js/cast-daily.js?v=a0d50a5c"></script>
+<script src="js/cast-celebrate.js?v=155b2d28"></script>
+<script src="js/app.js?v=07ab3de2"></script>
+<script src="js/cast-daily.js?v=e7382c3c"></script>
 <script src="js/racing-daily.js?v=fa9e5cf0"></script>
-<script src="js/daily.js?v=be98b9b0"></script>
+<script src="js/daily.js?v=fdaa4447"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   // G1 WINNER SPINNER: not connected to CAST accounts yet (its own game id, boards and server checks come next); 'launch' names a
@@ -245,6 +250,6 @@
 <script src="js/cast-picks.js?v=08f42325"></script>
 <script src="js/ou-engine.js?v=fc6246d6"></script>
 <script src="js/overunder.js?v=2f698585"></script>
-<script src="js/cast-account.js?v=56dc178d"></script>
+<script src="js/cast-account.js?v=bf638a8a"></script>
 </body>
 </html>
