@@ -1879,11 +1879,11 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .fm-intro { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; text-wrap: pretty; }
 .fm-cards { display: grid; gap: 10px; }
 .fm-card {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 172px); align-items: stretch; gap: 10px; width: 100%;
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 172px); align-items: stretch; gap: 10px; width: 100%;
   padding: 10px; border-radius: 14px; border: 2px solid rgba(var(--acc-rgb), .45); background: var(--card2); color: var(--text);
-  font: inherit; text-align: left; cursor: pointer; animation: dealIn .35s ease both; transition: transform .12s, box-shadow .15s;
+  font: inherit; text-align: left; cursor: pointer; animation: dealIn .35s ease both; transition: transform .12s, box-shadow .15s, border-color .25s;
 }
-@media (hover: hover) { .fm-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .45), 0 0 0 2px var(--gold); } }
+@media (hover: hover) { .fm-card:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .45), 0 0 0 2px var(--gold); } }
 .fm-side { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; padding-left: 4px; }
 .fm-name { font-size: 24px; font-weight: 900; letter-spacing: -.5px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fm-note { font-size: 12px; font-weight: 700; color: var(--muted); line-height: 1.3; text-wrap: balance; }
@@ -1899,14 +1899,30 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .fm-dot i { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .7); }
 .fm-dot b { font-size: 9px; font-weight: 900; letter-spacing: .3px; color: rgba(255, 255, 255, .9); line-height: 1; }
 @media (max-width: 380px) { .fm-card { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } .fm-name { font-size: 21px; } }
-/* The formation spin (17 Oct 2026): the cards turn like reels (js/app.js fmSpin), then land one by one */
-.fm-card.is-spinning { overflow: hidden; cursor: default; animation: none; border-color: rgba(var(--acc-rgb), .25); }
+/* The formation spin (17 Oct 2026): the cards turn like reels (js/app.js fmSpin), then land one by one.
+   Smoother (17 Oct 2026): each card gets a reel over it, a strip of whole faces on its own GPU layer that only ever moves
+   by transform. The real card stays laid out underneath (its name and pitch hidden, its dim Pick showing through and
+   staying still, as before), so nothing around it reflows, and takes over once the reel has settled. The card's height
+   comes from its pitch, so a late font swap cannot move the reel either */
+.fm-card.is-spinning { cursor: default; animation: none; border-color: rgba(var(--acc-rgb), .25); }
 .fm-card.is-spinning .fm-note { opacity: 0; }
 .fm-card.is-spinning .fm-cta { opacity: .35; }
-.fm-card.is-spinning .fm-name { filter: blur(.4px); }
 .fm-card .fm-note, .fm-card .fm-cta { transition: opacity .25s ease; }
-.fm-card.is-landed { animation: fmLand .6s ease-out both; }
-@keyframes fmLand { from { box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .95), 0 0 22px rgba(var(--acc-rgb), .55); } to { box-shadow: 0 0 0 0 rgba(var(--acc-rgb), 0); } }
+.fm-card.has-reel > .fm-side > .fm-name, .fm-card.has-reel > .fm-pitch { visibility: hidden; } /* its dim Pick stays put */
+.fm-face .fm-note, .fm-face .fm-cta { visibility: hidden; } /* only the names and pitches roll */
+.fm-reel { position: absolute; inset: 0; overflow: hidden; border-radius: 12px; contain: strict; pointer-events: none; }
+.fm-strip { position: absolute; inset: 0; will-change: transform; }
+.fm-face { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 172px); align-items: stretch; gap: 10px; height: 100%; padding: 10px; }
+@media (max-width: 380px) { .fm-face { grid-template-columns: minmax(0, 1fr) minmax(0, 156px); } } /* as the card's own columns */
+/* The landing flash: its ring and glow fade by opacity alone, so nothing repaints while the other cards turn */
+.fm-card::after {
+  content: ''; position: absolute; inset: -2px; border-radius: 14px; pointer-events: none; opacity: 0;
+  box-shadow: 0 0 0 2px rgba(var(--acc-rgb), .95), 0 0 22px rgba(var(--acc-rgb), .55);
+}
+.fm-card.is-landed { animation: none; }
+.fm-card.is-landed::after { animation: fmLand .6s ease-out both; }
+@keyframes fmLand { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .fm-card.is-landed::after { animation: none; } .fm-strip { will-change: auto; } }
 .fm-cards.is-fade .fm-card { animation: fmFade .3s ease both; }
 @keyframes fmFade { from { opacity: 0; } to { opacity: 1; } }
 /* Before a formation is chosen the pitch waits for it */

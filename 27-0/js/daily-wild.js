@@ -12,6 +12,8 @@
    - Pick a spot: tap an empty spot on the pitch and the squad list shows who can play there (Classic, Daily, Hard) */
 (function () {
   'use strict';
+  // A pack's price as this device shows it (local currency, 17 Oct 2026: "NZ$0.99"; CastAccount.price), else the A$ words
+  function px(pack, aud) { return window.CastAccount && CastAccount.price ? CastAccount.price(pack, aud) : aud; }
   var ORDER = ['FB', 'W', 'C', 'FE', 'HB', 'HK', 'P', 'SR', 'LK'];
   var LOCK_SECS = 10;
 
@@ -152,7 +154,7 @@
         // 8 Oct 2026 (the owner: match 1000TRIES's Legend Key) a key works again in the same season and never says Used
         if ((kv === 'pass' || kv === 'used') && !STATE.__superNext && !lock && CastAccount.buyKey && CastAccount.canBuyKey && CastAccount.canBuyKey()) {
           var kok = !!(window.cpSuperstarReady && window.cpSuperstarReady());
-          return '<button type="button" class="cpw cpw-key is-buy' + (kok ? '' : ' is-wait') + '" data-w="key"' + (kok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) + '<span class="cpw-left">Buy &middot; $1.99</span></button>';
+          return '<button type="button" class="cpw cpw-key is-buy' + (kok ? '' : ' is-wait') + '" data-w="key"' + (kok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) + '<span class="cpw-left">Buy &middot; ' + px('superstar1', '$1.99') + '</span></button>';
         }
         var ks = kv === 'pass' ? 'is-pass' : STATE.__superNext ? 'is-armed' : kv === 'used' ? 'is-spent' : w.keyBusy ? 'is-armed' : window.cpSuperstarReady && window.cpSuperstarReady() ? '' : 'is-wait';
         var kt = kv === 'pass' ? 'CAST Pass' : STATE.__superNext ? 'Next spin: 95+' : kv === 'used' ? (CastAccount.keyCountdown ? CastAccount.keyCountdown() : 'Used today') : w.keyBusy ? 'Opening&hellip;' : 'Ready';
@@ -165,19 +167,19 @@
         // Just bought: "N ready", glowing, so they tap it and watch the roll
         var sv = CastAccount.rerollsSaved(), live = spinOn(), fresh = !!(sv && CastAccount.rerollsFresh && CastAccount.rerollsFresh());
         return '<button type="button" class="cpw cpw-reroll is-buy' + (live ? '' : ' is-wait') + (fresh ? ' ca-rr-fresh' : '') + '" data-w="reroll"' + (live ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) +
-          '<span class="cpw-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+          '<span class="cpw-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; ' + px('one', '$0.99')) + '</span></button>';
       }
       // Out of Reveals in Classic (ratings hidden): a saved one or one to buy, the same way (CastAccount.buyItem('reveal'))
       if (it[0] === 'reveal' && !it[3] && !lock && payOn('reveal') && window.CastAccount && CastAccount.buyItem && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.itemSaved('reveal') > 0))) {
         var vs = CastAccount.itemSaved('reveal'), vok = spinOn() && !revealedNow(), vfresh = !!(vs && CastAccount.itemFresh('reveal'));
         return '<button type="button" class="cpw cpw-reveal is-buy' + (vok ? '' : ' is-wait') + (vfresh ? ' ca-rr-fresh' : '') + '" data-w="reveal"' + (vok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) +
-          '<span class="cpw-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+          '<span class="cpw-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('reveal1', '$0.99')) + '</span></button>';
       }
       // Out of Remove Players in Classic: a saved one or one to buy, the same way (CastAccount.buyRemove)
       if (it[0] === 'remove' && !it[3] && !lock && payOn('remove') && window.CastAccount && CastAccount.canBuyRemove && (CastAccount.canBuyRemove() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.removesSaved() > 0))) {
         var rs = CastAccount.removesSaved(), rok = filled() > 0 && !w.sub, rfresh = !!(rs && CastAccount.removesFresh && CastAccount.removesFresh());
         return '<button type="button" class="cpw cpw-remove is-buy' + (rok ? '' : ' is-wait') + (rfresh ? ' ca-rr-fresh' : '') + '" data-w="remove"' + (rok ? '' : ' data-hint="' + it[5] + '"') + '>' + lab(it) +
-          '<span class="cpw-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+          '<span class="cpw-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('remove1', '$0.99')) + '</span></button>';
       }
       // The game's own and the saved ones as one total from the first pick ("13 left"), so a bought pack is never out of sight
       // (11 Oct 2026: a player thought his 12 Remove Players were gone)
@@ -579,8 +581,8 @@
     sec.innerHTML = '<div class="cpw-decide"><div class="cpw-decide-h">Squad full</div>' +
       (!paid ? '<p>You still have <b>Remove Player</b>. Swap one out and spin again, or lock in this 13.</p>'
         : rs ? '<p>You have <b>' + rs + ' saved Remove Player' + (rs === 1 ? '' : 's') + '</b>. Swap one out and spin that spot again, or lock in this 13.</p>'
-          : '<p>Swap one player out and spin that spot again for <b>$0.99</b>, or lock in this 13.</p>') +
-      '<div class="cpw-decide-row"><button type="button" class="cpw-btn cpw-btn-remove" data-d="' + (paid ? 'buy' : 'remove') + '"><span>&#x274C; Remove' + (paid ? ' &middot; ' + (rs ? rs + ' left' : '$0.99') : ' player') + '</span></button>' +
+          : '<p>Swap one player out and spin that spot again for <b>' + px('remove1', '$0.99') + '</b>, or lock in this 13.</p>') +
+      '<div class="cpw-decide-row"><button type="button" class="cpw-btn cpw-btn-remove" data-d="' + (paid ? 'buy' : 'remove') + '"><span>&#x274C; Remove' + (paid ? ' &middot; ' + (rs ? rs + ' left' : px('remove1', '$0.99')) : ' player') + '</span></button>' +
       '<button type="button" class="cpw-btn cpw-btn-lock" data-d="lock"><span class="cpw-fill" aria-hidden="true"></span><span class="cpw-lbl">&#x1F512; Lock in <b id="cpwSecs">' + LOCK_SECS + '</b></span></button></div>' +
       // Still holding the season's own Remove Player: a way to stock up on more (the packs pop-up; nothing is used)
       (!paid && removeOnSale() && CastAccount.shopRemoves ? '<button type="button" class="cpw-more" data-d="more">&#x2795; Get More Remove Players</button>' : '') + '</div>';

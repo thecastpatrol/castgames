@@ -4024,23 +4024,39 @@
   function nowTier() { return Date.now() >= PASS_RISE_AT ? 'new' : 'mid'; }
   function amtTier(a) { for (var t in PASS_TIERS) if (PASS_TIERS[t].mc === a || PASS_TIERS[t].yc === a) return t; return null; }
   // A member's own tier (no amt saved: the first price; a price we don't know: today's)
-  function myTier() { var p = passDoc || {}; return typeof p.amt === 'number' ? amtTier(p.amt) || nowTier() : 'old'; }
-  function switchLine() { var t = PASS_TIERS[myTier()]; return [t.y, t.yM, t.x12]; }
+  // (a member paying in NZ$, US$, £ or K is on the new tier: US$3.99 is never the first members' A$3.99)
+  function myTier() { var p = passDoc || {}; return p.cur && p.cur !== 'aud' ? 'new' : typeof p.amt === 'number' ? amtTier(p.amt) || nowTier() : 'old'; }
+  // (a member who pays in NZ$, US$, £ or K sees their own currency: passes/{uid}.cur, local currency 17 Oct 2026)
+  function switchLine() { var p = passDoc || {}, C = cpx(), t = p.cur && p.cur !== 'aud' && C && C.ok(p.cur) ? C.passCopy(p.cur) : PASS_TIERS[myTier()]; return [audWords(t.y), audWords(t.yM), audWords(t.x12)]; }
   /* Keep and win back (10 Oct 2026, the owner's BUILD IT). A member whose Pass has ended comes back at their own price
      ($3.99 or $4.99 tiers), and every price they see is that one (the server's own check is lib/pass.js returnTier) */
   function returnTier() {
     var p = passDoc;
     if (!p || !p.sub || p.comp === true || p.on === true) return null;
+    if (p.cur && p.cur !== 'aud') return null; // a local member comes back at today's price (lib/pass.js returnTier)
     if (typeof p.amt !== 'number') return 'old';
     var t = amtTier(p.amt);
     return t === 'old' || t === 'mid' ? t : null;
   }
-  function PR() { return PASS_TIERS[returnTier() || nowTier()]; }
+  /* The prices a new member sees: today's tier in the shown currency (local currency, 17 Oct 2026: NZ$6.99 and the like,
+     js/cast-prices.js PASS); a member coming back sees their own A$ tier. A$ words say A$ away from an Australian phone */
+  var PR_A = {};
+  function PR() {
+    var t = returnTier() || nowTier(), C = cpx();
+    if (t === 'new' && C && curLocal()) return C.passCopy(curNow());
+    if (!curA()) return PASS_TIERS[t];
+    if (!PR_A[t]) { PR_A[t] = {}; Object.keys(PASS_TIERS[t]).forEach(function (k) { PR_A[t][k] = audWords(PASS_TIERS[t][k]); }); }
+    return PR_A[t];
+  }
   // A former paying member (their Pass has ended): the Come Back card and a welcome back on the Pass page
   function formerMember() { var p = passDoc; return !hasPass() && !!p && !!p.sub && p.comp !== true && p.on !== true && p.live !== false; }
   // A monthly Pass on pause (passPause): their own line and Resume Now, never the buy buttons or Pass pitches
   function pausedRec() { var p = passDoc; return !!p && !!p.sub && p.paused === true && p.status === 'active'; }
-  function priceOf(p) { return '$' + ((p && typeof p.amt === 'number' && p.amt > 0 ? p.amt : 399) / 100).toFixed(2); }
+  function priceOf(p) {
+    var C = cpx(), amt = p && typeof p.amt === 'number' && p.amt > 0 ? p.amt : 399;
+    if (p && p.cur && p.cur !== 'aud' && C && C.ok(p.cur)) return C.fmt(amt, p.cur); // their own currency (local currency, 17 Oct 2026)
+    return audWords('$' + (amt / 100).toFixed(2));
+  }
   function money(v) { return '$' + (Math.round(v * 100) / 100).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false }); }
   function passBuyHtml(where) {
     return '<div class="ca-pass-buy">' +
@@ -5643,6 +5659,7 @@
   }
   function rrRender0() {
     if (!rrEl || !rr) return;
+    curApply();
     var body = rrEl.querySelector('.ca-rr-body'), h = '', what = ITM[rr.item] ? ITM[rr.item].many : rr.item === 'freeze' ? 'Streak Freezes' : rr.item === 'key' ? 'keys' : rr.item === 'restore' ? 'streak' : rr.item === 'bag' ? 'Gameday Bag' : 'rerolls';
     var top = function (ico, kicker, title, line, art) {
       return '<div class="ca-center ca-rr-top">' + (art || '<div class="ca-badge ca-rr-badge" aria-hidden="true">' + ico + '</div>') + '<div class="ca-kicker ca-rr-kicker">' + esc(kicker) + '</div>' +
@@ -5712,6 +5729,9 @@
      ends with a chip ("Save 40%", or "Instant" on the $1 one) held to the foot of the box, so the pair line up and the $1
      box never looks half empty (the user's call, 28 Sep 2026) */
   function rrPackBtn(id, tag, small, save, quick, plain, wide) {
+    // in the shown currency (curWords; A$ as written): a CAST Pass 3-key pack's "each" and saving count its bonus key
+    var gets = /CAST Pass/.test(small || '') && PACKS[id] && PACKS[id].key ? PACKS[id].n + 1 : null;
+    small = curWords(small, id, gets); save = curWords(save, id, gets);
     return '<button type="button" class="ca-rr-pack' + (quick || plain ? '' : ' is-best') + (wide ? ' is-wide' : '') + '" data-rr="' + id + '"><em' + (quick ? ' class="is-quick"' : plain ? ' class="is-plain"' : '') + '>' + tag + '</em>' +
       '<b>' + ((PACKS[id] || {}).short || packLabel(id)) + '</b><span>' + ((PACKS[id] || {}).price || '') + '</span><small>' + small + '</small>' + (save ? '<i class="ca-rr-save' + (quick ? ' is-quick' : '') + '">' + save + '</i>' : '') + '</button>';
   }
@@ -5807,8 +5827,11 @@
   function whole(s) { return s.replace(WHOLE, '$1$2-\u20600'); }
   function keepWhole(root) {
     if (!root || !document.createTreeWalker) return;
-    var w = document.createTreeWalker(root, 4 /* NodeFilter.SHOW_TEXT */), n;
-    while ((n = w.nextNode())) if (/(27|8)-0/.test(n.nodeValue)) n.nodeValue = whole(n.nodeValue);
+    var w = document.createTreeWalker(root, 4 /* NodeFilter.SHOW_TEXT */), n, foot = curLocal() ? curFoot() : null;
+    while ((n = w.nextNode())) {
+      if (/(27|8)-0/.test(n.nodeValue)) n.nodeValue = whole(n.nodeValue);
+      if (foot && n.nodeValue.indexOf('Prices in AUD.') >= 0) n.nodeValue = n.nodeValue.split('Prices in AUD.').join(foot); // local currency (17 Oct 2026)
+    }
   }
   function toast(msg) {
     var t = document.createElement('div');
@@ -5820,7 +5843,7 @@
     setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 4200);
   }
   function callFn(name, data) {
-    return loadSdk().then(function () { return fb.Fn.httpsCallable(fb.fns, name)(data || {}); }).then(function (r) { return r.data; });
+    return loadSdk().then(function () { return fb.Fn.httpsCallable(fb.fns, name)(curData(name, data || {})); }).then(function (r) { return r.data; }); // curData: a checkout's currency
   }
   /* A page load reuses a rank this phone read in the last 5 minutes (11 Oct 2026, cutting page-load server calls). A saved
      game forgets them all (record), so a new score always shows its new rank. Per account */
@@ -7938,6 +7961,86 @@
     // The Streak Restore (one off, from its own pop-up)
     restore: { ico: '&#x1F525;', name: 'Streak Restore', short: 'Restore', price: '$4.99', what: 'Your streak back', kind: 'restore', n: 1, chip: 'One Time Only' }
   };
+  /* ---------------- Local currency (17 Oct 2026, the owner's BUILD IT; js/cast-prices.js has the price lists) ----------------
+     The Shop, the Gameday Bag, CAST Pass and the games' buy buttons show this device's currency: NZ$, US$, £ or K from the
+     phone's own region (never the CAST Profile's country), or what the player picked with the Shop's Change, kept on this
+     device. Every checkout tells the server which (callFn), and the server charges its own price for it. PACKS keeps its
+     A$ words (PACKS_AUD) and takes the local ones when the currency changes (curApply), so everything that reads PACKS
+     shows the same price as the checkout. In A$ every word stays exactly as it was. A page without js/cast-prices.js
+     stays in A$. */
+  var PACKS_AUD = {}, curShown = null, curPickOpen = false;
+  function cpx() { return window.CastPrices || null; }
+  function curNow() { var C = cpx(); return C ? C.current() : 'aud'; }
+  function curLocal() { return curNow() !== 'aud'; }
+  // "$" alone is A$ on an Australian phone showing A$; elsewhere (or beside NZ$ and the like) A$ says so
+  function curA() { var C = cpx(); return !!(C && (C.audAmbiguous() || C.current() !== 'aud')); }
+  function audWords(s) { return curA() && typeof s === 'string' ? s.replace(/(^|[^A-Za-z$])\$(?=\d)/g, '$1A$') : s; }
+  // Cents in the shown currency, as words ("NZ$3.49", "$2.99")
+  function curFmt(c, opts) { var C = cpx(); return C ? C.fmt(c, curNow(), Object.assign({ a: curA() }, opts || {})) : '$' + (c / 100).toFixed(2); }
+  // A pack's price in cents in the shown currency (the A$ table when there are no lists)
+  function curCents(id) { var C = cpx(), c = C ? C.price(id, curNow()) : null; return c == null ? priceCents((PACKS_AUD[id] || PACKS[id] || {}).price) : c; }
+  // The single of a pack's item ("one" for "five"), for its saving
+  function curSingle(id) { var P = PACKS[id]; return P ? Object.keys(PACKS).filter(function (k) { return PACKS[k].kind === P.kind && PACKS[k].key === P.key && PACKS[k].n === 1; })[0] || null : null; }
+  // One of a pack ("70c", "NZ$2.00"), n: how many it gives (a CAST Pass 3-key pack gives 4)
+  function curEach(id, n) { var C = cpx(); return C ? C.each(curCents(id), n || (PACKS[id] || {}).n || 1, curNow(), { a: curA() }) : ''; }
+  function curSave(id, n) { var s = curSingle(id), q = n || (PACKS[id] || {}).n || 1; return s && q > 1 ? Math.max(0, Math.floor((1 - curCents(id) / (curCents(s) * q)) * 100 + 1e-9)) : 0; }
+  // A line of copy with A$ amounts in it, in the shown currency: "Just 60c each" and "Save 40%" for pack id (n: how
+  // many it gives), and "$2.99"-style prices of that pack's item. A$ copy comes back exactly as written
+  function curWords(s, id, n) {
+    if (typeof s !== 'string' || !s || !curLocal() || !cpx() || !PACKS[id]) return audWords(s);
+    var P = PACKS[id];
+    return s.replace(/Just [^<,]+? each/g, function () { return 'Just ' + curEach(id, n) + ' each'; })
+      .replace(/Save \d+%/g, function () { return 'Save ' + curSave(id, n) + '%'; })
+      .replace(/\$\d+\.\d\d/g, function (m) {
+        var k = Object.keys(PACKS).filter(function (x) { return PACKS[x].kind === P.kind && (PACKS_AUD[x] || {}).price === m; })[0];
+        return k ? PACKS[k].price : m;
+      });
+  }
+  // PACKS in the shown currency: price, the "Just 60c each" line and the "Save 40%" chip (once per change)
+  function curApply() {
+    var c = curNow(), a = curA();
+    if (curShown === c + (a ? 'A' : '')) return;
+    Object.keys(PACKS).forEach(function (id) {
+      var P = PACKS[id], A = PACKS_AUD[id] || (PACKS_AUD[id] = { price: P.price, what: P.what, chip: P.chip });
+      P.price = A.price; P.what = A.what; P.chip = A.chip;
+      if (c === 'aud' || cpx().price(id, c) == null) { P.price = audWords(A.price); return; }
+      P.price = curFmt(cpx().price(id, c));
+      if (A.what) P.what = A.what.replace(/^Just [^,]+? each/, function () { return 'Just ' + curEach(id) + ' each'; });
+      if (A.chip && /^Save \d+%$/.test(A.chip)) P.chip = 'Save ' + curSave(id) + '%';
+    });
+    curShown = c + (a ? 'A' : '');
+  }
+  // The Gameday Bag's saving steps in the shown currency ([[from cents, % off], ...], biggest first)
+  function curBagTiers() { var C = cpx(); return C ? C.bagTiers(curNow()) : [[2000, 10], [1000, 5]]; }
+  // "Prices in AUD." at the foot of the Shop and the pay pop-ups, in the shown currency (keepWhole runs it over the text)
+  function curFoot() { var C = cpx(), c = curNow(); return c === 'aud' ? 'Prices in AUD.' : 'Prices in ' + C.NAMES[c][1] + '.'; }
+  // A checkout or a price question carries the currency (the server prices it from its own list)
+  function curData(name, data) {
+    var d = data || {};
+    if (!cpx() || !(name === 'passCheckout' || (name === 'rerollShop' && /^(checkout|bag|restoreCheck)$/.test(d.act || '')))) return d;
+    return Object.assign({}, d, { cur: curNow() });
+  }
+  /* "Prices in NZ$ · Change" at the top of the Shop, so a player can switch if the phone's region guessed wrong. Not on
+     an Australian phone in A$ (nothing to fix there); once changed, it stays so they can change it back */
+  function curLine() {
+    var C = cpx();
+    if (!C || (C.phone().region === 'AU' && curNow() === 'aud' && !curPickOpen)) return '';
+    var c = curNow(), h = '<div class="ca-cur"><p class="ca-cur-line"><span>Prices in ' + C.NAMES[c][0] + '</span> &middot; ' +
+      '<button type="button" class="ca-cur-change" data-ca="cur-pick" aria-expanded="' + (curPickOpen ? 'true' : 'false') + '">Change</button></p>';
+    if (curPickOpen) h += '<div class="ca-cur-pick" role="group" aria-label="Shop Currency">' + C.LIST.map(function (x) {
+      return '<button type="button" class="ca-cur-opt' + (x === c ? ' is-on' : '') + '" data-ca="cur-set" data-v="' + x + '" aria-pressed="' + (x === c ? 'true' : 'false') + '"><b>' + C.NAMES[x][0] + '</b> ' + C.NAMES[x][1] + '</button>';
+    }).join('') + '</div>';
+    return h + '</div>';
+  }
+  function curSet(c) {
+    var C = cpx();
+    if (!C) return;
+    var was = curNow();
+    C.set(c); curPickOpen = false; curApply();
+    if (curNow() !== was) track('shop_currency', { game: CFG.game, from: was, to: curNow(), phone: C.phone().cur });
+    render(); if (rr) rrRender();
+  }
+  curApply();
   // The pack's item: 'reroll', 'remove', 'reveal', 'rib', 'freeze' or 'key'
   function packItem(id) { return ({ rr: 'reroll', rm: 'remove', rv: 'reveal', rib: 'rib', fz: 'freeze', key: 'key', goat: 'goat', toty: 'toty', prem: 'prem', imm: 'imm', wcp: 'wcp', ileg: 'ileg', wch: 'wch', wild: 'wild', cap: 'captain', restore: 'restore' })[(PACKS[id] || {}).kind] || 'reroll'; }
   // "3 Legend Keys", or 4 for a CAST Pass holder (n: what the checkout said); a single key is always 1
@@ -8157,8 +8260,10 @@
       var r = best[q];
       return r ? { cents: r.cents, use: r.use, bonus: r.bonus } : null;
     }
-    function tierOf(sub) { var t = TIERS.filter(function (x) { return sub >= x[0]; })[0]; return t ? t[1] : 0; }
-    function nextTier(sub) { var t = TIERS.slice().reverse().filter(function (x) { return sub < x[0]; })[0]; return t ? { at: t[0], pct: t[1], need: t[0] - sub } : null; }
+    // the shown currency's own steps (local currency, 17 Oct 2026: NZ$12 and NZ$25 in New Zealand; A$10 and A$20 here)
+    function steps() { return typeof curBagTiers === 'function' ? curBagTiers() : TIERS; }
+    function tierOf(sub) { var t = steps().filter(function (x) { return sub >= x[0]; })[0]; return t ? t[1] : 0; }
+    function nextTier(sub) { var t = steps().slice().reverse().filter(function (x) { return sub < x[0]; })[0]; return t ? { at: t[0], pct: t[1], need: t[0] - sub } : null; }
     // lines: [{ id, q }]; packsOf: { id: packs }; isKey(id): its 3-packs bring a CAST Pass member a bonus key
     function quote(lines, packsOf, pass, isKey) {
       var out = lines.map(function (l) {
@@ -8183,7 +8288,10 @@
         return share;
       });
     }
-    return { TIERS: TIERS, PASS_PCT: PASS_PCT, combo: combo, tierOf: tierOf, nextTier: nextTier, quote: quote, offAt: offAt, split: split };
+    var api = { PASS_PCT: PASS_PCT, combo: combo, tierOf: tierOf, nextTier: nextTier, quote: quote, offAt: offAt, split: split };
+    // TIERS: the shown currency's steps each time it is read (the bar's marks, "Savings start at NZ$12")
+    Object.defineProperty(api, 'TIERS', { enumerable: true, get: steps });
+    return api;
   })();
   /* BAG-RULES-END */
 
@@ -8236,10 +8344,11 @@
     Q.passExtra = pass ? Q.passOff : Q.tier ? BAG_RULES.quote(lines, packsOf, true, bagIsKey).passOff : 0;
     return Q;
   }
-  function cents$(c) { return money(c / 100); }
+  // (local currency, 17 Oct 2026: every amount in the shown currency, "NZ$6.99", "£5", "30p"; A$ as before)
+  function cents$(c) { return curLocal() || curA() ? curFmt(c) : money(c / 100); }
   // "$6" for a round amount to add, "$9.05" otherwise; "1c" under a dollar (the nudges)
-  function centsW(c) { return c % 100 ? cents$(c) : '$' + Math.round(c / 100); }
-  function centsC(c) { return c < 100 ? c + 'c' : cents$(c); }
+  function centsW(c) { return c % 100 ? cents$(c) : curLocal() || curA() ? curFmt(c, { whole: true }) : '$' + Math.round(c / 100); }
+  function centsC(c) { var k = curNow(); return c < 100 && k !== 'pgk' ? c + (k === 'gbp' ? 'p' : 'c') : cents$(c); }
   function bagName(l) { var v = VAULT_NAME[l.k] || [l.it[2], l.it[2]]; return l.k === 'fz' ? 'Streak Freeze' : l.k === 'goat' && l.q === 1 ? 'The GOAT' : countName(l.q, v[l.q === 1 ? 0 : 1]); }
   /* The nudge on a row or a bag line: the next amount where a bundle kicks in, when it costs at most one single more
      ("1c more gets you 3 for $1.99"; 4 Rerolls at $3.96: "97c less gets you 5 for $2.99"). -> { q, cents, d } or null */
@@ -8327,6 +8436,7 @@
       : '<button type="button" class="ca-shop-pcard" data-ca="pass-info" data-from="shop">' + '<span class="ca-passchip is-big" aria-hidden="true">PASS</span>' +
         '<span class="ca-shop-pcard-t"><em>CAST Pass</em><b>Double Wildcards, Every Game</b><small>Plus daily keys and extra Gameday Bag savings. From ' + PR().yM + ' a month.</small></span>' +
         '<span class="ca-shop-pcard-go">Join</span></button>';
+    h = curLine() + h; // "Prices in NZ$ · Change" (local currency, 17 Oct 2026)
     h += vaultList();
     if (young) h += '<p class="ca-muted ca-center ca-shop-young">Packs are for players 15 and over. Anything you win still goes in your Vault.</p>';
     // Every item on every game's page, the same order everywhere, but the special ones only where they work (SHOP_ONLY,
@@ -8546,7 +8656,7 @@
   }
   function gaPurchase(id, total, items, coupon) {
     if (!id || !items.length) return;
-    track('purchase', Object.assign({ transaction_id: id, value: total / 100, currency: 'AUD', items: items, game: CFG.game }, coupon ? { coupon: coupon } : {}));
+    track('purchase', Object.assign({ transaction_id: id, value: total / 100, currency: curNow().toUpperCase(), items: items, game: CFG.game }, coupon ? { coupon: coupon } : {})); // in the currency it was paid in (GA converts)
   }
   // A bag, from the server's own quote (its lines in the server's order)
   function gaBag(id, Q) {
@@ -8566,7 +8676,7 @@
     var mine = rr, Q = bagMath();
     if (!Q.lines.length) return;
     rr.stage = 'starting'; rr.pack = null; rrRender();
-    track('bag_checkout', { game: CFG.game, items: Q.lines.length, units: Q.units, value: Q.total / 100, from: from || 'bag' });
+    track('bag_checkout', { game: CFG.game, items: Q.lines.length, units: Q.units, value: Q.total / 100, from: from || 'bag', currency: curNow().toUpperCase() });
     callFn('rerollShop', { act: 'bag', items: Q.lines.map(function (l) { return { id: l.k, q: l.q }; }), site: CFG.game }).then(function (r) {
       if (rr !== mine) return null;
       rr.session = r.id; rr.bagQuote = r.quote || null;
@@ -8590,7 +8700,7 @@
     if (r.keys) kyOwned = r.keys;
     if (typeof r.freezes === 'number') { fzOwned = r.freezes; fzOn = true; }
     rrSeq++; rrFresh = (Q && Q.lines.some(function (l) { return l.id === 'rr'; })) || rrFresh;
-    track('bag_bought', { game: mine.game, items: Q ? Q.lines.length : 0, value: Q ? Q.total / 100 : 0 });
+    track('bag_bought', { game: mine.game, items: Q ? Q.lines.length : 0, value: Q ? Q.total / 100 : 0, currency: Q && Q.cur ? String(Q.cur).toUpperCase() : curNow().toUpperCase() });
     gaBag(mine.session, Q);
     bagPut({});
     rrClose(); rrChanged(); render();
@@ -9376,10 +9486,19 @@
       var tag = s.refunded > 0 || rv ? '<span class="ca-adm-tags is-under">' + (s.refunded > 0 ? '<span class="ca-mod-tag is-refund">' + (s.refunded >= s.paid ? 'Refunded' : 'Part Refunded') + '</span>' : '') + rvTag + '</span>' +
         (rv ? '<small class="ca-adm-rev">' + esc(rv.text) + '</small>' : '') : '';
       return '<li' + (tap ? ' class="is-tap" role="button" tabindex="0" data-ca="adm-find-name" data-n="' + esc(w.n) + '"' : '') + '>' + badge(w && w.c) +
-        '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at)) + '</small>' + tag +
+        '<span class="ca-adm-pn"><b>' + esc(name) + '</b>' + (w ? tick(w.vf) + passTick(w.ps) : '') + '<small>' + (s.kind === 'bag' ? '&#x1F392; ' : '') + esc(s.what + (s.part ? ' (its share)' : '') + (site ? ' · ' + site : '') + ' · ' + joinedAt(s.at) + admPaidIn(s)) + '</small>' + tag +
         (s.kind === 'bag' && !s.part ? admBagLines(s.lines) : '') + '</span>' +
-        (s.refunded >= s.paid ? '<b class="ca-adm-sale is-refunded">' + money(s.paid) + '</b>' : '<b class="ca-adm-sale">' + money(s.paid - s.refunded) + '</b>') + '</li>';
+        (s.refunded >= s.paid ? '<b class="ca-adm-sale is-refunded">' + admA(s) + money(s.paid) + '</b>' : '<b class="ca-adm-sale">' + admA(s) + money(s.paid - s.refunded) + '</b>') + '</li>';
     }).join('') + '</ul>' + (d.more ? '<p class="ca-small">Showing the latest 1000.</p>' : '');
+  }
+  /* A sale charged in another currency (local currency, 17 Oct 2026): its money above is A$ at the rate recorded on the
+     sale, so the totals add up, and the line says what was charged ("Paid NZ$6.99") */
+  function admA(s) { return s && s.local ? 'A' : ''; }
+  function admPaidIn(s) {
+    var L = s && s.local, C = cpx();
+    if (!L) return '';
+    var c = Math.round((L.paid || 0) * 100), w = C && C.ok(L.cur) ? C.fmt(c, L.cur) : String(L.cur || '').toUpperCase() + ' ' + (c / 100).toFixed(2);
+    return ' · Paid ' + w + (L.refunded > 0 ? (L.refunded >= L.paid ? ', refunded' : ', part refunded') : '');
   }
   /* Cancelled CAST Passes (10 Oct 2026, the owner: "see how many are dropping off"): how many in 7 and 30 days and all
      time, the reasons they gave in Stripe, then each one, newest first */
@@ -10449,8 +10568,8 @@
     h += pu && pu.list && pu.list.length ? sec('Purchases', '<ul class="ca-adm-list ca-adm-buys">' + pu.list.map(function (x) {
       var gone = x.refunded >= x.paid && x.paid > 0;
       return '<li><span class="ca-adm-pn"><b>' + (x.kind === 'bag' ? '&#x1F392; ' : '') + esc(x.what) + '</b><small>' + esc(joinedAt(x.at) + (x.site === '27-0' ? ' · 27-0' : x.site === '1000tries' ? ' · 1000TRIES' : '')) +
-        (gone ? ' · Refunded' : x.refunded > 0 ? ' · Part Refunded' : '') + '</small>' + (x.kind === 'bag' ? admBagLines(x.lines) : '') + '</span>' +
-        '<b class="ca-adm-sale' + (gone ? ' is-refunded' : '') + '">' + money(gone ? x.paid : x.paid - x.refunded) + '</b></li>';
+        (gone ? ' · Refunded' : x.refunded > 0 ? ' · Part Refunded' : '') + admPaidIn(x) + '</small>' + (x.kind === 'bag' ? admBagLines(x.lines) : '') + '</span>' +
+        '<b class="ca-adm-sale' + (gone ? ' is-refunded' : '') + '">' + admA(x) + money(gone ? x.paid : x.paid - x.refunded) + '</b></li>';
     }).join('') + '</ul>' + (pu.n > pu.list.length ? '<p class="ca-small">The latest ' + pu.list.length + ' of ' + fmt(pu.n) + '.</p>' : '')) : '';
     // Give Items (the owner only; the server checks it's the owner too): anything from the Vault, a pop-up tells them
     h += mod.owner ? sec('Give Wildcards', giveItemsAdmin(r)) : ''; // Wildcards, not Items, everywhere in Admin (the owner, 15 Oct 2026)
@@ -11493,6 +11612,7 @@
   }
 
   function render() {
+    curApply(); // the Shop's prices in this device's currency (local currency, 17 Oct 2026)
     renderHome(); // the home-page leaderboard follows every change (board loaded, signed in, username set)
     chHome(); // and the challenges card above it
     if (!el || el.hidden) return;
@@ -11987,6 +12107,8 @@
       case 'shop-step': shopStep(t.getAttribute('data-k'), +t.getAttribute('data-d') || 0); break;
       case 'shop-make': shopStep(t.getAttribute('data-k'), 0, +t.getAttribute('data-q') || 0); break;
       case 'shop-cat': shopJump(t.getAttribute('data-v')); break;
+      case 'cur-pick': curPickOpen = !curPickOpen; render(); break; // the Shop's currency (local currency, 17 Oct 2026)
+      case 'cur-set': curSet(t.getAttribute('data-v')); break;
       case 'bag-open': bagOpen(); break;
       case 'bag-go': bagGo(); break;
       case 'vault-toggle': vlOpen = !vlOpen; track('vault_toggle', { game: CFG.game, open: vlOpen ? 1 : 0 }); render(); break;
@@ -12241,6 +12363,7 @@
     freezes: ['Streak Freeze', '&#x1F9CA;', 'freeze', 'Get another for $2.99. You can hold one at a time.'], legend: ['Legend Key', '&#x2B50;', 'key', 'Get 3 more for $4.99.'],
     superstar: ['Superstar Key', '&#x1F31F;', 'key', 'Get 3 more for $4.99.']
   };
+  var UPSELL_PACK = { left: 'five', removes: 'remove5', reveals: 'reveal5', ribs: 'rib3', freezes: 'freeze1', legend: 'legend3', superstar: 'superstar3' }; // its prices in the shown currency
   function upsellCard(box, last) {
     var c = box.parentNode && box.parentNode.querySelector('.ca-ups'), u = upsellLog(), day = sydneyDate(Date.now());
     if (!(upsellNow && last && upsellNow.gid === last.id)) {
@@ -12272,7 +12395,7 @@
     }
     c.hidden = false;
     c.innerHTML = '<span class="ca-ups-ico" aria-hidden="true">' + U[1] + '</span><span class="ca-ups-txt"><b>Loved Your Free ' + U[0] + '?</b><small>' +
-      (upsellNow.push === 'pass' ? 'CAST Pass gives you a Legend Key and a Superstar Key every day, plus 2 of every wildcard. From ' + PR().yM + ' a month.' : U[3]) + '</small></span>' +
+      (upsellNow.push === 'pass' ? 'CAST Pass gives you a Legend Key and a Superstar Key every day, plus 2 of every wildcard. From ' + PR().yM + ' a month.' : curWords(U[3], UPSELL_PACK[upsellNow.kind])) + '</small></span>' +
       '<button type="button" class="ca-ups-btn' + (upsellNow.push === 'pass' ? ' is-pass' : '') + '" data-ups="go">' + (upsellNow.push === 'pass' ? 'See CAST Pass' : 'Get More') + '</button>';
   }
   function wireCta(box) {
@@ -14263,6 +14386,10 @@
   }
 
   window.CastAccount = {
+    /* A pack's price as this device shows it, for the games' own buy buttons ("Buy · NZ$0.99"): price('remove1', '$0.99').
+       The fallback is the game's own A$ words, for a page without the price lists */
+    price: function (pack, fallback) { curApply(); return PACKS[pack] ? PACKS[pack].price : audWords(fallback || ''); },
+    currency: function () { return curNow(); },
     dailyGoes: dailyGoes,
     dailyStarted: dailyStarted,
     dailyAccount: dailyAccount,

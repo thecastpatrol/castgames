@@ -1,6 +1,8 @@
 /* 100000 POINTS render: builds HTML for each screen piece. No game logic here. */
 (function (T) {
   'use strict';
+  // A pack's price as this device shows it (local currency, 17 Oct 2026: "NZ$0.99"; CastAccount.price), else the A$ words
+  function px(pack, aud) { return window.CastAccount && CastAccount.price ? CastAccount.price(pack, aud) : aud; }
 
   var R = T.render = {};
 
@@ -287,20 +289,20 @@
           // Just bought: "N ready", glowing, so they tap it and watch the roll
           var sv = CastAccount.rerollsSaved(), live = !!(S.offer && S.offer.players.length), fresh = !!(sv && CastAccount.rerollsFresh && CastAccount.rerollsFresh());
           return '<button type="button" class="wc wc-reroll wc-buy' + (fresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reroll"' + (live ? '' : ' disabled') + ' title="' + (sv ? 'Use one of your saved rerolls' : 'Buy an extra reroll') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + TILE.reroll + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F504;</span> ' + TILE.reroll + '</span><span class="wc-left">' + (sv ? sv + (fresh ? ' ready' : ' left') : 'Buy &middot; ' + px('one', '$0.99')) + '</span></button>';
         }
         // Remove Player used up: a saved one ("2 saved") or one to buy, the same way (CastAccount.buyRemove)
         if (k === 'tweak' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.canBuyRemove && (CastAccount.canBuyRemove() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.removesSaved() > 0))) {
           var rs = CastAccount.removesSaved(), can = T.filledCount() > 0 && !S.subMode, rfresh = !!(rs && CastAccount.removesFresh && CastAccount.removesFresh());
           return '<button type="button" class="wc wc-tweak wc-buy' + (rfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-remove"' + (can ? '' : ' disabled') + ' title="' + (rs ? 'Use one of your saved Remove Players' : 'Buy an extra Remove Player') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x274C;</span> ' + TILE.tweak + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x274C;</span> ' + TILE.tweak + '</span><span class="wc-left">' + (rs ? rs + (rfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('remove1', '$0.99')) + '</span></button>';
         }
         // Reveal Points used up: a saved one or one to buy, the same way (CastAccount.buyItem('reveal')), while the offer is hidden
         if (k === 'scout' && !left && !S.finished && S.mode.wildcards && window.CastAccount && CastAccount.buyItem && CastAccount.canBuyReroll && (CastAccount.canBuyReroll() || (CastAccount.canUseSaved && CastAccount.canUseSaved() && CastAccount.itemSaved('reveal') > 0))) {
           var vs = CastAccount.itemSaved('reveal'), hidden = !!(S.offer && S.offer.players.some(function (p) { return !R.triesShown(S, p); }));
           var vok = hidden && !S.tweakMode && !S.subMode, vfresh = !!(vs && CastAccount.itemFresh('reveal'));
           return '<button type="button" class="wc wc-scout wc-buy' + (vfresh ? ' ca-rr-fresh' : '') + '" data-action="buy-reveal"' + (vok ? '' : ' disabled') + ' title="' + (vs ? 'Use one of your saved Reveals' : 'Buy an extra Reveal') + '">' +
-            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F440;</span> ' + TILE.scout + '</span><span class="wc-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; $0.99') + '</span></button>';
+            '<span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F440;</span> ' + TILE.scout + '</span><span class="wc-left">' + (vs ? vs + (vfresh ? ' ready' : ' left') : 'Buy &middot; ' + px('reveal1', '$0.99')) + '</span></button>';
         }
         // Rerolls used up: the same button offers one more (YouTube subscribe, or sign in first); never in Hard Mode
         if (k === 'reroll' && !left && !S.finished && !paid && window.CastAccount && CastAccount.bonusState && CastAccount.bonusState() !== 'none') {
@@ -333,7 +335,7 @@
     var ok = T.goatFits() && !S.tweakMode && !S.subMode, room = T.goatRoom();
     return '<button type="button" class="wc wc-goat' + (ok && !buy ? ' is-ready' : '') + (buy ? ' wc-buy' : '') + '" data-action="goat"' + (ok ? '' : ' disabled') +
       ' title="' + (ok ? esc(goatName()) + ', ' + goatGoals() + ' career points, as your next pick' : room ? 'Ready for your next offer' : 'No open spot fits ' + esc(goatName())) + '"><span class="wc-label"><span class="wc-ico" aria-hidden="true">&#x1F410;</span> The GOAT</span>' +
-      '<span class="wc-left">' + (!room ? 'Spot Taken' : buy ? 'Buy &middot; $9.99' : n > 1 ? n + ' left' : 'Ready') + '</span></button>';
+      '<span class="wc-left">' + (!room ? 'Spot Taken' : buy ? 'Buy &middot; ' + px('goat1', '$9.99') : n > 1 ? n + ' left' : 'Ready') + '</span></button>';
   };
   // No Legend Pick tile here (16 Oct 2026, the owner: one Legend Key button). 1000TRIES and 27-0 keep the Immortal Pick
   R.immTile = function () { return ''; };
@@ -351,7 +353,7 @@
       '<div class="sheet-kicker">The GOAT</div>' +
       '<h2 class="sheet-title center">Bring In ' + esc(goatName()) + '?</h2>' +
       '<p class="sheet-sub center">This offer becomes the GOAT and his ' + goatGoals() + ' career points. Pick him and put him in an open spot he plays.</p>' +
-      '<button type="button" class="btn btn-primary btn-block btn-goat" data-action="confirm-goat">&#x1F410; ' + (window.CastAccount && CastAccount.itemSaved && CastAccount.itemSaved('goat') > 0 ? 'Use The GOAT' : 'Get The GOAT &middot; $9.99') + '</button>' +
+      '<button type="button" class="btn btn-primary btn-block btn-goat" data-action="confirm-goat">&#x1F410; ' + (window.CastAccount && CastAccount.itemSaved && CastAccount.itemSaved('goat') > 0 ? 'Use The GOAT' : 'Get The GOAT &middot; ' + px('goat1', '$9.99')) + '</button>' +
       '<button type="button" class="btn btn-quiet btn-block" data-action="close-sheet">Not Now</button>';
   };
   // Substitute: CAST Pass holders get 1 a game; a free profile sees it with the CAST Pass tag (tap for the Pass page)
@@ -386,7 +388,7 @@
     if ((v === 'pass' || v === 'used') && CastAccount.buyKey && CastAccount.canBuyKey && CastAccount.canBuyKey()) {
       var bf = T.legendKeyFits() && !S.tweakMode && !S.subMode;
       return '<button type="button" class="wc wc-key wc-buy" data-action="buy-key"' + (bf ? '' : ' disabled') +
-        ' title="' + (bf ? 'Buy a Legend Key: swap this offer for a Legends Pick' : why) + '">' + lab + '<span class="wc-left">Buy &middot; $1.99</span></button>';
+        ' title="' + (bf ? 'Buy a Legend Key: swap this offer for a Legends Pick' : why) + '">' + lab + '<span class="wc-left">Buy &middot; ' + px('legend1', '$1.99') + '</span></button>';
     }
     if (v === 'pass') return '<button type="button" class="wc wc-key is-pass" data-action="legend-key-pass" title="A Legends Pick when you want it, once a day (CAST Pass)">' + lab + '<span class="wc-left wc-pass-tag">CAST Pass</span></button>';
     if (v === 'used') return '<div class="wc wc-key is-used" title="A new Legend Key arrives at midnight, Sydney time">' + lab + '<span class="wc-left">' + (CastAccount.keyCountdown ? CastAccount.keyCountdown() : 'Back at midnight') + '</span></div>';
@@ -597,7 +599,7 @@
     var gh = over ? GO_HIGHER[(S.ghCopy || 0) % GO_HIGHER.length]() : null;
     var msg = over ? gh[1] : !paid ? 'You still have Remove Player. Take one player out and draft again, or lock in this team.'
       : rs ? 'You have ' + rs + ' saved Remove Player' + (rs === 1 ? '' : 's') + '. Take one player out and draft that spot again, or lock in this team.'
-        : 'Take one player out and draft that spot again for $0.99, or lock in this team.';
+        : 'Take one player out and draft that spot again for ' + px('remove1', '$0.99') + ', or lock in this team.';
     var ghAttr = over ? ' data-gh="1"' : '';
     return '<div class="panel-head"><span class="panel-title">' + (over ? esc(gh[0]) : 'Team Full') + '</span></div>' +
       '<div class="decision' + (over ? ' is-over' : '') + '">' +
@@ -605,7 +607,7 @@
         '<p>' + esc(msg) + '</p>' +
         (S.tweakMode ? R.tweakBanner(S) :
         '<div class="btn-row">' +
-          (paid ? '<button type="button" class="btn btn-decide btn-decide-remove" data-action="buy-remove"' + ghAttr + '><span class="btn-decide-lbl">&#x274C; Remove &middot; ' + (rs ? rs + ' left' : '$0.99') + '</span></button>'
+          (paid ? '<button type="button" class="btn btn-decide btn-decide-remove" data-action="buy-remove"' + ghAttr + '><span class="btn-decide-lbl">&#x274C; Remove &middot; ' + (rs ? rs + ' left' : px('remove1', '$0.99')) + '</span></button>'
             : '<button type="button" class="btn btn-decide btn-decide-remove" data-wildcard="tweak"' + ghAttr + '><span class="btn-decide-lbl">&#x274C; Remove Player</span></button>') +
           '<button type="button" class="btn btn-decide btn-decide-lock" data-action="lock-in" aria-label="Lock in this team' + (over ? ' at ' + T.fmt(total) + ' points' : '') + (S.lockHold ? '' : ' (locks in automatically in ' + T.LOCK_SECS + ' seconds)') + '">' +
             '<span class="lock-fill" aria-hidden="true"></span>' +

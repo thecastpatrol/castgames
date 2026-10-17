@@ -580,7 +580,11 @@
     if (S.awaitingLock && !S.tweakMode && !S.lockHold) startLockTimer(S); else stopLockTimer();
     if (!S.fm) {
       if (fmSpinFor === S && fmSpinning) { /* mid-spin: the reels keep turning in place */ }
-      else if (fmSpinFor !== S) { fmSpinFor = S; panel.innerHTML = R.formationOffer(S, reduceMotion ? 'fade' : 'spin'); if (!reduceMotion) fmSpin(S); }
+      else if (fmSpinFor !== S) {
+        // Reduced motion asked for now (the setting can change after the page loads): the plain fade, no reel
+        var still = reduceMotion || !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        fmSpinFor = S; panel.innerHTML = R.formationOffer(S, still ? 'fade' : 'spin'); if (!still) fmSpin(S);
+      }
       else panel.innerHTML = R.formationOffer(S);
     }
     else if (S.awaitingLock) panel.innerHTML = R.decision(S);
@@ -784,52 +788,108 @@
 
   /* The formation spin (17 Oct 2026, the owner: "Make sure the formation spin is in so it's like another element of
      chance"). The three are already decided (T.formationOffer, seeded, so a Daily or a friend's challenge lands everyone
-     on the same three); this is theatre only, like Team Spin's reel. Each card flicks through the ten names and their
-     little pitches, slowing down, then they land one after another (top to bottom) with a small bounce. Nothing is
-     saved or sent; the cards stay disabled until the last one lands. Reduced motion: a plain fade (R.formationOffer) */
-  var fmSpinFor = null, fmSpinning = false;
-  var FM_STOP = [950, 1350, 1750]; // ms: when each card lands
+     on the same three); this is theatre only, like Team Spin's reel. Nothing is saved or sent; the cards stay disabled
+     until the last one lands. Reduced motion: a plain fade (R.formationOffer).
+     Smoother (17 Oct 2026, the owner: "the spinning of formations are a bit jittery and should be smoother"): each card
+     is a real reel now. Its faces are laid out once, before the first frame (R.fmReel: other formations at random, the
+     seeded one at the end), and one transform animation per card moves the strip on the GPU (translate3d on a
+     will-change layer, run by the compositor): an ease-out that slows onto the seeded formation exactly at FM_STOP, a
+     touch past it, then a short settle back. No layout reads, no DOM swaps and no images while it turns. One
+     requestAnimationFrame loop plays the ticks and lands each card on time; when its reel has settled the real card
+     underneath (the same face, laid out identically) takes over */
+  var fmSpinFor = null, fmSpinning = false, fmSpinSeq = 0;
+  var FM_STOP = [950, 1350, 1750]; // ms: when each card lands (the last one unlocks the three, as before)
+  var FM_SPEED = 20, FM_OVER = 0.08, FM_SETTLE = 240; // faces a second at the start, the overshoot (of a face), its settle (ms)
   function fmSpin(S) {
-    var cards = Array.prototype.slice.call($('offerPanel').querySelectorAll('.fm-card'));
+    var box = $('offerPanel').querySelector('.fm-cards'), cards = box ? Array.prototype.slice.call(box.querySelectorAll('.fm-card')) : [];
     if (!cards.length) return;
     fmSpinning = true;
-    var ids = T.FORMATION_IDS, t0 = Date.now(), left = cards.length, lastTick = 0;
-    var swap = function (card, id) {
-      card.querySelector('.fm-name').textContent = id;
-      var old = card.querySelector('.fm-pitch'), tmp = document.createElement('span');
-      tmp.innerHTML = R.miniPitch(id);
-      old.parentNode.replaceChild(tmp.firstChild, old);
+    var seq = ++fmSpinSeq, ids = T.FORMATION_IDS, t0 = performance.now(), left = cards.length, lastTick = -1e9, raf = 0, primed = false, begun = false, unlocked = false;
+    var other = function (a, b) { var id; do { id = ids[Math.floor(Math.random() * ids.length)]; } while (id === a || id === b); return id; };
+    var at = function (r, t) { // faces still to pass, t ms into its run (0 = the seeded one in place; below 0 in the overshoot)
+      if (t < r.run) return -FM_OVER + (r.faces + FM_OVER) * Math.pow(1 - Math.max(0, t) / r.run, 3);
+      return -FM_OVER * (1 + Math.cos(Math.PI * Math.min(1, (t - r.run) / FM_SETTLE))) / 2;
+    };
+    var y = function (x) { return 'translate3d(0,' + (-(1 + x) * 100).toFixed(3) + '%,0)'; }; // % of one face
+    // The faces, laid out now, in the same task as the panel: the first frame lays out and paints them all once
+    var reels = cards.map(function (card, n) {
+      var real = card.getAttribute('data-fm'), stopAt = FM_STOP[n] || FM_STOP[FM_STOP.length - 1] + 400 * (n - 2);
+      // The same speed on every card at the start (an ease-out cubic starts at 3 times its average), whole faces only
+      var faces = Math.max(4, Math.round(FM_SPEED * stopAt / 3000 - FM_OVER)), list = [], i;
+      // Never the seeded one on the way (so it never seems to land twice), never the same face twice in a row
+      for (i = 0; i < faces; i++) list.unshift(other(real, list[0]));
+      list = [other(real, null), real].concat(list);
+      card.insertAdjacentHTML('beforeend', R.fmReel(list, n));
+      card.classList.add('has-reel');
+      var reel = card.querySelector('.fm-reel'), strip = reel.firstChild;
+      strip.style.transform = y(faces); // parked on its first face until the first frame
+      return { card: card, reel: reel, strip: strip, stopAt: stopAt, faces: faces, k: 0, anim: null, begin: t0, run: stopAt };
+    });
+    /* The reels start moving on the frame after the one that first shows them. That first frame (the whole draft screen)
+       lays out the faces and paints each strip onto its GPU layer, parked on its first face; starting any earlier, the
+       first frame drawn would already be faces down the strip that are not painted yet. Each run is shortened by however
+       long that took, so every card still arrives exactly FM_STOP after the draft started (on a very slow first frame a
+       run keeps at least 70% of its time, so it never whips round, and lands that much later) */
+    var start = function (now, moving) {
+      begun = true;
+      reels.forEach(function (r) {
+        r.begin = now; r.run = Math.max(0.7 * r.stopAt, r.stopAt - (now - t0));
+        if (!moving || !r.strip.animate) return;
+        try {
+          r.anim = r.strip.animate([
+            { transform: y(r.faces), easing: 'cubic-bezier(.33,1,.68,1)' }, // ease-out cubic: fast, then slowing onto it
+            { transform: y(-FM_OVER), offset: r.run / (r.run + FM_SETTLE), easing: 'ease-in-out' },
+            { transform: y(0) }
+          ], { duration: r.run + FM_SETTLE, fill: 'both' });
+          r.anim.startTime = now; // this frame, on the same clock as the landings below
+        } catch (e) { r.anim = null; }
+      });
     };
     var done = function () {
-      fmSpinning = false;
+      if (seq === fmSpinSeq) fmSpinning = false;
       if (T.state() !== S || S.fm) return;
-      var box = $('offerPanel').querySelector('.fm-cards');
-      if (box) { box.classList.remove('is-spinning'); box.removeAttribute('aria-busy'); Array.prototype.forEach.call(box.querySelectorAll('.fm-card'), function (c) { c.disabled = false; }); }
+      if (box.isConnected) { box.classList.remove('is-spinning'); box.removeAttribute('aria-busy'); reels.forEach(function (r) { r.card.disabled = false; }); }
     };
-    cards.forEach(function (card, n) {
-      var real = card.getAttribute('data-fm'), stopAt = FM_STOP[n] || FM_STOP[FM_STOP.length - 1] + 400 * (n - 2), shown = real;
-      var turn = function () {
-        if (T.state() !== S || S.fm || !card.isConnected) { if (!--left) done(); return; }
-        var t = Date.now() - t0;
-        if (t >= stopAt) {
-          swap(card, real);
-          card.classList.remove('is-spinning'); card.classList.add('is-landed');
-          if (card.animate) card.animate([{ transform: 'translateY(-7px) scale(1.015)' }, { transform: 'translateY(3px)', offset: .55 }, { transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.2,.8,.3,1.2)' });
-          sfx.land();
-          if (!--left) done();
-          return;
+    var settle = function (r) { // the real card takes over from its reel
+      if (r.out) return;
+      r.out = true;
+      if (r.anim) { try { r.anim.cancel(); } catch (e) { /* gone */ } }
+      if (r.reel.parentNode) r.reel.parentNode.removeChild(r.reel);
+      r.card.classList.remove('has-reel', 'is-spinning');
+    };
+    var frame = function (now) {
+      raf = 0;
+      if (seq !== fmSpinSeq) return; // a newer spin has the panel
+      if (!primed) { primed = true; raf = requestAnimationFrame(frame); return; } // the first frame paints them parked
+      if (!begun) start(now, true);
+      var gone = T.state() !== S || !!S.fm, live = 0;
+      reels.forEach(function (r) {
+        if (r.out) return;
+        if (gone || !r.card.isConnected) { if (!r.landed) { r.landed = true; left--; } settle(r); return; }
+        var t = now - r.begin, x = at(r, t);
+        if (!r.anim) r.strip.style.transform = y(x); // no Web Animations: this loop moves it
+        if (!r.landed) {
+          // A tick as each face passes the middle; the landing sound when the seeded one arrives
+          var k = Math.min(r.faces, Math.floor(r.faces - x + 0.5));
+          if (k > r.k) { r.k = k; if (now - lastTick > 55) { lastTick = now; sfx.tick(); } }
+          if (t >= r.run) { r.landed = true; left--; r.card.classList.add('is-landed'); sfx.land(); }
         }
-        // The next name: never the one showing (or the real one too early, so it never seems to land twice)
-        var next; do { next = ids[Math.floor(Math.random() * ids.length)]; } while (next === shown || (stopAt - t > 260 && next === real));
-        shown = next; swap(card, next);
-        var side = card.querySelector('.fm-side'), pitch = card.querySelector('.fm-pitch');
-        if (side.animate) [side, pitch].forEach(function (el) { el.animate([{ transform: 'translateY(-38%)', opacity: .35 }, { transform: 'none', opacity: 1 }], { duration: 60, easing: 'ease-out' }); });
-        if (Date.now() - lastTick > 55) { lastTick = Date.now(); sfx.tick(); }
-        var k = Math.min(1, t / stopAt);
-        setTimeout(turn, 45 + Math.round(210 * k * k * k)); // slows down towards its stop
-      };
-      turn();
-    });
+        if (r.landed && t >= r.run + FM_SETTLE) settle(r);
+        if (!r.out) live++;
+      });
+      if (!left && !unlocked) { unlocked = true; done(); }
+      if (live) raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    // A tab in the background gets no frames: land and settle them all anyway, a moment after the last should have
+    var last = reels[reels.length - 1].stopAt + FM_SETTLE;
+    setTimeout(function () {
+      if (seq !== fmSpinSeq || reels.every(function (r) { return r.out; })) return;
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      primed = true;
+      if (!begun) start(t0, false);
+      frame(t0 + last + 1);
+    }, last + 600);
   }
 
   /* Legends Pick / Legend Pick: a short pack-opening moment before the three greats appear.

@@ -4358,3 +4358,18 @@ button.ca-vl-strip { cursor: pointer; -webkit-tap-highlight-color: transparent; 
 .ca-spot-meta .ca-spot-cap { padding: 0 4px; border-radius: 4px; background: #c2410c; color: #fff; font-weight: 900; }
 /* Each SC POINTS KING board's #1 wears the crown */
 .ca-lb-crown { font-size: 1.05em; line-height: 1; }
+/* Local currency (17 Oct 2026): "Prices in NZ$ · Change" at the top of the Shop, and its five currencies as pills. The
+   chosen one gets the white highlight (gold stays for CAST Pass) */
+.ca-cur { margin: 0 0 12px; }
+.ca-cur-line { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 0; color: #a2a2b8; font: 700 12.5px/1.3 Inter, sans-serif; }
+.ca-cur-line > span { color: #fff; font-weight: 800; white-space: nowrap; }
+.ca-cur-change { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 11px; box-sizing: border-box; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .06); color: #fff; font: 800 12px/1.15 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-cur-change[aria-expanded="true"] { border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .1); }
+.ca-cur-pick { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 10px 0 0; }
+.ca-cur-opt { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 6px 12px; box-sizing: border-box; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .04); color: #d8d8e6; font: 700 12.5px/1.15 Inter, sans-serif; white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-cur-opt b { color: #fff; font-weight: 900; }
+.ca-cur-opt.is-on { border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .12); color: #fff; }
+.ca-cur-change:focus-visible, .ca-cur-opt:focus-visible { outline: 2px solid rgba(255, 255, 255, .7); outline-offset: 2px; }
+@media (hover: hover) { .ca-cur-change:hover, .ca-cur-opt:hover { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .1); } }
