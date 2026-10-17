@@ -4004,3 +4004,76 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-ib-add { margin-top: 8px; }
 @media (max-width: 480px) { .ca-ib-stb { padding: 10px 3px; } .ca-ib-stb small { font-size: 9.5px; letter-spacing: 0; } }
 @media (max-width: 380px) { .ca-ib-st { gap: 4px; } .ca-ib-stb b { font-size: 20px; } .ca-ib-stb small { font-size: 9px; } }
+
+/* ---------------- The Gameday Bag (17 Oct 2026) ----------------
+   In green, the colour of a saving (gold stays for CAST Pass: only the Pass member's 5% line and its nudge use it).
+   Add to Bag sits under each Shop card's own Buy buttons; the Gameday Bag button is pinned to the foot of the Shop; the
+   bag opens in the Stripe pop-up's sheet with its Checkout pinned at the bottom */
+.ca-bag-add { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 40px; margin: 10px 0 0; padding: 8px 12px; box-sizing: border-box;
+  border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, .22); background: rgba(255, 255, 255, .04); color: #fff; font: 800 13px/1.2 Inter, sans-serif;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color .15s, background .15s; }
+.ca-bag-add span { font-size: 15px; line-height: 1; }
+.ca-bag-add.is-in { border-color: rgba(74, 222, 128, .6); background: rgba(74, 222, 128, .1); color: #bbf7d0; }
+.ca-bag-add:disabled { opacity: .45; cursor: default; }
+@media (hover: hover) { .ca-bag-add:hover:not(:disabled) { border-color: #fff; } .ca-bag-add.is-in:hover:not(:disabled) { border-color: #4ade80; } }
+.ca-bag-tip { display: flex; align-items: flex-start; gap: 9px; margin: 0 0 14px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(74, 222, 128, .35);
+  background: rgba(74, 222, 128, .07); color: #dcfce7; font: 600 12.5px/1.45 Inter, sans-serif; text-wrap: pretty; }
+.ca-bag-tip > span:first-child { flex: none; font-size: 18px; line-height: 1.1; }
+.ca-bag-tip b { color: #fff; font-weight: 900; }
+.ca-bag-tip em { font-style: normal; font-weight: 800; color: #f1c073; }
+/* The pinned button: stuck to the foot of the full-screen Shop while it scrolls (the panel's bottom padding is 28px) */
+.ca-bag-dock { position: sticky; z-index: 4; bottom: calc(-28px - env(safe-area-inset-bottom, 0px)); margin: 16px 0 calc(-28px - env(safe-area-inset-bottom, 0px));
+  padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, rgba(15, 13, 29, 0), #0f0d1d 28%); }
+.ca-bag-btn { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 9px 14px; box-sizing: border-box; border-radius: 16px; border: 1.5px solid #4ade80;
+  background: linear-gradient(135deg, #22c55e, #15803d); color: #fff; font: inherit; text-align: left; cursor: pointer; box-shadow: 0 8px 26px rgba(0, 0, 0, .45), 0 0 18px rgba(74, 222, 128, .25);
+  -webkit-tap-highlight-color: transparent; }
+.ca-bag-ico { flex: none; font-size: 24px; line-height: 1; }
+.ca-bag-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.ca-bag-t b { font: 900 15px/1.15 Inter, sans-serif; letter-spacing: .2px; }
+.ca-bag-t small { font: 700 12px/1.3 Inter, sans-serif; color: #dcfce7; text-wrap: pretty; }
+.ca-bag-btn strong { flex: none; font: 900 20px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; }
+.ca-bag-btn .ca-shop-go { color: #dcfce7; }
+.ca-bag-btn:active { transform: scale(.99); }
+/* The bag's sheet */
+.ca-rr.is-bag .ca-rr-panel { border-color: rgba(74, 222, 128, .65); box-shadow: 0 0 0 4px rgba(74, 222, 128, .1), 0 -10px 40px rgba(74, 222, 128, .14); }
+.ca-rr.is-bag .ca-rr-kicker { color: #86efac; }
+.ca-rr.is-bag .ca-rr-badge { border-color: #4ade80 !important; box-shadow: 0 0 26px rgba(74, 222, 128, .35) !important; }
+.ca-bag-list { list-style: none; margin: 16px 0 12px; padding: 0; display: grid; gap: 8px; }
+.ca-bag-row { --it: 255, 255, 255; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "i n p" "i s q"; align-items: center; gap: 4px 10px;
+  padding: 10px 12px; border-radius: 13px; border: 1px solid rgba(var(--it), .3); background: linear-gradient(160deg, rgba(var(--it), .1), rgba(255, 255, 255, .02)); }
+.ca-bag-row.is-rr { --it: 45, 212, 191; } .ca-bag-row.is-rm { --it: 244, 114, 182; } .ca-bag-row.is-rv { --it: 167, 139, 250; } .ca-bag-row.is-key { --it: 251, 191, 36; }
+.ca-bag-row.is-rib { --it: 251, 146, 60; } .ca-bag-row.is-fz { --it: 56, 189, 248; } .ca-bag-row.is-goat { --it: 226, 232, 240; } .ca-bag-row.is-wcp { --it: 14, 165, 233; }
+.ca-bag-row.is-toty, .ca-bag-row.is-prem { --it: 191, 219, 254; } .ca-bag-row.is-imm, .ca-bag-row.is-ileg, .ca-bag-row.is-wch { --it: 196, 181, 253; }
+.ca-bag-ri { grid-area: i; align-self: start; font-size: 22px; line-height: 1.2; text-align: center; }
+.ca-bag-rn { grid-area: n; min-width: 0; font: 900 14.5px/1.25 Inter, sans-serif; color: #fff; text-wrap: balance; }
+.ca-bag-rp { grid-area: p; font: 900 16px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; text-align: right; }
+.ca-bag-rs { grid-area: s; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font: 700 11.5px/1.35 Inter, sans-serif; color: #b9c3d6; }
+.ca-bag-rs.is-pass { color: #f1c073; }
+.ca-bag-nudge { min-height: 26px; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(74, 222, 128, .55); background: rgba(74, 222, 128, .12); color: #bbf7d0;
+  font: 800 11px/1.2 Inter, sans-serif; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+.ca-bag-q { grid-area: q; display: inline-flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); background: rgba(0, 0, 0, .25); }
+.ca-bag-st { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .08); color: #fff; font: 900 17px/1 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-bag-st:disabled { opacity: .35; cursor: default; }
+.ca-bag-q output { min-width: 28px; text-align: center; font: 900 15px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; }
+@media (hover: hover) { .ca-bag-st:hover:not(:disabled) { background: rgba(255, 255, 255, .18); } .ca-bag-nudge:hover { border-color: #4ade80; } .ca-bag-btn:hover { border-color: #bbf7d0; } }
+.ca-bag-sum { margin: 4px 0 10px; padding: 10px 12px; border-radius: 13px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .03); display: grid; gap: 6px; }
+.ca-bag-sum p { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0; font: 700 13px/1.3 Inter, sans-serif; color: #d6d6e4; }
+.ca-bag-sum p b { font-variant-numeric: tabular-nums; color: #fff; white-space: nowrap; }
+.ca-bag-sum p.is-off, .ca-bag-sum p.is-off b { color: #86efac; }
+.ca-bag-sum p.is-pass, .ca-bag-sum p.is-pass b { color: #f1c073; }
+.ca-bag-sum p.is-total { padding-top: 6px; border-top: 1px solid var(--ca-line); font: 900 15px/1.2 Inter, sans-serif; color: #fff; }
+.ca-bag-sum p.is-total b { font-size: 20px; }
+.ca-bag-sum .ca-bag-save { justify-content: center; margin-top: 2px; padding: 7px 10px; border-radius: 999px; background: rgba(74, 222, 128, .14); color: #bbf7d0; font: 900 13.5px/1.2 Inter, sans-serif; }
+.ca-bag-next { margin: 4px 0 0; text-align: center; font: 700 12.5px/1.4 Inter, sans-serif; color: #b9c3d6; text-wrap: balance; }
+.ca-bag-sum .ca-bag-next { display: block; }
+.ca-bag-passup { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; margin: 4px 0 10px; padding: 9px 12px; border-radius: 12px;
+  border: 1.5px solid rgba(241, 192, 115, .55); background: linear-gradient(135deg, rgba(241, 192, 115, .12), rgba(241, 192, 115, .03)); color: #f6e7c8;
+  font: 700 12.5px/1.35 Inter, sans-serif; text-align: left; cursor: pointer; }
+.ca-bag-passup .ca-vf { flex: none; width: 24px; height: 24px; margin: 0; }
+.ca-bag-passup > span:not(.ca-shop-go) { flex: 1; min-width: 0; text-wrap: pretty; }
+.ca-bag-go { width: 100%; min-height: 50px; padding: 12px 16px; border-radius: 999px; border: 0; background: #22c55e; color: #052e16;
+  font: 900 15px/1.2 Inter, sans-serif; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .ca-bag-go:hover { background: #4ade80; } }
+.ca-bag-go:active { transform: scale(.99); }
+.ca-bag-back { margin-top: 12px; }
+@media (prefers-reduced-motion: reduce) { .ca-bag-go:active, .ca-bag-btn:active { transform: none; } .ca-bag-add { transition: none; } }

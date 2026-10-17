@@ -228,7 +228,7 @@
       '<textarea class="ctc-field" id="ctcMsg" maxlength="' + MAX + '" rows="5" placeholder="' + (bug ? 'What went wrong? The more detail, the quicker we can fix it.' : 'How can we help?') + '">' + esc(st.msg) + '</textarea>' +
       '<span class="ctc-count" id="ctcCount" aria-live="polite">' + countText() + '</span>' +
       (bug ? '<label class="ctc-lbl" for="ctcDoing">What Were You Doing? <small>(optional)</small></label>' +
-        '<input class="ctc-field" id="ctcDoing" type="text" maxlength="' + DOING + '" autocomplete="off" placeholder="For example: my third pick in 1000+" value="' + esc(st.doing) + '">' : '') +
+        '<input class="ctc-field" id="ctcDoing" type="text" maxlength="' + DOING + '" autocomplete="off" placeholder="For example: my third pick of a draft" value="' + esc(st.doing) + '">' : '') +
       '<label class="ctc-lbl" for="ctcEmail">Your Email</label>' +
       (w && w.email ? '<input class="ctc-field" id="ctcEmail" type="email" readonly value="' + esc(w.email) + '"><p class="ctc-note">We&rsquo;ll reply to the email on your CAST Profile.</p>'
         : '<input class="ctc-field" id="ctcEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@example.com" value="' + esc(st.email) + '"><p class="ctc-note">So we can reply. We only use it for this message.</p>') +
@@ -312,7 +312,10 @@
       track('contact_sent', { type: data.type });
       render();
       var p = el.querySelector('.ctc-panel'); if (p) p.focus();
-    }, function (err) { st.busy = false; st.err = errText(err); render(); });
+    }, function (err) {
+      st.busy = false; st.err = errText(err); render();
+      var e = el.querySelector('.ctc-err'); if (e && e.scrollIntoView) e.scrollIntoView({ block: 'nearest' }); // it sits under the fold on a phone
+    });
   }
   function track(ev, p) {
     try { if (window.CAST_ACCOUNT && typeof window.CAST_ACCOUNT.track === 'function') window.CAST_ACCOUNT.track(ev, Object.assign({ game: site() }, p)); else if (typeof window.gtag === 'function') window.gtag('event', ev, Object.assign({ game: site() }, p)); } catch (e) { /* analytics blocked */ }
