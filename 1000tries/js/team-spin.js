@@ -17,7 +17,7 @@
   T.spinSquad = function (club, year, pos) {
     var S = T.state();
     return T.players
-      .filter(function (p) { return !S.used[p.id] && T.playedFor(p, club, year) && (pos ? T.canFill(p, pos) : T.fitsEmpty(p)); })
+      .filter(function (p) { return !S.used[p.id] && !T.goatOut(p) && T.playedFor(p, club, year) && (pos ? T.canFill(p, pos) : T.fitsEmpty(p)); })
       .sort(function (a, b) { return a.name.localeCompare(b.name); }); // alphabetical so order leaks nothing
   };
 
@@ -53,7 +53,7 @@
     S.firstOfferDone = true;
     if (first && R() < T.FIRST_STAR_CHANCE) {
       var stars = T.players.filter(function (p) {
-        return !S.used[p.id] && p.tries_1998_plus >= T.starCut() && (pos ? T.canFill(p, pos) : T.fitsEmpty(p));
+        return !S.used[p.id] && !T.goatOut(p) && p.tries_1998_plus >= T.starCut() && (pos ? T.canFill(p, pos) : T.fitsEmpty(p));
       });
       if (stars.length) {
         var star = stars[Math.floor(R() * stars.length)];

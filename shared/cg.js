@@ -34,6 +34,10 @@
       line: 'Draft 13 NRL players and reach 1000 career tries.', short: 'Draft 13 to 1000 tries', daily: true, stats: '1000tries' },
     { id: 'six-again', sport: 'nrl', name: 'Six Again', path: 'six-again/', logo: '', mark: '&#x25B2;&#x25BC;', c1: '#0f4a4a', c2: '#0a1a1f', status: 'live', launch: 'ou', badge: 'New',
       line: 'Over or under? Call it before the clock runs out.', short: 'Over or under, vs the clock' },
+    // NRL Bingo (17 Oct 2026): 1000TRIES' card of 20 clubs, its own page like Six Again's. Shows once the owner presses
+    // Launch ('bingo') or on a device that opened his private link. dplay: its Daily's link (?play=bingo-daily)
+    { id: 'nrl-bingo', sport: 'nrl', name: 'NRL Bingo', path: 'nrl-bingo/', logo: '', mark: '&#x2705;', c1: '#2b3a12', c2: '#0c1206', status: 'live', launch: 'bingo', badge: 'New',
+      line: 'A player comes up: tap a club he played for. Fill all 20 tiles.', short: 'Tap his clubs, fill the card', daily: true, dplay: 'bingo-daily' },
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', logo: 'assets/logos/4000goals.png', c1: '#5a1620', c2: '#1c0b10', status: 'live',
       line: 'Draft an AFL 18 and reach 4000 career goals.', short: 'Draft an 18 to 4000 goals', daily: true, stats: '4000goals' },
     // 25000 RUNS (15 Oct 2026): the Big Bash game, a BBL XI to 25000 career runs
@@ -80,6 +84,7 @@
     try { if (A && A.isLaunched && A.isLaunched(key)) return true; } catch (e) { /* not ready */ }
     if (key === 'ou' && A && A.ouOn) { try { return !!A.ouOn(); } catch (e) { return false; } }
     if (key === 'po' && A && A.poOn) { try { return !!A.poOn(); } catch (e) { return false; } }
+    if (key === 'bingo' && A && A.bingoOn) { try { return !!A.bingoOn(); } catch (e) { return false; } }
     return false;
   }
   // The games a player sees right now

@@ -3,7 +3,7 @@
 <head>
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=db11cb78e243">
+<link rel="stylesheet" href="../shared/cg.css?v=7e48fa75e243">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -43,11 +43,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=0dc1e55c">
+<link rel="stylesheet" href="css/main.css?v=e1e13ba0">
 </head>
 <body>
 <script>window.CG_GAME = '1000tries'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
-<script src="../shared/cg.js?v=db11cb78e243"></script>
+<script src="../shared/cg.js?v=7e48fa75e243"></script>
 
 
 <header class="site-header">
@@ -94,13 +94,14 @@
     <p>Wildcards come with a free CAST Profile: one of each per game, or two of each with CAST Pass. Guests see them locked until they sign in. A free CAST Profile also adds an extra reroll every game. Exactly 1000 is Hard Mode: no free wildcards for anyone, CAST Pass included, but you can use one of each a game from your Vault or buy it on the spot.</p>
 
     <h2>Legends and Immortals</h2>
-    <p>Now and then in <strong>1000+</strong>, one offer is a <strong>Legends Pick</strong>: three greats of the game, most of them from before the NRL era. Rarer still is the <strong>Immortal Pick</strong>: three of Rugby League&rsquo;s Immortals. You get one at most per game, and a player who has fallen well behind late in a game is sometimes thrown one as a lifeline.</p>
+    <p>Now and then in <strong>1000+</strong>, one offer is a <strong>Legends Pick</strong>: three greats of the game, most of them from before the NRL era. Rarer still is the <strong>Immortal Pick</strong>: three of Rugby League&rsquo;s Immortals. You get one at most per game, and it can turn up late in a game, just when you need it most.</p>
     <p>Legends and Immortals keep their tries hidden like everyone else, and they count their <strong>whole premiership careers</strong> (NSWRL, ARL, Super League and NRL). They only appear in 1000+.</p>
 
     <h2>The Rules</h2>
     <ul>
       <li>Every player can only be picked once.</li>
       <li>Picks are final, unless you use Remove Player.</li>
+      <li>You have 20 seconds to pick, or the first option goes in. That&rsquo;s in 1000+ and the Daily Challenge. Exactly 1000 gives you 15 seconds, and the other modes have no clock. The clock waits while the Shop or a pop-up is open.</li>
       <li>Your running total and how far you are from 1000 are always on screen.</li>
       <li>Offers are random, but players with more NRL tries turn up a little more often.</li>
       <li>Your result shows the luck of your draw: how many tries were on offer, against an average game.</li>
@@ -108,6 +109,9 @@
       <li>No bonuses, no chemistry, no tricks. Just tries.</li>
     </ul>
 
+    <h2 data-cast-bingo hidden>NRL Bingo</h2>
+    <p data-cast-bingo hidden>A card of 20 tiles: the 17 NRL clubs, <strong>State of Origin</strong> (New South Wales or Queensland), the <strong>Kangaroos</strong> and the <strong>Kiwis</strong>. A player comes up with his position and career years: tap a tile he played for and it fills with his name. A wrong tap costs one of your 3 lives, you have 3 free skips, and a player who fits none of your open tiles is passed over by himself. Fill all 20 for a <strong>Full House</strong>. Boards rank the most tiles, then the quickest time. <strong>Daily Bingo</strong> has the same players for everyone, one go a day; <strong>Free Play</strong> is a new order every card.</p>
+    <p data-cast-bingo hidden>The pool is every NRL player since 1998 with 40 or more NRL games, plus anyone who has played in the NRL since 2022. A club tile counts his seasons there as that club (the Titans from 2007, the Dolphins from 2023, the Wests Tigers from 2000, the Dragons from 1999; Northern Eagles seasons are not Sea Eagles ones), and a mid-season move counts for both clubs. Origin, Kangaroos (Australia) and Kiwis (New Zealand) count any State of Origin game or Test he played, from <a href="https://www.rugbyleagueproject.org/" target="_blank" rel="noopener">Rugby League Project</a>, checked against Wikipedia&rsquo;s lists.</p>
     <h2>Where the Numbers Come From</h2>
     <p>Tries count <strong>NRL premiership games from 1998 to now</strong>. The 1997 Super League and ARL seasons are not included, and neither are Origin, Tests or other representative games. Legends and Immortals in 1000+ are the one exception: they count their whole premiership careers. The player list matches the 27-0 player pool (apart from a handful of greats who now appear only as Legends), and only players with a confirmed try count are in the game, including players who never scored.</p>
     <p><strong>NRLW 250+</strong> counts <strong>NRLW premiership tries from 2018 to now</strong>, including finals. Women&rsquo;s Origin, Tests, All Stars and one-off exhibition games are not included. NRLW data comes from <a href="https://www.rugbyleagueproject.org/" target="_blank" rel="noopener">Rugby League Project</a>, with the top tryscorers checked against official club pages. Players who have only ever played off the bench take the position they have played in other competitions.</p>
@@ -147,6 +151,10 @@ document.querySelectorAll('.doc p, .doc li, .doc strong, .footer-legal').forEach
   try { var c = JSON.parse(localStorage.getItem('cast_launch_v1') || 'null'); on = on || !!(c && Array.isArray(c.on) && c.on.indexOf('wc') >= 0); } catch (e) { /* storage blocked */ }
   Array.prototype.forEach.call(document.querySelectorAll('[data-cast-wc]'), function (n) { n.hidden = !on; });
   Array.prototype.forEach.call(document.querySelectorAll('[data-cast-nowc]'), function (n) { n.hidden = on; });
+  // NRL Bingo (17 Oct 2026): the same, once it's launched or on a device that opened the owner's private link
+  var bg = false;
+  try { var b = JSON.parse(localStorage.getItem('cast_launch_v1') || 'null'); bg = !!(b && Array.isArray(b.on) && b.on.indexOf('bingo') >= 0) || localStorage.getItem('cast_bingo_preview') === '1'; } catch (e) { /* storage blocked */ }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-cast-bingo]'), function (n) { n.hidden = !bg; });
 })();
 </script>
 <script src="js/analytics.js?v=20260924.29"></script>

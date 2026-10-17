@@ -477,41 +477,79 @@
     }, 1000);
   }
 
-  /* Exactly 4000's shot clock (2 Oct 2026, the owner's call: players were looking up goals online to land on 1000):
-     T.EXACT_SECS a pick. It starts with each new offer (a Reroll or an Legend Pick's three start it again), keeps
-     running if the tab is hidden, and waits while a wildcard plays out, Remove or Substitute is armed, or a pop-up (a
-     purchase) is open. Time up: the player you tapped goes in, or one from the offer at random. A bought Legend Pick's
-     three go back to your own offer first, so a Pick is never used for you. Never in Quick Draft. GA: exact_timeout */
+  /* The pick clock (17 Oct 2026, the owner: no looking players up mid-draft; the same in every CAST draft game, from
+     1000TRIES). Exactly's shot clock (2 Oct 2026) came first. Every pick in the main mode, Exactly and the Daily Challenge
+     is timed: T.PICK_SECS, or Exactly's stricter T.EXACT_SECS. A new offer starts it again (a Reroll, a Remove, a Legends
+     Pick or a bought Legend Pick's three once their reveal has closed). It runs on the wall clock, so a hidden
+     tab or another app never stops it: back on the page, a clock that ran out picks at once. It waits while a wildcard
+     plays out, while Remove or Substitute is armed and while any pop-up is open (the Shop, a confirm, a purchase, the
+     Daily Challenge), so buying never costs a pick, and while it waits the offer cards are covered, so a pause is never
+     time to look anyone up. The phone's spot chooser is part of the pick, so it never waits. Time up: the player you
+     tapped goes in, else the first card that fits, in the first open spot he plays. A bought Legend Pick's three go
+     back to your own offer first, so a Pick is never used for you. Never Team Spin or Quick Draft. A draft brought
+     back keeps its seconds. GA: exact_timeout, pick_timeout */
+  T.PICK_SECS = 20;
   T.EXACT_SECS = 15;
+  T.CLOCK_MODES = ['plus', 'exact', 'daily'];
+  T.clockMode = function (S) { return !!S && !!S.mode && T.CLOCK_MODES.indexOf(S.mode.id) >= 0 && S.mode.source === 'roll' && !S.qd; };
+  T.pickSecs = function (S) { return S && S.mode && S.mode.id === 'exact' ? T.EXACT_SECS : T.PICK_SECS; };
   var clock = { offer: null, end: 0, last: 0, iv: null };
-  function clockOn(S) { return !!S && S.mode.id === 'exact' && !S.finished && !S.qd && !S.awaitingLock && !!S.offer && S.offer.players.length > 0 && document.body.getAttribute('data-screen') === 'draft'; }
-  function clockHeld(S) { return busy || S.tweakMode || S.subMode || document.documentElement.classList.contains('ca-open') || !!document.querySelector('.pack-intro, .wc-burst'); }
-  function clockStart() { if (!clock.iv && clockOn(T.state())) { clock.last = Date.now(); clock.iv = setInterval(clockTick, 200); clockTick(); } }
+  function clockOn(S) { return T.clockMode(S) && !S.finished && !S.awaitingLock && !!S.offer && S.offer.players.length > 0 && document.body.getAttribute('data-screen') === 'draft'; }
+  // A pop-up over the draft: a sheet that isn't the spot chooser, a CAST panel (the Shop, a purchase), the Daily Challenge, a reveal
+  function popUpOpen() {
+    var sh = $('sheet');
+    if (sh && !sh.hidden && !$('sheetBody').querySelector('[data-place]')) return true;
+    if (document.documentElement.classList.contains('ca-open') || document.querySelector('.pack-intro')) return true;
+    return Array.prototype.some.call(document.querySelectorAll('[role="dialog"], [aria-modal="true"]'), function (d) {
+      return d.id !== 'sheetBody' && !d.hidden && d.getClientRects().length > 0;
+    });
+  }
+  // Waiting with the cards covered (a long wait) or just held (a wildcard's moment, a Pick going through)
+  function clockPaused(S) { return !!(S.tweakMode || S.subMode) || popUpOpen(); }
+  function clockHeld(S) { return busy || !!document.querySelector('.wc-burst, .cg') || clockPaused(S); } // .cg: the GOAT moment (js/cast-celebrate.js)
+  function clockStart() {
+    if (!clockOn(T.state())) { clockCover(false); return; }
+    if (!clock.iv) { clock.last = Date.now(); clock.iv = setInterval(clockTick, 200); }
+    clockTick(); // a redraw shows the time left straight away
+  }
   function clockStop() { if (clock.iv) { clearInterval(clock.iv); clock.iv = null; } }
+  function clockCover(on) { var p = $('offerPanel'); if (p) p.classList.toggle('is-clock-paused', !!on); }
+  // What the offer panel draws (js/render.js): the seconds a pick gets and the time left on this offer
+  T.clockView = function (S) {
+    var secs = T.pickSecs(S), left = clock.offer === S.offer && clock.iv ? Math.max(0, clock.end - Date.now()) : secs * 1000;
+    return { secs: secs, left: left, paused: clock.offer === S.offer && clockPaused(S) };
+  };
   function clockTick() {
     var S = T.state(), now = Date.now();
-    if (!clockOn(S)) { clockStop(); clock.offer = null; return; }
-    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : T.EXACT_SECS * 1000); resumeClock = null; } // a draft brought back keeps its seconds
+    if (!clockOn(S)) { clockStop(); clock.offer = null; clockCover(false); return; }
+    var secs = T.pickSecs(S);
+    if (clock.offer !== S.offer) { clock.offer = S.offer; clock.end = now + (resumeClock != null ? Math.max(0, resumeClock) : secs * 1000); resumeClock = null; } // a draft brought back keeps its seconds
     else if (clockHeld(S)) clock.end += now - clock.last; // waiting: the clock doesn't move
     clock.last = now;
-    var left = Math.max(0, clock.end - now), el = document.querySelector('#offerPanel [data-pick-clock]');
+    var left = Math.max(0, clock.end - now), paused = clockPaused(S), el = document.querySelector('#offerPanel [data-pick-clock]');
+    clockCover(paused);
     if (el) {
-      var bar = el.querySelector('i'), secs = el.querySelector('b');
-      if (bar) bar.style.width = (left / (T.EXACT_SECS * 10)).toFixed(1) + '%';
-      if (secs) secs.textContent = Math.ceil(left / 1000) + 's';
-      el.classList.toggle('is-low', left <= 4000);
+      var bar = el.querySelector('i'), num = el.querySelector('b');
+      if (bar) bar.style.width = Math.min(100, left / (secs * 10)).toFixed(1) + '%';
+      if (num) num.textContent = Math.ceil(left / 1000) + 's';
+      el.classList.toggle('is-low', left <= 5000 && !paused);
+      el.classList.toggle('is-paused', paused);
     }
-    if (left <= 0 && !clockHeld(S)) timeUp(S);
+    if (left <= 0 && !clockHeld(S) && !document.hidden) timeUp(S); // off the page: it picks the moment they're back
   }
+  // Back on the page (another tab, another app): a clock that ran out while they were away picks at once
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && clock.iv) clockTick(); });
+  window.addEventListener('pageshow', function () { if (clock.iv) clockTick(); });
   function timeUp(S) {
-    clockStop(); clock.offer = null;
-    if (S.offer.paid && !S.offer.taken) T.keepOffer(); // never spend an Legend Pick for them
-    var list = S.offer && S.offer.players.filter(function (p) { return T.openCodesFor(p).length > 0; }) || [];
-    var tapped = placingId || ($('sheet') && !$('sheet').hidden && $('sheetBody').getAttribute('data-player')) || null;
-    var p = tapped && T.byId[tapped] && list.indexOf(T.byId[tapped]) >= 0 ? T.byId[tapped] : list[Math.floor(Math.random() * list.length)];
-    if (!p) return;
-    T.track('exact_timeout', { picks: S.picks, tapped: tapped ? 'yes' : 'no' });
+    clockStop(); clock.offer = null; clockCover(false);
+    if (S.offer && S.offer.paid && !S.offer.taken) T.keepOffer(); // never spend a Legend Pick for them
+    var list = S.offer ? S.offer.players.filter(function (p) { return !S.used[p.id] && T.openCodesFor(p).length > 0; }) : [];
+    var chooser = $('sheet') && !$('sheet').hidden && $('sheetBody').querySelector('[data-place]');
+    var tapped = placingId || (chooser && $('sheetBody').getAttribute('data-player')) || null;
+    var p = tapped && T.byId[tapped] && list.indexOf(T.byId[tapped]) >= 0 ? T.byId[tapped] : list[0];
     closeSheet(); setPlacing(null);
+    if (!p) { nextOffer(); return; } // nobody on it fits an open spot: a fresh offer
+    T.track(S.mode.id === 'exact' ? 'exact_timeout' : 'pick_timeout', { mode: S.mode.name, picks: S.picks, tapped: tapped ? 'yes' : 'no' });
     toast('\u23F1\uFE0F Time\u2019s up: ' + p.name + ' goes in');
     place(p.id, T.openCodesFor(p)[0]);
   }
@@ -544,7 +582,7 @@
     applyPlacing();
     applySquadSearch();
     watchSquadScroll();
-    clockStart(); // Exactly 4000: the shot clock
+    clockStart(); // the pick clock
     keepDraft(); // Save the draft in progress
   }
 
@@ -750,11 +788,13 @@
       var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
       pool.forEach(side);
       var reels = three.map(function (p) { var k = T.lastClub(p); side(k); return { nation: k, name: p.name, sub: T.positionsOf(p).join('/') }; });
+      // The GOAT, when a free Legends Pick deals him, is named as the GOAT under his tile (17 Oct 2026, the owner)
+      reels.forEach(function (r, i) { if (T.isGoat(three[i])) r.nationName = '\uD83D\uDC10 The GOAT'; });
       busy = true;
       sfx.win();
       try {
-        CI.reveal({ reels: reels, sides: sides, pool: pool, kicker: paid ? 'Your Legend Pick' : lifeline ? 'Lifeline: A Long Way to Go' : imm ? 'Legend Pick' : 'Legends Pick',
-          title: imm ? 'Three of the Game\u2019s Legends' : 'Three Greats of the Game', tone: imm ? '' : 'bronze', done: function () { busy = false; done(); } });
+        CI.reveal({ reels: reels, sides: sides, pool: pool, kicker: paid ? 'Your Legend Pick' : imm ? 'Legend Pick' : '\u2B50 Legends Pick',
+          title: imm ? 'Three of the Game\u2019s Legends' : 'You\u2019ve Unlocked a Legend!', sub: imm ? '' : 'Pick one of three all-time greats', tone: imm ? '' : 'bronze', done: function () { busy = false; done(); } });
       } catch (e) { busy = false; done(); }
       return;
     }
@@ -764,9 +804,9 @@
     el.setAttribute('role', 'status');
     el.innerHTML = '<div class="pi-rays" aria-hidden="true"></div>' +
       '<div class="pi-card" aria-hidden="true"><div class="pi-card-face"><span class="pi-emblem">' + (imm ? '&#x1F410;' : '&#x2B50;') + '</span><span class="pi-card-word">' + (imm ? 'IMMORTAL' : 'LEGENDS') + '</span></div></div>' +
-      '<div class="pi-text"><span class="pi-kicker">' + (paid ? 'Your Legend Pick' : lifeline ? 'Lifeline: a long way to go' : imm ? 'Rarest pull in the game' : 'Rare pull') + '</span>' +
-      '<span class="pi-title">' + (imm ? 'Legend Pick' : 'Legends Pick') + '</span>' +
-      '<span class="pi-sub">' + (imm ? 'Three of the game&rsquo;s Legends. Pick one.' : 'Choose from some of the great goalkickers from before 1990.') + '</span></div>';
+      '<div class="pi-text"><span class="pi-kicker">' + (paid ? 'Your Legend Pick' : imm ? 'Rarest pull in the game' : '&#x2B50; Legends Pick') + '</span>' +
+      '<span class="pi-title">' + (imm ? 'Legend Pick' : 'You&rsquo;ve Unlocked a Legend!') + '</span>' +
+      '<span class="pi-sub">' + (imm ? 'Three of the game&rsquo;s Legends. Pick one.' : 'Pick one of three all-time greats') + '</span></div>';
     document.body.appendChild(el);
     sfx.win();
     var finished = false;
@@ -900,6 +940,8 @@
     // Show the reveal before moving on
     $('offerPanel').innerHTML = R.reveal(p, T.slotClub(S.slots[idx]));
     renderChrome(idx);
+    // The GOAT item's card lands: a gold ring and a burst of goats on his spot (js/cast-celebrate.js)
+    if (src === 'G' && window.CastCelebrate && window.CastCelebrate.goatLand) window.CastCelebrate.goatLand(document.querySelector('.slot[data-slot="' + idx + '"]'), { tone: tone });
     setTimeout(function () {
       if (T.state() !== S) return; // restarted mid-reveal
       busy = false;
@@ -1083,6 +1125,7 @@
     if (!S || !S.tweakMode || busy) return;
     var p = T.applyTweak(idx);
     if (!p) return;
+    clock.offer = null; // the pick clock starts again for the offer that comes back
     sfx.wild();
     // Stronger wildcards: the next offer quietly beats him (js/wildcards.js applyTweak). A mechanic only, never in the copy
     if (!wildcardBurst('removed', 'tweak', p.name + ' is back in the pool')) toast(p.name + ' is back in the pool');
@@ -1614,7 +1657,9 @@
           if (T.state() !== gs || !T.useGoat()) return;
           T.track('goat_used', { mode: gs.mode.name });
           renderDraft();
-          toast('\uD83D\uDC10 The GOAT is in: ' + T.fmt((T.goatPlayer() || {}).tries_1998_plus || 0) + ' AFL goals');
+          // The GOAT moment (js/cast-celebrate.js, 17 Oct 2026): the reel locks on him, then the toast
+          var said = function () { toast('\uD83D\uDC10 The GOAT is in: ' + T.fmt((T.goatPlayer() || {}).tries_1998_plus || 0) + ' AFL goals'); };
+          if (window.CastCelebrate && window.CastCelebrate.goat) window.CastCelebrate.goat({ tone: tone, unit: 'AFL goals', done: said }); else said();
         });
         break;
       }
@@ -1663,7 +1708,7 @@
     // the same keys choose among the spots he can go into. Never while typing, in a pop-up or a sheet
     var tg = e.target || {}, typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || '') || tg.isContentEditable;
     if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !typing && document.body.getAttribute('data-screen') === 'draft' &&
-        $('sheet').hidden && !document.documentElement.classList.contains('ca-open')) {
+        $('sheet').hidden && !document.documentElement.classList.contains('ca-open') && !$('offerPanel').classList.contains('is-clock-paused')) {
       var keyList = placingId ? document.querySelectorAll('#pitch .slot.is-target') : document.querySelectorAll('.offer-cards [data-pick]:not([disabled]), .srow[data-pick]:not([disabled])');
       var keyHit = Array.prototype.filter.call(keyList, function (x) { return x.offsetParent !== null; })[+e.key - 1];
       if (keyHit) { e.preventDefault(); keyHit.click(); return; }
