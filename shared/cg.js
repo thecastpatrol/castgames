@@ -124,6 +124,25 @@
     var barH = function () { document.documentElement.style.setProperty('--cg-bar-h', el.offsetHeight + 'px'); };
     barH(); window.addEventListener('resize', barH); window.addEventListener('load', barH);
     var A = acct(); if (A && A.refresh) { try { A.refresh(); } catch (e) { /* later */ } }
+    if (HERE) midGame(el);
+  }
+  /* Mid-game the Play tab is the game's New Game (17 Oct 2026, the owner: on castgames there was no button mid-game for a
+     new game or another mode). It opens the game's own pop-up (Play Again, Change Mode or Keep Playing) */
+  function midGame(el) {
+    var tab = el.querySelector('.cg-tab[data-cg="play"]'), was = null, queued = false;
+    if (!tab) return;
+    var check = function () {
+      queued = false;
+      var hook = window.CG_PLAY, mid = false;
+      try { mid = typeof hook === 'function' && hook(true) === true; } catch (e) { mid = false; }
+      if (mid === was) return;
+      was = mid;
+      tab.innerHTML = mid ? '<i aria-hidden="true">&#x1F504;</i><span>New Game</span>' : '<i aria-hidden="true">&#x1F3AE;</i><span>Play</span>';
+      tab.classList.toggle('is-new', mid);
+    };
+    var soon = function () { if (!queued) { queued = true; setTimeout(check, 60); } };
+    new MutationObserver(soon).observe(document.body, { attributes: true, attributeFilter: ['data-screen', 'class'], subtree: true });
+    check();
   }
   function onBar(e) {
     var b = e.target.closest('[data-cg]');
