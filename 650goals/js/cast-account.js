@@ -84,10 +84,11 @@
       labels: { plays: 'Runs', best: 'Best Streak', wins: null, top: null },
       unit: 'in a row'
     },
-    // NRL Bingo (17 Oct 2026): its own stats (tiles filled, Full Houses). bingo: hidden until launched or previewed
+    // NRL Bingo (17 Oct 2026): its own stats (tiles filled, Full Houses). bingo: hidden until launched or previewed. One
+    // endless game (the owner, 17 Oct 2026): bingod is a card saved on the Daily Bingo before it was dropped
     '1000tries-bingo': {
       name: 'NRL Bingo', tile: 'NRL Bingo', site: '1000tries', url: 'https://castgames.com.au/1000tries/', bingo: true,
-      modes: { bingo: 'Free Play', bingod: 'Daily Bingo' },
+      modes: { bingo: 'NRL Bingo', bingod: 'NRL Bingo' },
       results: { full: 'Full House', out: 'Out' },
       wins: ['full'],
       labels: { plays: 'Boards', best: 'Most Tiles', wins: 'Full Houses', top: null },
@@ -2412,14 +2413,16 @@
       ['ou100', '&#x1F4AF;', 'Centurion', 'Call 100 in a row in HIGHER OR LOWER: NRL', 'ou'],
       ['ouice', '&#x1F9CA;', 'Ice Cold', '8 in a row in HIGHER OR LOWER: NRL, every call under 3 seconds', 'ou'],
       ['ouclean', '&#x1F48E;', 'Clean Run', '15 in a row in HIGHER OR LOWER: NRL with no Run It Back or Reroll', 'ou'],
-      // NRL Bingo (17 Oct 2026): shown once it's launched (or previewed), like HIGHER OR LOWER: NRL's
-      ['bg15', '&#x1F3AF;', 'Three Quarters', 'Fill 15 tiles on an NRL Bingo card', 'bingo'],
-      ['bgfull', '&#x1F389;', 'Full House', 'Fill all 20 tiles in NRL Bingo', 'bingo'],
+      // NRL Bingo (17 Oct 2026): shown once it's launched (or previewed), like HIGHER OR LOWER: NRL's. The 4 x 6 card (24 tiles, the
+      // owner, 17 Oct 2026): three quarters is 18 tiles, and Rep Round is all seven rep tiles. Daily Full House is retired
+      // with the Daily Bingo (anyone who earned it while it was hidden keeps it)
+      ['bg15', '&#x1F3AF;', 'Three Quarters', 'Fill 18 tiles on an NRL Bingo card', 'bingo'],
+      ['bgfull', '&#x1F389;', 'Full House', 'Fill all 24 tiles in NRL Bingo', 'bingo'],
       ['bgclean', '&#x2764;&#xFE0F;', 'No Lives Lost', 'A Full House in NRL Bingo without losing a life', 'bingo'],
       ['bgspeed', '&#x26A1;', 'Speed Bingo', 'A Full House in NRL Bingo in under 2 minutes', 'bingo'],
-      ['bgrep', '&#x1F3C5;', 'Rep Round', 'Fill Origin, Kangaroos and Kiwis with players on one NRL Bingo card', 'bingo'],
+      ['bgrep', '&#x1F3C5;', 'Rep Round', 'Fill all seven rep tiles with players on one NRL Bingo card', 'bingo'],
       ['bgnohelp', '&#x1F9E0;', 'No Help Needed', 'A Full House in NRL Bingo with no Wild Tile, Reveal, Reroll or Run It Back', 'bingo'],
-      ['bgdaily', '&#x1F4C5;', 'Daily Full House', 'A Full House on the Daily Bingo', 'bingo']
+      ['bgdaily', '&#x1F4C5;', 'Daily Full House', 'A Full House on the Daily Bingo', 'retired']
     ],
     // 4000 GOALS (12 Oct 2026): 1000TRIES' set in AFL terms, at the same distance from the target (4000+, +10%, +20%, the
     // last 1% under, a photo finish within 36). AFLW_T: the AFLW mode's target. No Immortals (one group of Legends), no
@@ -3051,7 +3054,7 @@
   var TROPHY_FIRST = {
     '1000tries': ['exact', 'legs11', 'read', 'hit1200', 'odds', 'clubleg', 'zero', 'oldschool', 'fresh', 'hit1100', 'photo', 'timetravel', 'nowild', 'spin',
       'immortal', 'goats', 'family', 'colours', 'lucky', 'nrlw300', 'aj', 'hit1000', 'legend', 'settled', 'namesakes', 'marathon', 'owl', 'nrlw250', 'soclose',
-      'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10', 'bgspeed', 'bgnohelp', 'bgclean', 'bgdaily', 'bgrep', 'bgfull', 'bg15'],
+      'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10', 'bgspeed', 'bgnohelp', 'bgclean', 'bgrep', 'bgfull', 'bg15'],
     bigbash: ['exact', 'legs11', 'read', 'hit1200', 'bb_dayone', 'bb_toporder', 'pure', 'bb_sydney', 'bb_melbourne', 'odds', 'clubleg', 'zero', 'oldschool', 'fresh',
       'hit1100', 'bb_gloves', 'bb_league', 'photo', 'timetravel', 'nowild', 'spin', 'legendary', 'bb_tail', 'bb_core', 'goats', 'bb_machine', 'lucky', 'hit1000', 'dailywin',
       'legend', 'settled', 'namesakes', 'marathon', 'owl', 'soclose', 'bench', 'ou100', 'ou50', 'ou30', 'ouclean', 'ou20', 'ouice', 'ou10'],
@@ -3438,11 +3441,11 @@
     '1000tries:ou100': 'One hundred in a row in HIGHER OR LOWER: NRL. A Centurion.',
     '1000tries:ouice': 'Eight right calls in a row, every one in under 3 seconds.',
     '1000tries:ouclean': 'Fifteen in a row with no Run It Back and no Reroll.',
-    '1000tries:bg15': 'You filled 15 tiles on an NRL Bingo card.',
-    '1000tries:bgfull': 'You filled all 20 tiles in NRL Bingo. Full House!',
+    '1000tries:bg15': 'You filled 18 tiles on an NRL Bingo card.',
+    '1000tries:bgfull': 'You filled all 24 tiles in NRL Bingo. Full House!',
     '1000tries:bgclean': 'A Full House in NRL Bingo with all 3 lives left.',
     '1000tries:bgspeed': 'A Full House in NRL Bingo in under 2 minutes.',
-    '1000tries:bgrep': 'You filled Origin, Kangaroos and Kiwis with players on one NRL Bingo card.',
+    '1000tries:bgrep': 'You filled all seven rep tiles with players on one NRL Bingo card.',
     '1000tries:bgnohelp': 'A Full House in NRL Bingo with no Wild Tile, Reveal, Reroll or Run It Back.',
     '1000tries:bgdaily': 'You got a Full House on the Daily Bingo.',
     '1000tries:hit1100': 'Your 13 reached 1100 NRL tries.',
@@ -4385,9 +4388,8 @@
     { id: '1000oucaps', label: 'HIGHER OR LOWER: NRL \u00B7 Test Caps', short: 'Test Caps', game: '1000tries', periods: ['today', 'week', 'all'], ou: true, sub: '1000ou' },
     { id: '1000outt', label: 'HIGHER OR LOWER: NRL \u00B7 Test Tries', short: 'Test Tries', game: '1000tries', periods: ['today', 'week', 'all'], ou: true, sub: '1000ou' },
     { id: '1000ounrlw', label: 'HIGHER OR LOWER: NRL \u00B7 NRLW Tries', short: 'NRLW Tries', game: '1000tries', periods: ['today', 'week', 'all'], ou: true, sub: '1000ou' },
-    // NRL Bingo (17 Oct 2026): Free Play (tiles, then time) and the Daily under the one chip. bingo: hidden until launched
+    // NRL Bingo (17 Oct 2026): one board, tiles then time (no Daily Bingo: the owner, the same day). bingo: hidden until launched
     { id: 'bgfree', label: 'NRL Bingo', short: 'NRL Bingo', tiny: 'Bingo', game: '1000tries', periods: ['today', 'week', 'all'], bingo: true },
-    { id: 'bgdaily', label: 'NRL Bingo: Daily Bingo', short: 'Daily Bingo', game: '1000tries', periods: ['today', 'yesterday'], bingo: true, sub: 'bgfree' },
     // 27-0 best records by mode (most wins, then fewest losses, then squad rating). Classic keeps the original id.
     // World Cup 8-0: the stage reached and wins (s = stage x 10 + wins), then points difference (t)
     { id: '270wc', label: '27-0 World Cup', short: 'World Cup', tiny: 'World Cup', game: '27-0', wc: true, periods: ['today', 'week', 'all'] },
@@ -4482,7 +4484,7 @@
   var RECORD_NOTE = { '270best': 'Your best Classic Mode season.', '270pack': 'Your best Pack Mode season.', '270hard': 'Your best Hard Mode season: no ratings, and paid wildcards only.' };
   // Not on a board yet: a red box the same size as "You are #23 of 30", saying what to play to get on it. Tapping it starts
   // that mode: this site's game gets a cast:play event (each game starts its own mode), the other game opens with ?play=.
-  var PLAY_TO_RANK = { bgfree: 'Play NRL Bingo', bgdaily: 'Play today&rsquo;s Daily Bingo', nbaou: 'Play HIGHER OR LOWER: NBA', nbaoureb: 'Play HIGHER OR LOWER: NBA', nbaouast: 'Play HIGHER OR LOWER: NBA', eplou: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eploua: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eplouap: 'Play HIGHER OR LOWER: PREMIER LEAGUE', nflou: 'Play HIGHER OR LOWER: NFL', rcou: 'Play HIGHER OR LOWER: RACING', rcoub: 'Play HIGHER OR LOWER: RACING', rcouh: 'Play HIGHER OR LOWER: RACING', tsou: 'Play HIGHER OR LOWER: CRICKET', tsouw: 'Play HIGHER OR LOWER: CRICKET', bbou: 'Play HIGHER OR LOWER: CRICKET', bbouw: 'Play HIGHER OR LOWER: CRICKET', '4000ou': 'Play HIGHER OR LOWER: AFL', '4000ougames': 'Play HIGHER OR LOWER: AFL', '4000ouaflw': 'Play HIGHER OR LOWER: AFL', '1000ou': 'Play HIGHER OR LOWER: NRL', '1000oucaps': 'Play HIGHER OR LOWER: NRL', '1000outt': 'Play HIGHER OR LOWER: NRL', '1000ounrlw': 'Play HIGHER OR LOWER: NRL', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
+  var PLAY_TO_RANK = { bgfree: 'Play NRL Bingo', nbaou: 'Play HIGHER OR LOWER: NBA', nbaoureb: 'Play HIGHER OR LOWER: NBA', nbaouast: 'Play HIGHER OR LOWER: NBA', eplou: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eploua: 'Play HIGHER OR LOWER: PREMIER LEAGUE', eplouap: 'Play HIGHER OR LOWER: PREMIER LEAGUE', nflou: 'Play HIGHER OR LOWER: NFL', rcou: 'Play HIGHER OR LOWER: RACING', rcoub: 'Play HIGHER OR LOWER: RACING', rcouh: 'Play HIGHER OR LOWER: RACING', tsou: 'Play HIGHER OR LOWER: CRICKET', tsouw: 'Play HIGHER OR LOWER: CRICKET', bbou: 'Play HIGHER OR LOWER: CRICKET', bbouw: 'Play HIGHER OR LOWER: CRICKET', '4000ou': 'Play HIGHER OR LOWER: AFL', '4000ougames': 'Play HIGHER OR LOWER: AFL', '4000ouaflw': 'Play HIGHER OR LOWER: AFL', '1000ou': 'Play HIGHER OR LOWER: NRL', '1000oucaps': 'Play HIGHER OR LOWER: NRL', '1000outt': 'Play HIGHER OR LOWER: NRL', '1000ounrlw': 'Play HIGHER OR LOWER: NRL', '1000wc': 'Play World Cup 200+', '270wc': 'Play World Cup 8-0', '1000daily': 'Play today&rsquo;s Daily', '1000plus': 'Play 1000+', '1000exact': 'Play Exactly 1000', '1000spin': 'Play Team Spin', nrlw: 'Play NRLW 250+',
     '270best': 'Play Classic Mode', '270pack': 'Play Pack Mode', '270hard': 'Play Hard Mode', '270perfect': 'Go 27-0 to get on', '270daily': 'Play today&rsquo;s Daily',
     '4000plus': 'Play 4000+', '4000exact': 'Play Exactly 4000', '4000spin': 'Play Team Spin', aflw: 'Play AFLW 750+', '4000daily': 'Play today&rsquo;s Daily',
     bbplus: 'Play 25000+', bbexact: 'Play Exactly 25000', bbspin: 'Play Team Spin', bbdaily: 'Play today&rsquo;s Daily',
@@ -4492,7 +4494,7 @@
     eplplus: 'Play 650+', eplexact: 'Play Exactly 650', eplspin: 'Play Team Spin', epldaily: 'Play today&rsquo;s Daily',
     nbaplus: 'Play 100000+', nbaexact: 'Play Exactly 100000', nbaspin: 'Play Team Spin', nbadaily: 'Play today&rsquo;s Daily',
     scplus: 'Play SC POINTS KING', scdaily: 'Play today&rsquo;s Daily' };
-  var PLAY_MODE = { bgfree: ['1000tries', 'bingo'], bgdaily: ['1000tries', 'bingod'], '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
+  var PLAY_MODE = { bgfree: ['1000tries', 'bingo'], '4000ou': ['4000goals', 'ou'], '4000ougames': ['4000goals', 'ou'], '4000ouaflw': ['4000goals', 'ou'], '1000ou': ['1000tries', 'ou'], '1000oucaps': ['1000tries', 'ou'], '1000outt': ['1000tries', 'ou'], '1000ounrlw': ['1000tries', 'ou'], '1000wc': ['1000tries', 'wc'], '270wc': ['27-0', 'wc'], '1000daily': ['1000tries', 'daily'], '1000plus': ['1000tries', 'plus'], '1000exact': ['1000tries', 'exact'], '1000spin': ['1000tries', 'spin'], nrlw: ['1000tries', 'nrlw'],
     '270best': ['27-0', 'classic'], '270pack': ['27-0', 'pack'], '270hard': ['27-0', 'hard'], '270perfect': ['27-0', 'classic'], '270daily': ['27-0', 'daily'],
     '4000plus': ['4000goals', 'plus'], '4000exact': ['4000goals', 'exact'], '4000spin': ['4000goals', 'spin'], aflw: ['4000goals', 'aflw'], '4000daily': ['4000goals', 'daily'],
     bbplus: ['bigbash', 'plus'], bbexact: ['bigbash', 'exact'], bbspin: ['bigbash', 'spin'], bbdaily: ['bigbash', 'daily'], bbou: ['bigbash', 'ou'], bbouw: ['bigbash', 'ou'],
@@ -4531,7 +4533,7 @@
       if (status !== 'signed-in' || !profile) return { who: 'guest' };
       if (!profile.username) return { who: 'noname' };
       if (profile.lbHidden) return { who: 'hidden' };
-      var id = boardId(base === '1000daily' || base === '4000daily' || base === 'bbdaily' || base === 'tsdaily' || base === 'nfldaily' || base === 'rcdaily' || base === 'epldaily' || base === 'nbadaily' || base === 'bgdaily' || base === 'scdaily' ? base : '270daily', 'today', ''), have = lb.rank[id];
+      var id = boardId(base === '1000daily' || base === '4000daily' || base === 'bbdaily' || base === 'tsdaily' || base === 'nfldaily' || base === 'rcdaily' || base === 'epldaily' || base === 'nbadaily' || base === 'scdaily' ? base : '270daily', 'today', ''), have = lb.rank[id];
       if (have && !have.loading && !have.failed && Date.now() - have.at < 30000) return { who: 'player', rank: have.rank || 0, players: have.players || 0 };
       return callFn('myRank', { board: id }).then(function (r) {
         lb.rank[id] = { at: Date.now(), rank: r.rank, players: r.players, s: r.s, t: r.t, g: r.g || null };
@@ -4564,7 +4566,7 @@
   function boardId(b, period, club) {
     var id;
     if (b === 'streak') id = 'streak_all';
-    else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'nbadaily' || b === 'bgdaily' || b === 'scdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
+    else if (b === '270daily' || b === '1000daily' || b === '4000daily' || b === 'bbdaily' || b === 'tsdaily' || b === 'nfldaily' || b === 'rcdaily' || b === 'epldaily' || b === 'nbadaily' || b === 'scdaily') id = b + '_' + sydneyDate(Date.now() - (period === 'yesterday' ? 864e5 : 0));
     else id = b + '_' + (period === 'week' ? sydneyWeek(Date.now()) : period === 'today' ? sydneyDate(Date.now()) : 'all');
     return club ? id + '~' + club : id;
   }
@@ -4600,7 +4602,7 @@
   function boardForGame(g) {
     if (!g) return null;
     if (g.game === '1000tries' && g.mode === 'ou') return [{ caps: '1000oucaps', ttries: '1000outt', nrlw: '1000ounrlw' }[g.d && g.d.cat] || '1000ou', 'today'];
-    if (g.game === '1000tries' && (g.mode === 'bingo' || g.mode === 'bingod')) return [g.mode === 'bingod' ? 'bgdaily' : 'bgfree', 'today']; // NRL Bingo
+    if (g.game === '1000tries' && (g.mode === 'bingo' || g.mode === 'bingod')) return ['bgfree', 'today']; // NRL Bingo (bingod: a card from the dropped Daily Bingo)
     if (g.game === '1000tries') return [g.mode === 'wc' ? '1000wc' : g.mode === 'nrlw' ? 'nrlw' : g.mode === 'exact' ? '1000exact' : g.mode === 'spin' ? '1000spin' : g.mode === 'daily' ? '1000daily' : '1000plus', 'today'];
     if (g.game === '4000goals' && g.mode === 'ou') return [{ games: '4000ougames', aflw: '4000ouaflw' }[g.d && g.d.cat] || '4000ou', 'today'];
     if (g.game === 'bigbash' && g.mode === 'ou') return [g.d && g.d.cat === 'bblwkts' ? 'bbouw' : 'bbou', 'today'];
@@ -5256,11 +5258,12 @@
       kicker: 'World Champions Pick', title: 'Choose a World Champion', line: 'Pick from three of the World Champions. He\u00a0joins your World Cup 13 at 95+.', tap: 'Tap World Champions Pick to use',
       tags: ['Use It Now', 'Best Value'], small: ['Choose your champion', '<strong>Just $5 each</strong>'], save: 'Save 17%',
       foot: 'World Champions Picks work in 27-0 World Cup 8-0. Use them by 11:59pm Sun 22 Nov. Unused Picks expire when World Champions ends.' },
-    /* The Wild Tile (NRL Bingo, 17 Oct 2026, the owner's BUILD IT): A$2.99, fills any one open tile on the card. On sale once
-       NRL Bingo is launched (the Shop, and the game's own button); one already owned still works */
-    wild: { field: 'wilds', ico: '&#x1F0CF;', one: 'Wild Tile', many: 'Wild Tiles', packs: ['wild1'], used: 'Wild Tile used',
+    /* The Wild Tile (NRL Bingo, 17 Oct 2026, the owner's BUILD IT): A$2.99, or 3 for A$6.99 (the owner, the same day), fills
+       any one open tile on the card. On sale once NRL Bingo is launched (the Shop, and the game's own button); one already
+       owned still works */
+    wild: { field: 'wilds', ico: '&#x1F0CF;', one: 'Wild Tile', many: 'Wild Tiles', packs: ['wild1', 'wild3'], used: 'Wild Tile used',
       kicker: 'Wild Tile', title: 'Fill Any Tile You Like', line: 'Pick any open tile on your card and it fills, no player needed.', tap: 'Tap Wild Tile to use',
-      tags: ['Use It Now'], small: ['Fill one tile, right now'], save: '',
+      tags: ['Use It Now', 'Best Value'], small: ['Fill one tile, right now', '<strong>Just $2.33 each</strong>'], save: 'Save 22%',
       foot: 'Wild Tiles work in NRL Bingo. A board with one in it counts on the leaderboards with a boost mark. Saved ones stay on your CAST Profile.' },
     /* The SC Captain (SC POINTS KING, 17 Oct 2026, the owner): A$4.99. Once a Classic 13 is complete the game asks for a
        Captain (from the Vault, or bought there and then) and his SC points count double. One a game, Classic only, never
@@ -5422,7 +5425,7 @@
     rrShop(game, null, 'shop', hook, 'key', kind);
   }
   // item: 'reroll' (the default), one of ITM, 'freeze' or 'key' (key: 'legend' or 'superstar'), for the words and colour
-  var RR_CLASS = { remove: 'is-rm', reveal: 'is-rv', rib: 'is-rib', freeze: 'is-fz', key: 'is-ky', toty: 'is-toty', prem: 'is-prem', imm: 'is-imm', wcp: 'is-wcp', ileg: 'is-ileg', wch: 'is-wch', restore: 'is-rs', bag: 'is-bag', captain: 'is-captain' };
+  var RR_CLASS = { remove: 'is-rm', reveal: 'is-rv', rib: 'is-rib', freeze: 'is-fz', key: 'is-ky', toty: 'is-toty', prem: 'is-prem', imm: 'is-imm', wcp: 'is-wcp', ileg: 'is-ileg', wch: 'is-wch', wild: 'is-wild', restore: 'is-rs', bag: 'is-bag', captain: 'is-captain' }; // wild: NRL Bingo's Wild Tile in its lime
   function rrShop(game, done, stage, hook, item, key) {
     rr = { game: game || CFG.game, done: done || null, stage: stage, err: '', pack: null, session: null, co: null, hook: hook && hook.line ? hook : null,
       item: ITM[item] || item === 'freeze' || item === 'key' || item === 'restore' || item === 'bag' ? item : 'reroll', key: key || null };
@@ -5901,7 +5904,7 @@
     if (/^trophies/.test(b)) return r.s + ' <small>' + (r.s === 1 ? 'trophy' : 'trophies') + '</small>';
     if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(b)) return r.s + ' <small>in a row</small>';
     // NRL Bingo: tiles filled, then the time (t: minus tenths of a second, lib/boards.js)
-    if (b === 'bgfree' || b === 'bgdaily') { var bs = Math.max(0, Math.round(-(r.t || 0) / 10)); return (r.s === 20 ? '&#x1F389; ' : '') + r.s + ' <small>' + (r.s === 1 ? 'tile' : 'tiles') + ' &middot; ' + Math.floor(bs / 60) + ':' + ('0' + (bs % 60)).slice(-2) + '</small>'; }
+    if (b === 'bgfree') { var bs = Math.max(0, Math.round(-(r.t || 0) / 10)); return (r.s === 24 ? '&#x1F389; ' : '') + r.s + ' <small>' + (r.s === 1 ? 'tile' : 'tiles') + ' &middot; ' + Math.floor(bs / 60) + ':' + ('0' + (bs % 60)).slice(-2) + '</small>'; }
     if (kind === 'target') return (r.s === 0 ? '&#x1F3AF; On target' : (-r.s) + ' <small>off</small>') + ' <small>&middot; ' + r.t + ' wins</small>';
     // 27-0 Daily rating days (14 Oct 2026): the squad rating first, then wins
     if (kind === 'rating') return '<span class="ca-lb-sq" style="--rc:' + ratingCol(r.s) + '" title="Squad rating ' + r.s + '" aria-label="Squad rating ' + r.s + '">' + r.s + '</span><span class="ca-lb-wins">' + (r.t || 0) + ' <small>' + (r.t === 1 ? 'win' : 'wins') + '</small></span>';
@@ -6071,7 +6074,7 @@
     var list = boardsFor(lb);
     h += gameSwitch(lb, 'lb') + '<div class="ca-lb-chips' + (list.length >= 5 ? ' is-grid' : '') + '" role="tablist">' + list.map(function (b) {
       var name = b.label.replace(/&#x1F525;\s*/, '');
-      var onB = b.id === lb.board || (b.id === 'trophies' && /^trophies/.test(lb.board)) || (b.id === '1000ou' && /^1000ou/.test(lb.board)) || (b.id === '4000ou' && /^4000ou/.test(lb.board)) || (b.id === 'bbou' && /^bbou/.test(lb.board)) || (b.id === 'tsou' && /^tsou/.test(lb.board)) || (b.id === 'rcou' && /^rcou/.test(lb.board)) || (b.id === 'eplou' && /^eplou/.test(lb.board)) || (b.id === 'nbaou' && /^nbaou/.test(lb.board)) || (b.id === 'bgfree' && /^bg/.test(lb.board));
+      var onB = b.id === lb.board || (b.id === 'trophies' && /^trophies/.test(lb.board)) || (b.id === '1000ou' && /^1000ou/.test(lb.board)) || (b.id === '4000ou' && /^4000ou/.test(lb.board)) || (b.id === 'bbou' && /^bbou/.test(lb.board)) || (b.id === 'tsou' && /^tsou/.test(lb.board)) || (b.id === 'rcou' && /^rcou/.test(lb.board)) || (b.id === 'eplou' && /^eplou/.test(lb.board)) || (b.id === 'nbaou' && /^nbaou/.test(lb.board));
       return '<button type="button" role="tab" aria-selected="' + onB + '" class="ca-chip' + (onB ? ' is-on' : '') + '" data-ca="lb-board" data-v="' + b.id + '" title="' + esc(name) + '" aria-label="' + esc(name) + '">' + chipName(b) + '</button>';
     }).join('') + '</div>' + troSub();
     if (status === 'loading') return h + (profileErr ? profileErrCard() : '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>');
@@ -6110,7 +6113,6 @@
       : lb.board === '4000exact' ? 'Most exact 4000s first. Until you land one, your closest full 18 under 4000 counts.'
       : lb.board === '270perfect' ? 'Most perfect seasons first. Level players rank by their hardest 27-0: Hard Mode, then Classic, then Pack.'
       : /^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(lb.board) ? 'Your longest run of right calls. Level players: fewer Run It Backs first.'
-      : lb.board === 'bgdaily' ? 'Your one go at today&rsquo;s Daily Bingo counts. Most tiles first, then the quicker time.'
       : lb.board === 'bgfree' ? 'Most tiles filled first, then the quicker time.'
       : /^trophies/.test(lb.board) ? 'Every trophy you&rsquo;ve unlocked counts' + (lb.board === 'trophies' ? ', 27-0 and 1000TRIES together' : '') + '. Level players rank by who got there first.' : '';
     var ranked = me && !profile.lbHidden && canRank, upd = updText(c);
@@ -6428,15 +6430,27 @@
         '<span class="ca-sl-val">' + sheetVal(x, p) + '</span></li>';
     }).join('') + '</ol>';
   }
-  /* NRL Bingo's card on a team sheet (17 Oct 2026): the 20 tiles in the server's order, each in its jersey (js/cast-intl.js,
-     when the page has it) with the name that filled it */
-  var BINGO_TILES = [['broncos', 'Broncos'], ['bulldogs', 'Bulldogs'], ['cowboys', 'Cowboys'], ['dolphins', 'Dolphins'], ['dragons', 'Dragons'], ['eels', 'Eels'],
+  /* NRL Bingo's card on a team sheet (17 Oct 2026): the tiles in the server's order, each in its jersey (js/cast-intl.js,
+     when the page has it) with the name that filled it. The 4 x 6 card (24 tiles, the owner, 17 Oct 2026); a card saved on
+     the first 4 x 5 card (its Origin, Kangaroos and Kiwis tiles) shows as it was played */
+  var BINGO_CLUBS = [['broncos', 'Broncos'], ['bulldogs', 'Bulldogs'], ['cowboys', 'Cowboys'], ['dolphins', 'Dolphins'], ['dragons', 'Dragons'], ['eels', 'Eels'],
     ['knights', 'Knights'], ['panthers', 'Panthers'], ['rabbitohs', 'Rabbitohs'], ['raiders', 'Raiders'], ['roosters', 'Roosters'], ['seaeagles', 'Sea Eagles'],
-    ['sharks', 'Sharks'], ['storm', 'Storm'], ['titans', 'Titans'], ['warriors', 'Warriors'], ['tigers', 'Wests Tigers'], ['origin', 'Origin'], ['aus', 'Kangaroos'], ['nzl', 'Kiwis']];
-  var BINGO_REP = { origin: '<rect width="100" height="76" fill="#1f63b8"/><polygon points="0,0 100,0 0,76" fill="#7b1435"/>', aus: '<rect width="100" height="76" fill="#00843d"/><polygon points="22,0 50,34 78,0 92,0 50,48 8,0" fill="#ffcd00"/>',
-    nzl: '<rect width="100" height="76" fill="#0b0b0e"/><polygon points="20,0 50,36 80,0 94,0 50,52 6,0" fill="#f5f5f5"/>' };
+    ['sharks', 'Sharks'], ['storm', 'Storm'], ['titans', 'Titans'], ['warriors', 'Warriors'], ['tigers', 'Wests Tigers']];
+  var BINGO_TILES = BINGO_CLUBS.concat([['nsw', 'NSW Blues'], ['qld', 'QLD Maroons'], ['aus', 'Australia'], ['nzl', 'New Zealand'], ['eng', 'England'], ['sam', 'Samoa'], ['ton', 'Tonga']]);
+  var BINGO_TILES_1 = BINGO_CLUBS.concat([['origin', 'Origin'], ['aus', 'Kangaroos'], ['nzl', 'Kiwis']]);
+  // The rep tiles in plain colours (never a logo): the same drawings as the game's own (js/bingo.js REP)
+  var BINGO_REP = {
+    origin: '<rect width="100" height="76" fill="#1f63b8"/><polygon points="0,0 100,0 0,76" fill="#7b1435"/>',
+    nsw: '<rect width="100" height="76" fill="#3a8fd6"/><polygon points="24,0 50,30 76,0 90,0 50,44 10,0" fill="#0b2d63"/>',
+    qld: '<rect width="100" height="76" fill="#7b1435"/><polygon points="24,0 50,30 76,0 90,0 50,44 10,0" fill="#f2b632"/>',
+    aus: '<rect width="100" height="76" fill="#00843d"/><polygon points="22,0 50,34 78,0 92,0 50,48 8,0" fill="#ffcd00"/>',
+    nzl: '<rect width="100" height="76" fill="#0b0b0e"/><polygon points="20,0 50,36 80,0 94,0 50,52 6,0" fill="#f5f5f5"/>',
+    eng: '<rect width="100" height="76" fill="#f4f4f4"/><rect y="30" width="100" height="14" fill="#c8102e"/>',
+    sam: '<rect width="100" height="76" fill="#0b3f91"/><polygon points="22,0 50,32 78,0 92,0 50,46 8,0" fill="#ffffff"/>',
+    ton: '<rect width="100" height="76" fill="#c10000"/><rect y="28" width="100" height="8" fill="#ffffff"/><rect y="40" width="100" height="8" fill="#ffffff"/>' };
   function bingoSheet(x) {
     var CI = window.CastIntl, g = x.bingo || {}, d = x.d || {}, ms = +d.ms || 0, secs = Math.round(ms / 1000);
+    var tiles = 'origin' in g ? BINGO_TILES_1 : BINGO_TILES;
     var tile = function (t) {
       var inner = BINGO_REP[t[0]] || '';
       if (!inner && CI && CI.fill && CI.JERSEYS && CI.JERSEYS[t[0]]) { try { inner = CI.fill(CI.JERSEYS[t[0]], 100, 76); } catch (e) { inner = ''; } }
@@ -6444,8 +6458,8 @@
       return '<span class="ca-bg-tile' + (nm ? ' is-filled' : '') + '"><svg viewBox="0 0 100 76" preserveAspectRatio="none" aria-hidden="true">' + (inner || '<rect width="100" height="76" fill="#1c1c2e"/>') + '</svg>' +
         (nm ? '<b title="' + esc(nm) + '">' + (nm === 'Wild Tile' ? '&#x1F0CF; ' : '&#x2705; ') + esc(sur) + '</b>' : '') + '<small>' + t[1] + '</small></span>';
     };
-    return '<p class="ca-bg-sum">' + (x.result === 'full' ? '&#x1F389; Full House' : x.score + ' of 20 tiles') + (ms ? ' in ' + Math.floor(secs / 60) + ':' + ('0' + (secs % 60)).slice(-2) : '') + '</p>' +
-      '<div class="ca-bg-card">' + BINGO_TILES.map(tile).join('') + '</div>';
+    return '<p class="ca-bg-sum">' + (x.result === 'full' ? '&#x1F389; Full House' : x.score + ' of ' + tiles.length + ' tiles') + (ms ? ' in ' + Math.floor(secs / 60) + ':' + ('0' + (secs % 60)).slice(-2) : '') + '</p>' +
+      '<div class="ca-bg-card">' + tiles.map(tile).join('') + '</div>';
   }
   function sheetPage() {
     var s = sheet, st = s.g ? sheets[s.g] || {} : {}, x = s.local || st.data, who = s.who || {};
@@ -6757,7 +6771,7 @@
      the invite card while you have under 3 friends; sent requests folded into one line */
   var FR_MODE = {
     '27-0': { classic: 'Classic', hard: 'Hard Mode', pack: 'Pack Mode', daily: 'the Daily', wc: 'the World Cup' },
-    '1000tries': { plus: '1000+', exact: 'Exactly 1000', spin: 'Team Spin', nrlw: 'NRLW 250+', wc: 'World Cup 200+', daily: 'the Daily', ou: 'HIGHER OR LOWER: NRL', bingo: 'NRL Bingo', bingod: 'Daily Bingo' },
+    '1000tries': { plus: '1000+', exact: 'Exactly 1000', spin: 'Team Spin', nrlw: 'NRLW 250+', wc: 'World Cup 200+', daily: 'the Daily', ou: 'HIGHER OR LOWER: NRL', bingo: 'NRL Bingo', bingod: 'NRL Bingo' },
     '4000goals': { plus: '4000+', exact: 'Exactly 4000', spin: 'Team Spin', aflw: 'AFLW 750+', daily: 'the Daily', ou: 'HIGHER OR LOWER: AFL' },
     bigbash: { plus: '25000+', exact: 'Exactly 25000', spin: 'Team Spin', daily: 'the Daily', ou: 'HIGHER OR LOWER: CRICKET' },
     tests: { plus: '60000+', exact: 'Exactly 60000', spin: 'Team Spin', daily: 'the Daily', ou: 'HIGHER OR LOWER: CRICKET' },
@@ -6814,7 +6828,7 @@
       ico = e.x === 'perfect' || e.x === 'wc80' ? '&#x1F451;' : e.x === 'exact' || e.x === 'exact4000' || e.x === 'exactbb' || e.x === 'exactts' || e.x === 'exactnfl' || e.x === 'exactrc' || e.x === 'exactepl' || e.x === 'exactnba' ? '&#x1F3AF;' : '&#x1F4AF;';
       if (e.x === 'ou' || e.x === 'po' || e.x === 'fh' || e.x === 'fo' || e.x === 'tp' || e.x === 'pf' || e.x === 'et' || e.x === 'hlnba') ico = '&#x2195;&#xFE0F;';
       if (e.x === 'bingo') ico = '&#x1F389;';
-      txt = e.x === 'bingo' ? 'got a Full House in ' + (e.m === 'bingod' ? 'the Daily Bingo' : 'NRL Bingo') : OU_FEED[e.x] ? 'called ' + e.s + ' in a row in ' + ouName(OU_FEED[e.x]) : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 777' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'exactepl' ? 'landed Exactly 650' : e.x === 'exactnba' ? 'landed Exactly 100000' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
+      txt = e.x === 'bingo' ? 'got a Full House in NRL Bingo' : OU_FEED[e.x] ? 'called ' + e.s + ' in a row in ' + ouName(OU_FEED[e.x]) : e.x === 'exactbb' ? 'landed Exactly 25000' : e.x === 'exactts' ? 'landed Exactly 60000' : e.x === 'exactnfl' ? 'landed Exactly 777' : e.x === 'exactrc' ? 'landed Exactly 550' : e.x === 'exactepl' ? 'landed Exactly 650' : e.x === 'exactnba' ? 'landed Exactly 100000' : e.x === 'perfect' ? 'went 27-0' + frModeIn('27-0', e.m) : e.x === 'wc80' ? 'went 8-0 at the World Cup'
         : e.x === 'exact' ? 'landed Exactly 1000' : e.x === 'exact4000' ? 'landed Exactly 4000'
         : e.x === 'wc200' ? 'reached World Cup 200+ with ' + frScore(e.g, 'wc', e.s) : e.x === 'nrlw250' ? 'reached NRLW 250+ with ' + frScore(e.g, 'nrlw', e.s)
         : e.x === 'aflw750' ? 'reached AFLW 750+ with ' + frScore(e.g, 'aflw', e.s)
@@ -7909,8 +7923,9 @@
     ileg3: { ico: '&#x1F451;', name: '3 World Legend Picks', short: '3 Picks', price: '$11.99', what: 'Just $4 each', kind: 'ileg', n: 3, best: true, chip: 'Save 20%' },
     rib1: { ico: '&#x23EA;', name: '1 Run It Back', price: '$0.99', what: '27-0 Classic: one loss in your season becomes a win', kind: 'rib', n: 1, chip: 'Instant' },
     rib3: { ico: '&#x23EA;', name: '3 Run It Backs', price: '$1.99', what: 'Just 66c each', kind: 'rib', n: 3, best: true, chip: 'Save 33%' },
-    // The Wild Tile (NRL Bingo, 17 Oct 2026): A$2.99, on sale once NRL Bingo is launched
+    // The Wild Tile (NRL Bingo, 17 Oct 2026): A$2.99, or 3 for A$6.99, on sale once NRL Bingo is launched
     wild1: { ico: '&#x1F0CF;', name: '1 Wild Tile', price: '$2.99', what: 'Fill any open tile on your NRL Bingo card', kind: 'wild', n: 1, chip: 'Instant', sub: 'Fill any open tile on your NRL Bingo card' },
+    wild3: { ico: '&#x1F0CF;', name: '3 Wild Tiles', short: '3 Tiles', price: '$6.99', what: 'Just $2.33 each', kind: 'wild', n: 3, best: true, chip: 'Save 22%' },
     // The SC Captain (SC POINTS KING, 17 Oct 2026): A$4.99, on sale once SC POINTS KING is launched
     cap1: { ico: '&#x1F396;&#xFE0F;', name: '1 SC Captain', price: '$4.99', what: 'His SC points count double in SC POINTS KING', kind: 'cap', n: 1, chip: 'Instant', sub: 'His SC points count double in SC POINTS KING' },
     // The GOAT (29 Sep 2026; every draft game from 16 Oct 2026): this game's GOAT as your next pick. Shop only
@@ -7971,7 +7986,7 @@
     ['imm', '&#x1F3DB;&#xFE0F;', 'Immortal Pick', 'Choose one of three of the game\u2019s Immortals for an open spot in your 13: at 99 in 27-0, with his career tries in 1000TRIES.', '27-0 (Classic, Hard and Packs) and 1000TRIES (1000+, Exactly 1000 and Team Spin), any time', ['imm3', 'imm1']],
     ['superstar', '&#x1F31F;', 'Superstar Keys', '27-0\u2019s own key: your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
     ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run a 27-0 season back and your closest loss becomes a win, or keep a HIGHER OR LOWER streak alive.', '', ['rib3', 'rib1']],
-    ['wild', '&#x1F0CF;', 'Wild Tile', 'Fill any one open tile on your NRL Bingo card, your choice. The player on the card stays.', 'NRL Bingo, any time', ['wild1']],
+    ['wild', '&#x1F0CF;', 'Wild Tile', 'Fill any one open tile on your NRL Bingo card, your choice. The player on the card stays.', 'NRL Bingo, any time', ['wild3', 'wild1']],
     ['cap', '&#x1F396;&#xFE0F;', 'SC Captain', 'Once your 13 is complete, make one season your Captain and his SC points count double. One per game.', 'SC POINTS KING Classic, once your 13 is complete', ['cap1']],
     ['fz', '&#x1F9CA;', 'Streak Freeze', 'Miss a day and it is used by itself, so your streak lives on. You can hold one at a time.', '', ['freeze1']]
   ];
@@ -8800,7 +8815,7 @@
     }, function () { /* not an admin, or offline: nothing to show */ });
   }
   // Every board's name, including boards of a game this site hides (the Admin tab lists them all)
-  var BOARD_NAMES = { bgfree: 'NRL Bingo', bgdaily: 'Daily Bingo', '4000daily': '4000 GOALS Daily', '4000plus': '4000+', '4000exact': 'Exactly 4000', '4000spin': '4000 GOALS Team Spin', aflw: 'AFLW 750+', '1000daily': '1000TRIES Daily', '1000plus': '1000+', '1000exact': 'Exactly 1000', '1000spin': 'Team Spin', nrlw: 'NRLW 250+', '270best': '27-0 Classic Mode', '270pack': '27-0 Pack Mode', '270perfect': '27-0 Perfect Seasons',
+  var BOARD_NAMES = { bgfree: 'NRL Bingo', '4000daily': '4000 GOALS Daily', '4000plus': '4000+', '4000exact': 'Exactly 4000', '4000spin': '4000 GOALS Team Spin', aflw: 'AFLW 750+', '1000daily': '1000TRIES Daily', '1000plus': '1000+', '1000exact': 'Exactly 1000', '1000spin': 'Team Spin', nrlw: 'NRLW 250+', '270best': '27-0 Classic Mode', '270pack': '27-0 Pack Mode', '270perfect': '27-0 Perfect Seasons',
     '270daily': '27-0 Daily', '270hard': '27-0 Hard Mode', streak: 'Longest Streak',
     bbplus: '25000+', bbexact: 'Exactly 25000', bbspin: '25000 RUNS Team Spin', bbdaily: '25000 RUNS Daily',
     tsplus: '60000+', tsexact: 'Exactly 60000', tsspin: '60000 RUNS Team Spin', tsdaily: '60000 RUNS Daily',
@@ -9300,13 +9315,12 @@
       var bm = bgo.money || (rev && rev.bingo) || null;
       ouCard += '<div class="ca-ov-card"><div class="ca-ov-h"><h3 class="ca-h3">NRL Bingo</h3></div>' +
         periods([
-          ['Boards', bgo.boards.d, bgo.boards.w, bgo.boards.all], ['Daily Bingo', bgo.daily.d, bgo.daily.w, bgo.daily.all], ['Free Play', bgo.free.d, bgo.free.w, bgo.free.all],
+          ['Boards', bgo.boards.d, bgo.boards.w, bgo.boards.all],
           ['Full Houses', bgo.full.d, bgo.full.w, bgo.full.all], ['Players', bgo.players.d, '', bgo.players.all],
           ['Money', bm ? money(bm.d) : null, bm ? money(bm.w) : null, bm ? money(bm.all) : null, 'Wild Tiles, Run It Backs, Rerolls and Reveals bought on a card'],
           ['Vault Wild Tiles Used', bgo.used.wild.d, bgo.used.wild.w, bgo.used.wild.all], ['Vault Run It Backs Used', bgo.used.rib.d, bgo.used.rib.w, bgo.used.rib.all],
           ['Vault Rerolls Used', bgo.used.rr.d, bgo.used.rr.w, bgo.used.rr.all], ['Vault Reveals Used', bgo.used.rv.d, bgo.used.rv.w, bgo.used.rv.all]]) +
-        list([['Average Tiles', bgo.avg == null ? null : String(bgo.avg)], ['Free Play Board', bgo.free_board ? fmt(bgo.free_board.players) + ' players' : null],
-          ['Today&rsquo;s Daily Board', bgo.daily_board ? fmt(bgo.daily_board.players) + ' players' : null]]) +
+        list([['Average Tiles', bgo.avg == null ? null : String(bgo.avg)], ['Leaderboard', bgo.free_board ? fmt(bgo.free_board.players) + (bgo.free_board.players === 1 ? ' player' : ' players') : null]]) +
         '<p class="ca-ov-note">Counted from launch. Money: everything bought from inside a card. Wild Tile sales are also in Sales above.</p></div>';
     }
     h += head('Players on Each Board', '') + table(['Board', 'Players'], (d.boards || []).map(function (b) { return [esc(boardName(b.id)) + (/_\d{4}-/.test(b.id) ? ' <small>Today</small>' : ''), b.players]; }));
@@ -9559,7 +9573,8 @@
         '<button type="button" class="ca-btn ca-btn-sm ca-btn-quiet" data-ca="adm-ou-cancel" data-v="' + k + '">Cancel</button></div>'
       : '<button type="button" class="ca-btn ca-btn-sm ca-btn-primary" data-ca="adm-ou-ask" data-v="' + k + '">&#x1F680; Launch ' + nm + '</button>';
     return '<div class="ca-adm-launch"><div class="ca-adm-launch-txt"><span class="ca-mod-tag">Not Launched</span><b>' + nm + ' Launch</b>' +
-      '<small>One tap shows ' + nm + ' on ' + site + ' for everyone: the mode card, its leaderboards, trophies and ' + (k === 'bingo' ? 'the Wild Tile in the Shop, and its page on CAST Games' : 'Run It Back in the Shop') + (k === 'ou' ? ', and the banner on 27-0' : '') + '. Your private link works until then.</small>' +
+      (k === 'bingo' ? '<small>One tap shows NRL Bingo on CAST Games for everyone: its page and card, its leaderboard, trophies and the Wild Tile in the Shop. Your private link works until then.</small>' // CAST Games only (17 Oct 2026)
+        : '<small>One tap shows ' + nm + ' on ' + site + ' for everyone: the mode card, its leaderboards, trophies and Run It Back in the Shop' + (k === 'ou' ? ', and the banner on 27-0' : '') + '. Your private link works until then.</small>') +
       (L.confirm ? '<small class="ca-adm-launch-q">Launch ' + nm + ' for everyone now?</small>' : '') +
       (L.err ? '<p class="ca-lb-err" role="alert">' + esc(L.err) + '</p>' : '') + '</div>' + btn + '</div>';
   }
@@ -12527,16 +12542,8 @@
     }).join('');
   }
   // The Trophies board's game picker (both games, or one): under the chips while a Trophies board is open
-  // NRL Bingo's picker (17 Oct 2026): Free Play or Daily Bingo, under its chip
-  function bgSub() {
-    return '<div class="ca-seg ca-lb-trsub ca-lb-ousub" role="tablist" aria-label="Which board">' + [['bgfree', 'Free Play'], ['bgdaily', 'Daily Bingo']].map(function (x) {
-      var on = x[0] === lb.board;
-      return '<button type="button" role="tab" aria-selected="' + on + '" class="ca-seg-btn' + (on ? ' is-on' : '') + '" data-ca="lb-board" data-v="' + x[0] + '">' + x[1] + '</button>';
-    }).join('') + '</div>';
-  }
   function troSub() {
     if (/^(1000ou|4000ou|bbou|tsou|nflou|rcou|eplou|nbaou)/.test(lb.board)) return ouSub();
-    if (/^bg(free|daily)$/.test(lb.board)) return bgSub();
     if (!/^trophies/.test(lb.board) || !shown('1000tries')) return '';
     return '<div class="ca-seg ca-lb-trsub" role="tablist" aria-label="Which trophies">' + [['trophies', 'Both Games'], ['trophies270', '27-0'], ['trophies1000', '1000TRIES']].map(function (x) {
       var on = x[0] === lb.board;
@@ -12566,7 +12573,7 @@
   function defaultBoard() { var ids = BOARDS.map(function (b) { return b.id; }), own = MAIN_BOARD[CFG.game], pref = (CFG.boards || []).filter(function (x) { return ids.indexOf(x) >= 0; })[0]; return pref || (own && ids.indexOf(own) >= 0 ? own : own ? null : ids[0]); }
   // The home page shows this game's four main boards in one row; the rest (Perfect Seasons, Team Spin, Streak) are a tap
   // away in See All
-  var HOME_SKIP = ['270perfect', '1000spin', 'streak', 'trophies', 'trophies270', 'trophies1000', '1000oucaps', '1000outt', '1000ounrlw', 'bgdaily']; // the Trophies boards live on Leaderboards and the Trophies page
+  var HOME_SKIP = ['270perfect', '1000spin', 'streak', 'trophies', 'trophies270', 'trophies1000', '1000oucaps', '1000outt', '1000ounrlw']; // the Trophies boards live on Leaderboards and the Trophies page
   function homeBoards() { return BOARDS.filter(function (b) { return (b.game === CFG.game || !b.game) && HOME_SKIP.indexOf(b.id) < 0; }); }
   function renderHome() {
     var boxes = document.querySelectorAll('[data-cast-board]');
@@ -14209,15 +14216,14 @@
   // (game '1000tries': { total, win })
   function dailyGoes(date, game) {
     if (status !== 'signed-in' || !fb) return Promise.resolve(null);
-    var F = fb.F, which = game === '1000tries' || game === '4000goals' || game === 'bigbash' || game === 'tests' || game === 'nfl' || game === 'racing' || game === 'epl' || game === 'nba' || game === 'sc' ? game : game === 'bingo' ? '1000tries' : '27-0';
-    var dm = game === 'bingo' ? 'bingod' : 'daily'; // NRL Bingo's Daily (17 Oct 2026): its own mode on 1000TRIES
+    var F = fb.F, which = game === '1000tries' || game === '4000goals' || game === 'bigbash' || game === 'tests' || game === 'nfl' || game === 'racing' || game === 'epl' || game === 'nba' || game === 'sc' ? game : '27-0';
     return F.getDocs(F.query(gamesCol(), F.where('d.date', '==', date), F.limit(20))).then(function (q) {
-      return q.docs.map(function (d) { return d.data(); }).filter(function (g) { return g.game === which && g.mode === dm; })
+      return q.docs.map(function (d) { return d.data(); }).filter(function (g) { return g.game === which && g.mode === 'daily'; })
         .sort(function (a, b) { return (a.at && a.at.toMillis ? a.at.toMillis() : 0) - (b.at && b.at.toMillis ? b.at.toMillis() : 0); })
         .map(function (g) {
           var d = g.d || {};
           var at = g.at && g.at.toMillis ? g.at.toMillis() : 0;
-          if (which !== '27-0') return { total: g.score, win: g.result === 'won' || g.result === 'full', at: at }; // 1000TRIES and 4000 GOALS (full: NRL Bingo's Full House)
+          if (which !== '27-0') return { total: g.score, win: g.result === 'won', at: at }; // 1000TRIES and 4000 GOALS
           return { w: g.score, l: d.losses, rating: d.rating, diff: d.diff, premiers: g.result === '27-0' || g.result === 'premiers', perfect: g.result === '27-0', at: at };
         });
     }, function () { return null; });
@@ -14227,7 +14233,7 @@
      account, so each start is noted too (meta/daily: per game, the day, how many goes are used and when each started).
      A go left part way through on a phone then shows as used on the laptop, with the same goes left. */
   function dailyRef() { return fb.F.doc(fb.db, 'users', user.uid, 'meta', 'daily'); }
-  function dailyKey(game) { return game === 'bingo' ? 'gbg' : game === '1000tries' ? 'g1000' : game === '4000goals' ? 'g4000' : game === 'bigbash' ? 'gbb' : game === 'tests' ? 'gts' : game === 'nfl' ? 'gnfl' : game === 'racing' ? 'grc' : game === 'epl' ? 'gepl' : game === 'nba' ? 'gnba' : game === 'sc' ? 'gsc' : 'g270'; }
+  function dailyKey(game) { return game === '1000tries' ? 'g1000' : game === '4000goals' ? 'g4000' : game === 'bigbash' ? 'gbb' : game === 'tests' ? 'gts' : game === 'nfl' ? 'gnfl' : game === 'racing' ? 'grc' : game === 'epl' ? 'gepl' : game === 'nba' ? 'gnba' : game === 'sc' ? 'gsc' : 'g270'; }
   function dailyStarted(date, game, n, times) {
     if (status !== 'signed-in' || !fb) return;
     var t = (times || []).filter(function (x) { return typeof x === 'number' && x > 0; }).sort(function (a, b) { return a - b; }).slice(0, 3);
