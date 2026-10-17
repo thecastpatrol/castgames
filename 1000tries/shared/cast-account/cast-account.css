@@ -3914,7 +3914,7 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-ins-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .ca-ins-name { font: 900 14.5px/1.25 Inter, sans-serif; color: rgb(var(--oc)); text-wrap: balance; }
 .ca-ins-seg:not(.is-pass) .ca-ins-name { color: #fff; }
-.ca-ins-seg:not(.is-pass) .ca-ins-name > span { color: initial; }
+.ca-ins-name > span, .ca-ins-chip > span { margin-right: 4px; }
 .ca-ins-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .ca-ins-nums > span { display: grid; gap: 3px; min-width: 0; }
 .ca-ins-nums b { font: 900 21px/1.05 Inter, sans-serif; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }

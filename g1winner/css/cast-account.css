@@ -3364,6 +3364,10 @@ html.cp-dual-open, html.cp-dual-open body { overflow: hidden; }
 @media (hover: hover) and (pointer: fine) {
   *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .ca-backdrop, .cp-confirm-backdrop { background: rgba(5, 5, 10, .86); }
+  /* 17 Oct 2026, the owner's HDMI monitor: the area round Admin flickered every other frame, the Mac or the monitor
+     dithering the see-through dark layer over the page. Solid colours there and on Admin's panel: nothing to dither */
+  .ca-backdrop, .cp-confirm-backdrop { background: #07070c; }
+  .ca-panel:has(.ca-admin) { background: #121119; }
 }
 /* The other game's World Cup in the home spot (11 Oct 2026, the owner: "more of a World Cup push with the correct
    branding"): the World Cup cards' blue, the ten nations' flags, and a Play button into that mode */
@@ -3900,3 +3904,45 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-pitch.is-pitch .ca-pitch-row.is-five .ca-spot-name.is-xlong { font-size: 9px; letter-spacing: -.3px; overflow-wrap: anywhere; hyphens: auto; }
 /* One Shop for every CAST game (16 Oct 2026): a special item's "Only in" tag, quiet and never gold */
 .ca-shop-where.is-only { display: inline-block; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #e5e7eb; }
+/* Admin > Insights (17 Oct 2026): a card per segment (its own accent, gold only on the CAST Pass ones), the last 8
+   weeks as bars, and a player's Profile block on their card. Phone first: nothing wide, numbers big, no cut text */
+.ca-ins-segs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-bottom: 8px; }
+@media (min-width: 700px) { .ca-ins-segs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ca-ins-seg { display: grid; gap: 8px; width: 100%; padding: 12px 12px 11px; border-radius: 14px; border: 1px solid rgba(var(--oc), .35); background: linear-gradient(135deg, rgba(var(--oc), .14), rgba(var(--oc), .03) 70%); box-shadow: inset 3px 0 0 rgb(var(--oc)); color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-ins-seg:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) { .ca-ins-seg:hover { border-color: rgba(var(--oc), .6); } }
+.ca-ins-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ca-ins-name { font: 900 14.5px/1.25 Inter, sans-serif; color: rgb(var(--oc)); text-wrap: balance; }
+.ca-ins-seg:not(.is-pass) .ca-ins-name { color: #fff; }
+.ca-ins-name > span, .ca-ins-chip > span { margin-right: 4px; }
+.ca-ins-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.ca-ins-nums > span { display: grid; gap: 3px; min-width: 0; }
+.ca-ins-nums b { font: 900 21px/1.05 Inter, sans-serif; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ca-ins-nums small { font: 800 9.5px/1 Inter, sans-serif; letter-spacing: .5px; text-transform: uppercase; color: rgb(var(--oc)); }
+@media (max-width: 400px) { .ca-ins-nums b { font-size: 18px; } }
+.ca-ins-act { display: block; font: 600 13px/1.4 Inter, sans-serif; color: #e6e6f0; text-wrap: pretty; }
+.ca-ins-foot { display: block; font: 700 11.5px/1.35 Inter, sans-serif; color: var(--ca-muted); text-wrap: pretty; }
+.ca-ins-actnote { box-shadow: inset 3px 0 0 rgb(var(--oc)); color: #e6e6f0; text-wrap: pretty; }
+.ca-ins-actnote b { display: block; margin-bottom: 3px; font: 900 10.5px/1 Inter, sans-serif; letter-spacing: .8px; text-transform: uppercase; color: rgb(var(--oc)); }
+.ca-mod-tag.is-pot { background: rgba(96, 165, 250, .16); color: #93c5fd; }
+.ca-ins-chart { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; align-items: end; padding: 10px 8px 8px; margin-bottom: 8px; border-radius: 14px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .03); }
+.ca-ins-wk { display: grid; justify-items: center; gap: 5px; min-width: 0; }
+.ca-ins-wk b { font: 900 12px/1 Inter, sans-serif; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ca-ins-wk small { font: 800 10px/1 Inter, sans-serif; color: var(--ca-muted); white-space: nowrap; }
+.ca-ins-bar { display: flex; align-items: flex-end; width: 100%; max-width: 30px; height: 110px; border-radius: 6px; background: rgba(255, 255, 255, .04); overflow: hidden; }
+.ca-ins-bar i { display: block; width: 100%; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, #a78bfa, #7c3aed); }
+.ca-ins-wk.is-now .ca-ins-bar i { background: linear-gradient(180deg, #67e8f9, #0891b2); }
+.ca-ins-wk.is-now small { color: #67e8f9; }
+@media (max-width: 400px) { .ca-ins-wk b { font-size: 10.5px; } .ca-ins-chart { gap: 3px; padding: 10px 6px 8px; } }
+.ca-ins-tool { display: grid; gap: 8px; justify-items: start; padding: 12px; margin-bottom: 12px; border-radius: 14px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .03); }
+.ca-ins-tool b { font: 900 14px/1.2 Inter, sans-serif; color: #fff; }
+.ca-ins-tool p { margin: 0; font-size: 12.5px; line-height: 1.45; text-wrap: pretty; }
+.ca-ins-tool .ca-btn { width: auto; }
+.ca-ins-csv { margin-top: 12px; }
+.ca-ins-prof { border-color: rgba(var(--oc), .35); background: linear-gradient(135deg, rgba(var(--oc), .1), rgba(var(--oc), .02) 70%); }
+.ca-ins-ptop { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.ca-ins-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px; background: rgba(var(--oc), .16); color: rgb(var(--oc)); font: 900 13px/1.2 Inter, sans-serif; text-wrap: balance; }
+.ca-ins-pot { display: grid; justify-items: end; gap: 3px; flex: none; }
+.ca-ins-pot b { font: 900 26px/1 Inter, sans-serif; color: #fff; font-variant-numeric: tabular-nums; }
+.ca-ins-pot small { font: 800 9.5px/1 Inter, sans-serif; letter-spacing: .5px; text-transform: uppercase; color: var(--ca-muted); white-space: nowrap; }
+.ca-ins-prof .ca-ins-act { margin: 0 0 10px; }

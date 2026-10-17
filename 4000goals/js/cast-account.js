@@ -7847,7 +7847,8 @@
      Players, Fans, Flags), the rest under More, so the row never scrolls. A count on a tab under More (Reports) shows on
      the More button too */
   var ADMIN_TABS = [['overview', 'Overview'], ['players', 'Players'], ['fans', 'Fans'], ['flags', 'Flags']];
-  var ADMIN_MORE = [['analytics', 'Analytics'], ['reports', 'Reports'], ['trends', 'Trends'], ['log', 'Log'], ['words', 'Words']];
+  // Insights (17 Oct 2026) heads the More list: a fifth tab on the bar does not fit a 390px phone
+  var ADMIN_MORE = [['insights', 'Insights'], ['analytics', 'Analytics'], ['reports', 'Reports'], ['trends', 'Trends'], ['log', 'Log'], ['words', 'Words']];
   function adminPage() {
     if (status !== 'signed-in' || !mod.admin) return '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
     return '<div class="ca-admin"><div class="ca-full-head"><h2 class="ca-full-title">Admin</h2></div>' +
@@ -7875,6 +7876,7 @@
     // Players: the player you searched for, or (none open) a hint and the verified players
     if (tab === 'players') return h + admPlayers() + (mod.look && (mod.look.data || mod.look.loading) ? '' : '<p class="ca-muted ca-adm-hint">Search above by leaderboard name (or the start of one) or the email they sign in with.</p>' + verifiedCard());
     if (tab === 'fans') return h + admFans();
+    if (tab === 'insights') return h + admInsights();
     if (tab === 'reports') return h + '<h3 class="ca-h3">Reports</h3>' + reportList();
     if (tab === 'flags') return h + admFlags();
     if (tab === 'log') return h + admLog();
@@ -9121,6 +9123,7 @@
       '<button type="button" class="ca-adm-close" data-ca="adm-clear" aria-label="Close this player">&#x2715;</button></div>' + (tags ? '<div class="ca-adm-tags">' + tags + '</div>' : '') +
       '<div class="ca-adm-kpis">' + rows.filter(function (x) { return KPI[x[0]]; }).map(function (x) { return '<div><b>' + esc(x[1]) + '</b><span>' + x[0] + '</span></div>'; }).join('') + '</div>' +
       (busy ? '<p class="ca-adm-busy" role="status">Working&hellip;</p>' : '') + '</div>';
+    h += insProfile(r); // Player Insights (17 Oct 2026): their segment and Buying Potential
     // Account: the blue tick, admin and Quick Draft (taking admin away is in Danger)
     h += sec('Account', u.name ? btns(
       act(u.verified ? 'unverify' : 'verify', u.verified ? 'Remove Tick' : '&#x2713; Verify') +
@@ -9702,6 +9705,143 @@
         return row(x, (sb === 'buys' ? buys + ' &middot; ' + cash : cash + ' &middot; ' + buys) + (x.last ? ' &middot; last ' + esc(when(x.last)) : ''), true);
       }).join('') + '</ol>' : '<p class="ca-muted ca-center">No purchases yet.</p>');
     return h;
+  }
+  /* Admin > Insights (17 Oct 2026, the owner's BUILD IT): every player in one segment (checked top to bottom, the first
+     that fits), what each segment has spent and what to do with it, the last 8 weeks, and each segment's players by
+     Buying Potential. Built by the server every day at 4:30am (adminInsights; the rules are in the server's
+     lib/insights.js); the owner can rebuild it now and download a segment as a CSV (no emails). Gold is only on the
+     CAST Pass segments */
+  var INS_C = { passQuiet: '241,192,115', pass: '241,192,115', former: '244,114,182', bigSpender: '74,222,128', buyer: '45,212,191', regular: '251,146,60', casual: '96,165,250', slipping: '248,113,113', neverPlayed: '162,162,184' };
+  var INS_SORTS = [['pot', 'Potential'], ['spend', 'Spend'], ['plays', 'Games'], ['recent', 'Recent']];
+  var INS_TREND = [['active', 'Players'], ['plays', 'Games'], ['signups', 'Sign-Ups'], ['buyers', 'Buyers']];
+  function insAgo(ms) {
+    if (!ms) return 'never';
+    var m = Math.max(0, Math.floor((Date.now() - ms) / 60000)), h = Math.floor(m / 60), d = Math.floor(h / 24);
+    if (m < 1) return 'just now';
+    if (m < 60) return m + (m === 1 ? ' min ago' : ' mins ago');
+    if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+    if (d < 14) return d === 1 ? 'yesterday' : d + ' days ago';
+    return Math.floor(d / 7) + ' weeks ago';
+  }
+  function insGames(n) { return fmt(n || 0) + ((n || 0) === 1 ? ' game' : ' games'); }
+  function insNote(key, txt) {
+    var open = mod.ovInfo === key;
+    return { btn: '<button type="button" class="ca-ov-i' + (open ? ' is-on' : '') + '" data-ca="adm-ov-info" data-v="' + esc(key) + '" aria-label="About ' + esc(key) + '" aria-expanded="' + open + '">i</button>', body: open ? '<p class="ca-ov-note">' + esc(txt) + '</p>' : '' };
+  }
+  function insHead(title, key, txt) { var n = key ? insNote(key, txt) : { btn: '', body: '' }; return '<div class="ca-ov-h"><h3 class="ca-h3">' + title + '</h3>' + n.btn + '</div>' + n.body; }
+  function insBuilt(S) {
+    var X = mod.ins || {};
+    return '<div class="ca-lb-upd"><span>' + (X.loading ? 'Loading&hellip;' : 'Last Built ' + esc(insAgo(S.at))) + '</span><button type="button" class="ca-lb-refresh" data-ca="adm-refresh" data-v="ins"' + (X.loading ? ' disabled' : '') + '><span aria-hidden="true">&#x21BB;</span> Refresh</button></div>';
+  }
+  function insTools() {
+    if (!mod.owner) return '';
+    var b = mod.insBuild || {};
+    return '<div class="ca-ov-h"><h3 class="ca-h3">Tools</h3></div><div class="ca-ins-tool"><b>&#x1F504; Rebuild Insights</b>' +
+      '<p class="ca-muted">It builds by itself every day at 4:30am. A rebuild reads every account again (about 60000 reads), so once a day is plenty.</p>' +
+      (b.err ? '<p class="ca-lb-err" role="alert">' + esc(b.err) + '</p>' : '') +
+      '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-ins-build"' + (b.busy ? ' disabled' : '') + '>' + (b.busy ? 'Building&hellip; About a Minute' : 'Rebuild Now') + '</button></div>';
+  }
+  function admInsights() {
+    admFetch('ins', 'adminInsights');
+    var X = mod.ins || {}, d = X.data;
+    if (!d) return X.err ? admWait(X) : '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div><p class="ca-muted">Loading Insights. The first build reads every account, so it can take a minute.</p></div>';
+    var S = d.summary;
+    if (!S) return '<p class="ca-muted ca-center">No Insights yet.</p>' + insTools();
+    if (mod.insSeg) return admInsSeg(S);
+    var T = S.totals || {}, pct = function (n) { return T.players ? Math.round(n / T.players * 100) + '%' : '0%'; };
+    var h = insBuilt(S) + '<div class="ca-ov-glance">' + [
+      ['Players', fmt(T.players), 'CAST Profiles', '96,165,250'],
+      ['Played in 28 Days', fmt(T.played4w), pct(T.played4w) + ' of players', '192,132,252'],
+      ['Buyers', fmt(T.buyers), S.spendOk ? money((T.cents || 0) / 100) + ' spent' : 'Sales did not load', '74,222,128'],
+      ['Paying CAST Pass', fmt(T.paying), pct(T.paying) + ' of players', '241,192,115']
+    ].map(function (x) { return '<div class="ca-ov-big" style="--oc:' + x[3] + '"><small>' + x[0] + '</small><b>' + x[1] + '</b><em>' + x[2] + '</em></div>'; }).join('') + '</div>';
+    h += insHead('Segments', 'Segments', 'Every player is in one segment, checked top to bottom: the first that fits is theirs. Spent is everything they have paid, after refunds and before Stripe fees. Can Be Emailed means opted in to emails and 18 or over. Buying Potential (0 to 100) ranks who to offer first: how recently they played, games in the last 4 weeks, how many of those weeks they played, past spend, and 18 or over with emails on. Under 18s score 0, as offers never go to them.');
+    h += '<div class="ca-ins-segs">' + (S.segs || []).map(function (s) {
+      return '<button type="button" class="ca-ins-seg' + (s.pass ? ' is-pass' : '') + '" style="--oc:' + (INS_C[s.id] || '162,162,184') + '" data-ca="adm-ins-seg" data-v="' + esc(s.id) + '">' +
+        '<span class="ca-ins-top"><span class="ca-ins-name"><span aria-hidden="true">' + s.emoji + '</span> ' + esc(s.name) + '</span><span class="ca-lb-go" aria-hidden="true">&rsaquo;</span></span>' +
+        '<span class="ca-ins-nums"><span><b>' + fmt(s.n) + '</b><small>Players</small></span><span><b>' + s.pct + '%</b><small>Of All</small></span><span><b>' + (S.spendOk ? money((s.cents || 0) / 100) : '&hellip;') + '</b><small>Spent</small></span></span>' +
+        '<span class="ca-ins-act">' + esc(s.action) + '</span>' +
+        '<span class="ca-ins-foot">' + fmt(s.reach) + ' can be emailed &middot; Potential ' + fmt(s.pot) + ' on average' + (s.fav && s.fav[0] ? ' &middot; Mostly ' + esc((GAMES[s.fav[0].g] || { name: s.fav[0].g }).name) : '') + '</span></button>';
+    }).join('') + '</div>';
+    // The last 8 weeks (Monday to Sunday, Sydney time), one number at a time as bars
+    var tk = INS_TREND.some(function (x) { return x[0] === mod.insTrend; }) ? mod.insTrend : 'active', tr = S.trend || [];
+    var max = tr.reduce(function (m, w) { return Math.max(m, w[tk] || 0); }, 0);
+    h += insHead('Last 8 Weeks', 'Last 8 Weeks', 'Monday to Sunday, Sydney time, with this week so far on the right. Players and Games are signed-in players with a saved game that week (Quick Draft never counts); weekly tracking began on 2 Oct 2026, so earlier weeks show a dash. Sign-Ups are new CAST Profiles. Buyers are players who paid for anything that week.') +
+      admSeg(INS_TREND, tk, 'adm-ins-trend') + '<div class="ca-ins-chart" role="img" aria-label="' + esc((INS_TREND.filter(function (x) { return x[0] === tk; })[0] || [])[1] + ' each week') + '">' + tr.map(function (w) {
+        var v = w[tk], p = v == null || !max ? 0 : Math.max(3, Math.round(v / max * 100)), md = String(w.from || '').split('-');
+        return '<div class="ca-ins-wk' + (w.now ? ' is-now' : '') + '"><b>' + (v == null ? '&ndash;' : fmt(v)) + '</b><span class="ca-ins-bar"><i style="height:' + p + '%"></i></span><small>' + (w.now ? 'Now' : (+md[2]) + '/' + (+md[1])) + '</small></div>';
+      }).join('') + '</div>';
+    return h + insTools();
+  }
+  // One segment's players, best Buying Potential first (or by spend, games, last played); tap one for their card
+  function admInsSeg(S) {
+    var id = mod.insSeg, s = (S.segs || []).filter(function (x) { return x.id === id; })[0];
+    if (!s) { mod.insSeg = null; return admInsights(); }
+    var sort = INS_SORTS.some(function (x) { return x[0] === mod.insSort; }) ? mod.insSort : 'pot', key = 'ins_' + id + '_' + sort;
+    admFetch(key, 'adminInsights', { segment: id, sort: sort });
+    var X = mod[key] || {}, d = X.data;
+    var h = '<div class="ca-adm-listhead"><button type="button" class="ca-link ca-back" data-ca="adm-ins-back">&larr; Insights</button>' +
+      '<button type="button" class="ca-lb-refresh" data-ca="adm-ins-seg-refresh"' + (X.loading ? ' disabled' : '') + '><span aria-hidden="true">&#x21BB;</span> Refresh</button></div>' +
+      '<h3 class="ca-h3"><span aria-hidden="true">' + s.emoji + '</span> ' + esc(s.name) + ' <small class="ca-muted">' + fmt(s.n) + '</small></h3>' +
+      '<p class="ca-ov-note ca-ins-actnote" style="--oc:' + (INS_C[id] || '162,162,184') + '"><b>What to Do</b> ' + esc(s.action) + '</p>' + admSeg(INS_SORTS, sort, 'adm-ins-sort');
+    if (!d) return h + admWait(X);
+    var list = d.players || [];
+    if (!list.length) return h + '<p class="ca-muted ca-center ca-lb-empty">Nobody here yet.</p>';
+    h += '<ol class="ca-adm-list ca-adm-people ca-adm-fans">' + list.map(function (x) {
+      var line = [insGames(x.p4w) + ' in 4 weeks', 'played ' + insAgo(x.last)].concat(x.cents ? [money(x.cents / 100) + ' spent'] : []).join(' &middot; ');
+      var tags = '<span class="ca-mod-tag is-pot">Potential ' + fmt(x.pot) + '</span>' + (x.pass === 'paying' ? '<span class="ca-mod-tag is-pass">' + (x.cxl ? 'Cancelling' : 'CAST Pass') + '</span>' : x.pass === 'gift' ? '<span class="ca-mod-tag is-gift">Gifted Pass</span>' : '') +
+        ((x.pass === 'cancelled' || x.pass === 'former') ? '<span class="ca-mod-tag">' + (x.tier ? 'Old Price' : 'Today&rsquo;s Price') + '</span>' : '') +
+        (x.optIn ? '<span class="ca-mod-tag is-mail">Emails</span>' : '') + (x.adult === false ? '<span class="ca-mod-tag is-gone">Under 18</span>' : x.adult ? '<span class="ca-mod-tag">18+</span>' : '');
+      return '<li' + (x.n ? ' class="is-tap" role="button" tabindex="0" data-ca="adm-find-name" data-n="' + esc(x.n) + '"' : '') + '>' + badge(x.c) +
+        '<span class="ca-adm-pn"><b>' + esc(x.n || 'No name yet') + '</b><small>' + line + (x.s ? ' &middot; ' + esc(x.s) : '') + '</small><span class="ca-adm-tags is-under">' + tags + '</span></span>' +
+        (x.n ? '<span class="ca-lb-go" aria-hidden="true">&rsaquo;</span>' : '') + '</li>';
+    }).join('') + '</ol>';
+    if (d.total > list.length) h += '<p class="ca-small">The top ' + fmt(list.length) + ' of ' + fmt(d.total) + ', by ' + esc((INS_SORTS.filter(function (x) { return x[0] === sort; })[0] || [])[1]) + '.</p>';
+    if (mod.owner) {
+      var c = mod.insCsv || {};
+      h += '<div class="ca-adm-btns ca-ins-csv"><button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="adm-ins-csv"' + (c.busy ? ' disabled' : '') + '>' + (c.busy ? 'Getting the List&hellip;' : '&#x2B07;&#xFE0F; Download CSV') + '</button></div>' +
+        '<p class="ca-small">Every player in this segment with a username: username, team, state, emails opted in and Buying Potential. No emails.</p>';
+    }
+    return h;
+  }
+  function insCsvCell(v) { var s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  function admInsCsv() {
+    var id = mod.insSeg, sort = mod.insSort || 'pot', c = mod.insCsv || {};
+    if (!id || c.busy) return;
+    mod.insCsv = { busy: true }; render();
+    callFn('adminInsights', { segment: id, sort: sort, csv: true }).then(function (r) {
+      mod.insCsv = null;
+      var s = ((r.summary && r.summary.segs) || []).filter(function (x) { return x.id === id; })[0] || { name: id };
+      var lines = [['Username', 'Team', 'State', 'Emails Opted In', 'Buying Potential']].concat((r.csv || []).map(function (x) { return [x[0], (TEAMS[x[1]] || {}).name || x[1], x[2], x[3] ? 'Yes' : 'No', x[4]]; }));
+      var text = lines.map(function (l) { return l.map(insCsvCell).join(','); }).join('\r\n') + '\r\n';
+      var url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })), a = document.createElement('a');
+      a.href = url; a.download = 'cast-insights-' + String(s.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      flash('Downloaded ' + fmt((r.csv || []).length) + ' players from ' + s.name + '.');
+    }, function (err) { mod.insCsv = null; flash(fnError(err)); });
+  }
+  function admInsBuild() {
+    if (!mod.owner || (mod.insBuild && mod.insBuild.busy)) return;
+    mod.insBuild = { busy: true }; render();
+    callFn('adminInsights', { refresh: true }).then(function (r) {
+      mod.insBuild = null; mod.ins = { data: r, at: Date.now() };
+      Object.keys(mod).forEach(function (k) { if (k.indexOf('ins_') === 0) mod[k] = null; }); // every segment list is from the old build
+      flash('Insights rebuilt.'); render();
+    }, function (err) { mod.insBuild = { err: fnError(err) }; render(); });
+  }
+  // A looked-up player's Profile block (adminLookup's insight): their segment, Buying Potential and how they play
+  function insProfile(r) {
+    var x = r && r.insight;
+    if (!x) return '';
+    var G = x.fav ? GAMES[x.fav] || { name: x.fav } : null;
+    var rows = [['Games This Week', fmt(x.pw)], ['Games, Last 4 Weeks', fmt(x.p4w)], ['Weeks Played', x.wk4 + ' of the last 4'], ['Last Played', x.last ? insAgo(x.last) : 'Never'],
+      ['Favourite Game', G ? esc(G.name) : 'None yet'], ['Spent on Wildcards and Picks', x.spendOk ? money((x.items || 0) / 100) : 'Did not load']];
+    if ((x.pass === 'cancelled' || x.pass === 'former')) rows.push(['Comes Back At', x.back ? money(x.back / 100) + ' a month (their old price)' : 'Today&rsquo;s price']);
+    return '<section class="ca-adm-sec ca-ins-prof" style="--oc:' + (INS_C[x.seg] || '162,162,184') + '"><h4 class="ca-adm-sec-h">Profile</h4>' +
+      '<div class="ca-ins-ptop"><span class="ca-ins-chip"><span aria-hidden="true">' + x.emoji + '</span> ' + esc(x.segName) + '</span><span class="ca-ins-pot"><b>' + fmt(x.pot) + '</b><small>Buying Potential</small></span></div>' +
+      '<p class="ca-ins-act">' + esc(x.action) + '</p>' +
+      '<dl class="ca-adm-rows">' + rows.map(function (y) { return '<div' + (String(y[1]).length > 18 ? ' class="is-wide"' : '') + '><dt>' + y[0] + '</dt><dd>' + y[1] + '</dd></div>'; }).join('') + '</dl></section>';
   }
   // Take Down: two steps, naming who comes down
   function fanClearBtns(name) {
@@ -10307,7 +10447,8 @@
       case 'mod-act': modAct(+t.getAttribute('data-i'), t.getAttribute('data-a')); break;
       case 'mod-verify': { var vi = document.getElementById('caVerify'); mod.vdraft = vi ? vi.value : ''; modVerify(mod.vdraft, true); break; }
       case 'mod-unverify': modVerify(t.getAttribute('data-n'), false); break;
-      case 'adm-tab': mod.tab = t.getAttribute('data-v'); mod.moreOpen = false; mod.launchesOpen = false; mod.lookConfirm = null; mod.flagConfirm = null; mod.list = null; render(); break;
+      case 'adm-tab': if (t.getAttribute('data-v') === 'insights' && mod.tab === 'insights') mod.insSeg = null; // the tab again: back to the segments
+        mod.tab = t.getAttribute('data-v'); mod.moreOpen = false; mod.launchesOpen = false; mod.lookConfirm = null; mod.flagConfirm = null; mod.list = null; render(); break;
       case 'adm-more': mod.moreOpen = !mod.moreOpen; render(); break;
       case 'adm-clear': mod.look = null; mod.lookQ = ''; mod.lookConfirm = null; mod.birthOpen = false; mod.trophy = null; render(); break;
       case 'adm-list': { var lk = t.getAttribute('data-v'); if (lk.charAt(0) === '#') { mod.tab = lk.slice(1); mod.list = null; } else mod.list = { kind: lk, label: t.getAttribute('data-l') }; render(); break; }
@@ -10355,8 +10496,15 @@
       case 'adm-wc': admWc(t.getAttribute('data-v') === 'on'); break;
       case 'adm-imm-cancel': mod.immL = {}; render(); break;
       case 'adm-imm': admImm(t.getAttribute('data-v') === 'on'); break;
-      case 'adm-refresh': { var ak = t.getAttribute('data-v'); admFetch(ak, { ov: 'adminOverview', flags: 'adminFlags', log: 'adminLog', fans: 'adminFans' }[ak], ak === 'ov' ? { fresh: true } : {}, true); if (ak === 'ov') { var sb = mod.suBy || '24h'; admFetch('su_' + sb, 'adminSignups', { by: sb, fresh: true }, true); } render(); break; }
+      case 'adm-refresh': { var ak = t.getAttribute('data-v'); admFetch(ak, { ov: 'adminOverview', flags: 'adminFlags', log: 'adminLog', fans: 'adminFans', ins: 'adminInsights' }[ak], ak === 'ov' ? { fresh: true } : {}, true); if (ak === 'ov') { var sb = mod.suBy || '24h'; admFetch('su_' + sb, 'adminSignups', { by: sb, fresh: true }, true); } render(); break; }
       case 'adm-fans-cat': mod.fansCat = t.getAttribute('data-v'); render(); break;
+      case 'adm-ins-seg': mod.insSeg = t.getAttribute('data-v'); mod.insSort = 'pot'; render(); { var ip = el.querySelector('.ca-panel'); if (ip) ip.scrollTop = 0; } break;
+      case 'adm-ins-back': mod.insSeg = null; render(); break;
+      case 'adm-ins-sort': mod.insSort = t.getAttribute('data-v'); render(); break;
+      case 'adm-ins-seg-refresh': admFetch('ins_' + mod.insSeg + '_' + (mod.insSort || 'pot'), 'adminInsights', { segment: mod.insSeg, sort: mod.insSort || 'pot' }, true); render(); break;
+      case 'adm-ins-trend': mod.insTrend = t.getAttribute('data-v'); render(); break;
+      case 'adm-ins-build': admInsBuild(); break;
+      case 'adm-ins-csv': admInsCsv(); break;
       case 'adm-fans-per': mod.fansPer = t.getAttribute('data-v'); render(); break;
       case 'adm-spend-by': mod.spendBy = t.getAttribute('data-v'); render(); break;
       case 'adm-fan-ask': mod.fanAsk = true; render(); break;
