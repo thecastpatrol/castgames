@@ -377,7 +377,7 @@
     idleEl.style.cssText = '--c1:' + g.c1 + ';--ink:' + g.ink;
     idleEl.innerHTML = '<div class="cg-idle-box">' +
       '<span class="cg-idle-art">' + (g.logo ? '<img src="' + url(g.logo) + '" alt="">' : '<span class="cg-mark" aria-hidden="true">' + g.mark + '</span>') + '</span>' +
-      '<span class="cg-idle-k">' + esc(sp.name || '') + '</span><h1>' + esc(g.name) + '</h1><p>' + esc(on ? g.long || g.line : g.name + ' opens soon.') + '</p>' +
+      '<span class="cg-idle-k">' + esc(sp.name || '') + '</span><h1>' + esc(g.name) + '</h1><p>' + esc(g.long || g.line) + '</p>' +
       (on ? '<button type="button" class="cg-idle-btn" data-cg-idle-play>Play</button>' : '<span class="cg-idle-soon">Opens Soon</span>') +
       '<a class="cg-idle-alt" href="' + url('') + '">&#x1F3E0; All Games</a></div>';
     idleEl.hidden = false;
@@ -387,6 +387,17 @@
     if (idleEl) idleEl.hidden = true;
     document.documentElement.classList.remove('cg-idle-on');
   }
+
+  /* An old link that opens a game's folder on another mode (/27-0/?play=wc, /25000runs/?play=ou, a leaderboard's Play):
+     that mode's own page instead, before anything shows (17 Oct 2026: every mode is its own game) */
+  (function () {
+    var here = currentGame(), m = /[?&]play=([a-z-]+)(?=&|#|$)/.exec(location.search);
+    if (!here || !here.folder || !m || m[1] === 'daily') return;
+    var mode = m[1] === 'aflw' ? 'nrlw' : /^bingo/.test(m[1]) ? 'bingo' : m[1], g = forMode(here.folder, mode);
+    if (!g || g.id === here.id || !g.path) return;
+    var q = mode === 'bingo' ? location.search : location.search.replace(/([?&])play=[^&#]*&?/, '$1').replace(/[?&]$/, '');
+    location.replace(url(g.path) + q + location.hash);
+  })();
 
   window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, popular: popular, sportOf: sportOf, game: game, forMode: forMode, continueOf: continueOf, inProgress: inProgress,
     launched: launched, url: url, root: ROOT, openSwitcher: openSwitcher, track: track, leave: leave, bootIdle: bootIdle, bootDone: bootDone };
