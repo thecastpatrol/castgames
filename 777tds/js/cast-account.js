@@ -4900,13 +4900,13 @@
     '1000tries': ['Alex Johnston', '240', 'NRL tries', 'the most in NRL history', '1000TRIES 1000+ and Exactly 1000'],
     '4000goals': ['Tony Lockett', '1360', 'VFL and AFL goals', 'the most in VFL and AFL history', '4000 GOALS 4000+ and Exactly 4000'],
     bigbash: ['Chris Lynn', '4133', 'BBL runs', 'the most in BBL history', '25000 RUNS 25000+ and Exactly 25000'],
-    tests: ['Don Bradman', '6996', 'Test runs', 'at 99.94, the GOAT by reputation', '60000 RUNS 60000+ and Exactly 60000'],
+    tests: ['Sachin Tendulkar', '15921', 'Test runs', 'the most in Test history', '60000 RUNS 60000+ and Exactly 60000'], // each game's GOAT is its #1 in the stat (17 Oct 2026, the owner)
     nfl: ['Jerry Rice', '208', 'NFL TDs', 'the most in NFL history', '777 TDS 777+ and Exactly 777'],
     racing: ['Damien Oliver', '129', 'Group 1 wins', '', 'G1 WINNER SPINNER 550+ and Exactly 550'],
     epl: ['Alan Shearer', '260', 'Premier League goals', 'the most in Premier League history', '650 GOALS 650+ and Exactly 650']
   };
   var GOAT_HERE = GOATS[CFG.game] || null;
-  // "Don Bradman, 6996 Test runs at 99.94, the GOAT by reputation" / "Alex Johnston, 240 NRL tries, the most in NRL history"
+  // "Sachin Tendulkar, 15921 Test runs, the most in Test history" / "Alex Johnston, 240 NRL tries, the most in NRL history"
   function goatLine(g) { return g[0] + ', ' + g[1] + ' ' + g[2] + (g[3] ? (/^at /.test(g[3]) ? ' ' : ', ') + g[3] : ''); }
   var ITM = {
     // The GOAT: this game's (GOATS above), or all of them on a page without one
@@ -7607,7 +7607,7 @@
     ['rv', '&#x1F440;', 'Reveals', 'See the hidden numbers before you pick: tries, goals, runs, TDs, Group 1 wins or ratings, whichever game you play.', '', ['reveal5', 'reveal1']],
     ['legend', '&#x2B50;', 'Legend Keys', 'Swap an offer for a Legends Pick: three greats of the game to choose from. Use as many as you have in one team.', 'In each draft game\u2019s main mode', ['legend3', 'legend1']],
     ['goat', '&#x1F410;', 'The GOAT', GOAT_HERE ? goatLine(GOAT_HERE) + ', straight into your ' + TEAM_N + ' as your next pick. In another draft game, it brings that game\u2019s GOAT.'
-      : 'The all-time great of whichever game you play, straight into your team as your next pick: Alex Johnston, Tony Lockett, Chris Lynn, Don Bradman, Jerry Rice or Damien Oliver.', 'In each draft game\u2019s main mode and Exactly, once a game', ['goat1']],
+      : 'The all-time great of whichever game you play, straight into your team as your next pick: Alex Johnston, Tony Lockett, Chris Lynn, Sachin Tendulkar, Jerry Rice or Damien Oliver.', 'In each draft game\u2019s main mode and Exactly, once a game', ['goat1']],
     ['imm', '&#x1F3DB;&#xFE0F;', 'Immortal Pick', 'Choose one of three of the game\u2019s Immortals for an open spot in your 13: at 99 in 27-0, with his career tries in 1000TRIES.', '27-0 (Classic, Hard and Packs) and 1000TRIES (1000+, Exactly 1000 and Team Spin), any time', ['imm3', 'imm1']],
     ['superstar', '&#x1F31F;', 'Superstar Keys', '27-0\u2019s own key: your next spin has a player rated 95 or more.', '27-0 Classic and Pack', ['superstar3', 'superstar1']],
     ['rib', '&#x23EA;', 'Run It Back', 'Just missed out? Run a 27-0 season back and your closest loss becomes a win, or keep an over/under streak alive.', '', ['rib3', 'rib1']],
