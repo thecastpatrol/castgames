@@ -42,11 +42,12 @@
 
   /* ---------------- This week's boards ----------------
      Each live card's main board (g.board) has a public summary for the week, boards/<board>_<ISO week in Sydney>, with
-     its top 100 and how many players are on it (firestore.rules: anyone may get one). They are read together in one
-     request (one read each), only once the Leaderboards are close to the screen and only for live games, and kept on
-     this device for 10 minutes: { at, wk, u, b: { <board>: { p, n, s, t, all, me } } }. The order of the cards and
-     Most Popular use the last copy kept, even an older one, until a new one comes in. The player's place comes from the
-     same top 100 (no extra reads): "#14" when they're in it, "not played yet" when the board lists everyone */
+     its top 100 and how many players are on it (firestore.rules: anyone may get one). They are read together (since 18
+     Oct 2026 one read for them all, the server's summary below), only once the Leaderboards are close to the screen and
+     only for live games, and kept on this device for 10 minutes: { at, wk, u, b: { <board>: { p, n, s, t, all, me } } }.
+     The order of the cards and Most Popular use the last copy kept, even an older one, until a new one comes in. The
+     player's place comes from the same top 100 (no extra reads): "#14" when they're in it, "not played yet" when the
+     board lists everyone */
   var FS_PROJECT = 'cast-games-bd641', FS_KEY = 'AIzaSyC76_SWOqYJbwfqPWhx0eVX2WwruE5ryRU'; // public by design (the account's own), locked to our domains
   var EMU = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && /[?&]castemu=1(&|$)/.test(location.search);
   var LS_B = 'cg_home_boards_v1', TTL = 600000;
@@ -95,25 +96,54 @@
   // A returning player's sign-in is still on its way: wait for it (up to 6 s), so the boards are read once, with their place
   var acctWait = 0;
   function acctLoading() { var w = call('contactWho', null); return !!w && w.state === 'loading'; }
+  /* One read for all of them (speed pass, 18 Oct 2026): the server's summary, boards/home_<week> (1000TRIES functions
+     homeBoards, every 5 minutes): b, every board's players and #1; r, each top 100's places, asked for only when signed
+     in (a guest's request leaves it out). It replaces a read per game (31 a visit). Any board it doesn't have (a new
+     game), or all of them when it is missing or more than 20 minutes old, are read on their own as before */
+  var SUM_OLD = 1200000;
+  function fsUrl(path, q) { return (EMU ? 'http://127.0.0.1:8085/v1/' : 'https://firestore.googleapis.com/v1/') + path + '?' + (EMU ? '' : 'key=' + FS_KEY + '&prettyPrint=false&') + (q || ''); }
+  function meIn(r, name) { // "place,score,tiebreak,name" a line, best first
+    var ls = String(r || '').split('\n');
+    for (var i = 0; i < ls.length; i++) { var x = ls[i].split(','); if (x.length > 3 && x.slice(3).join(',') === name) return { r: +x[0], s: +x[1], t: +x[2] }; }
+    return null;
+  }
+  function fromSummary(base, wk, u, due, got) {
+    return fetch(fsUrl(base + '/boards/home_' + wk, u ? '' : 'mask.fieldPaths=b&mask.fieldPaths=at&mask.fieldPaths=wk'))
+      .then(function (r) { if (r.status === 404) return {}; if (!r.ok) throw new Error('home ' + r.status); return r.json(); })
+      .then(function (j) {
+        var f = (j && j.fields) || {}, at = fsVal(f.at) || 0, b = fsVal(f.b) || {}, rk = u ? fsVal(f.r) || {} : {};
+        if (fsVal(f.wk) !== wk || !(Date.now() - at < SUM_OLD)) return due;
+        return due.filter(function (id) {
+          var x = b[id];
+          if (!x || typeof x !== 'object') return true;
+          got[id] = { p: +x.p || 0, n: x.n || '', s: +x.s || 0, t: +x.t || 0, all: !!x.all, me: u ? meIn(rk[id], u) : null };
+          return false;
+        });
+      }, function () { return due; });
+  }
+  function fromBoards(base, wk, u, list, got) {
+    return fetch(fsUrl(base + ':batchGet'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documents: list.map(function (b) { return base + '/boards/' + b + '_' + wk; }) }) })
+      .then(function (r) { if (!r.ok) throw new Error('boards ' + r.status); return r.json(); })
+      .then(function (res) {
+        (Array.isArray(res) ? res : []).forEach(function (x) {
+          var name = (x.found && x.found.name) || x.missing || '', id = name.split('/').pop(), b = id.slice(0, id.lastIndexOf('_'));
+          if (!b) return;
+          var f = (x.found && x.found.fields) || {}, top = fsVal(f.top) || [], p = fsVal(f.players) || 0, one = top[0] || null;
+          got[b] = { p: p, n: one ? one.n : '', s: one ? one.s : 0, t: one ? one.t || 0 : 0, all: top.length >= p, me: u ? placeOf(top, u) : null };
+        });
+      });
+  }
   function loadBoards() {
     if (bdBusy || bdFailed || !window.fetch) return;
     if (acctLoading() && acctWait !== 2) { if (!acctWait) { acctWait = 1; setTimeout(function () { acctWait = 2; loadBoards(); }, 6000); } return; }
     var due = boardsDue();
     if (!due.length) return;
     var wk = sydWeek(Date.now()), u = uname() || '', all = due.length === boardGames().length;
-    var proj = EMU ? 'demo-cast-games' : FS_PROJECT, base = 'projects/' + proj + '/databases/(default)/documents';
-    var url = (EMU ? 'http://127.0.0.1:8085/v1/' : 'https://firestore.googleapis.com/v1/') + base + ':batchGet' + (EMU ? '' : '?key=' + FS_KEY + '&prettyPrint=false');
+    var base = 'projects/' + (EMU ? 'demo-cast-games' : FS_PROJECT) + '/databases/(default)/documents', got = {};
     bdBusy = true;
-    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documents: due.map(function (b) { return base + '/boards/' + b + '_' + wk; }) }) })
-      .then(function (r) { if (!r.ok) throw new Error('boards ' + r.status); return r.json(); })
-      .then(function (list) {
-        var got = {};
-        (Array.isArray(list) ? list : []).forEach(function (x) {
-          var name = (x.found && x.found.name) || x.missing || '', id = name.split('/').pop(), b = id.slice(0, id.lastIndexOf('_'));
-          if (!b) return;
-          var f = (x.found && x.found.fields) || {}, top = fsVal(f.top) || [], p = fsVal(f.players) || 0, one = top[0] || null;
-          got[b] = { p: p, n: one ? one.n : '', s: one ? one.s : 0, t: one ? one.t || 0 : 0, all: top.length >= p, me: u ? placeOf(top, u) : null };
-        });
+    fromSummary(base, wk, u, due, got)
+      .then(function (rest) { return rest.length ? fromBoards(base, wk, u, rest, got) : null; })
+      .then(function () {
         bd = all || !bd || bd.wk !== wk ? { at: Date.now(), wk: wk, u: u, b: {} } : bd;
         if (all) { bd.at = Date.now(); bd.u = u; }
         Object.keys(got).forEach(function (b) { bd.b[b] = got[b]; });

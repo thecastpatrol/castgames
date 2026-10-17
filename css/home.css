@@ -139,6 +139,8 @@ a { color: inherit; }
 .cg-foot a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .05); color: #d6d6e4; font: 800 12.5px/1 Inter, sans-serif; text-decoration: none; }
 @media (hover: hover) { .cg-foot a:hover { border-color: rgba(255, 255, 255, .4); color: #fff; } }
 .cg-foot small { flex-basis: 100%; margin-top: 6px; text-align: center; color: #78788e; font: 700 12px/1.4 Inter, sans-serif; }
+/* Until js/home.js draws the page the footer waits unseen at its place, so it never shows at the top and jumps down (speed pass, 18 Oct 2026: a layout shift of 0.15 on every phone load) */
+#cgHome:empty ~ .cg-foot { visibility: hidden; }
 
 /* ---------- Desktop: the same order, wider. Rows and Most Popular show every card (seven across, wrapping when a
    sport has more); the hero shows one 200px slide at a time; Leaderboards stay a strip with arrows; Dailies five across ---------- */
