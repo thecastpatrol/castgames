@@ -62,9 +62,9 @@
     { id: 'higher-or-lower-nrl', art: 'hol-nrl', sport: 'nrl', name: 'HIGHER OR LOWER: NRL', pill: '&#x25B2;&#x25BC; NRL', path: 'higher-or-lower-nrl/', folder: '1000tries', mode: 'ou', logo: L + 'hol-nrl.png', mark: '&#x25B2;&#x25BC;', status: 'live', launch: 'ou', ou: true,
       line: 'Career tries, vs the clock', long: 'Higher or lower? Call NRL players’ career tries before the clock runs out.', board: '1000ou' },
     // NRL Bingo (17 Oct 2026): a Coming Soon card until the owner's Launch ('bingo') or on a device that opened his private
-    // link; its Daily's link is ?play=bingo-daily (dplay)
+    // link. One endless game, no Daily (the owner, 17 Oct 2026); the 4 x 6 card of 24 tiles
     { id: 'nrl-bingo', art: 'nrl-bingo', sport: 'nrl', name: 'NRL BINGO', path: 'nrl-bingo/', folder: '1000tries', mode: 'bingo', logo: L + 'nrl-bingo.png', mark: '&#x2705;', status: 'live', launch: 'bingo',
-      line: 'Tap his clubs, fill the card', long: 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.', board: 'bgfree', daily: true, dplay: 'bingo-daily' },
+      line: 'Tap his teams, fill the card', long: 'A player comes up: tap a team he played for. Fill all 24 tiles of the card for a Full House.', board: 'bgfree' },
     // SC POINTS KING (17 Oct 2026): the NRL SC spinner, a 13 of player seasons in SC positions, no target (the biggest total
     // wins). A Coming Soon card until the owner's Launch ('sc'); its page plays already (the testers' way in)
     { id: 'scpointsking', art: 'sc-points-king', sport: 'nrl', name: 'SC POINTS KING', pill: 'SC KING', path: 'scpointsking/', folder: 'scpointsking', mode: 'plus', logo: L + 'sc-points-king.png', status: 'live', launch: 'sc',
@@ -360,7 +360,7 @@
     var m = d.mode === 'aflw' ? 'nrlw' : d.mode === 'bingod' ? 'bingo' : d.mode, g = forMode(folder, m);
     if (!g || g.id === here.id || !g.path) return;
     e.stopImmediatePropagation();
-    location.href = url(g.path) + (d.mode === 'bingod' ? '?play=bingo-daily' : '');
+    location.href = url(g.path); // an old Daily Bingo board's Play opens NRL Bingo itself (no Daily since 17 Oct 2026)
   });
 
   /* A page for one mode (window.CG_MODE, tools/build.py): the game opens straight into it (its js/app.js or theme-fx.js
