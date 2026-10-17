@@ -255,7 +255,7 @@ SOON = {'play-on': ('poOn', '4000goals', '4000 GOALS', 'Call AFL players\' caree
 # NRL Bingo's page (17 Oct 2026): 1000TRIES opened on the mode, like Six Again's, with its own words
 BINGO_PAGES = {'nrl-bingo': ('1000tries', 'NRL Bingo')}
 BINGO_LINE = 'Fill the Card'
-SOON_KICK = {'nrl-bingo': 'NRL Bingo'}
+SOON_KICK = {'nrl-bingo': 'New Game'}
 SOON_CSS = ('<style>html.cg-soon-on body > *:not(.cg-bar):not(#cgSoon):not(script) { display: none !important; }'
             '#cgSoon { display: grid; place-items: center; min-height: calc(100vh - var(--cg-bar-h, 112px)); min-height: calc(100dvh - var(--cg-bar-h, 112px)); padding: 32px 16px; box-sizing: border-box;'
             ' background: radial-gradient(70% 50% at 50% 20%, rgba(var(--soon-rgb), .35), transparent 70%), #0a0a0f; color: #fff; font-family: Inter, -apple-system, system-ui, sans-serif; }'
