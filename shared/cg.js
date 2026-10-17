@@ -42,9 +42,9 @@
       line: 'Draft 13 to 1000 tries', long: 'Draft 13 NRL players with their tries hidden and reach 1000 career tries.', of: 13, draft: '1000tries_draft_v1', board: '1000plus', daily: true, stats: '1000tries' },
     { id: '27-0', sport: 'nrl', name: '27-0 CLASSIC', pill: '27-0 CLASSIC', path: '27-0/', folder: '27-0', mode: 'classic', logo: L + '27-0.png', status: 'live',
       line: 'Build a 13, go undefeated', long: 'Spin a club and season, draft a 13 from any NRL season since 1998 and go undefeated.', of: 13, draft: '270_draft_v1', board: '270best', daily: true, stats: '27-0' },
-    { id: '1000tries-exactly', sport: 'nrl', name: '1000TRIES EXACTLY', path: '1000tries-exactly/', folder: '1000tries', mode: 'exact', logo: L + '1000tries.png', tag: 'Exactly 1000', status: 'live',
+    { id: '1000tries-exactly', sport: 'nrl', name: '1000TRIES EXACTLY', pill: 'EXACTLY 1000', path: '1000tries-exactly/', folder: '1000tries', mode: 'exact', logo: L + '1000tries.png', tag: 'Exactly 1000', status: 'live',
       line: 'Land on 1000 tries exactly', long: 'Draft 13 NRL players and land on exactly 1000 career tries. Under or over and you miss.', of: 13, draft: '1000tries_draft_v1_exact', board: '1000exact' },
-    { id: '27-0-pack', sport: 'nrl', name: '27-0 PACK MODE', path: '27-0-pack/', folder: '27-0', mode: 'pack', logo: L + '27-0.png', tag: 'Pack Mode', status: 'live',
+    { id: '27-0-pack', sport: 'nrl', name: '27-0 PACK MODE', pill: '27-0 PACK', path: '27-0-pack/', folder: '27-0', mode: 'pack', logo: L + '27-0.png', tag: 'Pack Mode', status: 'live',
       line: 'Rip open 7 packs, go 27-0', long: 'Rip open 7 packs of NRL players, build your 13 and go undefeated.', of: 13, draft: '270_draft_v1_pack', board: '270pack' },
     { id: '1000tries-team-spin', sport: 'nrl', name: '1000TRIES TEAM SPIN', pill: 'TEAM SPIN', path: '1000tries-team-spin/', folder: '1000tries', mode: 'spin', logo: L + '1000tries.png', tag: 'Team Spin', status: 'live',
       line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a club and season, and pick from that squad. Reach 1000 tries.', of: 13, draft: '1000tries_draft_v1_spin', board: '1000spin' },
@@ -67,7 +67,7 @@
     // AFL
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', folder: '4000goals', mode: 'plus', logo: L + '4000goals.png', status: 'live',
       line: 'Draft 18 to 4000 goals', long: 'Draft an AFL 18 with their goals hidden and reach 4000 career goals.', of: 18, draft: '4000goals_draft_v1', board: '4000plus', daily: true, stats: '4000goals' },
-    { id: '4000goals-exactly', sport: 'afl', name: '4000 GOALS EXACTLY', path: '4000goals-exactly/', folder: '4000goals', mode: 'exact', logo: L + '4000goals.png', tag: 'Exactly 4000', status: 'live',
+    { id: '4000goals-exactly', sport: 'afl', name: '4000 GOALS EXACTLY', pill: 'EXACTLY 4000', path: '4000goals-exactly/', folder: '4000goals', mode: 'exact', logo: L + '4000goals.png', tag: 'Exactly 4000', status: 'live',
       line: 'Land on 4000 goals exactly', long: 'Draft an AFL 18 and land on exactly 4000 career goals.', of: 18, draft: '4000goals_draft_v1_exact', board: '4000exact' },
     { id: '4000goals-team-spin', sport: 'afl', name: '4000 GOALS TEAM SPIN', pill: 'TEAM SPIN', path: '4000goals-team-spin/', folder: '4000goals', mode: 'spin', logo: L + '4000goals.png', tag: 'Team Spin', status: 'live',
       line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a club and season, and pick from that squad. Reach 4000 goals.', of: 18, draft: '4000goals_draft_v1_spin', board: '4000spin' },
@@ -82,9 +82,9 @@
       line: 'Big Bash XI to 25000 runs', long: 'Draft a Big Bash XI with their BBL runs hidden and reach 25000 BBL runs.', of: 11, draft: '25000runs_draft_v1', board: 'bbplus', daily: true },
     { id: 'higher-or-lower-cricket', sport: 'cricket', name: 'HIGHER OR LOWER: CRICKET', pill: '&#x25B2;&#x25BC; CRICKET', path: 'higher-or-lower-cricket/', folder: '25000runs', mode: 'ou', logo: '', mark: '&#x25B2;&#x25BC;', status: 'live', ou: true,
       line: 'Test and BBL numbers, vs the clock', long: 'Higher or lower? Call Test and Big Bash runs and wickets before the clock runs out.', board: 'bbou' },
-    { id: '60000runs-exactly', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS EXACTLY', path: '60000runs-exactly/', folder: '60000runs', mode: 'exact', logo: L + '60000runs.png', tag: 'Exactly 60000', status: 'live',
+    { id: '60000runs-exactly', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS EXACTLY', pill: 'EXACTLY 60000', path: '60000runs-exactly/', folder: '60000runs', mode: 'exact', logo: L + '60000runs.png', tag: 'Exactly 60000', status: 'live',
       line: 'Land on 60000 Test runs exactly', long: 'Draft a Test XI and land on exactly 60000 Test runs.', of: 11, draft: '60000runs_draft_v1_exact', board: 'tsexact' },
-    { id: '25000runs-exactly', comp: 'Big Bash', sport: 'cricket', name: '25000 RUNS EXACTLY', path: '25000runs-exactly/', folder: '25000runs', mode: 'exact', logo: L + '25000runs.png', tag: 'Exactly 25000', status: 'live',
+    { id: '25000runs-exactly', comp: 'Big Bash', sport: 'cricket', name: '25000 RUNS EXACTLY', pill: 'EXACTLY 25000', path: '25000runs-exactly/', folder: '25000runs', mode: 'exact', logo: L + '25000runs.png', tag: 'Exactly 25000', status: 'live',
       line: 'Land on 25000 BBL runs exactly', long: 'Draft a Big Bash XI and land on exactly 25000 BBL runs.', of: 11, draft: '25000runs_draft_v1_exact', board: 'bbexact' },
     { id: '60000runs-team-spin', comp: 'Test Cricket', sport: 'cricket', name: '60000 RUNS TEAM SPIN', pill: 'TEAM SPIN', path: '60000runs-team-spin/', folder: '60000runs', mode: 'spin', logo: L + '60000runs.png', tag: 'Team Spin', status: 'live',
       line: 'Spin a nation and season, pick 1', long: 'Choose a position, spin a Test nation and season, and pick from that squad. Reach 60000 runs.', of: 11, draft: '60000runs_draft_v1_spin', board: 'tsspin' },
@@ -100,7 +100,7 @@
     // Premier League
     { id: '650goals', sport: 'epl', name: '650 GOALS', path: '650goals/', folder: '650goals', mode: 'plus', logo: L + '650goals.png', status: 'live',
       line: 'An XI to 650 PL goals', long: 'Draft a Premier League XI with their goals hidden and reach 650 career goals.', of: 11, draft: '500goals_draft_v1', board: 'eplplus', daily: true },
-    { id: '650goals-exactly', sport: 'epl', name: '650 GOALS EXACTLY', path: '650goals-exactly/', folder: '650goals', mode: 'exact', logo: L + '650goals.png', tag: 'Exactly 650', status: 'live',
+    { id: '650goals-exactly', sport: 'epl', name: '650 GOALS EXACTLY', pill: 'EXACTLY 650', path: '650goals-exactly/', folder: '650goals', mode: 'exact', logo: L + '650goals.png', tag: 'Exactly 650', status: 'live',
       line: 'Land on 650 PL goals exactly', long: 'Draft a Premier League XI and land on exactly 650 career goals.', of: 11, draft: '500goals_draft_v1_exact', board: 'eplexact' },
     { id: '650goals-team-spin', sport: 'epl', name: '650 GOALS TEAM SPIN', pill: 'TEAM SPIN', path: '650goals-team-spin/', folder: '650goals', mode: 'spin', logo: L + '650goals.png', tag: 'Team Spin', status: 'live',
       line: 'Spin a club and season, pick 1', long: 'Choose a position, spin a Premier League club and season, and pick from that squad. Reach 650 goals.', of: 11, draft: '500goals_draft_v1_spin', board: 'eplspin' },
@@ -109,7 +109,7 @@
     // NFL
     { id: '777tds', sport: 'nfl', name: '777 TDS', path: '777tds/', folder: '777tds', mode: 'plus', logo: L + '777tds.png', status: 'live',
       line: '10 players to 777 TDs', long: 'Draft an NFL offence with their touchdowns hidden and reach 777 career touchdowns.', of: 10, draft: '700tds_draft_v1', board: 'nflplus', daily: true },
-    { id: '777tds-exactly', sport: 'nfl', name: '777 TDS EXACTLY', path: '777tds-exactly/', folder: '777tds', mode: 'exact', logo: L + '777tds.png', tag: 'Exactly 777', status: 'live',
+    { id: '777tds-exactly', sport: 'nfl', name: '777 TDS EXACTLY', pill: 'EXACTLY 777', path: '777tds-exactly/', folder: '777tds', mode: 'exact', logo: L + '777tds.png', tag: 'Exactly 777', status: 'live',
       line: 'Land on 777 TDs exactly', long: 'Draft an NFL offence and land on exactly 777 career touchdowns.', of: 10, draft: '700tds_draft_v1_exact', board: 'nflexact' },
     { id: '777tds-team-spin', sport: 'nfl', name: '777 TDS TEAM SPIN', pill: 'TEAM SPIN', path: '777tds-team-spin/', folder: '777tds', mode: 'spin', logo: L + '777tds.png', tag: 'Team Spin', status: 'live',
       line: 'Spin a team and season, pick 1', long: 'Choose a position, spin an NFL team and season, and pick from that roster. Reach 777 touchdowns.', of: 10, draft: '700tds_draft_v1_spin', board: 'nflspin' },
@@ -200,7 +200,7 @@
         return '<button type="button" class="cg-tab' + (t[0] === 'play' ? ' is-on' : '') + '" data-cg="' + t[0] + '"><i aria-hidden="true">' + t[1] + '</i><span>' + t[2] + '</span></button>';
       }).join('') + '</nav>' +
       '<span class="cg-sp"></span>' +
-      '<span class="cg-right"><button type="button" class="cg-new" data-cg="new" hidden><i aria-hidden="true">&#x2699;&#xFE0F;</i><span>New Game</span></button><span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span></span>' +
+      '<span class="cg-right"><button type="button" class="cg-new" data-cg="new" aria-label="New Game" hidden><i aria-hidden="true">&#x2699;&#xFE0F;</i><span>New Game</span></button><span class="cg-acct"><button type="button" data-cast-friends aria-label="Friends" hidden></button><button type="button" data-cast-account aria-label="Sign in to save your history"></button></span></span>' +
       '</div>';
     document.body.insertBefore(el, document.body.firstChild);
     document.documentElement.classList.add('cg-on');
