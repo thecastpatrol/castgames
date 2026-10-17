@@ -1893,3 +1893,9 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 .wildcards .wc.wc-goat { border-color: #f1c073; }
 .wildcards .wc.wc-tweak.is-armed, .wildcards .wc.is-armed { border-color: var(--bad); }
 .wildcards .wc.wc-sub.is-armed { border-color: #93c5fd; box-shadow: 0 0 14px rgba(59, 130, 246, .45); }
+
+/* The Classic card's logo is its headline, so the big number goes (17 Oct 2026, the owner: it doubled up "777") */
+.mode-card.mode-main.is-logo { grid-template-areas: "ico line" "chips chips" "go go"; }
+.mode-card.mode-main.is-logo .mode-line { align-self: center; font-size: 15.5px; }
+.mode-card.mode-main.is-logo .mode-logo { width: 138px; }
+@media (max-width: 420px) { .mode-card.mode-main.is-logo .mode-logo { width: 120px; } }

@@ -205,7 +205,7 @@
   T.WIDE = { LB: 1, RB: 1, LWB: 1, RWB: 1, LM: 1, RM: 1, LW: 1, RW: 1 };
   T.WIDE_SPOT = { LWB: 1, RWB: 1, LM: 1, RM: 1 };
   T.WIDE_ATT = { LM: 1, RM: 1, LW: 1, RW: 1 };
-  T.MID_FLEX = { AM: ['CM'], CM: ['AM', 'DM'], DM: ['CM'] };
+  T.MID_FLEX = { CM: ['AM', 'DM'] }; // only a true CM flexes, to CDM or CAM (17 Oct 2026, the owner: Firmino never at CM)
   T.backThree = function (slots) { return (slots || T.SLOTS).filter(function (c) { return c === 'CB'; }).length === 3; };
   T.canFill = function (p, code) {
     var own = T.positionsOf(p);
