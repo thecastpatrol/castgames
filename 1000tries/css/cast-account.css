@@ -4332,8 +4332,11 @@ button.ca-vl-strip { cursor: pointer; -webkit-tap-highlight-color: transparent; 
 .ca-bg-card { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0 0 14px; }
 .ca-bg-tile { position: relative; display: block; aspect-ratio: 5 / 3.6; overflow: hidden; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
 .ca-bg-tile svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.ca-bg-tile.is-filled { box-shadow: inset 0 0 0 2px rgba(163, 230, 53, .85); }
-.ca-bg-tile.is-filled svg { filter: saturate(.55) brightness(.42); }
+.ca-bg-tile.is-filled { box-shadow: inset 0 0 0 2px #a3e635, 0 0 10px rgba(163, 230, 53, .35); }
+.ca-bg-tile.is-filled svg { filter: saturate(.5) brightness(.5); }
+/* A filled tile reads as right at a glance (the owner, 17 Oct 2026): a lime wash under the tick and the name */
+.ca-bg-tile.is-filled::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(163, 230, 53, .34), rgba(101, 163, 13, .22)); }
+.ca-bg-tile b, .ca-bg-tile small { z-index: 1; }
 .ca-bg-tile b { position: absolute; left: 3px; right: 3px; top: 22%; text-align: center; font: 900 10.5px/1.15 Inter, sans-serif; color: #fff; text-transform: uppercase; overflow-wrap: anywhere; text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
 .ca-bg-tile small { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 2px 4px; background: linear-gradient(180deg, transparent, rgba(4, 6, 10, .85) 55%); text-align: center; font: 800 10px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }
 

@@ -335,12 +335,13 @@
     c.innerHTML = on ? R.ouCard() : '';
     if (d.nextSibling !== c) d.parentNode.insertBefore(c, d.nextSibling);
   }
-  // NRL Bingo's card (17 Oct 2026): straight under Six Again's (or the Daily's), once it's on
+  // NRL Bingo's card (17 Oct 2026): straight under Six Again's (or the Daily's), once it's on. CAST Games only (the owner,
+  // 17 Oct 2026: new games are built for castgames.com.au), so never on the old 1000tries.com.au home
   function placeBingo() {
     var o = $('ouHome') || $('dailyCard'), c = $('bgHome');
     if (!o) return;
     if (!c) { c = document.createElement('div'); c.id = 'bgHome'; c.className = 'bg-home'; }
-    var on = !!(T.bingo && T.bingo.on());
+    var on = !!(T.bingo && T.bingo.on()) && !!window.CG;
     c.hidden = !on;
     c.innerHTML = on && R.bingoCard ? R.bingoCard() : '';
     if (o.nextSibling !== c) o.parentNode.insertBefore(c, o.nextSibling);
@@ -1704,8 +1705,8 @@
     if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
     // Six Again (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
     if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
-    // NRL Bingo (js/bingo.js): Free Play, or its Daily ('bingod', a board's Play button)
-    if (modeId === 'bingo' || modeId === 'bingod') { var bm = modeId === 'bingod' ? 'daily' : 'free'; if (!T.bingo) T.bingoWanted = bm; else if (T.bingo.on()) T.bingo.open(bm); return; }
+    // NRL Bingo (js/bingo.js), one endless game ('bingod': an old Daily Bingo link opens it too)
+    if (modeId === 'bingo' || modeId === 'bingod') { if (!T.bingo) T.bingoWanted = 'go'; else if (T.bingo.on()) T.bingo.open('go'); return; }
     if (!T.MODES[modeId]) return;
     if (!T.players.length) { startWhenReady = modeId; return; } // back from signing in on a phone before the players loaded
     var mid = document.body.getAttribute('data-screen') === 'draft' && !T.state().finished && T.filledCount() > 0;
