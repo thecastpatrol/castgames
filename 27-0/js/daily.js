@@ -565,6 +565,13 @@
     var text = shareText(n, best, themeFor(today()));
     if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); // Invite a Mate v2: their invite code
     track('daily_share', { game: '27-0', daily: n });
+    // Portrait or Story with a Daily picture (growth, 17 Oct 2026, the owner: both sizes on every Share)
+    var CA = window.CastAccount, th = themeFor(today());
+    if (CA && CA.sharePick && CA.shareDraw) {
+      CA.sharePick({ title: 'Share Your Daily', text: text, name: '27-0-daily', where: 'daily',
+        card: { kicker: '27-0 Daily Challenge', title: th.title, who: prettyDate(today()), big: label(best), unit: 'My Best Today', cta: 'Can you beat it?', logo: 'assets/img/27-0-logo.png' } });
+      return;
+    }
     if (navigator.share) { navigator.share({ text: text }).catch(function () {}); return; }
     try { navigator.clipboard.writeText(text).then(function () { flash('Copied. Paste it anywhere.'); }); } catch (e) { flash(text); }
   }

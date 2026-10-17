@@ -1696,7 +1696,7 @@ function showResults() {
 
   // Play Again on its own, Share and Change Mode side by side under it (4 Oct 2026, the owner's call; 1000TRIES the same).
   // A Daily go turns them into Go Again and Share My Best (js/daily.js)
-  _rb+=`<div class="cp-res-acts"><button class="btn cp-res-again" onclick="showSocialPrompt()">🔄 Play Again</button><div class="cp-res-two"><button class="btn cp-res-share" onclick="showShareCard()">📸 Share</button><button class="btn cp-res-mode" onclick="cpChangeMode()">🎮 Change Mode</button></div></div>`;
+  _rb+=`<div class="cp-res-acts"><button class="btn cp-res-again" onclick="showSocialPrompt()">🔄 Play Again</button><div class="cp-res-two"><button class="btn cp-res-share" onclick="showShareCard()">📤 Share</button><button class="btn cp-res-mode" onclick="cpChangeMode()">🎮 Change Mode</button></div></div>`;
   const finalsStatLabel=f.myTeamInFinals?'Finals':'Finals';
   const finalsStatVal=f.myTeamInFinals?`${finalsW}-${finalsL}`:'DNQ';
   const _secSum=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center"><div><div style="font-size:10px;color:var(--muted)">Regular Season</div><div style="font-size:20px;font-weight:900;font-family:'Inter',sans-serif;color:var(--gold)">${s.wins}-${s.losses}</div></div><div><div style="font-size:10px;color:var(--muted)">Finals</div><div style="font-size:20px;font-weight:900;color:${f.myTeamInFinals?(f.isChampion?'var(--gold)':'#fff'):'var(--muted)'}">${finalsStatVal}</div></div><div><div style="font-size:10px;color:var(--muted)">Ladder Finish</div><div style="font-size:20px;font-weight:900;font-family:'Inter',sans-serif">${s.myLadderPos}${ordinal(s.myLadderPos)}</div></div><div><div style="font-size:10px;color:var(--muted)">Pts For</div><div style="font-size:20px;font-weight:900;font-family:'Inter',sans-serif">${s.pf}</div></div><div><div style="font-size:10px;color:var(--muted)">Pts Against</div><div style="font-size:20px;font-weight:900;font-family:'Inter',sans-serif">${s.pa}</div></div><div><div style="font-size:10px;color:var(--muted)">Tries</div><div style="font-size:20px;font-weight:900;font-family:'Inter',sans-serif;color:var(--gold)">${s.tries}</div></div></div>`;
@@ -1989,6 +1989,10 @@ let _smFormat='4x5';
 
 function showShareCard(){
   if(typeof gtag!=='undefined'){gtag('event','share_card_opened',{event_category:'engagement'});gtag('event','share_tapped',{event_category:'engagement'});}
+  // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share); the
+  // Share Your Team pop-up below is for a page whose account file is older
+  const CA=window.CastAccount;
+  if(CA&&CA.sharePick){CA.sharePick({title:'Share Your Team',text:smShareText,name:'27-0-season',where:'results',render:function(size){return buildShareCanvas(size==='story'?'story':'4x5');}});return;}
   _smFormat='4x5';
   document.querySelectorAll('.sm-fmt-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sm-fmt-4x5').classList.add('active');
@@ -2044,8 +2048,7 @@ function smShareImage(){
     if(navigator.share&&blob){
       try{
         const file=new File([blob],'27-0-season.png',{type:'image/png'});
-        await navigator.share({title:'27-0 NRL Era Team',text:smShareText(),files:[file]});
-        if(typeof gtag!=='undefined')gtag('event','share_completed',{event_category:'engagement',method:'native_share'});
+        await navigator.share({title:'27-0 NRL Era Team',text:smShareText(),files:[file]}); // share_completed: the account sends it for every game's share (growth, 17 Oct 2026)
         return;
       }catch(e){}
     }
@@ -2054,7 +2057,8 @@ function smShareImage(){
   });
 }
 function smSocial(p){
-  const t=smShareText(),u=smInvLink('https://castgames.com.au/27-0/'),et=encodeURIComponent(t+' '+u),eu=encodeURIComponent(u);
+  // the message names the link already (Play at ...), so it isn't added twice (growth, 17 Oct 2026)
+  const t=smShareText(),u=smInvLink('https://castgames.com.au/27-0/'),et=encodeURIComponent(t),eu=encodeURIComponent(u);
   if(p==='instagram'){smShareImage();return;}
   const links={x:`https://twitter.com/intent/tweet?text=${et}`,whatsapp:`https://wa.me/?text=${et}`,facebook:`https://www.facebook.com/sharer/sharer.php?u=${eu}&quote=${encodeURIComponent(t)}`};
   if(links[p])window.open(links[p],'_blank');
@@ -2067,7 +2071,7 @@ function smSaveImage(){
   a.click();
 }
 function smCopyLink(){
-  const txt=smShareText()+' '+smInvLink('https://castgames.com.au/27-0/');
+  const txt=smShareText(); // its Play at link is the one to share (growth, 17 Oct 2026: it was there twice)
   const btn=document.getElementById('sm-copy-btn');
   const orig=btn.innerHTML;
   function done(){btn.innerHTML='&#x2705; Copied!';setTimeout(()=>btn.innerHTML=orig,2200);}
@@ -2304,7 +2308,7 @@ function generateShareCard(){
   y+=fLogoH+8;
   tx('THE CAST PATROL',W/2,y,'900 12px system-ui,sans-serif','#f1c073','center');
   y+=16;
-  tx('27-0.app',W/2,y,'600 9px system-ui,sans-serif','#6666aa','center');
+  tx('CASTGAMES.COM.AU',W/2,y,'600 9px system-ui,sans-serif','#6666aa','center');
 
   return canvas;
 }

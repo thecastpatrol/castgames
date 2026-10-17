@@ -1274,9 +1274,9 @@ html.ca-open, html.ca-open body { overflow: hidden; }
 .ca-soc-empty > span { font-size: 26px; }
 .ca-soc-empty b { color: #fff; font-size: 14px; }
 .ca-soc-empty small { color: var(--ca-muted); font-size: 12.5px; line-height: 1.4; max-width: 34ch; }
-.ca-soc-invite { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; margin: 0 0 10px; border-radius: 14px; background: linear-gradient(135deg, rgba(var(--ca-gold-rgb), .12), rgba(var(--ca-gold-rgb), .03)); border: 1px solid rgba(var(--ca-gold-rgb), .35); }
+.ca-soc-invite { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; margin: 0 0 10px; border-radius: 14px; background: linear-gradient(135deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02)); border: 1px solid rgba(255, 255, 255, .24); }
 .ca-soc-invite > div:first-child { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.ca-soc-invite b { color: var(--ca-gold); font-size: 14px; }
+.ca-soc-invite b { color: #fff; font-size: 14px; } /* white, not gold (gold is CAST Pass's): growth, 17 Oct 2026 */
 .ca-soc-invite small { color: var(--ca-muted); font-size: 12.5px; }
 .ca-soc-invite code { display: block; margin-top: 4px; padding: 6px 8px; border-radius: 8px; background: rgba(0, 0, 0, .3); color: #e8e8f0; font: 600 12px/1.3 ui-monospace, Menlo, monospace; overflow-wrap: anywhere; }
 .ca-soc-invite .ca-row { flex-wrap: wrap; }
@@ -2812,6 +2812,11 @@ ol.ca-adm-fans > li::before { content: counter(fan); flex: none; width: 1.6em; t
 .ca-inv-go { flex: none; border: 0; border-radius: 999px; padding: 9px 15px; font: 900 12.5px/1 Inter, sans-serif; color: #04342c; background: #5eead4; cursor: pointer; white-space: nowrap; }
 @media (hover: hover) { .ca-inv-go:hover { background: #99f6e4; } }
 .ca-inv-card { margin: 14px 0 4px; }
+/* Invite a Mate's strip on Profile and at the top of Friends (growth, 17 Oct 2026): the welcome card's look, slimmer */
+.ca-inv-strip { margin: 12px 0 4px; padding: 9px 10px 9px 12px; }
+.ca-inv-strip .ca-inv-ico { width: 38px; height: 38px; font-size: 20px; }
+.ca-inv-strip .ca-inv-txt b { font-size: 14.5px; }
+.ca-inv-go:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .ca-soc-invite.is-reward { border-color: rgba(45, 212, 191, .55); background: linear-gradient(135deg, rgba(45, 212, 191, .16), rgba(45, 212, 191, .04)); }
 .ca-soc-invite.is-reward .ca-inv-h { color: #5eead4; font-size: 15px; text-wrap: balance; }
 .ca-soc-invite .ca-ref-line { color: #5eead4; }
@@ -4457,3 +4462,39 @@ button.ca-sr-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; 
 @media (hover: hover) { .ca-cur-change:hover, .ca-cur-opt:hover { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .1); } }
 /* A minus on a stepper button is a drawn bar, never a character (18 Oct 2026, the owner: no en dashes or minus signs) */
 .ca-minus { display: block; width: 12px; height: 2.5px; border-radius: 2px; background: currentColor; }
+
+/* Share: Portrait or Story (growth, 17 Oct 2026, the owner: every Share has both sizes). A small sheet from the bottom on
+   phones, a card on computers: two big choices with their pictures, then Copy Link. Green like the games' Share buttons */
+.ca-sp { position: fixed; inset: 0; z-index: 10097; display: flex; align-items: flex-end; justify-content: center; padding: 0; background: rgba(6, 6, 12, .7); color: #fff; font-family: Inter, system-ui, sans-serif; }
+.ca-sp-card { position: relative; width: min(460px, 100%); max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 18px 16px calc(16px + env(safe-area-inset-bottom, 0px)); border-radius: 22px 22px 0 0; text-align: center;
+  background: linear-gradient(180deg, #191830, #0d0c1a); border: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 -12px 40px rgba(0, 0, 0, .6); }
+@media (min-width: 700px) { .ca-sp { align-items: center; padding: 16px; } .ca-sp-card { border-radius: 22px; } }
+.ca-sp-h { margin: 4px 44px 4px; font: 900 21px/1.15 Inter, sans-serif; text-wrap: balance; }
+.ca-sp-sub { margin: 0 8px 14px; font: 600 13px/1.35 Inter, sans-serif; color: #a9a9c1; text-wrap: balance; }
+.ca-sp-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: stretch; container-type: inline-size; }
+.ca-sp-opt { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; min-width: 0; padding: 12px 8px 12px; border-radius: 16px; cursor: pointer; color: #fff; font: inherit;
+  border: 1.5px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .045); -webkit-tap-highlight-color: transparent; }
+.ca-sp-opt:disabled { cursor: default; }
+.ca-sp-opt.is-off { opacity: .55; }
+@media (hover: hover) { .ca-sp-opt:not(:disabled):hover { border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .08); } }
+.ca-sp-opt:focus-visible, .ca-sp-copy:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ca-sp-pic { position: relative; display: grid; place-items: center; height: min(230px, 48cqi); margin-bottom: 4px; border-radius: 10px; overflow: hidden; background: #0a0a14; box-shadow: 0 8px 18px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.ca-sp-opt.is-portrait .ca-sp-pic { aspect-ratio: 1080 / 1350; }
+.ca-sp-opt.is-story .ca-sp-pic { aspect-ratio: 1080 / 1920; }
+.ca-sp-pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ca-sp-wait { width: 26px; height: 26px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, .2); border-top-color: #fff; animation: caSpin .8s linear infinite; }
+.ca-sp-none { padding: 0 8px; font: 700 11px/1.3 Inter, sans-serif; color: #a9a9c1; }
+.ca-sp-opt b { font: 900 16px/1.1 Inter, sans-serif; }
+.ca-sp-opt small { font: 600 11.5px/1.25 Inter, sans-serif; color: #a9a9c1; text-wrap: balance; }
+.ca-sp-go { margin-top: 4px; padding: 10px 18px; border-radius: 999px; background: #16a34a; color: #fff; font: 900 14px/1 Inter, sans-serif; white-space: nowrap; box-shadow: 0 4px 12px rgba(22, 163, 74, .35); }
+.ca-sp-opt:disabled .ca-sp-go { background: rgba(255, 255, 255, .14); box-shadow: none; }
+.ca-sp-copy { display: block; width: 100%; margin-top: 12px; min-height: 46px; border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, .3); background: transparent; color: #fff; font: 800 14.5px/1 Inter, sans-serif; cursor: pointer; }
+@media (hover: hover) { .ca-sp-copy:hover { border-color: #fff; background: rgba(255, 255, 255, .06); } }
+.ca-sp-big { margin-top: 12px; }
+.ca-sp-big img { display: block; max-width: 100%; max-height: 52vh; margin: 0 auto; border-radius: 12px; box-shadow: 0 10px 24px rgba(0, 0, 0, .55); -webkit-touch-callout: default; }
+.ca-sp-big p { margin: 8px 0 0; font: 700 13px/1.35 Inter, sans-serif; color: #d6d6e4; text-wrap: balance; }
+/* the Share button on a team sheet and on your own trophy (growth, 17 Oct 2026) */
+.ca-sheet-share { margin: 10px 0 2px; text-align: center; }
+.ca-sp-tbtn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px; padding: 0 18px; border: 0; border-radius: 999px; background: #16a34a; color: #fff; font: 900 14px/1 Inter, sans-serif; cursor: pointer; white-space: nowrap; }
+@media (hover: hover) { .ca-sp-tbtn:hover { filter: brightness(1.08); } }
+.ca-trpop-card .ca-sp-tbtn { width: 100%; margin: 0 0 8px; }

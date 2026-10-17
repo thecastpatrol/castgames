@@ -1434,6 +1434,16 @@
   function share() {
     var text = shareText();
     if (!text) return;
+    // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share);
+    // the sheet below is for a page whose account file is older
+    var CA = window.CastAccount;
+    if (CA && CA.sharePick && T.buildShareCard) {
+      var S0 = T.state(), made = null, card = function () { var S = S0; return made || (made = T.buildShareCard(S, T.outcome(true))); };
+      CA.sharePick({ title: 'Share Your Team', text: shareText, name: ((shareCard && shareCard.post && shareCard.post.name) || 'my-team').replace(/\.png$/, ''), where: 'results',
+        images: shareCard ? { portrait: shareCard.post, story: shareCard.story } : null,
+        render: function (size) { return card().then(function (c) { return c && (size === 'story' ? c.story : c.post); }); } });
+      return;
+    }
     var post = shareCard && shareCard.post, story = shareCard && shareCard.story;
     if (!post && !story) {
       // Card not ready (or this browser cannot draw it): share the message on its own
@@ -1452,7 +1462,7 @@
     openSheet('<div class="sheet-grab" aria-hidden="true"></div>' +
       '<h2 class="sheet-title center">Share Your Team</h2>' +
       '<div class="share-opts">' + opt(story, 'story', 'Story', 'Instagram, Facebook, TikTok') + opt(post, 'post', 'Post', 'Feed and group chats') + '</div>' +
-      '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="copy-share">&#x1F4CB; Copy message</button>' +
+      '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="copy-share">&#x1F4CB; Copy Message</button>' +
       '<button type="button" class="btn btn-ghost btn-block sheet-gap" data-action="close-sheet">Done</button>');
   }
 

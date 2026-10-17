@@ -232,10 +232,10 @@
     // Footer
     ctx.textAlign = 'center';
     if (portrait) {
-      ctx.fillStyle = M.a; ctx.font = '900 32px ' + F; ctx.fillText('CAN YOU GO 27-0?  27-0.APP', W / 2, H - 44);
+      ctx.fillStyle = M.a; ctx.font = '900 32px ' + F; ctx.fillText('CAN YOU GO 27-0?  CASTGAMES.COM.AU', W / 2, H - 44);
     } else {
       ctx.fillStyle = M.a; ctx.font = '900 38px ' + F; ctx.fillText('CAN YOU GO 27-0?', W / 2, H - 100);
-      ctx.fillStyle = '#ffffff'; ctx.font = '900 40px ' + F; ctx.fillText('27-0.APP', W / 2, H - 50);
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 40px ' + F; ctx.fillText('CASTGAMES.COM.AU', W / 2, H - 50);
     }
     return c;
   }

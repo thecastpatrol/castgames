@@ -785,6 +785,8 @@
     if (s === 'signed-in' || s === 'guest') setTimeout(mailGiftCheck, 1200); // a gift link waiting (the World Cup email)
     // Invite a Mate v2: a share or creator link waiting, and the invite code for share cards (fetched once per phone)
     if (s === 'signed-in') setTimeout(function () { refClaim(); if (named() && !inviteCode()) loadInvite(false); }, 2500);
+    // Signed in from Invite a Mate with a finished profile (a new one gets there after its welcome steps, in render)
+    if (s === 'signed-in' && invNextWaiting()) setTimeout(function () { if (!needsSetup() && (!el || el.hidden || view === 'wall' || view === 'profile')) invNextGo(); }, 700);
   }
 
   function onAuth(u) {
@@ -1770,6 +1772,7 @@
   }
   function close() {
     if (!el) return;
+    if (view === 'wall' && status !== 'signed-in') { try { sessionStorage.removeItem(SS_INV_NEXT); } catch (e) { /* blocked */ } } // Invite a Mate's sign-in closed: no Friends later
     el.hidden = true;
     viewTrail = [];
     document.documentElement.classList.remove('ca-open');
@@ -2266,7 +2269,7 @@
       loadSocial(false); // the invite link, ready for Share
       h += '<div class="ca-inv-card"><span class="ca-inv-ico" aria-hidden="true">&#x1F381;</span><span class="ca-inv-txt"><b>Got Mates Who Love Their Footy?</b>' +
         '<small>Invite them. They get 3 free Rerolls after their first game, and once they&rsquo;ve played 3 games you get 3 too, with bigger rewards as more mates join.</small></span>' +
-        '<button type="button" class="ca-inv-go" data-ca="inv-share" data-v="welcome">' + (navigator.share ? 'Share' : 'Copy Link') + '</button></div>';
+        '<button type="button" class="ca-inv-go" data-ca="inv-share" data-v="welcome">Share</button></div>';
     }
     if (passOpen() && !hasPass()) h += '<button type="button" class="ca-wel-pass" data-ca="pass-info" data-from="welcome"><span class="ca-ps"><span class="ca-ps-t">CAST Pass</span>' + PASS_SVG + '</span>' +
       '<span><b>Want Even More?</b><small>Double wildcards, The Vault and Deep Stats. From ' + PR().yM + ' a month.</small></span><span aria-hidden="true">&rsaquo;</span></button>';
@@ -3714,6 +3717,8 @@
     p.className = 'ca ca-trpop';
     p.innerHTML = '<div class="ca-trpop-card' + (on ? ' is-on' : '') + '" role="dialog" aria-modal="true" aria-label="Trophy"><span class="ca-trpop-ico" aria-hidden="true">' +
       (on ? t.getAttribute('data-tr-ico') : '&#x1F512;') + '</span><b></b><p></p><small>' + (on ? 'Unlocked' : 'Not Unlocked Yet') + '</small>' +
+      // your own unlocked trophy: Share it (growth, 17 Oct 2026, the owner: Portrait and Story on every Share)
+      (on && status === 'signed-in' && el && !el.hidden && (view === 'trophies' || view === 'stats' || view === 'profile') ? '<button type="button" class="ca-sp-tbtn" data-trpop="share">&#x1F4E4; Share This Trophy</button>' : '') +
       '<button type="button" class="ca-btn ca-btn-primary ca-btn-block" data-trpop="close">Got It</button></div>';
     p.querySelector('b').textContent = t.getAttribute('data-tr-n');
     p.querySelector('p').textContent = t.getAttribute('data-tr-d');
@@ -3725,8 +3730,18 @@
     if (!el) return;
     var t = el.closest('.ca-trophy[data-tr-d], .ca-tro-i[data-tr-d]');
     if (t) { trophyPop(t); return; }
+    if (el.closest('[data-trpop="share"]')) { trophyShare(document.querySelector('.ca-trpop')); return; }
     if (el.closest('[data-trpop="close"]') || el.classList.contains('ca-trpop')) { var p = document.querySelector('.ca-trpop'); if (p) p.remove(); }
   });
+  function trophyShare(p) {
+    if (!p) return;
+    var nm = p.querySelector('b').textContent, ds = p.querySelector('p').textContent, ico = p.querySelector('.ca-trpop-ico').textContent;
+    p.remove();
+    var link = cgPage() ? CG_SITE + cgPage().path : location.origin + location.pathname.replace(/[^/]*$/, '');
+    track('trophy_share', { game: CFG.game, trophy: nm });
+    sharePick({ title: 'Share This Trophy', text: 'I just unlocked the ' + nm + ' trophy on CAST Games ' + ico + ' Can you get it?', url: link, name: 'cast-games-trophy', where: 'trophy',
+      card: { icon: ico, logo: false, kicker: 'Trophy Unlocked', title: nm, who: named() ? profile.username : '', lines: [ds], cta: 'Can you unlock it?', accent: '#8b5cf6' } });
+  }
   document.addEventListener('keydown', function (e) {
     var t = e.target && e.target.closest ? e.target.closest('.ca-trophy[data-tr-d], .ca-tro-i[data-tr-d]') : null;
     if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); trophyPop(t); }
@@ -4049,7 +4064,9 @@
       ouused: ['You&rsquo;ve Had Your ' + GUEST_OU_MAX + ' Free Runs Today', 'Sign in free to play ' + ouName(CFG.game) + ' as much as you like, save your streaks and climb the board.'],
       wcused: ['You&rsquo;ve Had Your Free World Cup Today', 'Sign in free to play as many as you like, save your results and climb the World Cup board.'],
       leaderboard: ['Get Your Score on the Board', 'Sign in free and your next scores go up on the leaderboards. Climb to the top and wear the crown.'],
-      gift: ['Sign In to Claim Your Gift', 'Your free World Legend Pick is waiting. Sign in with the account your CAST Games emails go to.']
+      gift: ['Sign In to Claim Your Gift', 'Your free World Legend Pick is waiting. Sign in with the account your CAST Games emails go to.'],
+      // Invite a Mate from a guest (growth, 17 Oct 2026): the free profile first, then their own link to share
+      invite: ['Invite Your Mates', 'Make a free CAST Profile to get your own invite link. Mates who sign up with it get 3 free Rerolls, and so do you.']
     }[wallWhy] || ['Sign In Free', 'Sign in to keep playing.'];
     // What they were trying to do comes first
     return '<div class="ca-wall"><div class="ca-center"><div class="ca-kicker">Free CAST Profile</div><h2 class="ca-title">' + copy[0] + '</h2><p class="ca-text">' + copy[1] + '</p></div>' +
@@ -6599,7 +6616,8 @@
       '<h2 class="ca-full-title ca-sheet-title">' + bigCrest(who, s.board ? boardSport(s.board) : s.sport || 'nrl') + '<span>' + (s.mine && !who.n ? 'Your Team' : esc(who.n || 'Team') + tick(who.vf) + passTick(who.ps) + flairOf(who)) + '</span></h2>' + followLink(who) +
       // Admins: straight to this player in Admin > Players (their full stats, boards and games)
       (status === 'signed-in' && mod.admin && who.n && !s.mine && s.back !== 'admin-look' ? '<button type="button" class="ca-link ca-sheet-adm" data-ca="adm-view" data-n="' + esc(who.n) + '">&#x1F6E1;&#xFE0F; View in Admin &rsaquo;</button>' : '') +
-      (s.flag ? '' : sheetFriend(s, who) + (s.mine ? '' : photoReport(who))) + (x ? sheetFacts(x) : '') + '</div>';
+      (s.flag ? '' : sheetFriend(s, who) + (s.mine ? '' : photoReport(who))) + (x ? sheetFacts(x) : '') +
+      (x && !s.flag && x.mode !== 'bingo' && x.mode !== 'bingod' && (x.picks || []).length ? '<p class="ca-sheet-share"><button type="button" class="ca-sp-tbtn" data-ca="sheet-share">&#x1F4E4; Share This Team</button></p>' : '') + '</div>';
     if (!x) return h + (st.failed || s.failed ? '<p class="ca-muted ca-center">' + esc(typeof s.failed === 'string' ? s.failed : 'Could not load this team. Check your connection and try again.') + '</p>' : '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>') + '</div>';
     if ((x.mode === 'bingo' || x.mode === 'bingod') && x.bingo) return h + (s.flag ? flagBox(s) : '') + bingoSheet(x) + '</div>'; // NRL Bingo: the card
     var ps = sheetPlayers(x, s.flag && s.flag.mark);
@@ -6608,6 +6626,23 @@
       return '<button type="button" role="tab" aria-selected="' + (sheetMode === m[0]) + '" class="ca-seg-btn' + (sheetMode === m[0] ? ' is-on' : '') + '" data-ca="sheet-mode" data-v="' + m[0] + '">' + m[1] + '</button>';
     }).join('') + '</div>';
     return h + (sheetMode === 'list' ? sheetList(x, ps) : sheetField(x, ps)) + '</div>';
+  }
+  /* Share a team sheet (growth, 17 Oct 2026, the owner: Portrait and Story on every Share): its 13 as rows, the score big,
+     the link to that game on CAST Games (with the sharer's invite code) */
+  var SHEET_PAGE = { '27-0': '27-0/', '1000tries': '1000tries/', '4000goals': '4000goals/', bigbash: '25000runs/', tests: '60000runs/', nfl: '777tds/', racing: 'g1winner/', epl: '650goals/', nba: '100000points/', sc: 'scpointsking/' };
+  function sheetShare() {
+    var s = sheet, st = s && s.g ? sheets[s.g] || {} : {}, x = s && (s.local || st.data);
+    if (!x) return;
+    var G = GAMES[bucketOf(x)] || { unit: '' }, who = s.who || {}, mine = s.mine || (named() && who.n === profile.username), ps = sheetPlayers(x);
+    var big = x.game === '27-0' ? recordText(G, x.score, lossesOf(x)) : fmt(x.score), gname = G.name || (GAMES[x.game] || {}).name || 'CAST Games';
+    var link = window.CG ? CG_SITE + (SHEET_PAGE[x.game] || '') : location.origin + location.pathname.replace(/[^/]*$/, '');
+    var cgG = window.CG && window.CG.GAMES ? window.CG.GAMES.filter(function (g) { return g.path === SHEET_PAGE[x.game]; })[0] : null, cgLogo = cgG && cgG.logo && window.CG.url ? window.CG.url(cgG.logo) : null;
+    var text = (mine ? 'My team on ' + gname + ': ' : (who.n || 'This') + '\u2019s team on ' + gname + ': ') + big + (G.unit && x.game !== '27-0' ? ' ' + G.unit : '') + '. Think you can beat it?';
+    var plain = function (h) { return String(h || '').replace(/<[^>]+>/g, ''); };
+    track('team_sheet_share', { game: CFG.game, board: s.board || '' });
+    sharePick({ title: 'Share This Team', text: text, url: link, name: (gname + '-team').toLowerCase().replace(/[^a-z0-9]+/g, '-'), where: 'sheet',
+      card: { kicker: gname, title: mine ? 'My Team' : (who.n || 'Team'), big: big, unit: x.game === '27-0' ? '' : G.unit || '', rows: ps.map(function (p) { return [p.pos, p.name, plain(sheetVal(x, p))]; }), cta: 'Can you beat it?',
+        logo: cgLogo || false, logoFirst: true } });
   }
   // On someone else's team sheet: add them as a friend (or see that you already are)
   function sheetFriend(s, who) {
@@ -7013,12 +7048,12 @@
         ? '<b class="ca-inv-h">&#x1F381; Invite a Mate: Rewards That Grow</b><small>A new player who signs up with your link gets 3 free Rerolls after their first game. Once they&rsquo;ve played 3 games of any CAST game, they count for you: 3 free Rerolls each (up to 10 mates a month), and bigger rewards as more mates count. They become your friend straight away.'
         : '<b>Your Invite Link</b><small>Anyone who opens it and signs in becomes your friend straight away.') +
       (jl ? ' <b class="ca-ref-line">' + jl + '.</b>' : '') + '</small><code>' + esc(link.replace(/^https?:\/\//, '')) + '</code></div>' +
-      '<div class="ca-row"><button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="fr-share">' + (navigator.share ? 'Share Invite' : 'Copy Invite Link') + '</button>' +
-      (navigator.share ? '<button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="fr-copy">Copy Link</button>' : '') + '</div></div>';
+      '<div class="ca-row"><button type="button" class="ca-btn ca-btn-primary ca-btn-sm" data-ca="fr-share">Share Invite</button>' +
+      '<button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="fr-copy">Copy Link</button></div></div>';
   }
   // The Friends tab's body (requests are pinned above it)
   function frListBody(d) {
-    var few = d.friends.length < 3, h = frFeed(d);
+    var few = d.friends.length < 3, h = (few ? '' : invStrip('friends_top')) + frFeed(d);
     h += '<div class="ca-fr-head"><h3 class="ca-h3">Your Friends' + (d.friends.length ? ' <span class="ca-soc-count is-quiet">' + d.friends.length + '</span>' : '') + '</h3>' +
       '<button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="fr-tab" data-v="add">+ Add Friends</button></div>';
     if (d.friends.length) {
@@ -7032,6 +7067,17 @@
     }
     if (few) h += frInviteBox(d);
     return h + frSentLine(d);
+  }
+  /* Invite a Mate, always in view (growth, 17 Oct 2026, the owner: "make sure the share and invite a friend is clear"): a
+     slim teal strip on Profile, and at the top of Friends once there are 3 or more friends (with fewer, the full invite
+     box sits under the list). Share goes straight to the phone's share sheet; a computer copies the link. Never near the
+     Shop or paid Rerolls */
+  function invStrip(where) {
+    if (status !== 'signed-in' || !named()) return '';
+    var rw = inviteReward(), jl = rw ? joinedLine() : '';
+    return '<div class="ca-inv-card ca-inv-strip"><span class="ca-inv-ico" aria-hidden="true">&#x1F381;</span><span class="ca-inv-txt"><em>Invite a Mate</em><b>' +
+      (rw ? 'You Both Get 3 Free Rerolls' : 'Bring Your Mates to CAST Games') + '</b>' + (jl ? '<small>' + esc(jl) + '</small>' : '') + '</span>' +
+      '<button type="button" class="ca-inv-go" data-ca="inv-share" data-v="' + where + '">Share</button></div>';
   }
 
   /* ---------------- Home banner cards (14 Oct 2026) ----------------
@@ -7333,17 +7379,64 @@
   // The free Rerolls are on offer: 15 and over (as with bought Rerolls), and fewer than 10 mates this month
   function inviteReward() { return canBuyReroll() && refsThisMonth() < 10; }
   function joinedLine() { var n = refsThisMonth(); return n ? n + (n === 1 ? ' mate' : ' mates') + ' counted this month, ' + n * 3 + ' free Rerolls earned' : ''; } // counted: 3 games (v2)
+  // A phone shares (its share sheet); a computer saves and copies instead, even one whose browser has a share menu
+  // (growth, 17 Oct 2026, the owner: "make sure the share and invite a friend is clear")
+  function shareMode() {
+    var fine = false;
+    try { fine = matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) { fine = false; }
+    return navigator.share && !fine ? 'share' : 'copy';
+  }
+  // Shares the invite link: 'share' or 'copy' (the CAST Games banner then says Copied), or 'friends' with no link here yet
   function shareInvite(copyOnly, where) {
     var code = inviteCode();
-    if (!code) { openFriends('add'); return; } // no link on this device yet: Friends fetches it, with its own Share
+    if (!code) { openFriends('add'); return 'friends'; } // no link on this device yet: Friends fetches it, with its own Share
     var link = inviteUrl('friend', code), reward = canBuyReroll();
-    var text = reward ? 'Join me on CAST Games (27-0 and 1000TRIES). Sign up with my link and you get 3 free Rerolls after your first game \uD83C\uDF81'
-      : 'Add me on CAST Games (27-0 and 1000TRIES) and see if you can beat my scores:';
-    track('friend_invite_share', { game: CFG.game, how: copyOnly || !navigator.share ? 'copy' : 'share', where: where || 'friends' });
-    if (!copyOnly && navigator.share) { navigator.share({ title: reward ? 'Free Rerolls on CAST Games' : 'Add me on CAST Games', text: text, url: link }).catch(function () {}); return; }
+    var text = reward ? 'Join me on CAST Games. Sign up free with my link and you get 3 free Rerolls after your first game \uD83C\uDF81'
+      : 'Add me on CAST Games and see if you can beat my scores:';
+    track('friend_invite_share', { game: CFG.game, how: copyOnly ? 'copy' : 'sheet', where: where || 'friends' });
+    // Portrait or Story with an invite picture (the owner, 17 Oct 2026: every Share has both sizes), the link in the message
+    if (!copyOnly) { sharePick({ title: reward ? 'Invite Your Mates' : 'Share Your Invite', text: text, url: link, name: 'cast-games-invite', where: 'invite', copyLabel: 'Copy Invite Link', card: inviteCard(reward) }); return 'sheet'; }
     var said = function (m) { socMsg = m; if (!el || el.hidden) toast(m); render(); };
     try { navigator.clipboard.writeText(reward ? text + ' ' + link : link).then(function () { said('Invite copied. Paste it into your group chat.'); }, function () { said(link); }); }
     catch (e) { said(link); }
+    return 'copy';
+  }
+  // The invite's picture: the offer, from the player (a name), in the Rerolls' teal
+  function inviteCard(reward) {
+    var me = named() ? 'From ' + profile.username : '';
+    return reward ? { icon: '&#x1F381;', kicker: 'Invite a Mate', title: 'Join Me on CAST Games', who: me, big: '3', unit: 'Free Rerolls', lines: ['Sign up free with my link.', 'They&rsquo;re yours after your first game.'].map(unEnt), cta: 'Tap my link to join', accent: '#2dd4bf' }
+      : { icon: '&#x1F3AE;', kicker: 'Invite a Mate', title: 'Come Play on CAST Games', who: me, lines: ['Add me and see if you can beat my scores.'], cta: 'Tap my link to join', accent: '#3a78b5' };
+  }
+  function unEnt(s) { return String(s).replace(/&rsquo;/g, '\u2019').replace(/&#x([0-9a-f]+);/gi, function (m, h) { return String.fromCodePoint(parseInt(h, 16)); }); }
+  /* One tap from anywhere (the CAST Games home banner, Profile): a signed-in player shares straight away. A guest makes a
+     free profile first; once they're in and named, Friends > Add Friends opens with Share Invite at the top (a phone
+     only shares from a tap, so that's one more tap, never a dead end). The wish is kept in this tab for 30 minutes
+     (sessionStorage), so the phone's same-tab sign-in keeps it too. GA: invite_signup_ask, invite_signup_done */
+  var SS_INV_NEXT = 'cast_inv_next';
+  function invNextSet(where) { try { sessionStorage.setItem(SS_INV_NEXT, JSON.stringify({ w: where || 'home', at: Date.now() })); } catch (e) { /* storage blocked */ } }
+  function invNextWaiting() { try { return !!sessionStorage.getItem(SS_INV_NEXT); } catch (e) { return false; } }
+  function invNextTake() {
+    var x = null;
+    try { x = JSON.parse(sessionStorage.getItem(SS_INV_NEXT) || 'null'); sessionStorage.removeItem(SS_INV_NEXT); } catch (e) { x = null; }
+    return x && Date.now() - (x.at || 0) < 1800000 ? x.w || 'home' : null;
+  }
+  function inviteNow(where) {
+    where = where || 'home';
+    if (!ENABLED) return 'off';
+    if (status === 'loading') { openFriends('add'); return 'friends'; } // a returning player's sign-in is on its way: Friends shows the link when it's ready
+    if (status !== 'signed-in') { invNextSet(where); track('invite_signup_ask', { game: CFG.game, where: where }); requireSignIn(null, 'invite'); return 'signin'; }
+    if (!named()) { invNextSet(where); open('profile'); return 'name'; }
+    return shareInvite(false, where);
+  }
+  // Signed in and named with the wish to invite waiting: Friends > Add Friends (Share Invite, then the rewards ladder)
+  function invNextGo() {
+    if (!invNextWaiting() || status !== 'signed-in' || !named()) return false;
+    var w = invNextTake();
+    if (!w) return false;
+    track('invite_signup_done', { game: CFG.game, where: w });
+    loadSocial(false);
+    openFriends('add');
+    return true;
   }
   // The home banner's card (one of the rotating cards, after the others)
   function invCard() {
@@ -7359,7 +7452,7 @@
       }
       var html = on ? '<div class="ca-inv-spot" data-inv="share"><span class="ca-inv-ico" aria-hidden="true">&#x1F381;</span>' +
         '<span class="ca-inv-txt"><em>Invite a Mate</em><b>You Both Get 3 Free Rerolls</b><small>' + esc(jl || 'Then a Legend Key at 3 mates and 3 Legend Keys at 5') + '</small></span>' +
-        '<button type="button" class="ca-inv-go">' + (navigator.share ? 'Share' : 'Copy Link') + '</button></div>' : '';
+        '<button type="button" class="ca-inv-go">Share</button></div>' : '';
       if (box.innerHTML !== html) box.innerHTML = html;
       box.hidden = !html;
     });
@@ -7400,7 +7493,8 @@
       '<p class="ca-inv-pl">' + (nx ? '<b>' + fmt(n) + ' of ' + fmt(nx.at) + ' mates</b> to ' + (INV_NEXT[nx.id] || 'your next reward') : '<b>Every reward unlocked.</b> Each mate who counts still earns you 3 free Rerolls.') + '</p>' +
       '<ol class="ca-inv-rungs">' + INV_RUNGS.map(function (r) {
         var done = r[4] ? given.indexOf(r[4]) !== -1 || n >= r[0] : n >= 1, isNext = nx && r[4] === nx.id;
-        return '<li class="' + (done ? 'is-done' : isNext ? 'is-next' : '') + (r[0] === 5 ? ' is-pass' : '') + '"><span class="ca-inv-ri" aria-hidden="true">' + r[1] + '</span>' +
+        // (no gold on the 5 mates rung since it became 3 Legend Keys: gold is CAST Pass's)
+        return '<li class="' + (done ? 'is-done' : isNext ? 'is-next' : '') + '"><span class="ca-inv-ri" aria-hidden="true">' + r[1] + '</span>' +
           '<span class="ca-inv-rt"><em>' + (r[0] === 1 ? 'Each Mate' : r[0] + ' Mates') + '</em><b>' + r[2] + '</b>' + (r[3] ? '<small>' + r[3] + '</small>' : '') + '</span>' +
           (done ? '<span class="ca-inv-rs" aria-label="Unlocked">&#x2705;</span>' : '') + '</li>';
       }).join('') + '</ol>';
@@ -7426,19 +7520,365 @@
     return ['&#x1F381;', 'Invite a Mate', items + ' Added', who + ' has played 3 games, so they count for you. ' + they + ' in your Vault.'];
   }
   // Share links that carry the player's invite code: a mate who signs up from one counts as their invite
-  var INV_HOSTS = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:1000tries\.com\.au|27-0\.app|27-0\.thecastpatrol\.com\.au|castgames\.com\.au|4000goals\.com\.au)(\/[^\s?#]*)?)(\?[^\s#]*)?/i;
+  var INV_HOSTS = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:1000tries\.com\.au|1000tries\.app|27-0\.app|27-0\.thecastpatrol\.com\.au|castgames\.com\.au|4000goals\.com\.au)(\/[^\s?#]*)?)(\?[^\s#]*)?/i;
   function myInvCode() { return status === 'signed-in' && named() ? inviteCode() : null; }
   function inviteLink(url) {
+    url = siteLink(url);
     var code = myInvCode();
     if (!code || !url) return url;
     try { var u = new URL(url, location.href); if (u.searchParams.has('r') || u.searchParams.has('friend')) return url; u.searchParams.set('r', code); return u.href; } catch (e) { return url; }
   }
   function inviteText(text) {
+    text = siteText(text);
     var code = myInvCode();
     if (!code || typeof text !== 'string') return text;
     return text.replace(INV_HOSTS, function (m, base, path, q) {
       if (q && /[?&](r|friend)=/.test(q)) return m;
       return base + (path ? '' : '/') + (q ? q + '&' : '?') + 'r=' + code;
+    });
+  }
+  /* On CAST Games a share points at the page it came from (growth, 17 Oct 2026, the owner: "new people = money"). The
+     games' share words still name their own homes (1000tries.com.au, 27-0.app, castgames.com.au/25000runs) and every mode
+     is its own page now, so a link to a game's home becomes this page (castgames.com.au/1000tries-team-spin/) and a new
+     player lands in the same game. A deeper address a game names on purpose (higher-or-lower-nrl/, nrl-bingo/) stays;
+     ?play= (the old sites' mode switch) goes. Only on CAST Games pages (shared/cg.js): the old sites keep their links */
+  var CG_SITE = 'https://castgames.com.au/';
+  var CAST_HOST = /^(?:[a-z0-9-]+\.)*(?:1000tries\.com\.au|1000tries\.app|27-0\.app|27-0\.thecastpatrol\.com\.au|castgames\.com\.au|4000goals\.com\.au)$/i;
+  var CAST_URLS = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:1000tries\.com\.au|1000tries\.app|27-0\.app|27-0\.thecastpatrol\.com\.au|castgames\.com\.au|4000goals\.com\.au)(?:\/[^\s?#]*)?(?:\?[^\s#]*)?/gi;
+  function cgPage() {
+    var C = window.CG;
+    if (!C || typeof C.game !== 'function') return null;
+    var g = window.CG_GAME ? C.game(window.CG_GAME) : null;
+    return g && g.path ? { path: g.path, folder: g.folder || '' } : { path: '', folder: '' }; // '' : the home page
+  }
+  function siteLink(url) {
+    var pg = cgPage();
+    if (!pg || typeof url !== 'string' || !url) return url;
+    try {
+      var bare = !/^https?:\/\//i.test(url), u = new URL(bare ? 'https://' + url : url);
+      if (!CAST_HOST.test(u.hostname)) return url;
+      var path = u.pathname.replace(/index\.html$/, '').replace(/\/+$/, '');
+      var home = !/castgames\.com\.au$/i.test(u.hostname) || !path || path === '/' + pg.folder || path === '/' + pg.path.replace(/\/$/, '');
+      if (!home) return url;
+      u.searchParams.delete('play');
+      var out = CG_SITE + pg.path + u.search + u.hash;
+      return bare ? out.replace(/^https:\/\//, '') : out;
+    } catch (e) { return url; }
+  }
+  function siteText(text) {
+    if (!cgPage() || typeof text !== 'string') return text;
+    return text.replace(CAST_URLS, function (m) {
+      var tail = (/[.,!?)]+$/.exec(m) || [''])[0];
+      return siteLink(m.slice(0, m.length - tail.length)) + tail;
+    });
+  }
+  /* Every share on a page, counted and pointed right (growth, 17 Oct 2026). Each game has its own Share (a results card,
+     a Daily's best, a HIGHER OR LOWER streak, a Bingo card, 27-0's season) and new games keep coming, so the phone's
+     share sheet and the copy button are watched here, once, for all of them:
+       the link in what's shared goes through inviteLink and inviteText (on CAST Games this page's own address, and a
+       signed-in player's invite code, ?r=, so every share also counts as an invite);
+       GA: share_tap (a results screen's Share button), share_open (the phone's share sheet opened), share_completed (the
+       phone says a result went; the name 27-0's own share used) or friend_invite_completed (an invite went), share_copy
+       (a CAST link copied instead). what: result, invite (a ?friend= link) or challenge; how: image (a picture went
+       with it) or link.
+     The account's own copies that aren't shares (Admin's creator links, the in-app browser's address) go through rawCopy */
+  var NAV = window.navigator, clipRaw = null;
+  function sharePage() { return window.CG_GAME || (window.CG ? 'home' : CFG.game); }
+  function shareWhat(s) { s = String(s || ''); return /[?&](friend|league)=/.test(s) ? 'invite' : /[?&](challenge|vs)=/.test(s) ? 'challenge' : 'result'; }
+  function rawCopy(t) { return clipRaw ? clipRaw(t) : navigator.clipboard.writeText(t); }
+  if (!NAV.__castShare) {
+    NAV.__castShare = true;
+    if (typeof NAV.share === 'function') {
+      var shareRaw = NAV.share;
+      NAV.share = function (data) {
+        var d = data;
+        if (data && typeof data === 'object') {
+          d = Object.assign({}, data);
+          if (typeof d.url === 'string') d.url = inviteLink(d.url);
+          if (typeof d.text === 'string') d.text = inviteText(d.text);
+        }
+        var info = { game: CFG.game, page: sharePage(), what: shareWhat((d && d.url || '') + ' ' + (d && d.text || '')), how: d && d.files && d.files.length ? 'image' : 'link' };
+        track('share_open', info);
+        var p = shareRaw.call(NAV, d);
+        // done: share_completed for a result or a challenge (Admin's Results Shared), friend_invite_completed for an invite
+        if (p && typeof p.then === 'function') p.then(function () { track(info.what === 'invite' ? 'friend_invite_completed' : 'share_completed', Object.assign({ method: 'native_share' }, info)); }, function () { /* closed */ });
+        return p;
+      };
+    }
+    var cb = NAV.clipboard;
+    if (cb && typeof cb.writeText === 'function') {
+      var copyRaw = cb.writeText;
+      clipRaw = function (t) { return copyRaw.call(cb, t); };
+      cb.writeText = function (t) {
+        if (typeof t === 'string' && INV_HOSTS.test(t)) { t = inviteText(t); track('share_copy', { game: CFG.game, page: sharePage(), what: shareWhat(t) }); }
+        return copyRaw.call(cb, t);
+      };
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('.btn-res-share, .cp-res-share') : null;
+      if (b && !b.hasAttribute('data-card')) track('share_tap', { game: CFG.game, page: sharePage() });
+    }, true);
+  }
+
+  /* ---------------- Share: Portrait or Story (growth, 17 Oct 2026, the owner: "For all share buttons there should be
+     portrait and story size share!!!!") ----------------
+     sharePick(o): every Share opens this small sheet. Two big choices, each showing its picture: Portrait (1080x1350, the
+     feed and group chats) and Story (1080x1920, Stories, TikTok and Reels). A tap hands that picture and the message to
+     the phone's share sheet. Where a browser can't share pictures (a computer, an in-app browser) the tap saves the
+     picture and copies the message, and on a phone shows it big to press and hold. Copy Link copies the message alone.
+       o.title   the heading ('Share Your Team')
+       o.text    the message, its link included (a string, or a function of the size); o.url is added after it if given
+       o.name    the pictures' file name ('1000tries-team' gives 1000tries-team-story.png)
+       o.where   for GA: results, daily, ou, bingo, invite, trophy, sheet
+       o.images  { portrait, story }: each a canvas, a Blob or File, an image address, or the games' own { file, url }
+       o.render  function (size): one of those (or a promise of one) for a size o.images hasn't got
+       o.card    or a card spec for shareDraw (below), for a share that has no pictures of its own
+     The link in the message gets this page's address and the invite code (the share watch above). GA: share_size
+     (size, where), then share_open with share_completed, or share_copy. Pictures are made as the sheet opens, so the
+     tap itself can share them (a phone only shares a file from a tap) */
+  var spEl = null, spNow = null;
+  function spPic(x) {
+    return Promise.resolve(x).then(function (v) {
+      if (!v) throw new Error('no picture');
+      var b = v instanceof Blob ? v : v.file instanceof Blob ? v.file : v.blob instanceof Blob ? v.blob : null;
+      if (b) return { blob: b, url: (!(v instanceof Blob) && v.url) || URL.createObjectURL(b) };
+      if (v.getContext && v.toBlob) return new Promise(function (ok, no) { v.toBlob(function (bb) { if (bb) ok({ blob: bb, url: URL.createObjectURL(bb) }); else no(new Error('no picture')); }, 'image/png'); });
+      var u = typeof v === 'string' ? v : v.url;
+      if (!u) throw new Error('no picture');
+      return fetch(u).then(function (r) { return r.blob(); }).then(function (bb) { return { blob: bb, url: u }; });
+    });
+  }
+  function spText(o, size) {
+    var t = typeof o.text === 'function' ? o.text(size) : o.text || '';
+    return o.url ? (t ? t + '\n' : '') + o.url : t;
+  }
+  function spClose() { if (spEl) { spEl.remove(); spEl = null; } spNow = null; }
+  function spCopy(text, btn, ok) {
+    var said = function (m) { if (btn) { var was = btn.getAttribute('data-l') || btn.innerHTML; btn.setAttribute('data-l', was); btn.innerHTML = '&#x2705; Copied'; setTimeout(function () { if (btn.isConnected) btn.innerHTML = was; }, 2200); } toast(m); };
+    try { navigator.clipboard.writeText(text).then(function () { said(ok || 'Copied. Paste it into your group chat.'); }, function () { toast(text); }); }
+    catch (e) { toast(text); }
+  }
+  function spSave(pic, name) {
+    try { var a = document.createElement('a'); a.href = pic.url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); } catch (e) { /* the big picture to press and hold instead */ }
+  }
+  function sharePick(o) {
+    o = o || {};
+    spClose();
+    var where = o.where || 'results', name = (o.name || 'cast-games').replace(/[^\w-]+/g, '-'), copyOnly = shareMode() === 'copy';
+    var st = { o: o, where: where, name: name, pics: {} };
+    spNow = st;
+    spEl = document.createElement('div');
+    spEl.className = 'ca ca-sp';
+    spEl.setAttribute('role', 'dialog'); spEl.setAttribute('aria-modal', 'true'); spEl.setAttribute('aria-label', o.title || 'Share');
+    var opt = function (size, label, line) {
+      return '<button type="button" class="ca-sp-opt is-' + size + '" data-sp="' + size + '" disabled><span class="ca-sp-pic"><i class="ca-sp-wait" aria-hidden="true"></i></span>' +
+        '<b>' + label + '</b><small>' + line + '</small><span class="ca-sp-go">' + (copyOnly ? '&#x2B07;&#xFE0F; Save' : '&#x1F4E4; Share') + '</span></button>';
+    };
+    spEl.innerHTML = '<div class="ca-sp-card"><button type="button" class="ca-x" data-sp="x" aria-label="Close">&#x2715;</button>' +
+      '<h2 class="ca-sp-h">' + esc(o.title || 'Share') + '</h2><p class="ca-sp-sub">' + (copyOnly ? 'Pick a size to save. The message and link are copied too.' : 'Pick a size for where you&rsquo;re sharing it.') + '</p>' +
+      '<div class="ca-sp-opts">' + opt('portrait', 'Portrait', 'Feed and group chats') + opt('story', 'Story', 'Stories, TikTok and Reels') + '</div>' +
+      '<div class="ca-sp-big" hidden><img alt="Your picture"><p>Press and hold the picture to save it, then share it from your photos.</p></div>' +
+      '<button type="button" class="ca-sp-copy" data-sp="copy">&#x1F517; ' + esc(o.copyLabel || 'Copy Link') + '</button></div>';
+    spEl.addEventListener('click', function (e) {
+      if (e.target === spEl) { spClose(); return; }
+      var b = e.target.closest('[data-sp]');
+      if (!b) return;
+      var a = b.getAttribute('data-sp');
+      if (a === 'x') spClose();
+      else if (a === 'copy') { spCopy(spText(o, 'portrait'), b); track('share_link_copy', { game: CFG.game, page: sharePage(), where: where }); }
+      else spGo(st, a, b);
+    });
+    document.body.appendChild(spEl);
+    track('share_sheet_open', { game: CFG.game, page: sharePage(), where: where });
+    ['portrait', 'story'].forEach(function (size) {
+      var src = o.images && o.images[size];
+      var make = src ? spPic(src) : o.render ? spPic(Promise.resolve().then(function () { return o.render(size); })) : o.card ? spPic(shareDraw(o.card, size)) : Promise.reject(new Error('no picture'));
+      make.then(function (pic) {
+        if (spNow !== st) return;
+        st.pics[size] = pic;
+        var b = spEl.querySelector('[data-sp="' + size + '"]');
+        if (!b) return;
+        b.querySelector('.ca-sp-pic').innerHTML = '<img src="' + esc(pic.url) + '" alt="' + (size === 'story' ? 'Story' : 'Portrait') + ' picture">';
+        b.disabled = false;
+      }, function () {
+        if (spNow !== st) return;
+        var b = spEl.querySelector('[data-sp="' + size + '"]');
+        if (b) { b.classList.add('is-off'); b.querySelector('.ca-sp-pic').innerHTML = '<span class="ca-sp-none">Picture not ready</span>'; }
+      });
+    });
+  }
+  // A size chosen: the phone's share sheet with that picture, else saved and the message copied (a phone: shown big)
+  function spGo(st, size, btn) {
+    var pic = st.pics[size];
+    if (!pic) return;
+    track('share_size', { game: CFG.game, page: sharePage(), where: st.where, size: size });
+    var text = spText(st.o, size), fname = st.name + '-' + size + '.png', file = null, can = false;
+    try { file = new File([pic.blob], fname, { type: pic.blob.type || 'image/png' }); } catch (e) { file = null; }
+    try { can = !!(file && shareMode() === 'share' && navigator.canShare && navigator.canShare({ files: [file] })); } catch (e) { can = false; }
+    if (can) {
+      navigator.share({ files: [file], text: text }).catch(function (e) { if (e && e.name !== 'AbortError') spSave(pic, fname); });
+      return;
+    }
+    spSave(pic, fname);
+    spCopy(text, null, shareMode() === 'copy' ? 'Picture saved. The message and link are copied.' : 'The message and link are copied.');
+    var fine = false;
+    try { fine = matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) { fine = false; }
+    if (!fine) { // a phone: the picture big, to press and hold (a computer has it in its downloads)
+      var big = spEl && spEl.querySelector('.ca-sp-big');
+      if (big) { big.hidden = false; big.querySelector('img').src = pic.url; big.classList.toggle('is-story', size === 'story'); big.scrollIntoView({ block: 'nearest' }); }
+    }
+  }
+
+  /* shareDraw(spec, size): a share picture for a share that has none of its own (HIGHER OR LOWER, the Daily Challenge,
+     Invite a Mate, a trophy, a team sheet), drawn in both sizes with a layout for each: Portrait 1080x1350, and Story
+     1080x1920 with bigger art and the top and bottom 250px kept clear for the Stories buttons. The night background with
+     the game's colour glowing through, its logo, a huge number in the logos' Russo One, and the address in capitals
+     (CASTGAMES.COM.AU on CAST Games). spec: logo (an image address, same site), icon (an emoji instead of a logo),
+     kicker, title, big, unit, marks (emoji in a row), rows ([left, name, right] lines, a team), lines (short lines),
+     who (a name), cta, accent (#hex), site. Returns a promise of the canvas */
+  var spFontP = null;
+  function spFonts() {
+    if (spFontP) return spFontP;
+    spFontP = new Promise(function (ok) {
+      var done = false, fin = function () { if (!done) { done = true; ok(); } }, load = function () {
+        try { (document.fonts && document.fonts.load ? Promise.all([document.fonts.load("400 120px 'Russo One'"), document.fonts.load('900 40px Inter')]) : Promise.resolve()).then(fin, fin); } catch (e) { fin(); }
+      };
+      setTimeout(fin, 2500);
+      var l = document.querySelector('link[href*="family=Russo+One"]');
+      if (l) { load(); return; }
+      try { l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Russo+One&display=swap'; l.onload = load; l.onerror = fin; document.head.appendChild(l); } catch (e) { fin(); }
+    });
+    return spFontP;
+  }
+  function spImg(src) { return new Promise(function (ok) { if (!src) { ok(null); return; } var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+  function spSite(spec) {
+    if (spec && spec.site) return spec.site;
+    if (window.CG) return 'CASTGAMES.COM.AU';
+    var h = location.hostname;
+    return /1000tries/.test(h) ? 'CASTGAMES.COM.AU' : /4000goals/.test(h) ? 'CASTGAMES.COM.AU' : /27-0/.test(h) ? '27-0.APP' : 'CASTGAMES.COM.AU';
+  }
+  // This page's own logo on CAST Games (its card's), else the one the game gives
+  function spLogo(spec) {
+    if (spec.logo === false) return null;
+    if (spec.logo && spec.logoFirst) return spec.logo; // a picture of another game than this page's (a team sheet)
+    var C = window.CG, g = C && C.game && window.CG_GAME ? C.game(window.CG_GAME) : null;
+    if (g && g.logo && C.url) return C.url(g.logo);
+    if (C && C.url && !window.CG_GAME) return C.url('assets/logos/castgames.png');
+    return spec.logo || null;
+  }
+  function spRgb(hex) { var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '')); var n = m ? parseInt(m[1], 16) : 0x22c55e; return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+  function shareDraw(spec, size) {
+    spec = spec || {};
+    var story = size === 'story', W = 1080, H = story ? 1920 : 1350;
+    return Promise.all([spFonts(), spImg(spLogo(spec))]).then(function (r) {
+      var logo = r[1], cv = document.createElement('canvas');
+      cv.width = W; cv.height = H;
+      var cg = window.CG && window.CG.game && window.CG_GAME ? window.CG.game(window.CG_GAME) : null; // its card's colour on CAST Games
+      var c = cv.getContext('2d'), rgb = spRgb(spec.accent || (cg && cg.c1)), A = 'rgb(' + rgb.join(',') + ')', Aa = function (a) { return 'rgba(' + rgb.join(',') + ',' + a + ')'; };
+      var lum = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000, ink = lum > 150 ? '#0a0a0f' : '#ffffff';
+      var F = 'Inter, system-ui, -apple-system, sans-serif', R = "'Russo One', Inter, system-ui, sans-serif", E = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+      var fit = function (t, weight, size0, max, fam) { var s = size0; c.font = weight + ' ' + s + 'px ' + (fam || F); while (c.measureText(t).width > max && s > 16) { s -= 2; c.font = weight + ' ' + s + 'px ' + (fam || F); } return s; };
+      var rr = function (x, y, w, h, rad) { c.beginPath(); c.moveTo(x + rad, y); c.arcTo(x + w, y, x + w, y + h, rad); c.arcTo(x + w, y + h, x, y + h, rad); c.arcTo(x, y + h, x, y, rad); c.arcTo(x, y, x + w, y, rad); c.closePath(); };
+      // the night, the game's colour glowing through from behind the number, faint speed lines, grain
+      var bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#0e1020'); bg.addColorStop(1, '#04050a'); c.fillStyle = bg; c.fillRect(0, 0, W, H);
+      var gy = story ? 900 : 600, g = c.createRadialGradient(W / 2, gy, 30, W / 2, gy, story ? 980 : 760);
+      g.addColorStop(0, Aa(0.45)); g.addColorStop(0.55, Aa(0.12)); g.addColorStop(1, Aa(0)); c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.save(); c.strokeStyle = 'rgba(255,255,255,.045)'; c.lineWidth = 16; c.lineCap = 'round';
+      for (var i = 0; i < 9; i++) { var yy = gy - 330 + i * 80; c.beginPath(); c.moveTo(-60, yy + 150); c.lineTo(W * 0.27 - i * 10, yy); c.stroke(); c.beginPath(); c.moveTo(W + 60, yy + 150); c.lineTo(W * 0.73 + i * 10, yy); c.stroke(); }
+      c.restore();
+      var seed = 7; var rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+      for (var q = 0; q < 2600; q++) { c.fillStyle = 'rgba(255,255,255,' + (rnd() * 0.05).toFixed(3) + ')'; c.fillRect(rnd() * W, rnd() * H, 2, 2); }
+      c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+      var bandH = story ? 200 : 170, bandY = story ? H - 250 - bandH - 10 : H - bandH, top = story ? 260 : 70, room = bandY - (story ? 50 : 34) - top;
+      /* Everything between the top (a Story's top 250px left clear) and the band, laid out twice: measured first, then drawn
+         centred in the room left (and the big number made smaller if it doesn't fit) */
+      var lay = function (y, draw, k) {
+        var paint = function (fn) { if (draw) fn(); };
+        // the logo, or a big emoji
+        if (logo && logo.naturalWidth) {
+          var lh = (story ? 250 : 168) * k, lw = lh * logo.naturalWidth / logo.naturalHeight, maxw = story ? 780 : 620;
+          if (lw > maxw) { lw = maxw; lh = lw * logo.naturalHeight / logo.naturalWidth; }
+          paint(function () { c.save(); c.shadowColor = 'rgba(0,0,0,.55)'; c.shadowBlur = 30; c.shadowOffsetY = 10; c.drawImage(logo, (W - lw) / 2, y, lw, lh); c.restore(); });
+          y += lh + (story ? 64 : 38) * k;
+        } else if (spec.icon) {
+          var isz = (story ? 280 : 170) * k;
+          paint(function () { c.font = isz + 'px ' + E; c.fillStyle = '#ffffff'; c.fillText(unEnt(spec.icon), W / 2, y + isz * 0.92); }); // opaque: an emoji takes the fill's alpha
+          y += isz * 1.22;
+        }
+        // the kicker in a pill of the game's colour, then the title and the name
+        if (spec.kicker) {
+          var kt = String(spec.kicker).toUpperCase(), ks = fit(kt, '900', story ? 38 : 32, W - 260), kw = c.measureText(kt).width + (story ? 76 : 64), kh = story ? 80 : 66;
+          paint(function () { rr((W - kw) / 2, y, kw, kh, kh / 2); c.fillStyle = A; c.fill(); c.fillStyle = ink; c.font = '900 ' + ks + 'px ' + F; c.fillText(kt, W / 2, y + kh / 2 + ks * 0.36); });
+          y += kh + (story ? 40 : 32);
+        }
+        if (spec.title) {
+          var tt = String(spec.title).toUpperCase(), ts = fit(tt, '900', story ? 72 : 58, W - 140);
+          paint(function () { c.font = '900 ' + ts + 'px ' + F; c.fillStyle = '#ffffff'; c.fillText(tt, W / 2, y + ts * 0.74); });
+          y += ts * 0.74 + (story ? 26 : 18);
+        }
+        if (spec.who) {
+          var wsz = fit(spec.who, '700', story ? 40 : 34, W - 200);
+          paint(function () { c.font = '700 ' + wsz + 'px ' + F; c.fillStyle = '#b9bccb'; c.fillText(spec.who, W / 2, y + wsz * 0.8); });
+          y += wsz * 0.8 + (story ? 30 : 22);
+        }
+        // the big number (the logos' Russo One), glowing in the game's colour
+        if (spec.big != null && spec.big !== '') {
+          var bt = String(spec.big), bs = fit(bt, '400', (story ? 400 : 300) * k, W - 120, R), base = y + bs * 0.8;
+          paint(function () {
+            c.save(); c.shadowColor = Aa(0.75); c.shadowBlur = 60;
+            var bgr = c.createLinearGradient(0, base - bs * 0.75, 0, base); bgr.addColorStop(0, '#ffffff'); bgr.addColorStop(0.55, '#f2f4f8'); bgr.addColorStop(0.62, '#cfd5df'); bgr.addColorStop(1, '#ffffff');
+            c.fillStyle = bgr; c.font = '400 ' + bs + 'px ' + R; c.fillText(bt, W / 2, base); c.restore();
+          });
+          y = base + (story ? 24 : 18);
+          if (spec.unit) {
+            var ut = String(spec.unit).toUpperCase(), us = fit(ut, '900', story ? 54 : 44, W - 160);
+            paint(function () { c.font = '900 ' + us + 'px ' + F; c.fillStyle = '#c9cbd8'; c.fillText(ut, W / 2, y + us * 0.8); });
+            y += us * 0.8 + (story ? 34 : 24);
+          }
+        }
+        // marks: the run as emoji, a row (two in a Story), the latest kept when there are more
+        if (spec.marks && spec.marks.length) {
+          var per = story ? 10 : 12, ms = spec.marks.slice(-per * (story ? 2 : 1)), es = (story ? 70 : 58) * Math.max(0.8, k);
+          for (var rI = 0; rI * per < ms.length; rI++) {
+            var line = ms.slice(rI * per, rI * per + per).join(' ');
+            paint(function () { c.font = es + 'px ' + E; c.fillStyle = '#ffffff'; c.fillText(line, W / 2, y + es); });
+            y += es + 18;
+          }
+          y += story ? 16 : 8;
+        }
+        // a team: [left, name, right] rows on glass
+        if (spec.rows && spec.rows.length) {
+          var rowH = (story ? 62 : 44) * Math.max(0.85, k), gap = story ? 10 : 6, x0 = story ? 110 : 130, rw = W - x0 * 2, fs = Math.round(rowH * 0.5);
+          spec.rows.slice(0, 13).forEach(function (row) {
+            paint(function () {
+              rr(x0, y, rw, rowH, 12); c.fillStyle = 'rgba(255,255,255,.07)'; c.fill();
+              c.textAlign = 'left'; c.fillStyle = A; c.font = '900 ' + fs + 'px ' + F; c.fillText(String(row[0] || ''), x0 + 20, y + rowH / 2 + fs * 0.36);
+              c.fillStyle = '#ffffff'; fit(String(row[1] || ''), '800', fs, rw - 260); c.fillText(String(row[1] || ''), x0 + 110, y + rowH / 2 + fs * 0.36);
+              c.textAlign = 'right'; c.fillStyle = '#e8eaf2'; c.font = '900 ' + fs + 'px ' + F; c.fillText(String(row[2] == null ? '' : row[2]), x0 + rw - 20, y + rowH / 2 + fs * 0.36);
+              c.textAlign = 'center';
+            });
+            y += rowH + gap;
+          });
+          y += story ? 18 : 8;
+        }
+        // short lines
+        (spec.lines || []).slice(0, story ? 4 : 3).forEach(function (t) {
+          var ls = fit(String(t), '700', story ? 42 : 36, W - 180);
+          paint(function () { c.font = '700 ' + ls + 'px ' + F; c.fillStyle = '#dcdde8'; c.fillText(String(t), W / 2, y + ls * 0.8); });
+          y += ls * 0.8 + (story ? 22 : 16);
+        });
+        return y;
+      };
+      var k = 1, used = lay(0, false, k);
+      while (used > room && k > 0.55) { k -= 0.07; used = lay(0, false, k); }
+      lay(top + Math.max(0, (room - used) / 2), true, k);
+      // the call and the address in capitals, in a band of the game's colour (a Story keeps it above the bottom 250px)
+      var band = c.createLinearGradient(0, bandY, 0, bandY + bandH); band.addColorStop(0, Aa(0.95)); band.addColorStop(1, Aa(0.7));
+      if (story) { rr(70, bandY, W - 140, bandH, 34); c.fillStyle = band; c.fill(); } else { c.fillStyle = band; c.fillRect(0, bandY, W, bandH); }
+      var cta = String(spec.cta || 'Can you beat it?').toUpperCase();
+      c.fillStyle = ink; fit(cta, '900', story ? 44 : 38, W - 220); c.globalAlpha = 0.85; c.fillText(cta, W / 2, bandY + (story ? 78 : 66)); c.globalAlpha = 1;
+      fit(spSite(spec), '900', story ? 66 : 56, W - 200); c.fillText(spSite(spec), W / 2, bandY + (story ? 152 : 132));
+      return cv;
     });
   }
   // A share link (?r=CODE) or a creator's link (?c=CODE) opened: kept on this phone for 30 days, the first one wins
@@ -10617,7 +11057,7 @@
     if (site !== '1000tries') rows.push(['27-0 Seasons Started', n('season_started')], ['27-0 Seasons Finished', n('season_completed')], ['27-0 Daily Goes', n('daily_start')]);
     if (site !== '27-0') rows.push(['1000TRIES: 1000+', n('classic_1000_plays')], ['1000TRIES: Exactly 1000', n('hard_1000_plays')], ['1000TRIES: Team Spin', n('team_spin_plays')], ['1000TRIES: NRLW 250+', n('nrlw_plays')]);
     h += '<h3 class="ca-h3">Games Played</h3><ul class="ca-adm-list">' + rows.map(function (r) { return '<li><span>' + r[0] + '</span><b>' + fmt(r[1]) + '</b></li>'; }).join('') + '</ul>';
-    var acc = [['Accounts Created', n('account_created')], ['Sign-Ins', n('account_sign_in')], ['Leaderboards Opened', n('leaderboard_open')], ['Team Sheets Opened', n('team_sheet_open')], ['Results Shared', n('share_completed') + n('share_card')]];
+    var acc = [['Accounts Created', n('account_created')], ['Sign-Ins', n('account_sign_in')], ['Leaderboards Opened', n('leaderboard_open')], ['Team Sheets Opened', n('team_sheet_open')], ['Results Shared', n('share_completed')]]; // share_completed only: every game's share sends it since 17 Oct 2026 (growth), and share_card came before it
     h += '<h3 class="ca-h3">Accounts and Leaderboards</h3><ul class="ca-adm-list">' + acc.map(function (r) { return '<li><span>' + r[0] + '</span><b>' + fmt(r[1]) + '</b></li>'; }).join('') + '</ul>';
     // The sign-up funnel (2 Oct 2026): GA's visitors, then each step's real event, with its share of the row above. New
     // CAST Profiles is the date of birth step; then the club, where, and the name (the sign-up steps)
@@ -10922,7 +11362,7 @@
       t.parentNode.removeChild(t);
       flash(done ? ok : 'Could not copy. Press and hold to copy: ' + text);
     };
-    try { navigator.clipboard.writeText(text).then(function () { flash(ok); }, old); } catch (e) { old(); }
+    try { rawCopy(text).then(function () { flash(ok); }, old); } catch (e) { old(); } // not a share: no invite code added (an Admin creator link)
   }
   /* Admin > Players: Give Items (11 Oct 2026, the owner: "add wildcards and legend picks to this guy's account", only on the
      owner's account). Choose how many of each (up to 20), then Give (two taps). adminGiveItems adds them through the rewards
@@ -11274,7 +11714,7 @@
       if (d) blocks.push(Score(c, d), { h: 14, draw: function () {} }, Field(c, d), Gap(26));
       blocks.push(Text(c, 'Roll 3. Pick 1. Their tries stay hidden until you pick.', 31, 700, '#d6e6dc', 38), Gap(18),
         Text(c, p.own ? (d && d.mine ? 'Think you can beat The Cast Patrol?' : 'Think you can out-draft The Cast Patrol?') : d && d.mine ? 'Think you can beat my 13?' : 'Think you can out-draft me?', 46, 900, '#ffffff', 52), Gap(22),
-        Pill(c, 'PLAY FREE AT 1000TRIES.COM.AU'));
+        Pill(c, 'PLAY FREE AT ' + (window.CG || /castgames\.com\.au$/.test(location.hostname) ? 'CASTGAMES.COM.AU' : 'CASTGAMES.COM.AU'))); // CAST Games' own address there (growth, 18 Oct 2026)
       stack(c, blocks, A.top, A.bottom);
     }
     return story;
@@ -11918,6 +12358,11 @@
     }
     // Back from signing in (or setting up) with an invite link waiting: show it
     if (invite && view === 'profile' && status === 'signed-in' && !needsSetup()) view = 'invite';
+    // Signed up or in from Invite a Mate (growth, 17 Oct 2026): Friends > Add Friends, Share Invite at the top
+    if ((view === 'welcome' || view === 'wall' || view === 'profile') && status === 'signed-in' && named() && !needsSetup() && invNextWaiting()) {
+      var invW = invNextTake();
+      if (invW) { track('invite_signup_done', { game: CFG.game, where: invW }); frTab = 'add'; friendUid = null; view = 'friends'; el.classList.toggle('is-full', fullView(view)); loadSocial(false); }
+    }
     var body = document.getElementById('caBody');
     var h = '';
     if (flashMsg) h += '<div class="ca-flash" role="alert">' + esc(flashMsg) + '</div>';
@@ -12023,7 +12468,7 @@
         h += passStrip();
         // Profile is My Details only (29 Sep 2026, the user's call): Stats has its own page and the Shop its own button.
         // Your trophies sit above (14 Oct 2026): a card to the Trophies page
-        h += trophyStrip() + detailsTab();
+        h += trophyStrip() + invStrip('profile') + detailsTab(); // Invite a Mate's strip under the trophies (growth, 17 Oct 2026)
       } else {
         // Before sign-in: what a free CAST Profile gives (like the sign-in wall), then sign in
         h += '<div class="ca-wall ca-guest"><div class="ca-center"><div class="ca-kicker">Free CAST Profile</div><h2 class="ca-title">Unlock Your CAST Profile</h2>' +
@@ -12120,6 +12565,7 @@
       case 'fr-add': friendAdd(t.getAttribute('data-n')); break;
       case 'fr-search': friendSearch(); break;
       case 'fr-share': shareInvite(false, 'friends'); break;
+      case 'sheet-share': sheetShare(); break;
       case 'fr-copy': shareInvite(true, 'friends'); break;
       case 'inv-retry': loadInvite(true); render(); break;
       case 'inv-share': shareInvite(false, t.getAttribute('data-v') || 'friends'); break;
@@ -14538,7 +14984,7 @@
       }
       if (box) { box.value = u; box.focus(); box.select(); toast('Press and hold the link above to copy it.'); } else toast('Copy this link: ' + u);
     };
-    try { navigator.clipboard.writeText(u).then(done, old); } catch (e) { old(); }
+    try { rawCopy(u).then(done, old); } catch (e) { old(); } // this page's own address, as it is
   }
   // How to get out of the app's browser, with an arrow at its menu
   function iaGuide(from) {
@@ -14701,6 +15147,27 @@
     unlock: function (ids) { return unlock(ids); },
     // Invite a Mate v2 (17 Oct 2026): a share's link or message with the signed-in player's invite code (?r=) added
     inviteLink: function (url) { return inviteLink(url); }, inviteText: function (text) { return inviteText(text); },
+    /* Invite a Mate in one tap (growth, 17 Oct 2026: the CAST Games home banner): 'share' (the phone's share sheet), 'copy'
+       (copied, say Copied), 'signin' (a guest: the free profile first, then Friends), 'name', 'friends' (no link on this
+       device yet: Friends fetches it) or 'off'. inviteState: what the banner says (reward: the free Rerolls are on offer;
+       mode: 'share' on a phone, 'copy' on a computer) */
+    invite: function (where) { return inviteNow(where); },
+    /* Every Share's Portrait or Story sheet (growth, 17 Oct 2026, the owner): sharePick({ title, text, url, name, where,
+       images | render | card }), and shareDraw(spec, size) for a game with no pictures of its own (see Share: Portrait or
+       Story) */
+    sharePick: function (o) { return sharePick(o); }, shareDraw: function (spec, size) { return shareDraw(spec, size); },
+    // The same sheet under the name the club Bingos call (bingo-sports, 18 Oct 2026): { game, mode, title, text, url, file,
+    // render: { portrait: fn, story: fn } }, each fn giving a picture (a promise of a PNG Blob)
+    sharePicker: function (o) {
+      o = o || {};
+      var r = o.render;
+      return sharePick({ title: o.title, text: o.text, url: o.url, name: o.file || o.name, where: o.mode || o.where || 'results', images: o.images, card: o.card,
+        render: typeof r === 'function' ? r : r ? function (size) { return typeof r[size] === 'function' ? r[size]() : null; } : null });
+    },
+    inviteState: function () {
+      var inn = status === 'signed-in' && named();
+      return { on: ENABLED, signedIn: inn, loading: status === 'loading', reward: inn ? inviteReward() : status !== 'signed-in', mode: shareMode(), joined: inn ? joinedLine() : '', code: inn ? !!inviteCode() : false };
+    },
     trophies: function () { return allTrophies(); },
     // For the games' own trophy checks: Family Business and Namesakes from a 13's names, the profile's club (True
     // Colours) and the club a forerunner grew into

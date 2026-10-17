@@ -240,6 +240,13 @@
     url += (url.indexOf('?') < 0 ? '?' : '&') + cq;
     if (window.CastAccount && window.CastAccount.inviteLink) url = window.CastAccount.inviteLink(url); // Invite a Mate v2: their invite code
     T.track('ou_share', { category: st.cat, streak: st.streak });
+    // Portrait or Story with a picture of the run (growth, 17 Oct 2026, the owner: both sizes on every Share)
+    var CA = window.CastAccount;
+    if (CA && CA.sharePick && CA.shareDraw) {
+      CA.sharePick({ title: 'Share Your Streak', text: txt, url: url, name: String(NAME).toLowerCase().replace(/[^a-z0-9]+/g, '-'), where: 'ou',
+        card: { kicker: NAME, title: c.name, big: String(st.streak), unit: 'In a Row', marks: marks.filter(function (m) { return m !== '\u2026'; }), cta: 'Can you beat it?' } });
+      return;
+    }
     if (navigator.share) { navigator.share({ text: txt, url: url }).catch(function () {}); return; }
     try { navigator.clipboard.writeText(txt + ' ' + url); flash('Copied. Paste it anywhere.'); } catch (e) { /* no clipboard */ }
   }

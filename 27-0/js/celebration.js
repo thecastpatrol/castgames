@@ -188,7 +188,7 @@ function buildShareCanvas(fmt){
   // ── FOOTER
   ctx.strokeStyle='#1e1e30';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();y+=8;
   tx('Can you go 27-0?',16,y,'700 10px system-ui','#666677','left','top');
-  tx('27-0.app',W-16,y,'800 10px system-ui',M.a,'right','top');
+  tx('CASTGAMES.COM.AU',W-16,y,'800 10px system-ui',M.a,'right','top');
 
   return cv;
 }

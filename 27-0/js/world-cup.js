@@ -1030,7 +1030,7 @@
     // own, Share and Change Mode under it, then the account's Saved strip (Your Rank opens the World Cup board), then the
     // World Cup itself. No strip in an admin's preview, whose games are never saved
     if (body) body.innerHTML = '<div class="cp-res-acts"><button class="btn cp-res-again" onclick="wcAgain()">🔄 Play Again</button><div class="cp-res-two">' +
-      '<button class="btn cp-res-share" onclick="wcShare()">📸 Share</button><button class="btn cp-res-mode" onclick="cpChangeMode()">🎮 Change Mode</button></div></div>' +
+      '<button class="btn cp-res-share" onclick="wcShare()">📤 Share</button><button class="btn cp-res-mode" onclick="cpChangeMode()">🎮 Change Mode</button></div></div>' +
       (strip ? '<div data-cast-results></div>' : '') +
       (names.length ? '<div class="wc-won-tr">&#x1F3C6; ' + (names.length > 1 ? 'Trophies' : 'Trophy') + ' Unlocked: <b>' + esc(listOf(names)) + '</b></div>' : '') +
       // no Golden Boot card here (9 Oct 2026, the owner: "not needed"); the Champions moment and the picture keep theirs
@@ -1139,6 +1139,14 @@
       if (made) { shareBlob(made.blob, made.name, text); return; }
       makeRunShare(story).then(function (x) { shareBlob(x.blob, x.name, text); }, asText);
     };
+    // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share)
+    var CA = window.CastAccount;
+    if (CA && CA.sharePick) {
+      track('share_click', { mode: 'world_cup', size: 'sheet' });
+      CA.sharePick({ title: 'Share Your World Cup', text: text, name: '27-0-world-cup', where: 'results',
+        render: function (size) { return makeRunShare(size === 'story').then(function (x) { return x.blob; }); } });
+      return;
+    }
     var old = document.querySelector('.wc-share-pick');
     if (old) old.remove();
     var d = document.createElement('div');
@@ -1181,54 +1189,68 @@
     x.restore();
   }
   // The picture for game i, made once (as the full-time card shows), so a tap can share it straight away
-  function makeShare(i) {
+  // story: a 1080x1920 Story with its own layout (growth, 17 Oct 2026, the owner: both sizes on every Share)
+  function makeShare(i, story) {
     T.shares = T.shares || {};
-    if (T.shares[i]) return T.shares[i];
-    var g = T.run.games[i], W = 1080, H = 1350, cv = document.createElement('canvas'), x = cv.getContext && cv.getContext('2d');
+    var sk = story ? i + 's' : i;
+    if (T.shares[sk]) return T.shares[sk];
+    var g = T.run.games[i], W = 1080, H = story ? 1920 : 1350, cv = document.createElement('canvas'), x = cv.getContext && cv.getContext('2d');
+    var L = story ? { kick: 330, kickF: 44, round: 440, roundF: 86, by: 520, bw: 300, bh: 172, abF: 74, nm: 770, nmF: 46, score: 1040, scoreF: 260, head: 1150, headF: 66, ko: 1226, koF: 46, logoY: 1290, logoH: 130, cta: 1560, ctaF: 58, site: 1630, siteF: 44 }
+      : { kick: 150, kickF: 40, round: 232, roundF: 72, by: 320, bw: 260, bh: 150, abF: 64, nm: 540, nmF: 40, score: 770, scoreF: 200, head: 880, headF: 58, ko: 950, koF: 40, logoY: 1000, logoH: 110, cta: 1170, ctaF: 48, site: 1235, siteF: 38 };
     if (!x) return Promise.reject(new Error('no canvas'));
     cv.width = W; cv.height = H;
-    var name = '27-0 World Cup ' + (g.kind === 'pool' ? 'Win' : KO_WORD[g.kind]) + '.png';
+    var name = '27-0 World Cup ' + (g.kind === 'pool' ? 'Win' : KO_WORD[g.kind]) + (story ? ' Story' : '') + '.png';
     var text = myName() + ' ' + (g.kind === 'final' ? 'won the World Cup' : 'beat ' + side(g.opp) + ' ' + g.my + '-' + g.their) + ' on 27-0';
     var mine = myBadge(), pic = null;
-    T.shares[i] = new Promise(function (done, fail) {
+    T.shares[sk] = new Promise(function (done, fail) {
     var draw = function () {
       backdrop(x, W, H);
       var center = function (t, y, font, col) { x.font = font; x.fillStyle = col; x.textAlign = 'center'; x.fillText(t, W / 2, y); };
-      center('RUGBY LEAGUE WORLD CUP 2026', 150, '900 40px Inter, sans-serif', '#7dd3fc');
-      center(g.kind === 'pool' ? 'POOL GAME ' + (i + 1) : g.kind === 'qf' ? 'QUARTER FINAL' : g.kind === 'sf' ? 'SEMI FINAL' : 'THE FINAL', 232, '900 72px Inter, sans-serif', '#ffffff');
+      center('RUGBY LEAGUE WORLD CUP 2026', L.kick, '900 ' + L.kickF + 'px Inter, sans-serif', '#7dd3fc');
+      center(g.kind === 'pool' ? 'POOL GAME ' + (i + 1) : g.kind === 'qf' ? 'QUARTER FINAL' : g.kind === 'sf' ? 'SEMI FINAL' : 'THE FINAL', L.round, '900 ' + L.roundF + 'px Inter, sans-serif', '#ffffff');
       var plate = function (k, cx) {
         var n = NATIONS[k], me = n ? null : mine, c1 = n ? n[4] : me && me.c1 || '#1a1a2a', c2 = n ? n[5] : me && me.c2 || '#ffffff', c3 = n ? n[6] : me && (me.c3 || me.c1) || '#1a1a2a';
-        var bw = 260, bh = 150, bx = cx - bw / 2, by = 320;
+        var bw = L.bw, bh = L.bh, bx = cx - bw / 2, by = L.by;
         x.save(); rr(x, bx, by, bw, bh, 22); x.clip();
         if (me && pic) { x.fillStyle = '#1a1a2a'; x.fillRect(bx, by, bw, bh); x.drawImage(pic, cx - bh / 2, by, bh, bh); }
         else { x.fillStyle = c1; x.fillRect(bx, by, bw, bh * 0.72); x.fillStyle = c3; x.fillRect(bx, by + bh * 0.72, bw, bh * 0.28); }
         x.restore();
         x.lineWidth = 4; x.strokeStyle = 'rgba(255,255,255,.3)'; rr(x, bx, by, bw, bh, 22); x.stroke();
-        if (!(me && pic)) { x.font = '900 64px Inter, sans-serif'; x.fillStyle = c2; x.textAlign = 'center'; x.fillText(n ? n[3] : me && me.abbr || 'YOU', cx, by + 84); }
-        x.fillStyle = '#e0f2fe'; fitText(x, nameOf(k), cx, 540, 420, 40);
+        if (!(me && pic)) { x.font = '900 ' + L.abF + 'px Inter, sans-serif'; x.fillStyle = c2; x.textAlign = 'center'; x.fillText(n ? n[3] : me && me.abbr || 'YOU', cx, by + bh * 0.56); }
+        x.fillStyle = '#e0f2fe'; fitText(x, nameOf(k), cx, L.nm, 420, L.nmF);
       };
       plate('you', 290); plate(g.opp, 790);
-      center(g.my + '-' + g.their, 770, '900 200px Inter, sans-serif', '#ffffff');
-      center(g.kind === 'final' ? 'World Champions' : g.kind === 'sf' ? 'Into the World Cup Final' : g.kind === 'qf' ? 'Into the Semi Finals' : 'Beat ' + side(g.opp), 880, '900 58px Inter, sans-serif', '#bae6fd');
-      if (g.kind !== 'pool' && (g.opp === 'aus' || g.opp === 'nzl')) center('Knocked Out ' + side(g.opp), 950, '800 40px Inter, sans-serif', '#e0f2fe');
-      center('Can you go 8-0?', 1170, '900 48px Inter, sans-serif', '#ffffff');
-      center('27-0.app', 1235, '800 38px Inter, sans-serif', '#7dd3fc');
+      center(g.my + '-' + g.their, L.score, '900 ' + L.scoreF + 'px Inter, sans-serif', '#ffffff');
+      center(g.kind === 'final' ? 'World Champions' : g.kind === 'sf' ? 'Into the World Cup Final' : g.kind === 'qf' ? 'Into the Semi Finals' : 'Beat ' + side(g.opp), L.head, '900 ' + L.headF + 'px Inter, sans-serif', '#bae6fd');
+      if (g.kind !== 'pool' && (g.opp === 'aus' || g.opp === 'nzl')) center('Knocked Out ' + side(g.opp), L.ko, '800 ' + L.koF + 'px Inter, sans-serif', '#e0f2fe');
+      center('Can you go 8-0?', L.cta, '900 ' + L.ctaF + 'px Inter, sans-serif', '#ffffff');
+      center('CASTGAMES.COM.AU', L.site, '800 ' + L.siteF + 'px Inter, sans-serif', '#7dd3fc');
       var out = function () { cv.toBlob(function (b) { if (b) done({ blob: b, name: name, text: text }); else fail(new Error('no picture')); }, 'image/png'); };
       var img = new Image();
-      img.onload = function () { var h = 110, w = h * img.naturalWidth / img.naturalHeight; x.drawImage(img, W / 2 - w / 2, 1000, w, h); out(); };
+      img.onload = function () { var h = L.logoH, w = h * img.naturalWidth / img.naturalHeight; x.drawImage(img, W / 2 - w / 2, L.logoY, w, h); out(); };
       img.onerror = out;
       img.src = 'assets/img/27-0-logo.png';
     };
     var go = function () { (document.fonts && document.fonts.load ? document.fonts.load('900 40px Inter') : Promise.resolve()).then(draw, draw); };
     if (mine && mine.img) { pic = new Image(); pic.onload = go; pic.onerror = function () { pic = null; go(); }; pic.src = mine.img; } else go();
     });
-    T.shares[i].catch(function () { T.shares[i] = null; }); // tried again at the next tap
-    return T.shares[i];
+    T.shares[sk].catch(function () { T.shares[sk] = null; }); // tried again at the next tap
+    return T.shares[sk];
   }
   window.wcShareWin = function (i) {
     var g = T && T.run.games[i];
     if (!g) return;
     track('share_click', { mode: 'world_cup_win', kind: g.kind });
+    // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share)
+    var CA = window.CastAccount;
+    if (CA && CA.sharePick) {
+      var msg = function () { return makeShare(i).then(function (x) { return x.text; }); };
+      msg().then(function (t) {
+        var text = t + '\nThink you can go 8-0? https://castgames.com.au/27-0/';
+        CA.sharePick({ title: 'Share This Win', text: text, name: '27-0-world-cup-win', where: 'results', render: function (size) { return makeShare(i, size === 'story').then(function (x) { return x.blob; }); } });
+      }, function () { alert270('The picture could not be made. Try again.'); });
+      return;
+    }
     var made = T.shares && T.shares[i] && T.shares[i].ready;
     if (made) { shareBlob(made.blob, made.name, made.text); return; }
     makeShare(i).then(function (x) { shareBlob(x.blob, x.name, x.text); }, function () { alert270('The picture could not be made. Try again.'); });
@@ -1236,7 +1258,8 @@
   // The whole World Cup as a picture (Share on the results page, 5 Oct 2026): the record, how far they went, the team, the
   // eight results (knockouts never reached greyed) and "Can you go 8-0?" (no Golden Boot since 10 Oct 2026, the owner: it
   // looks confusing). 1080x1350, made once
-  // story: the same picture on a 1080x1920 Story, the layout centred (17 Oct 2026)
+  // story: a 1080x1920 Story with its own layout (growth, 17 Oct 2026, the owner: both sizes on every Share): bigger
+  // record and logo, the top and bottom 250px kept clear for the Stories buttons
   function makeRunShare(story) {
     T.shares = T.shares || {};
     var key = story ? 'runStory' : 'run';
@@ -1248,12 +1271,13 @@
     var made = T.shares[key] = new Promise(function (done, fail) {
       var draw = function () {
         backdrop(x, W, H);
-        if (story) x.translate(0, (1920 - 1350) / 2);
+        var L = story ? { logoY: 262, logoH: 150, kick: 500, kickF: 44, rec: 790, recF: 320, stage: 884, stageF: 70, who: 950, whoF: 44, row1: 1060, row2: 1310, cta: 1570, ctaF: 60, site: 1638, siteF: 44 }
+          : { logoY: 46, logoH: 96, kick: 200, kickF: 38, rec: 410, recF: 230, stage: 488, stageF: 60, who: 546, whoF: 38, row1: 638, row2: 882, cta: 1178, ctaF: 52, site: 1250, siteF: 36 };
         var center = function (t, y, font, col) { x.font = font; x.fillStyle = col; x.textAlign = 'center'; x.fillText(t, W / 2, y); };
-        center('RUGBY LEAGUE WORLD CUP 2026', 200, '900 38px Inter, sans-serif', '#7dd3fc');
-        center(r.wins + '-' + r.losses, 410, '900 230px Inter, sans-serif', '#ffffff');
-        center(r.perfect ? 'Unbeaten World Champions' : STAGE_WORD[r.stage], 488, '900 60px Inter, sans-serif', '#bae6fd');
-        x.fillStyle = '#e0f2fe'; fitText(x, myName() + ' · Team Rating ' + T.rating, W / 2, 546, 940, 38);
+        center('RUGBY LEAGUE WORLD CUP 2026', L.kick, '900 ' + L.kickF + 'px Inter, sans-serif', '#7dd3fc');
+        center(r.wins + '-' + r.losses, L.rec, '900 ' + L.recF + 'px Inter, sans-serif', '#ffffff');
+        center(r.perfect ? 'Unbeaten World Champions' : STAGE_WORD[r.stage], L.stage, '900 ' + L.stageF + 'px Inter, sans-serif', '#bae6fd');
+        x.fillStyle = '#e0f2fe'; fitText(x, myName() + ' · Team Rating ' + T.rating, W / 2, L.who, 940, L.whoF);
         // A game: the other side's colours and code, edged green for a win or red for a loss, the score under it
         var chip = function (g, label, cx, y) {
           var w = 170, h = 118, bx = cx - w / 2;
@@ -1270,13 +1294,13 @@
           x.font = '900 50px Inter, sans-serif'; x.fillStyle = n[5]; x.fillText(n[3], cx, y + 66);
           x.font = '900 40px Inter, sans-serif'; x.fillStyle = col; x.fillText((g.won ? 'W ' : 'L ') + g.my + '-' + g.their, cx, y + h + 50);
         };
-        for (var k = 0; k < 5; k++) chip(r.games[k], 'G' + (k + 1), 156 + k * 192, 638);
-        ['QF', 'SF', 'FINAL'].forEach(function (lb, n) { chip(r.games[5 + n], lb, 348 + n * 192, 882); });
-        center('Can you go 8-0?', 1178, '900 52px Inter, sans-serif', '#ffffff');
-        center('27-0.app', 1250, '800 36px Inter, sans-serif', '#7dd3fc');
+        for (var k = 0; k < 5; k++) chip(r.games[k], 'G' + (k + 1), 156 + k * 192, L.row1);
+        ['QF', 'SF', 'FINAL'].forEach(function (lb, n) { chip(r.games[5 + n], lb, 348 + n * 192, L.row2); });
+        center('Can you go 8-0?', L.cta, '900 ' + L.ctaF + 'px Inter, sans-serif', '#ffffff');
+        center('CASTGAMES.COM.AU', L.site, '800 ' + L.siteF + 'px Inter, sans-serif', '#7dd3fc');
         var out = function () { cv.toBlob(function (b) { if (b) done({ blob: b, name: name }); else fail(new Error('no picture')); }, 'image/png'); };
         var img = new Image();
-        img.onload = function () { var h = 96, w = h * img.naturalWidth / img.naturalHeight; x.drawImage(img, W / 2 - w / 2, 46, w, h); out(); };
+        img.onload = function () { var h = L.logoH, w = h * img.naturalWidth / img.naturalHeight; x.drawImage(img, W / 2 - w / 2, L.logoY, w, h); out(); };
         img.onerror = out;
         img.src = 'assets/img/27-0-logo.png';
       };

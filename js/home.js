@@ -205,7 +205,7 @@
   var BN = 'assets/banners/';
   var ART = {
     welcome: [BN + 'welcome/art-phone@2x.webp?v=70caf0fc', BN + 'welcome/art-desktop@2x.webp?v=cfd76af6'],
-    invite: [BN + 'invite/art-phone@2x.webp', BN + 'invite/art-desktop@2x.webp'],
+    invite: [BN + 'invite/art-phone@2x.webp?v=0782adba', BN + 'invite/art-desktop@2x.webp?v=14fe8b7b'],
     sports: [BN + 'sports/art-phone@2x.webp?v=8df9958f', BN + 'sports/art-desktop@2x.webp?v=d57b9ad1'],
     'new': [BN + 'new/art-phone@2x.webp?v=8217f4df', BN + 'new/art-desktop@2x.webp?v=49facfc3'],
     more: [BN + 'more/art-phone@2x.webp?v=c5c057d0', BN + 'more/art-desktop@2x.webp?v=660db766'],

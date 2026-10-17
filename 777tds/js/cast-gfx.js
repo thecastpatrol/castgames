@@ -174,7 +174,7 @@
       // ---- The call to play
       x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.font = '900 ' + (story ? 46 : 38) + 'px ' + FONT;
       x.fillText('Draft the 2026 Premiers', W / 2, Y.head);
-      var cta = 'PLAY FREE AT ' + (r27 ? '27-0.APP' : '1000TRIES.COM.AU'), ch = story ? 70 : 60;
+      var cta = 'PLAY FREE AT ' + (r27 ? '27-0.APP' : 'CASTGAMES.COM.AU'), ch = story ? 70 : 60;
       x.font = '900 ' + (story ? 28 : 25) + 'px ' + FONT; var ctw = x.measureText(cta).width + 80;
       rr(x, W / 2 - ctw / 2, Y.btn, ctw, ch, ch / 2);
       x.fillStyle = foil(x, W / 2 - ctw / 2, 0, W / 2 + ctw / 2, 0); x.fill();

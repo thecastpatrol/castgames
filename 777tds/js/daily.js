@@ -326,6 +326,17 @@
     var text = '777 TDS Daily Challenge · ' + prettyDate(date) + (th.name ? ' · ' + th.name : '') + '\n🏈 ' + fmt(best.total) + ' career TDs' + (best.win ? ' ✅' : '') + ' (best of ' + rec.goes.filter(function (g) { return g.done; }).length + ')\ncastgames.com.au/777tds';
     if (window.CastAccount && window.CastAccount.inviteText) text = window.CastAccount.inviteText(text); // Invite a Mate v2: their invite code
     track('daily_share', { daily: dayNo(date) });
+    // Portrait or Story with a Daily picture (growth, 17 Oct 2026, the owner: both sizes on every Share). The picture
+    // reads the message's own words: the game's Daily, the theme (or the date), the best total and its unit, every go
+    var CA = window.CastAccount;
+    if (CA && CA.sharePick && CA.shareDraw) {
+      var L = text.split('\n'), head = L[0].split(' \u00B7 ')[0], played = rec.goes.filter(function (g) { return g && g.done; });
+      var unit = (L[1] || '').replace(/^\S+\s+\d+\s*/, '').replace(/\s*\u2705/, '').replace(/\s*\(best of \d+\)\s*$/, '');
+      CA.sharePick({ title: 'Share Your Daily', text: text, name: head.toLowerCase().replace(/[^a-z0-9]+/g, '-'), where: 'daily',
+        card: { kicker: head, title: th.name || prettyDate(date), who: th.name ? prettyDate(date) : '', big: fmt(best.total), unit: unit,
+          marks: played.map(function (g) { return g.win ? '\u2705' : '\u274C'; }), lines: ['Best of ' + played.length + (played.length === 1 ? ' go' : ' goes')], cta: 'Can you beat it?' } });
+      return;
+    }
     if (navigator.share) { navigator.share({ text: text }).catch(function () { /* closed */ }); return; }
     try { navigator.clipboard.writeText(text); } catch (e) { /* no clipboard */ }
   }

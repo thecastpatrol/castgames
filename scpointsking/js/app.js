@@ -914,6 +914,16 @@
   function share() {
     var text = shareText();
     if (!text) return;
+    // Portrait or Story through the account's share sheet (growth, 17 Oct 2026, the owner: both sizes on every Share);
+    // the sheet below is for a page whose account file is older
+    var CA = window.CastAccount;
+    if (CA && CA.sharePick && T.buildShareCard) {
+      var S0 = T.state(), made = null, card = function () { var S = S0; return made || (made = T.buildShareCard(S, S && S.ftOut)); };
+      CA.sharePick({ title: 'Share Your Team', text: shareText, name: ((shareCard && shareCard.post && shareCard.post.name) || 'my-team').replace(/\.png$/, ''), where: 'results',
+        images: shareCard ? { portrait: shareCard.post, story: shareCard.story } : null,
+        render: function (size) { return card().then(function (c) { return c && (size === 'story' ? c.story : c.post); }); } });
+      return;
+    }
     var post = shareCard && shareCard.post, story = shareCard && shareCard.story;
     if (!post && !story) { if (navigator.share && !isDesktop()) { navigator.share({ text: text }).catch(function () {}); return; } }
     var phone = !isDesktop() && !!navigator.share;

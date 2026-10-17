@@ -257,9 +257,9 @@
     if (story) {
       ctx.fillText('CAN YOU BEAT IT?', W / 2, H - 100);
       ctx.fillStyle = '#ffffff'; ctx.font = '900 ' + (L.footerSize + 6) + 'px ' + F;
-      ctx.fillText('1000TRIES.COM.AU', W / 2, H - 50);
+      ctx.fillText('CASTGAMES.COM.AU', W / 2, H - 50);
     } else {
-      ctx.fillText('CAN YOU BEAT IT?  1000TRIES.COM.AU', W / 2, H - 46);
+      ctx.fillText('CAN YOU BEAT IT?  CASTGAMES.COM.AU', W / 2, H - 46);
     }
     return c;
   }
