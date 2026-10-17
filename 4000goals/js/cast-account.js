@@ -6052,7 +6052,7 @@
     } else {
       pills.push(pill('<b>' + fmt(x.score) + '</b> ' + esc(G.unit || 'tries'), 'is-main ' + resultClass(G, x.result)));
       pills.push(pill(esc(G.modes[x.mode] || x.mode), 'is-mode', '', mc));
-      if (d.pack) pills.push(pill((d.pack === 'immortal' ? '&#x1F410; Immortal Pick' : '&#x2B50; Legends Pick') + (d.lf ? ' <small>Lifeline</small>' : ''), d.pack === 'immortal' ? 'is-immortal' : 'is-legend'));
+      if (d.pack) pills.push(pill((d.pack === 'immortal' ? '&#x1F410; Immortal Pick' : '&#x2B50; Legends Pick'), d.pack === 'immortal' ? 'is-immortal' : 'is-legend'));
       // The luck of the draw: tries on offer against an average game (worked out by the game, js/draft.js), and wildcards used
       if (typeof d.lk === 'number') pills.push(pill((d.lk >= 0 ? '&#x1F340; Luck <b>+' : '&#x1F327;&#xFE0F; Luck <b>&minus;') + Math.abs(d.lk) + '%</b>', d.lk >= 15 ? 'is-luck is-lucky' : d.lk <= -15 ? 'is-luck is-unlucky' : 'is-luck', '', ' title="The ' + esc(G.unit || 'tries') + ' on offer, against an average game"'));
     }

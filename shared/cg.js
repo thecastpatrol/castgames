@@ -59,7 +59,10 @@
       line: 'Draft Test greats to 200 tries', long: 'Draft 13 Test players since 1980 and the greats before them, and reach 200 Test tries.', of: 13, draft: '1000tries_draft_v1_wc', board: '1000wc' },
     { id: 'higher-or-lower-nrl', sport: 'nrl', name: 'HIGHER OR LOWER: NRL', pill: '&#x25B2;&#x25BC; NRL', path: 'higher-or-lower-nrl/', folder: '1000tries', mode: 'ou', logo: '', mark: '&#x25B2;&#x25BC;', status: 'live', launch: 'ou', ou: true,
       line: 'Career tries, vs the clock', long: 'Higher or lower? Call NRL players’ career tries before the clock runs out.', board: '1000ou' },
-    { id: 'nrl-bingo', sport: 'nrl', name: 'NRL BINGO', path: '', logo: '', mark: '&#x1F3AF;', status: 'soon', line: 'Fill the grid, club by club' },
+    // NRL Bingo (17 Oct 2026): a Coming Soon card until the owner's Launch ('bingo') or on a device that opened his private
+    // link; its Daily's link is ?play=bingo-daily (dplay)
+    { id: 'nrl-bingo', sport: 'nrl', name: 'NRL BINGO', path: 'nrl-bingo/', folder: '1000tries', mode: 'bingo', logo: '', mark: '&#x2705;', status: 'live', launch: 'bingo',
+      line: 'Tap his clubs, fill the card', long: 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.', board: 'bingo', daily: true, dplay: 'bingo-daily' },
     { id: 'sc', sport: 'nrl', name: 'SC', path: '', logo: '', mark: '&#x1F4C8;', status: 'soon', line: 'Spin 3 seasons, top the SC points' },
     // AFL
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', folder: '4000goals', mode: 'plus', logo: L + '4000goals.png', status: 'live',
@@ -132,6 +135,7 @@
     try { if (A && A.isLaunched && A.isLaunched(key)) return true; } catch (e) { /* not ready */ }
     if (key === 'ou' && A && A.ouOn) { try { return !!A.ouOn(); } catch (e) { return false; } }
     if (key === 'po' && A && A.poOn) { try { return !!A.poOn(); } catch (e) { return false; } }
+    if (key === 'bingo' && A && A.bingoOn) { try { return !!A.bingoOn(); } catch (e) { return false; } }
     if (key === 'wc' && A && A.wcLive) { try { return !!A.wcLive(); } catch (e) { return false; } } // the World Cup, while it's on
     return false;
   }

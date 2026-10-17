@@ -217,8 +217,14 @@
     if (!winsDay(date)) return { goal: t[0] };
     return { wins: weekday(date) === 0 ? t[2] : t[1] };
   }
+  /* From Sunday 18 October 2026 the GOAT (Alex Johnston) is rare in free play (js/draft.js T.goatOut), so the 1000TRIES
+     targets of the days whose pool holds him were set again from that day: [normal, hard]. 27-0's goals don't change, and
+     every day before keeps its target. The World Cup days ahead carry their own (DAYS below) */
+  var GOAT_FROM = '2026-10-18';
+  var TARGETS_GOAT = { 'club:rabbitohs': [875, 925], 'sydney': [825, 900], 'era:2010s': [950, 1025], 'era:2020s': [875, 925], 'final:2014': [950, 975] };
   function tgt(key, hard, date) {
     var harder = date >= HARDER_FROM, t = (harder ? TARGETS_HARDER : TARGETS)[key];
+    if (t && date >= GOAT_FROM && TARGETS_GOAT[key]) t = TARGETS_GOAT[key].concat(t.slice(2));
     return t ? { t: hard ? t[1] : t[0], g: hard ? t[3] : t[2] } : harder ? { t: 900, g: 86 } : { t: 800, g: 85 };
   }
 
@@ -288,17 +294,17 @@
   DAYS['2026-10-17'] = wcDay([['png', 'leb'], ['eng', 'ton']], 'A World Cup double-header: PNG host Lebanon in Port Moresby, then England meet Tonga in Perth. Every player you can draft has played a Test for one of those four sides.', 950, 84);
   // Fiji and the Cook Islands alone can't always fill a 13 (one halfback, two five-eighths in the NRL era), so the day widens to
   // the other Pacific sides, without naming them (the write-up only names the day's own nations)
-  DAYS['2026-10-18'] = wcDay([['fij', 'cok']], 'Fiji take on the Cook Islands in Newcastle. Every player you can draft has played a Test for Fiji, the Cook Islands or another Pacific nation, so who makes your 13?' + SUNDAY, 900, 84,
+  DAYS['2026-10-18'] = wcDay([['fij', 'cok']], 'Fiji take on the Cook Islands in Newcastle. Every player you can draft has played a Test for Fiji, the Cook Islands or another Pacific nation, so who makes your 13?' + SUNDAY, 800, 84,
     { hard: true, pool: ['fij', 'cok', 'sam', 'ton', 'png'], who: 'Pacific Test players' });
   DAYS['2026-10-23'] = wcDay([['ton', 'leb']], 'Tonga meet Lebanon at CommBank Stadium tonight. Every player you can draft has played a Test for Tonga or Lebanon.', 775, 84);
-  DAYS['2026-10-24'] = wcDay([['png', 'sam'], ['eng', 'fra']], 'Another World Cup double-header: PNG host Samoa in Port Moresby, then England meet France in Perth. Every player you can draft has played a Test for one of those four sides.', 825, 83);
-  DAYS['2026-10-25'] = wcDay([['nzl', 'cok'], ['aus', 'fij']], 'New Zealand play the Cook Islands in Christchurch, then Australia meet Fiji at Suncorp Stadium. Every player you can draft has played a Test for one of those four sides.' + SUNDAY, 1225, 90, { hard: true });
-  DAYS['2026-10-30'] = wcDay([['eng', 'png']], 'England meet PNG at WIN Stadium tonight. Every player you can draft has played a Test for England or PNG.', 625, 83);
-  DAYS['2026-10-31'] = wcDay([['nzl', 'fij'], ['aus', 'cok']], 'New Zealand play Fiji on the Gold Coast, then Australia meet the Cook Islands in Townsville. Every player you can draft has played a Test for one of those four sides.', 1150, 89);
+  DAYS['2026-10-24'] = wcDay([['png', 'sam'], ['eng', 'fra']], 'Another World Cup double-header: PNG host Samoa in Port Moresby, then England meet France in Perth. Every player you can draft has played a Test for one of those four sides.', 700, 83);
+  DAYS['2026-10-25'] = wcDay([['nzl', 'cok'], ['aus', 'fij']], 'New Zealand play the Cook Islands in Christchurch, then Australia meet Fiji at Suncorp Stadium. Every player you can draft has played a Test for one of those four sides.' + SUNDAY, 1175, 90, { hard: true });
+  DAYS['2026-10-30'] = wcDay([['eng', 'png']], 'England meet PNG at WIN Stadium tonight. Every player you can draft has played a Test for England or PNG.', 450, 83);
+  DAYS['2026-10-31'] = wcDay([['nzl', 'fij'], ['aus', 'cok']], 'New Zealand play Fiji on the Gold Coast, then Australia meet the Cook Islands in Townsville. Every player you can draft has played a Test for one of those four sides.', 1125, 89);
   DAYS['2026-11-01'] = wcDay([['leb', 'fra'], ['ton', 'sam']], 'The last day of the pool games: Lebanon meet France, then Tonga take on Samoa, both at CommBank Stadium. Every player you can draft has played a Test for one of those four sides.' + SUNDAY, 875, 84, { hard: true });
-  DAYS['2026-11-07'] = wcDay([WC10], 'It’s World Cup semi final day in Newcastle. Every player you can draft has played a Test for one of the ten World Cup nations.', 1075, 89, { title: 'World Cup Semi Final' });
-  DAYS['2026-11-08'] = wcDay([WC10], 'The second World Cup semi final is tonight at Allianz Stadium. Every player you can draft has played a Test for one of the ten World Cup nations.' + SUNDAY, 1125, 89, { hard: true, title: 'World Cup Semi Final' });
-  DAYS['2026-11-15'] = wcDay([WC10], 'It’s World Cup final day at Suncorp Stadium. Can you build a 13 fit for the final? Every player you can draft has played a Test for one of the ten World Cup nations.' + SUNDAY, 1125, 89, { hard: true, title: 'World Cup Final' });
+  DAYS['2026-11-07'] = wcDay([WC10], 'It’s World Cup semi final day in Newcastle. Every player you can draft has played a Test for one of the ten World Cup nations.', 1050, 89, { title: 'World Cup Semi Final' });
+  DAYS['2026-11-08'] = wcDay([WC10], 'The second World Cup semi final is tonight at Allianz Stadium. Every player you can draft has played a Test for one of the ten World Cup nations.' + SUNDAY, 1100, 89, { hard: true, title: 'World Cup Semi Final' });
+  DAYS['2026-11-15'] = wcDay([WC10], 'It’s World Cup final day at Suncorp Stadium. Can you build a 13 fit for the final? Every player you can draft has played a Test for one of the ten World Cup nations.' + SUNDAY, 1100, 89, { hard: true, title: 'World Cup Final' });
 
   // How an On This Day reads: why today, what happened, and who you can draft
   var FINAL_STORY = {

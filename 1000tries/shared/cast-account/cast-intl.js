@@ -27,6 +27,7 @@
               short ones there: 'HB/FE · 96'). Optional nationName replaces
               the nation's name
      kicker   the gold label at the top (default 'World Legend')       title  an optional heading under it
+     sub      an optional line under the title
      tone     'bronze' for 1000TRIES's Legends Pick (its Legend cards are bronze, 8 Oct 2026); gold otherwise
      pool     the nation keys the reels turn through (default: the World Cup sides cast-nations.js draws)
      hold     ms the landed state stays before it finishes (default 1400)
@@ -412,6 +413,8 @@
         '<div class="ci-rays" aria-hidden="true"></div>' +
         '<div class="ci-stage" aria-hidden="true">' +
           '<div class="ci-kick"><span>' + esc(kicker) + '</span></div>' + (title ? '<div class="ci-title">' + words(title) + '</div>' : '') +
+          // o.sub: one line under the title (the Legends Pick, 17 Oct 2026: "Pick one of three all-time greats")
+          (str(o.sub) ? '<div class="ci-lead" style="max-width:100%;margin:8px 0 0;font-size:14px;font-weight:700;line-height:1.3;color:#c9c9d8;text-wrap:balance">' + esc(str(o.sub)) + '</div>' : '') +
           '<div class="ci-reels">' + reels.map(function (r) {
             var p = nameParts(r.name);
             return '<div class="ci-reel" style="--i:' + r.i + ';--ci-glow:' + rgbOf(r.nt.glow) + '">' +
@@ -556,5 +559,6 @@
     wmagpies: {"base":"#111111","collar":"#FFFFFF","layers":[{"t":"v","top":0.02,"point":0.27,"bands":[["#FFFFFF",0.04],["#111111",0.04],["#FFFFFF",0.12]]}]}
   };
   /* KITS-NRL:END */
-  window.CastIntl = { reveal: reveal, JERSEYS: JERSEYS };
+  // fill: a club's jersey filling a w x h box (NRL Bingo's tiles, 17 Oct 2026), the same drawing as the club reveal's
+  window.CastIntl = { reveal: reveal, JERSEYS: JERSEYS, fill: nrlFill };
 })();

@@ -4,7 +4,7 @@
 <base href="../1000tries/">
 <script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../shared/cg.css?v=db11cb78e243">
+<link rel="stylesheet" href="../shared/cg.css?v=7e48fa75e243">
 <style>html.cg-in-game .site-header { display: none !important; }</style>
 
 <meta charset="utf-8">
@@ -59,15 +59,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=0dc1e55c">
-<link rel="stylesheet" href="css/cast-account.css?v=20260927.214">
+<link rel="stylesheet" href="css/main.css?v=e1e13ba0">
+<link rel="stylesheet" href="css/cast-account.css?v=ef1407e9">
+<link rel="stylesheet" href="css/bingo.css?v=0747a473">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
 <script>window.CG_GAME = 'six-again'; window.CG_PLAY = function (dry) { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { if (!dry) b.click(); return true; } return false; };</script>
 <script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash); document.documentElement.classList.add("ou-boot");</script>
 <style>html.ou-boot .screen:not(#screen-ou) { display: none !important; }</style>
-<script src="../shared/cg.js?v=db11cb78e243"></script>
+<script src="../shared/cg.js?v=7e48fa75e243"></script>
 <script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>
 
 
@@ -84,7 +85,7 @@
     <button type="button" class="nav-lb ca-nav-tab" data-cast-enabled hidden aria-label="Leaderboards" onclick="if (window.CastAccount) { if (typeof gtag !== 'undefined') gtag('event', 'leaderboard_open', { game: '1000tries', where: 'header' }); CastAccount.openBoards(null); }"><span aria-hidden="true">&#x1F3C6;</span><span class="ca-nav-lbl"><span class="ca-lbl-l">Leaderboards</span><span class="ca-lbl-s">Rankings</span></span></button>
     <!-- Mid-draft: one New Game tab (29 Sep 2026, the user's call: Mode and Again were two buttons). Its pop-up offers Play
          Again, Change Mode or Keep Playing, the same as 27-0's -->
-    <button type="button" class="ca-nav-tab nav-new" data-action="new-game" aria-label="New game"><span aria-hidden="true">&#x1F504;</span><span class="ca-nav-lbl">New Game</span></button>
+    <button type="button" class="ca-nav-tab nav-new" data-action="new-game" aria-label="New game"><span aria-hidden="true">&#x2699;&#xFE0F;</span><span class="ca-nav-lbl">New Game</span></button>
     <button type="button" data-cast-friends aria-label="Friends" hidden></button>
     <button type="button" data-cast-account aria-label="Sign in to save your history"></button>
   </nav>
@@ -181,9 +182,9 @@
         <details class="faq-fold">
           <summary class="faq-fold-sum"><h2 class="faq-title" id="faqTitle">Frequently Asked Questions</h2><span class="faq-ico" aria-hidden="true">+</span></summary>
           <details class="faq-item" name="faq"><summary><span>What is 1000TRIES?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>A free Rugby League game by The Cast Patrol. Draft a starting 13 of NRL players with their NRL tries hidden, then add them up. Can your 13 reach 1000 tries combined?</p></details>
-          <details class="faq-item" name="faq"><summary><span>How do you play 1000TRIES?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random NRL players at a time. Choose one for your 13 without seeing their tries, and repeat until every spot from fullback to lock is filled. Your total is revealed as you go.</p></details>
+          <details class="faq-item" name="faq"><summary><span>How do you play 1000TRIES?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Pick a mode, then you are offered three random NRL players at a time. Choose one for your 13 without seeing their tries. You have 20 seconds to pick, or the first option goes in. Repeat until every spot from fullback to lock is filled. Your total is revealed as you go.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are the modes?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p><strong>1000+</strong>: reach 1000 tries or more, with one of each wildcard. <strong>Exactly 1000</strong>: land on 1000 on the dot, under or over is a miss, and it&rsquo;s Hard Mode: no free wildcards, only paid ones, one of each a game. <strong>Team Spin</strong>: choose a position, then spin a club and season and pick from that squad. <strong>NRLW 250+</strong>: draft from every NRLW player and reach 250 NRLW tries or more.</p></details>
-          <details class="faq-item" name="faq"><summary><span>What are Legends and Immortals?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>1000+</strong>, one offer is a <strong>Legends Pick</strong>: three greats of the game, most from before the NRL era. Rarer still is the <strong>Immortal Pick</strong>: three of Rugby League&rsquo;s Immortals. Their tries are hidden like everyone else&rsquo;s, and they count their whole premiership careers. You get one at most per game, and a player who has fallen well behind late in a game is sometimes thrown one as a lifeline.</p></details>
+          <details class="faq-item" name="faq"><summary><span>What are Legends and Immortals?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Now and then in <strong>1000+</strong>, one offer is a <strong>Legends Pick</strong>: three greats of the game, most from before the NRL era. Rarer still is the <strong>Immortal Pick</strong>: three of Rugby League&rsquo;s Immortals. Their tries are hidden like everyone else&rsquo;s, and they count their whole premiership careers. You get one at most per game, and it can turn up late in a game, just when you need it most.</p></details>
           <details class="faq-item" name="faq" data-cast-wc hidden><summary><span>What is World Cup 200+?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Roll 3 Test players from the 2026 World Cup nations, plus Great Britain, Scotland and Italy, pick 1 and fill your 13 to reach <strong>200 senior Test&nbsp;tries</strong> or&nbsp;more. Tries stay hidden until you pick, and each World Cup game&rsquo;s tries are added once it finishes. <strong>World Legends</strong>, the international greats, can turn up in an offer, and a <strong>World Legend Pick</strong> lets you choose one, with his Test tries. Free with a CAST Profile, with its own leaderboard.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="1000tries" hidden><summary><span>How do the leaderboards work?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Sign in free with a CAST Profile and pick a username. Your best game in every mode goes up automatically on today&rsquo;s, this week&rsquo;s and the all-time boards. Tap any name to see the 13 behind the score, with the luck of their draw. Exactly 1000 ranks the most exact 1000s, then the closest team.</p></details>
           <details class="faq-item" name="faq" data-cast-launch="1000tries" hidden><summary><span>Do I need an account?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. You can play as a guest, and your games stay on this device. A free CAST Profile (Google or Apple, for ages 13 and over) saves your history, stats and trophies across 1000TRIES and 27-0, puts you on the leaderboards and gives you wildcards every game.</p></details>
@@ -228,6 +229,11 @@
     <div class="wrap" id="ouRoot"></div>
   </section>
 
+  <!-- NRL BINGO (17 Oct 2026, js/bingo.js) -->
+  <section id="screen-bingo" class="screen" aria-label="NRL Bingo">
+    <div class="wrap" id="bgRoot"></div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -266,23 +272,25 @@
 <script src="js/analytics.js?v=20260924.29"></script>
 <script src="js/cast-promo.js?v=20261005.4"></script>
 <script src="js/data.js?v=20260927.35"></script>
-<script src="js/draft.js?v=20260927.54"></script>
-<script src="js/team-spin.js?v=20260927.12"></script>
+<script src="js/draft.js?v=20260927.55"></script>
+<script src="js/team-spin.js?v=20260927.13"></script>
 <script src="js/wildcards.js?v=20260927.20"></script>
 <script src="js/cast-nations.js?v=20261005.13"></script>
-<script src="js/cast-intl.js?v=20261008.24"></script>
-<script src="js/render.js?v=20260927.91"></script>
+<script src="js/cast-intl.js?v=e79b8507"></script>
+<script src="js/render.js?v=20260927.92"></script>
 <script src="js/share-card.js?v=20260927.5"></script>
-<script src="js/cast-celebrate.js?v=20261008.6"></script>
-<script src="js/app.js?v=20261015.9"></script>
+<script src="js/cast-celebrate.js?v=20261008.7"></script>
+<script src="js/app.js?v=571e54df"></script>
 <script src="js/ou-engine.js?v=20261015.6"></script>
 <script src="js/overunder.js?v=20261015.16"></script>
-<script src="js/cast-daily.js?v=20260929.17"></script>
-<script src="js/daily.js?v=20260927.31"></script>
+<script src="js/bingo-engine.js?v=2f9dffce"></script>
+<script src="js/bingo.js?v=50425d87"></script>
+<script src="js/cast-daily.js?v=20260929.18"></script>
+<script src="js/daily.js?v=20260927.32"></script>
 <script>
   // Accounts and leaderboards stay off here until the owner presses Launch in the Admin tab (launch: see js/cast-account.js)
   window.CAST_ACCOUNT = { enabled: false, launch: '1000tries', game: '1000tries', track: function (e, p) { if (window.T && T.track) T.track(e, p); }, privacyUrl: 'privacy.html', termsUrl: 'terms.html',
-    inGame: function () { return document.body.getAttribute('data-screen') === 'draft'; }, // a game in progress: sign-in keeps the pop-up (no reload)
+    inGame: function () { var s = document.body.getAttribute('data-screen'); return s === 'draft' || (s === 'bingo' && !!(window.T && T.bingo && T.bingo.playing())); }, // a game in progress (a draft, or an NRL Bingo card): sign-in keeps the pop-up (no reload), and pop-ups wait
     onHome: function () { return (document.body.getAttribute('data-screen') || 'home') === 'home'; }, // the home page (pop-ups wait for it)
     firstVisit: function () { return !!(window.T && T.firstVisit && T.firstVisit()); }, // no game finished here yet (js/app.js): no spot for a guest
     // The promo pop-up (js/cast-promo.js: the Dally M Team of the Year, the 2026 Premiers): its button starts 1000+ (or NRLW 250+ from its NRLW tab), and each card shows the player's tries
@@ -293,7 +301,7 @@
 <script src="js/cast-upgrades.js?v=20261006.1"></script>
 <script src="js/cast-dual.js?v=20261014.3"></script>
 <script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=56dc178d"></script>
+<script src="js/cast-account.js?v=ab2f8ce7"></script>
 <script src="js/cast-totw.js?v=20261015.1"></script>
 <script src="js/cast-wch.js?v=20261015.1"></script>
 </body>

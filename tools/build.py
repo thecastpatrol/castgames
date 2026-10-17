@@ -5,7 +5,7 @@ The games stay where they are (their own repos, still live on their own domains 
 one into its folder here and fits it to CAST Games, so there's only ever one version of a game to fix:
 
     27-0 Game/27-0-nrl  -> 27-0/        (27-0 CLASSIC; 27-0-pack/, 27-0-hard/ and world-cup-8-0/ are its other modes)
-    1000TRIES Game      -> 1000tries/   (1000TRIES; 1000tries-exactly/, nrlw-250/, world-cup-200/, higher-or-lower-nrl/ ...)
+    1000TRIES Game      -> 1000tries/   (1000TRIES; 1000tries-exactly/, nrlw-250/, world-cup-200/, higher-or-lower-nrl/, nrl-bingo/ ...)
     4000 GOALS Game     -> 4000goals/   (4000 GOALS; 4000goals-exactly/, aflw-750/, higher-or-lower-afl/ ...)
 
 Every mode is its own game with its own page (17 Oct 2026, the owner: "a box of games"): the game's page with <base>, opened
@@ -29,8 +29,11 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # this repo
-GAMES_DIR = os.path.dirname(HERE)  # CAST Games
+# CAST Games (CG_GAMES_DIR: another folder holding the game folders by the same names, for a build from working copies)
+GAMES_DIR = os.environ.get('CG_GAMES_DIR') or os.path.dirname(HERE)
 LIVE = '--live' in sys.argv
+# --only 1000tries,27-0: copy only these game folders again (the others stay as they are in this repo)
+ONLY = next((a.split('=', 1)[1].split(',') for a in sys.argv if a.startswith('--only=')), None)
 SITE = 'https://castgames.com.au/'
 # Testers only until the switch-over (16 Oct 2026, the owner): shared/cg-gate.js hides every page until the tester password
 GATE = '' if LIVE else '<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->\n'
@@ -76,7 +79,7 @@ DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
 SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus']}
 SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('racing', 'Horse Racing'), ('epl', 'Premier League'), ('nfl', 'NFL')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
-SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
+SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'shots', 'bingo-reps.json', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
 def committed_copy(path):
@@ -354,6 +357,8 @@ def main():
         if os.path.exists(os.path.join(HERE, rel)):
             clear_byline(os.path.join(HERE, rel))
     for folder, src, gid, hide, play in GAMES:
+        if ONLY and folder not in ONLY:
+            continue
         main_card = [g for g in REG['games'] if g.get('path') == folder + '/']
         if len(main_card) != 1:
             raise SystemExit('%s: shared/cg.js has no single card for its folder page' % folder)
@@ -366,6 +371,19 @@ def main():
             if f.endswith('.html'):
                 fit_page(os.path.join(dst, f), folder, gid, hide, play, card=main_card[0] if f == 'index.html' else None)
         print('built', folder)
+    if ONLY:
+        # The game folders not copied again keep their pages: only their links to the bar's files take its new version
+        for folder, src, gid, hide, play in GAMES:
+            if folder in ONLY:
+                continue
+            for root, _, files in os.walk(os.path.join(HERE, folder)):
+                for f in files:
+                    if f.endswith('.html'):
+                        p = os.path.join(root, f)
+                        t = open(p, encoding='utf-8').read()
+                        t2 = re.sub(r'(shared/cg\.(?:js|css))\?v=\w+', lambda m: m.group(1) + '?v=' + CGV, t)
+                        if t2 != t:
+                            open(p, 'w', encoding='utf-8').write(t2)
     # Every other mode's own page, then the old addresses (17 Oct 2026, the owner: every mode is its own game)
     mode_pages(REG)
     old_paths(REG)
