@@ -49490,7 +49490,7 @@
    {
     "club": "knights",
     "from": 2024,
-    "to": 2026
+    "to": 2025
    }
   ],
   "positions_played": [
@@ -49498,8 +49498,8 @@
   ],
   "draft_role": "C",
   "position": "C",
-  "active": true,
-  "career_span": "2024-2026"
+  "active": false,
+  "career_span": "2024-2025"
  },
  {
   "id": "adrian-rainey",
@@ -52723,26 +52723,6 @@
   ],
   "draft_role": "C",
   "position": "C",
-  "active": true,
-  "career_span": "2026-2026"
- },
- {
-  "id": "diesel-hagan",
-  "name": "Diesel Hagan",
-  "tries_1998_plus": 0,
-  "primary_club": "knights",
-  "club_years": [
-   {
-    "club": "knights",
-    "from": 2026,
-    "to": 2026
-   }
-  ],
-  "positions_played": [
-   "HK"
-  ],
-  "draft_role": "HK",
-  "position": "HK",
   "active": true,
   "career_span": "2026-2026"
  },

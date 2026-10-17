@@ -3777,7 +3777,8 @@ html.cp-totw-open, html.cp-totw-open body { overflow: hidden; }
    100%). The home page's looping animations (logo glint, Six Again arrows, Play shine, the slider) kept repainting under
    the panel, and at a fractional zoom Chrome repaints the whole screen for them. Paused, not removed: they carry on when
    the panel closes */
-html.ca-open body > :not(.ca), html.ca-open body > :not(.ca) * { animation-play-state: paused !important; }
+/* (toasts keep playing: paused, a toast shown over an open panel stayed at its first frame, invisible; 17 Oct 2026) */
+html.ca-open body > :not(.ca):not(.ca-toast):not(.ca-upd), html.ca-open body > :not(.ca):not(.ca-toast):not(.ca-upd) * { animation-play-state: paused !important; }
 /* 25000 RUNS team sheets (15 Oct 2026): a cricket ground, the oval with its 30-yard circle and the pitch down the middle */
 .ca-pitch.is-ground { border-radius: 50% / 16%; padding: 26px 16px;
   background: linear-gradient(90deg, transparent calc(50% - 22px), rgba(214, 190, 140, .30) calc(50% - 22px), rgba(214, 190, 140, .30) calc(50% + 22px), transparent calc(50% + 22px)) 50% 50% / 100% 34% no-repeat,
@@ -4064,78 +4065,216 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 @media (max-width: 480px) { .ca-ib-stb { padding: 10px 3px; } .ca-ib-stb small { font-size: 9.5px; letter-spacing: 0; } }
 @media (max-width: 380px) { .ca-ib-st { gap: 4px; } .ca-ib-stb b { font-size: 20px; } .ca-ib-stb small { font-size: 9px; } }
 
-/* ---------------- The Gameday Bag (17 Oct 2026) ----------------
-   In green, the colour of a saving (gold stays for CAST Pass: only the Pass member's 5% line and its nudge use it).
-   Add to Bag sits under each Shop card's own Buy buttons; the Gameday Bag button is pinned to the foot of the Shop; the
-   bag opens in the Stripe pop-up's sheet with its Checkout pinned at the bottom */
-.ca-bag-add { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 40px; margin: 10px 0 0; padding: 8px 12px; box-sizing: border-box;
-  border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, .22); background: rgba(255, 255, 255, .04); color: #fff; font: 800 13px/1.2 Inter, sans-serif;
-  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color .15s, background .15s; }
-.ca-bag-add span { font-size: 15px; line-height: 1; }
-.ca-bag-add.is-in { border-color: rgba(74, 222, 128, .6); background: rgba(74, 222, 128, .1); color: #bbf7d0; }
-.ca-bag-add:disabled { opacity: .45; cursor: default; }
-@media (hover: hover) { .ca-bag-add:hover:not(:disabled) { border-color: #fff; } .ca-bag-add.is-in:hover:not(:disabled) { border-color: #4ade80; } }
-.ca-bag-tip { display: flex; align-items: flex-start; gap: 9px; margin: 0 0 14px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(74, 222, 128, .35);
-  background: rgba(74, 222, 128, .07); color: #dcfce7; font: 600 12.5px/1.45 Inter, sans-serif; text-wrap: pretty; }
-.ca-bag-tip > span:first-child { flex: none; font-size: 18px; line-height: 1.1; }
-.ca-bag-tip b { color: #fff; font-weight: 900; }
-.ca-bag-tip em { font-style: normal; font-weight: 800; color: #f1c073; }
-/* The pinned button: stuck to the foot of the full-screen Shop while it scrolls (the panel's bottom padding is 28px) */
-.ca-bag-dock { position: sticky; z-index: 4; bottom: calc(-28px - env(safe-area-inset-bottom, 0px)); margin: 16px 0 calc(-28px - env(safe-area-inset-bottom, 0px));
-  padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, rgba(15, 13, 29, 0), #0f0d1d 28%); }
-.ca-bag-btn { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 9px 14px; box-sizing: border-box; border-radius: 16px; border: 1.5px solid #4ade80;
-  background: linear-gradient(135deg, #22c55e, #15803d); color: #fff; font: inherit; text-align: left; cursor: pointer; box-shadow: 0 8px 26px rgba(0, 0, 0, .45), 0 0 18px rgba(74, 222, 128, .25);
+/* ---------------- The Shop, design A2, and the Gameday Bag (17 Oct 2026, the owner's picks) ----------------
+   One list in four groups, each in its own colour (the approved board): Wildcards sky, Picks violet, Specials pink,
+   Streak orange. The jump bar sticks to the top of the Shop (leaving room for the close button once stuck), each group's
+   heading sticks under it, and the Gameday Bag bar is pinned at the foot. Savings are green; gold is only the CAST Pass
+   card and the Pass lines. The bag opens in the Stripe pop-up's sheet with its Checkout pinned at the bottom */
+.ca.is-shop .ca-panel { background: #0a0a0f; }
+.ca.is-shop .ca-x { z-index: 9; } /* above the stuck jump bar, in the room it leaves */
+.ca-sh.is-cards, .ca-jump-b.is-cards, .ca-bag-row.is-cards { --c: 56, 189, 248; --cl: #bae6fd; }
+.ca-sh.is-picks, .ca-jump-b.is-picks, .ca-bag-row.is-picks { --c: 167, 139, 250; --cl: #ddd6fe; }
+.ca-sh.is-specials, .ca-jump-b.is-specials, .ca-bag-row.is-specials { --c: 244, 114, 182; --cl: #fbcfe8; }
+.ca-sh.is-streak, .ca-jump-b.is-streak, .ca-bag-row.is-streak { --c: 251, 146, 60; --cl: #fed7aa; }
+/* CAST Pass: the card on top for a free profile, and the little gold Pass Card beside every Pass line */
+.ca-passchip { flex: none; display: inline-grid; place-items: center; width: 22px; height: 14px; box-sizing: border-box; border-radius: 3px;
+  background: linear-gradient(135deg, #fbe3a8, #f1c073 45%, #b98a3e); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35), 0 2px 8px rgba(241, 192, 115, .25);
+  color: #1a1204; font: 900 5px/1 Inter, sans-serif; letter-spacing: .6px; }
+.ca-passchip.is-big { width: 46px; height: 32px; border-radius: 7px; font-size: 8px; }
+.ca-shop-pcard { display: flex; align-items: center; gap: 12px; width: 100%; box-sizing: border-box; margin: 0 0 10px; padding: 12px 12px 12px 14px; border-radius: 16px;
+  background: linear-gradient(120deg, #3a2a0c, #1a1206 70%); border: 1px solid rgba(241, 192, 115, .55); color: #fff; font: inherit; text-align: left; cursor: pointer;
   -webkit-tap-highlight-color: transparent; }
-.ca-bag-ico { flex: none; font-size: 24px; line-height: 1; }
-.ca-bag-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.ca-bag-t b { font: 900 15px/1.15 Inter, sans-serif; letter-spacing: .2px; }
-.ca-bag-t small { font: 700 12px/1.3 Inter, sans-serif; color: #dcfce7; text-wrap: pretty; }
-.ca-bag-btn strong { flex: none; font: 900 20px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; }
-.ca-bag-btn .ca-shop-go { color: #dcfce7; }
-.ca-bag-btn:active { transform: scale(.99); }
-/* The bag's sheet */
-.ca-rr.is-bag .ca-rr-panel { border-color: rgba(74, 222, 128, .65); box-shadow: 0 0 0 4px rgba(74, 222, 128, .1), 0 -10px 40px rgba(74, 222, 128, .14); }
-.ca-rr.is-bag .ca-rr-kicker { color: #86efac; }
-.ca-rr.is-bag .ca-rr-badge { border-color: #4ade80 !important; box-shadow: 0 0 26px rgba(74, 222, 128, .35) !important; }
-.ca-bag-list { list-style: none; margin: 16px 0 12px; padding: 0; display: grid; gap: 8px; }
-.ca-bag-row { --it: 255, 255, 255; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "i n p" "i s q"; align-items: center; gap: 4px 10px;
-  padding: 10px 12px; border-radius: 13px; border: 1px solid rgba(var(--it), .3); background: linear-gradient(160deg, rgba(var(--it), .1), rgba(255, 255, 255, .02)); }
-.ca-bag-row.is-rr { --it: 45, 212, 191; } .ca-bag-row.is-rm { --it: 244, 114, 182; } .ca-bag-row.is-rv { --it: 167, 139, 250; } .ca-bag-row.is-key { --it: 251, 191, 36; }
-.ca-bag-row.is-rib { --it: 251, 146, 60; } .ca-bag-row.is-fz { --it: 56, 189, 248; } .ca-bag-row.is-goat { --it: 226, 232, 240; } .ca-bag-row.is-wcp { --it: 14, 165, 233; }
-.ca-bag-row.is-toty, .ca-bag-row.is-prem { --it: 191, 219, 254; } .ca-bag-row.is-imm, .ca-bag-row.is-ileg, .ca-bag-row.is-wch { --it: 196, 181, 253; }
-.ca-bag-ri { grid-area: i; align-self: start; font-size: 22px; line-height: 1.2; text-align: center; }
-.ca-bag-rn { grid-area: n; min-width: 0; font: 900 14.5px/1.25 Inter, sans-serif; color: #fff; text-wrap: balance; }
-.ca-bag-rp { grid-area: p; font: 900 16px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; text-align: right; }
-.ca-bag-rs { grid-area: s; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font: 700 11.5px/1.35 Inter, sans-serif; color: #b9c3d6; }
-.ca-bag-rs.is-pass { color: #f1c073; }
-.ca-bag-nudge { min-height: 26px; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(74, 222, 128, .55); background: rgba(74, 222, 128, .12); color: #bbf7d0;
-  font: 800 11px/1.2 Inter, sans-serif; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
-.ca-bag-q { grid-area: q; display: inline-flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .16); background: rgba(0, 0, 0, .25); }
-.ca-bag-st { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .08); color: #fff; font: 900 17px/1 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.ca-bag-st:disabled { opacity: .35; cursor: default; }
-.ca-bag-q output { min-width: 28px; text-align: center; font: 900 15px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; }
-@media (hover: hover) { .ca-bag-st:hover:not(:disabled) { background: rgba(255, 255, 255, .18); } .ca-bag-nudge:hover { border-color: #4ade80; } .ca-bag-btn:hover { border-color: #bbf7d0; } }
-.ca-bag-sum { margin: 4px 0 10px; padding: 10px 12px; border-radius: 13px; border: 1px solid var(--ca-line); background: rgba(255, 255, 255, .03); display: grid; gap: 6px; }
-.ca-bag-sum p { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0; font: 700 13px/1.3 Inter, sans-serif; color: #d6d6e4; }
-.ca-bag-sum p b { font-variant-numeric: tabular-nums; color: #fff; white-space: nowrap; }
-.ca-bag-sum p.is-off, .ca-bag-sum p.is-off b { color: #86efac; }
-.ca-bag-sum p.is-pass, .ca-bag-sum p.is-pass b { color: #f1c073; }
-.ca-bag-sum p.is-total { padding-top: 6px; border-top: 1px solid var(--ca-line); font: 900 15px/1.2 Inter, sans-serif; color: #fff; }
-.ca-bag-sum p.is-total b { font-size: 20px; }
-.ca-bag-sum .ca-bag-save { justify-content: center; margin-top: 2px; padding: 7px 10px; border-radius: 999px; background: rgba(74, 222, 128, .14); color: #bbf7d0; font: 900 13.5px/1.2 Inter, sans-serif; }
-.ca-bag-next { margin: 4px 0 0; text-align: center; font: 700 12.5px/1.4 Inter, sans-serif; color: #b9c3d6; text-wrap: balance; }
-.ca-bag-sum .ca-bag-next { display: block; }
-.ca-bag-passup { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; margin: 4px 0 10px; padding: 9px 12px; border-radius: 12px;
-  border: 1.5px solid rgba(241, 192, 115, .55); background: linear-gradient(135deg, rgba(241, 192, 115, .12), rgba(241, 192, 115, .03)); color: #f6e7c8;
-  font: 700 12.5px/1.35 Inter, sans-serif; text-align: left; cursor: pointer; }
-.ca-bag-passup .ca-vf { flex: none; width: 24px; height: 24px; margin: 0; }
-.ca-bag-passup > span:not(.ca-shop-go) { flex: 1; min-width: 0; text-wrap: pretty; }
-.ca-bag-go { width: 100%; min-height: 50px; padding: 12px 16px; border-radius: 999px; border: 0; background: #22c55e; color: #052e16;
-  font: 900 15px/1.2 Inter, sans-serif; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-@media (hover: hover) { .ca-bag-go:hover { background: #4ade80; } }
-.ca-bag-go:active { transform: scale(.99); }
+.ca-shop-pcard-t { flex: 1; min-width: 0; display: grid; }
+.ca-shop-pcard-t em { font: 900 10.5px/1 Inter, sans-serif; font-style: normal; letter-spacing: 1.4px; text-transform: uppercase; color: #f1c073; }
+.ca-shop-pcard-t b { margin-top: 5px; font: 900 15px/1.2 Inter, sans-serif; color: #fff; text-wrap: balance; }
+.ca-shop-pcard-t small { margin-top: 3px; font: 600 12px/1.35 Inter, sans-serif; color: #d9c9a6; text-wrap: balance; }
+.ca-shop-pcard-go { flex: none; padding: 10px 14px; border-radius: 999px; background: #f1c073; color: #1a1204; font: 900 12.5px/1 Inter, sans-serif; }
+@media (hover: hover) { .ca-shop-pcard:hover { border-color: #f1c073; } }
+.ca.is-shop .ca-shop-passline { margin: 0 0 10px; }
+.ca-shop-young { margin: 4px 0 10px; }
+/* Your Vault, folded to one strip: the name, what you have as chips, the caret */
+.ca-vl.is-strip, .ca-vl.is-empty { margin: 0 0 4px; padding: 0; border: 0; background: none; }
+.ca-vl-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; box-sizing: border-box; min-height: 44px; padding: 8px 10px 8px 12px; border-radius: 14px;
+  background: #14141c; border: 1px solid #23232f; color: #fff; font: inherit; text-align: left; }
+button.ca-vl-strip { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-vl-strip > b { margin-right: 2px; font: 900 13px/1 Inter, sans-serif; white-space: nowrap; }
+.ca-vl-strip > small { font: 700 12px/1 Inter, sans-serif; color: #a2a2b8; }
+.ca-vl-strip .ca-vl-chips { display: contents; }
+.ca-vl-strip .ca-vl-chip { gap: 3px; padding: 4px 8px; border: 0; border-radius: 999px; background: #1f1f2b; color: #fff; font: 800 12px/1 Inter, sans-serif; white-space: nowrap; }
+.ca-vl-strip .ca-vl-chip span { font-size: 13px; }
+.ca-vl-strip .ca-vl-caret { margin-left: auto; color: #a2a2b8; font: 900 13px/1 Inter, sans-serif; }
+@media (hover: hover) { button.ca-vl-strip:hover { border-color: rgba(255, 255, 255, .35); } }
+/* The jump bar: sticks to the top of the Shop; once stuck it leaves room for the close button (shopSpy sets is-stuck) */
+.ca-jump { position: sticky; top: -18px; z-index: 6; height: 56px; box-sizing: border-box; margin: 6px -16px 0; padding: 10px 16px 6px; background: rgba(10, 10, 15, .97); }
+.ca-jump-in { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); height: 40px; box-sizing: border-box; padding: 3px; border-radius: 999px; background: #17171f;
+  border: 1px solid #23232f; transition: margin-right .2s ease; }
+.ca-jump.is-stuck .ca-jump-in { margin-right: 46px; }
+.ca-jump-b { display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 0; height: 32px; padding: 0 4px; border: 0; border-radius: 999px; background: none;
+  color: #c9c9d6; font: 900 12px/1 Inter, sans-serif; white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-jump-b i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--c)); }
+.ca-jump-b.is-on { background: #fff; color: #0a0a0f; }
+@media (hover: hover) { .ca-jump-b:not(.is-on):hover { color: #fff; } }
+@media (max-width: 400px) { .ca-jump.is-stuck .ca-jump-b i { display: none; } .ca-jump.is-stuck .ca-jump-b { font-size: 11.5px; } }
+@media (min-width: 720px) { .ca-jump { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; } }
+/* A group: its heading sticks under the jump bar, with how many items and how many are in the bag */
+.ca-sh-h { position: sticky; top: 38px; z-index: 5; display: flex; align-items: center; gap: 9px; margin: 0 -16px; padding: 16px 16px 9px; background: rgba(10, 10, 15, .97);
+  border-bottom: 1px solid #1d1d2a; }
+@media (min-width: 720px) { .ca-sh-h { margin: 0; padding-left: 0; padding-right: 0; } }
+.ca-sh-bar { flex: none; width: 5px; height: 20px; border-radius: 3px; background: rgb(var(--c)); }
+.ca-sh-t { margin: 0; font: italic 900 20px/1 Inter, sans-serif; letter-spacing: -.2px; color: #fff; }
+.ca-sh-h small { font: 700 12px/1 Inter, sans-serif; color: #a2a2b8; white-space: nowrap; }
+.ca-sh-in { margin-left: auto; padding: 4px 8px; border-radius: 999px; background: rgba(74, 222, 128, .12); color: #86efac; font: 800 11px/1 Inter, sans-serif; white-space: nowrap; }
+.ca-sh-list { display: grid; gap: 8px; padding: 10px 0 6px; }
+/* An item's row */
+.ca-sr { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; column-gap: 11px; row-gap: 8px; align-items: center; padding: 9px 10px 9px 11px; border-radius: 16px;
+  background: #14141c; border: 1px solid #23232f; scroll-margin: 110px 0 190px; }
+.ca-sr.is-in { background: linear-gradient(90deg, rgba(var(--c), .08), #14141c 60%); border-color: rgba(var(--c), .45); }
+.ca-sr-ico { width: 42px; height: 42px; box-sizing: border-box; border-radius: 12px; display: grid; place-items: center; font-size: 23px; line-height: 1; background: rgba(var(--c), .14);
+  border: 1px solid rgba(var(--c), .35); }
+.ca-sr-t { min-width: 0; }
+.ca-sr-nm { display: flex; align-items: center; gap: 6px; }
+.ca-sr-nm b { font: 900 15px/1.2 Inter, sans-serif; color: #fff; text-wrap: balance; }
+.ca-sr-new { flex: none; padding: 2px 6px; border-radius: 5px; background: #fff; color: #0a0a0f; font: 900 9.5px/1.2 Inter, sans-serif; font-style: normal; letter-spacing: .5px; text-transform: uppercase; }
+.ca-sr-l { margin: 2px 0 0; font: 600 12px/1.35 Inter, sans-serif; color: #a2a2b8; text-wrap: balance; }
+.ca-sr-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.ca-sr-chip { padding: 3px 7px; border-radius: 999px; background: rgba(var(--c), .13); color: var(--cl); font: 800 10.5px/1.2 Inter, sans-serif; white-space: nowrap; }
+.ca-sr-chip.is-on { background: rgb(var(--c)); color: #0a0a0f; }
+.ca-sr-chip.is-tag { background: #1f1f2b; color: #c9c9d6; }
+.ca-sr-buy { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+.ca-sr-p, .ca-bag-rp { display: flex; align-items: baseline; justify-content: flex-end; gap: 5px; white-space: nowrap; }
+.ca-sr-p s, .ca-bag-rp s { font: 700 11px/1 Inter, sans-serif; color: #6e6e85; }
+.ca-sr-p b, .ca-bag-rp b { font: 900 16px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; }
+.ca-sr-p small { margin-left: -2px; font: 700 10.5px/1 Inter, sans-serif; color: #6e6e85; }
+.ca-sr-ready { padding: 8px 12px; border-radius: 999px; background: rgba(var(--c), .14); border: 1px solid rgba(var(--c), .5); color: var(--cl); font: 900 12.5px/1 Inter, sans-serif; white-space: nowrap; }
+.ca-sr-note { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 0; padding: 7px 8px 7px 10px; border-radius: 10px; font: 800 12px/1.3 Inter, sans-serif; text-wrap: balance; }
+.ca-sr-note.is-save { background: rgba(74, 222, 128, .1); color: #86efac; }
+.ca-sr-note.is-nudge { background: rgba(255, 255, 255, .06); color: #e9e9f2; }
+.ca-sr-note.is-nudge span { flex: 1; min-width: 0; }
+.ca-sr-note.is-pass { background: rgba(241, 192, 115, .1); color: #f1c073; }
+.ca-sr-note.is-ready { background: rgba(var(--c), .1); color: var(--cl); }
+.ca-sr-make { flex: none; padding: 7px 11px; border-radius: 999px; border: 0; background: #fff; color: #0a0a0f; font: 900 11.5px/1 Inter, sans-serif; white-space: nowrap; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; }
+.ca-sr-make:disabled { opacity: .45; cursor: default; }
+/* The − 0 + steppers (the Shop's rows and the bag's lines) */
+.ca-step { display: flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px; background: #1b1b26; border: 1px solid #2a2a38; }
+.ca-step.is-on { border-color: rgba(var(--c), .6); }
+.ca-step-b { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: #2a2a38; color: #fff;
+  font: 900 18px/1 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.ca-step-b.is-inc { background: #fff; color: #0a0a0f; }
+.ca-step-b:disabled { background: transparent; color: #4a4a5e; cursor: default; }
+.ca-step-b.is-inc:disabled { background: #2a2a38; color: #6e6e85; }
+.ca-step output { min-width: 24px; text-align: center; font: 900 15px/1 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; }
+.ca-step:not(.is-on) output { color: #8a8aa0; }
+.ca-step-b:active:not(:disabled) { transform: scale(.92); }
+@media (hover: hover) { .ca-step-b.is-dec:hover:not(:disabled) { background: #3a3a4c; } .ca-step-b.is-inc:hover:not(:disabled) { background: #e5e7eb; } .ca-sr-make:hover { background: #e5e7eb; } }
+.ca-shop-foot { margin: 14px 0 0; color: #6e6e85; }
+/* The savings bar: $0 to the top saving, a tick at each saving reached */
+.ca-bagp { position: relative; height: 32px; }
+.ca-bagp-track { position: absolute; left: 0; right: 0; top: 4px; height: 8px; border-radius: 4px; background: #262633; }
+.ca-bagp-fill { position: absolute; left: 0; top: 4px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #16a34a, #4ade80); transition: width .3s ease; }
+.ca-bagp-mark { position: absolute; top: 0; left: calc(var(--at) - 9px); width: 18px; height: 18px; box-sizing: border-box; border-radius: 50%; display: grid; place-items: center;
+  background: #262633; border: 2px solid #111119; color: #052e16; font: 900 9px/1 Inter, sans-serif; }
+.ca-bagp-mark.is-end { left: auto; right: 0; }
+.ca-bagp-mark.is-on { background: #4ade80; }
+.ca-bagp-lbl { position: absolute; top: 20px; left: var(--at); transform: translateX(-50%); font: 800 10.5px/1 Inter, sans-serif; color: #6e6e85; white-space: nowrap; }
+.ca-bagp-lbl.is-end { left: auto; right: 0; transform: none; }
+.ca-bagp-lbl.is-on { color: #86efac; }
+.ca-bag-msg { margin: 4px 0 0; font: 700 13px/1.4 Inter, sans-serif; color: #e9e9f2; text-wrap: balance; }
+.ca-bag-msg .is-save { color: #4ade80; font-weight: 900; }
+/* CAST Pass lines: a member's extra saving, or what the Pass would add with Join */
+.ca-bag-pl { display: flex; align-items: center; gap: 7px; margin: 6px 0 0; font: 800 12.5px/1.3 Inter, sans-serif; color: #f1c073; }
+.ca-bag-pj { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 6px 6px 6px 10px; border-radius: 12px; background: rgba(241, 192, 115, .1); border: 1px solid rgba(241, 192, 115, .45); }
+.ca-bag-pj > span:not(.ca-passchip) { flex: 1; min-width: 0; font: 800 12px/1.3 Inter, sans-serif; color: #f1c073; text-wrap: balance; }
+.ca-bag-join { flex: none; padding: 7px 12px; border-radius: 999px; border: 0; background: #f1c073; color: #1a1204; font: 900 11.5px/1 Inter, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .ca-bag-join:hover { background: #fbe3a8; } }
+/* The pinned Gameday Bag bar at the foot of the Shop (the panel's bottom padding is 28px) */
+.ca-bagbar { position: sticky; z-index: 7; bottom: calc(-28px - env(safe-area-inset-bottom, 0px)); margin: 18px -16px calc(-28px - env(safe-area-inset-bottom, 0px)); }
+.ca-bagbar-in { padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0px)); border-radius: 20px 20px 0 0; background: #111119; border-top: 1px solid #2a2a38; box-shadow: 0 -14px 34px rgba(0, 0, 0, .65); }
+@media (min-width: 720px) { .ca-bagbar { margin-left: 0; margin-right: 0; } .ca-bagbar-in { padding-left: 18px; padding-right: 18px; border: 1px solid #2a2a38; border-bottom: 0; } }
+.ca-bagbar-row { display: flex; gap: 8px; margin-top: 10px; }
+.ca-bagbar-bag { flex: none; display: flex; align-items: center; gap: 8px; height: 50px; padding: 0 14px 0 7px; border-radius: 999px; background: #1b1b26; border: 1px solid #2a2a38; color: #fff;
+  font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-bagbar-ico { flex: none; width: 36px; height: 36px; box-sizing: border-box; border-radius: 50%; display: grid; place-items: center; font-size: 19px; line-height: 1;
+  background: rgba(74, 222, 128, .14); border: 1px solid rgba(74, 222, 128, .4); }
+.ca-bagbar-ico.is-bump { animation: caBagBump .45s ease; }
+@keyframes caBagBump { 0% { transform: none; } 40% { transform: scale(1.22) rotate(-8deg); } 100% { transform: none; } }
+.ca-bagbar-t b { display: block; font: 900 12.5px/1.15 Inter, sans-serif; white-space: nowrap; }
+.ca-bagbar-t small { display: block; margin-top: 2px; font: 700 11px/1.15 Inter, sans-serif; color: #a2a2b8; white-space: nowrap; }
+.ca-bagbar-go, .ca-bag-go { flex: 1; min-width: 0; height: 50px; padding: 0 14px; border-radius: 999px; border: 0; background: #4ade80; color: #052e16; font: 900 16px/1 Inter, sans-serif;
+  white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-bagbar-go:disabled { background: #23232f; color: #6e6e85; cursor: default; }
+@media (hover: hover) { .ca-bagbar-go:hover:not(:disabled), .ca-bag-go:hover { background: #86efac; } .ca-bagbar-bag:hover { border-color: rgba(255, 255, 255, .35); } }
+.ca-bagbar-go:active:not(:disabled), .ca-bag-go:active { transform: scale(.99); }
+@media (max-width: 350px) { .ca-bagbar-bag { padding-right: 10px; } .ca-bagbar-go { font-size: 15px; padding: 0 10px; } }
+/* The bag (the approved drawer): in the Stripe pop-up's sheet, dark with green savings */
+.ca-rr.is-bag .ca-rr-panel { background: #111119; border: 0; border-top: 1px solid #2a2a38; box-shadow: 0 -20px 50px rgba(0, 0, 0, .7); }
+.ca-rr.is-bag .ca-rr-panel::before { content: ''; display: block; width: 40px; height: 5px; margin: -10px auto 8px; border-radius: 3px; background: #3a3a4c; }
+@media (min-width: 720px) { .ca-rr.is-bag .ca-rr-panel { border: 1px solid #2a2a38; } .ca-rr.is-bag .ca-rr-panel::before { display: none; } }
+.ca-rr.is-bag .ca-x { border-color: #2a2a38; background: #1b1b26; color: #fff; }
+.ca-bag-head { display: flex; align-items: center; gap: 10px; margin: 0 44px 4px 0; }
+.ca-bag-hi { flex: none; width: 40px; height: 40px; box-sizing: border-box; border-radius: 12px; display: grid; place-items: center; font-size: 22px; line-height: 1;
+  background: rgba(74, 222, 128, .12); border: 1px solid rgba(74, 222, 128, .35); }
+.ca-bag-ht { min-width: 0; }
+.ca-bag-ht .ca-title { margin: 0; font: italic 900 22px/1.05 Inter, sans-serif; letter-spacing: -.3px; text-transform: none; text-align: left; color: #fff; }
+.ca-bag-hs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 4px; }
+.ca-bag-ht small { display: block; font: 700 12px/1 Inter, sans-serif; color: #a2a2b8; white-space: nowrap; }
+/* Clear Bag: a quiet pill (the owner, 17 Oct 2026), undone from its toast */
+.ca-bag-clear { min-height: 26px; padding: 4px 10px; border-radius: 999px; border: 1px solid #2a2a38; background: #1b1b26; color: #c9c9d6; font: 800 11.5px/1 Inter, sans-serif;
+  white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .ca-bag-clear:hover { color: #fff; border-color: rgba(255, 255, 255, .35); } }
+.ca-toast.is-undo { display: flex; align-items: center; gap: 14px; padding: 7px 7px 7px 16px; text-align: left; white-space: nowrap; }
+.ca-toast-undo { flex: none; padding: 8px 14px; border-radius: 999px; border: 0; background: #fff; color: #0a0a0f; font: 900 12.5px/1 Inter, sans-serif; cursor: pointer; }
+@media (hover: hover) { .ca-toast-undo:hover { background: #e5e7eb; } }
+.ca-bag-empty { margin: 18px 0 6px; }
+.ca-bag-list { list-style: none; margin: 4px 0 0; padding: 0; }
+.ca-bag-row { --c: 255, 255, 255; --cl: #fff; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; column-gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid #23232f; }
+.ca-bag-ri { width: 40px; height: 40px; box-sizing: border-box; border-radius: 11px; display: grid; place-items: center; font-size: 22px; line-height: 1; background: rgba(var(--c), .14);
+  border: 1px solid rgba(var(--c), .35); }
+.ca-bag-rt { min-width: 0; }
+.ca-bag-rn { display: block; font: 900 15px/1.2 Inter, sans-serif; color: #fff; text-wrap: balance; }
+.ca-bag-rs { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 3px; font: 700 12px/1.3 Inter, sans-serif; color: #a2a2b8; text-wrap: balance; }
+.ca-bag-rs .is-save { color: #86efac; }
+.ca-bag-rs .is-pass { color: #f1c073; }
+.ca-bag-rs .is-fine { font-weight: 600; font-size: 11.5px; color: #c9c9d6; }
+.ca-bag-rb { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+.ca-bag-nudge { min-height: 28px; padding: 4px 10px; border-radius: 999px; border: 0; background: rgba(255, 255, 255, .1); color: #fff; font: 800 11.5px/1.25 Inter, sans-serif; text-align: left;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; text-wrap: balance; }
+@media (hover: hover) { .ca-bag-nudge:hover { background: rgba(255, 255, 255, .18); } .ca-bag-qa:hover { border-color: rgba(255, 255, 255, .4); } }
+.ca-bag-box { margin-top: 12px; padding: 11px 12px 12px; border-radius: 14px; background: #16161f; border: 1px solid #23232f; }
+.ca-bag-boxh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.ca-bag-boxh b { font: 900 13px/1 Inter, sans-serif; color: #fff; }
+.ca-bag-boxh small { font: 700 12px/1 Inter, sans-serif; color: #a2a2b8; white-space: nowrap; }
+.ca-bag-box .ca-bagp-mark { border-color: #16161f; }
+.ca-bag-quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ca-bag-qa { display: flex; align-items: center; gap: 6px; padding: 8px 11px 8px 9px; border-radius: 999px; background: #1f1f2b; border: 1px solid #2a2a38; color: #fff;
+  font: 800 12px/1 Inter, sans-serif; white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-bag-sum { display: flex; flex-direction: column; gap: 7px; margin-top: 12px; font: 700 14px/1.3 Inter, sans-serif; color: #e9e9f2; }
+.ca-bag-sum p { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0; }
+.ca-bag-sum p b { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ca-bag-sum p.is-note { margin-top: -4px; font: 700 11.5px/1.3 Inter, sans-serif; color: #86efac; }
+.ca-bag-sum p.is-off { color: #4ade80; }
+.ca-bag-sum p.is-pass { color: #f1c073; }
+.ca-bag-sum p.is-pass > span { display: inline-flex; align-items: center; gap: 7px; }
+.ca-bag-sum p.is-passnote { margin-top: -2px; font: 700 11.5px/1.35 Inter, sans-serif; color: #d9c9a6; text-wrap: balance; }
+.ca-bag-sum .ca-bag-pj { margin-top: 8px; }
+.ca-bag-sum p.is-total { margin-top: 4px; padding-top: 10px; border-top: 1px solid #23232f; }
+.ca-bag-sum p.is-total span { font: 900 17px/1 Inter, sans-serif; }
+.ca-bag-sum p.is-total b { font: 900 20px/1 Inter, sans-serif; }
+.ca-rr.is-bag .ca-bag-foot { background: #111119; border-top-color: #23232f; }
+.ca-bag-foot .ca-bag-go { flex: none; width: 100%; height: 52px; }
+.ca-bag-foot .ca-small { margin: 2px 0 0; color: #6e6e85; }
 .ca-bag-back { margin-top: 12px; }
-@media (prefers-reduced-motion: reduce) { .ca-bag-go:active, .ca-bag-btn:active { transform: none; } .ca-bag-add { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ca-bagbar-go:active, .ca-bag-go:active, .ca-step-b:active { transform: none; } .ca-bagbar-ico.is-bump { animation: none; } .ca-bagp-fill, .ca-jump-in { transition: none; } }
+/* A Gameday Bag's items as lines under its sale (Admin Sales and a player's Purchases, 17 Oct 2026) */
+.ca-adm-baglines { list-style: none; display: grid; gap: 2px; margin: 5px 0 0; padding: 6px 8px; border-radius: 9px; background: rgba(74, 222, 128, .06); border: 1px solid rgba(74, 222, 128, .18); }
+.ca-adm-list .ca-adm-baglines li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  font: 700 11.5px/1.35 Inter, sans-serif; color: #d6d6e4; }
+.ca-adm-baglines li span { display: inline-flex; align-items: baseline; gap: 5px; min-width: 0; text-wrap: balance; }
+.ca-adm-baglines li i { font-style: normal; }
+.ca-adm-pn .ca-adm-baglines li b { display: inline; flex: none; overflow: visible; text-overflow: clip; font: 800 11.5px/1.35 Inter, sans-serif; font-variant-numeric: tabular-nums; color: #fff; white-space: nowrap; }
+.ca-adm-pn .ca-adm-baglines li b.is-refunded { color: var(--ca-muted); text-decoration: line-through; }
+.ca-adm-buys .ca-adm-pn { flex: 1; min-width: 0; }
+.ca-adm-buys .ca-adm-pn > b { display: block; white-space: normal; overflow: visible; text-overflow: clip; text-wrap: balance; } /* a bag's contents in full, never cut */
 /* A refund or bank dispute under a sale in Admin > Sales (17 Oct 2026) */
 .ca-adm-rev { display: block; margin-top: 3px; font-size: 11.5px; line-height: 1.35; color: #fca5a5; text-wrap: pretty; }
 
@@ -4193,8 +4332,11 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-bg-card { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0 0 14px; }
 .ca-bg-tile { position: relative; display: block; aspect-ratio: 5 / 3.6; overflow: hidden; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
 .ca-bg-tile svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.ca-bg-tile.is-filled { box-shadow: inset 0 0 0 2px rgba(163, 230, 53, .85); }
-.ca-bg-tile.is-filled svg { filter: saturate(.55) brightness(.42); }
+.ca-bg-tile.is-filled { box-shadow: inset 0 0 0 2px #a3e635, 0 0 10px rgba(163, 230, 53, .35); }
+.ca-bg-tile.is-filled svg { filter: saturate(.5) brightness(.5); }
+/* A filled tile reads as right at a glance (the owner, 17 Oct 2026): a lime wash under the tick and the name */
+.ca-bg-tile.is-filled::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(163, 230, 53, .34), rgba(101, 163, 13, .22)); }
+.ca-bg-tile b, .ca-bg-tile small { z-index: 1; }
 .ca-bg-tile b { position: absolute; left: 3px; right: 3px; top: 22%; text-align: center; font: 900 10.5px/1.15 Inter, sans-serif; color: #fff; text-transform: uppercase; overflow-wrap: anywhere; text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
 .ca-bg-tile small { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 2px 4px; background: linear-gradient(180deg, transparent, rgba(4, 6, 10, .85) 55%); text-align: center; font: 800 10px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }
 

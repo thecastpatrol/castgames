@@ -1,7 +1,8 @@
 /* NRL Bingo (17 Oct 2026, js/bingo.js). Its own colour is lime (the card's ticks), on its own screen only, so 1000TRIES's
    home, draft and results keep theirs. --gold is the shared rules' accent name: here it is lime, never the CAST Pass gold.
-   Phone first: the player and the buttons stay pinned at the top while the card of 20 tiles fits under them at 390 and
-   360 px; on a computer the player sits to the left of the card. */
+   Phone first: the player and the buttons stay pinned at the top while the card of 24 tiles (4 x 6, the owner, 17 Oct
+   2026) fits under them at 390 and 360 px, down to a 360 x 640 screen; on a computer the player sits to the left of the
+   card. After every turn a pop-up (.bg-sheet) shows his teams, its Next Player button pinned in the same place. */
 body[data-mode="bingo"] { --mode: #a3e635; --mode-rgb: 163, 230, 53; } /* the header's line and the page's glow in Bingo's lime, never gold */
 #screen-bingo { --gold: #a3e635; --gold-dark: #65a30d; --bg-acc: 163, 230, 53;
   background: radial-gradient(120% 420px at 50% 0%, rgba(54, 83, 20, .55), transparent 75%); }
@@ -20,40 +21,47 @@ body[data-mode="bingo"] { --mode: #a3e635; --mode-rgb: 163, 230, 53; } /* the he
 
 /* ---------- Tiles ---------- */
 .bg-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
-.bg-tile { position: relative; display: block; width: 100%; aspect-ratio: 5 / 4; min-height: 58px; padding: 0; overflow: hidden; border-radius: 12px; border: 0; background: #1c1c2e;
+.bg-tile { position: relative; display: block; width: 100%; aspect-ratio: 5 / 3.6; min-height: 50px; padding: 0; overflow: hidden; border-radius: 12px; border: 0; background: #1c1c2e;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), 0 3px 10px rgba(0, 0, 0, .35); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; color: #fff; font: inherit; }
 .bg-kit { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .bg-tname { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 4px 5px; background: linear-gradient(180deg, transparent, rgba(4, 6, 10, .82) 55%); font: 800 12px/1.1 var(--font);
   letter-spacing: .1px; text-align: center; white-space: nowrap; overflow: hidden; text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
 .bg-tile.is-open:active { transform: scale(.96); }
 @media (hover: hover) { .bg-tile.is-open:hover { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7), 0 6px 16px rgba(0, 0, 0, .45); } }
-.bg-tile.is-filled { cursor: default; box-shadow: inset 0 0 0 2px rgba(var(--bg-acc), .85), 0 3px 10px rgba(0, 0, 0, .35); }
-.bg-tile.is-filled .bg-kit { filter: saturate(.55) brightness(.42); }
-.bg-tile.is-filled .bg-tname { color: #d9f99d; }
-.bg-fill { position: absolute; inset: 0 0 18px; display: grid; place-content: center; justify-items: center; gap: 1px; padding: 0 4px; }
-.bg-fill i { font-style: normal; font-size: 17px; line-height: 1; }
-.bg-fill b { max-width: 100%; padding: 2px 5px; border-radius: 5px; background: rgba(0, 0, 0, .55); font: 900 12px/1.1 var(--font); text-transform: uppercase; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
-.bg-tile.is-wild .bg-fill b { color: #d9f99d; }
-/* Reveal: the open tiles he fits glow */
-.bg-tile.is-hint { z-index: 1; transform: translateY(-2px); box-shadow: inset 0 0 0 4px #fff, 0 0 0 2px rgba(255, 255, 255, .35), 0 0 22px rgba(255, 255, 255, .6); animation: bgHint 1.2s ease-in-out infinite; }
+.bg-tile.is-filled { cursor: default; box-shadow: inset 0 0 0 2.5px #bef264, 0 0 12px rgba(var(--bg-acc), .4), 0 3px 10px rgba(0, 0, 0, .35); }
+.bg-tile.is-filled .bg-kit { filter: saturate(.45) brightness(.55); }
+/* A filled tile reads as right at a glance (the owner, 17 Oct 2026): a bright lime wash, a big tick and his name */
+.bg-tile.is-filled::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(163, 230, 53, .58), rgba(101, 163, 13, .45)); pointer-events: none; }
+.bg-tile.is-filled .bg-tname { z-index: 1; color: #ecfccb; background: linear-gradient(180deg, transparent, rgba(20, 32, 4, .85) 55%); }
+.bg-fill { position: absolute; z-index: 1; inset: 0 0 16px; display: grid; place-content: center; justify-items: center; gap: 1px; padding: 0 4px; }
+.bg-fill i { font-style: normal; font-size: 16px; line-height: 1; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .6)); }
+.bg-fill b { max-width: 100%; padding: 2px 5px; border-radius: 5px; background: rgba(20, 32, 4, .78); font: 900 12px/1.1 var(--font); text-transform: uppercase; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
+.bg-fill b.is-wrap { white-space: normal; overflow-wrap: anywhere; text-align: center; line-height: 1.02; }
+.bg-tile.is-wild::after { background: linear-gradient(180deg, rgba(244, 114, 182, .3), rgba(163, 230, 53, .25)); }
+.bg-tile.is-wild .bg-fill b { color: #fbcfe8; }
+/* Reveal (the owner, 17 Oct 2026: on the card itself, no words): the open tiles he fits pulse in a bright cyan ring with a
+   👀 badge, and every other tile on the card goes dark, so only his stand out at a glance */
+.bg-tile.is-hint { z-index: 2; transform: scale(1.04); box-shadow: inset 0 0 0 3px #a5f3fc, 0 0 0 3px #22d3ee, 0 0 24px 4px rgba(34, 211, 238, .75); animation: bgHint 1s ease-in-out infinite; }
+.bg-tile.is-hint .bg-tname { color: #ecfeff; }
+.bg-hint-eye { position: absolute; z-index: 2; top: 3px; right: 3px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 0 2px #083344, 0 2px 6px rgba(0, 0, 0, .5); font-size: 12px; line-height: 1; }
+.bg-grid.has-hint .bg-tile:not(.is-hint) { filter: brightness(.32) saturate(.35); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); }
 /* Wild Tile: every open tile can take it */
 .bg-grid.is-picking .bg-tile.is-open { box-shadow: inset 0 0 0 3px #d9f99d, 0 0 16px rgba(163, 230, 53, .55); }
 .bg-grid.is-picking .bg-tile:not(.is-open) { opacity: .45; }
-.bg-grid:has(.is-hint) .bg-tile.is-open:not(.is-hint) { filter: brightness(.55); }
-.bg-tile.is-good { animation: bgPop .42s cubic-bezier(.2, 1.4, .4, 1) both; box-shadow: inset 0 0 0 3px var(--good), 0 0 22px rgba(74, 222, 128, .6); }
+.bg-tile.is-good { z-index: 2; animation: bgPop .42s cubic-bezier(.2, 1.4, .4, 1) both; box-shadow: inset 0 0 0 3px #d9f99d, 0 0 26px rgba(163, 230, 53, .85); }
 .bg-tile.is-bad { animation: bgShake .45s ease both; box-shadow: inset 0 0 0 3px var(--bad), 0 0 22px rgba(248, 113, 113, .6); }
-.bg-grid.is-still .bg-tile { cursor: default; aspect-ratio: 5 / 3.6; }
-@keyframes bgHint { 0%, 100% { box-shadow: inset 0 0 0 4px #fff, 0 0 0 2px rgba(255, 255, 255, .35), 0 0 12px rgba(255, 255, 255, .4); } 50% { box-shadow: inset 0 0 0 4px #fff, 0 0 0 3px rgba(255, 255, 255, .6), 0 0 28px rgba(255, 255, 255, .85); } }
-@keyframes bgPop { from { transform: scale(.82); } to { transform: none; } }
+.bg-grid.is-still .bg-tile { cursor: default; aspect-ratio: 5 / 3.4; }
+@keyframes bgHint { 0%, 100% { box-shadow: inset 0 0 0 3px #a5f3fc, 0 0 0 3px #22d3ee, 0 0 14px 2px rgba(34, 211, 238, .55); } 50% { box-shadow: inset 0 0 0 3px #ecfeff, 0 0 0 4px #67e8f9, 0 0 30px 8px rgba(34, 211, 238, .9); } }
+@keyframes bgPop { 0% { transform: scale(.82); } 55% { transform: scale(1.08); } 100% { transform: none; } }
 @keyframes bgShake { 0%, 100% { transform: none; } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
 
 /* ---------- The pinned player and buttons ---------- */
 .bg-pin { position: sticky; top: calc(58px + env(safe-area-inset-top, 0px)); z-index: 20; margin: 0 -14px 10px; padding: 6px 14px 10px; background: linear-gradient(180deg, #0a0a0f 85%, rgba(10, 10, 15, 0)); }
 html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
 .bg-status { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
-.bg-lives, .bg-skips { display: inline-flex; gap: 2px; font-size: 15px; line-height: 1; }
-.bg-lives i, .bg-skips i { font-style: normal; }
-.bg-lives .is-off, .bg-skips .is-off { opacity: .28; filter: grayscale(1); }
+.bg-lives { display: inline-flex; gap: 2px; font-size: 15px; line-height: 1; }
+.bg-lives i { font-style: normal; }
+.bg-lives .is-off { opacity: .28; filter: grayscale(1); }
 .bg-count { font: 900 13px/1 var(--font); color: var(--muted); font-variant-numeric: tabular-nums; } .bg-count b { font-size: 20px; color: #fff; }
 .bg-time { display: inline-flex; align-items: center; gap: 4px; padding: 5px 9px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font: 800 13px/1 var(--font); }
 .bg-time i { font-style: normal; font-size: 12px; } .bg-time b { font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; }
@@ -62,15 +70,9 @@ html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
 .bg-card.is-new { animation: bgIn .28s ease both; }
 .bg-card-name { font: 900 22px/1.12 var(--font); color: #fff; text-wrap: balance; overflow-wrap: anywhere; }
 .bg-card-sub { font: 700 13px/1.25 var(--font); color: var(--muted); }
-.bg-card.is-auto { border-color: rgba(255, 255, 255, .18); opacity: .82; }
-.bg-card.is-auto .bg-card-name { color: #c8c8d8; }
-.bg-stamp { display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, .1); color: #e2e8f0; font: 800 11.5px/1.2 var(--font); font-style: normal; }
-.bg-stamp span { color: var(--muted); font-weight: 700; }
 .bg-card.is-good { border-color: var(--good); }
 .bg-card.is-bad { border-color: var(--bad); }
 .bg-note { margin: 7px 0 0; padding: 7px 10px; border-radius: 12px; text-align: center; font: 700 12.5px/1.35 var(--font); text-wrap: balance; }
-.bg-note.is-bad { background: rgba(248, 113, 113, .12); color: #fecaca; border: 1px solid rgba(248, 113, 113, .4); }
-.bg-note.is-hint { background: rgba(255, 255, 255, .07); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, .2); }
 .bg-note.is-pick { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; background: rgba(163, 230, 53, .1); color: #ecfccb; border: 1px solid rgba(163, 230, 53, .45); }
 .bg-x { min-height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .3); background: rgba(0, 0, 0, .25); color: #fff; font: 800 12px/1 var(--font); cursor: pointer; }
 .bg-acts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 8px; }
@@ -78,7 +80,6 @@ html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
 .bg-act span { font: 900 12.5px/1.1 var(--font); white-space: nowrap; }
 .bg-act small { font: 800 10px/1 var(--font); letter-spacing: .5px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .bg-act:disabled { opacity: .45; cursor: default; }
-.bg-act.is-skip { border-color: rgba(255, 255, 255, .28); } .bg-act.is-skip small { color: #e2e8f0; }
 .bg-act.is-rr { border-color: #0f766e; background: linear-gradient(160deg, rgba(20, 184, 166, .22), rgba(20, 184, 166, .06)); } .bg-act.is-rr small { color: #5eead4; }
 .bg-act.is-rv { border-color: #6d28d9; background: linear-gradient(160deg, rgba(139, 92, 246, .22), rgba(139, 92, 246, .06)); } .bg-act.is-rv small { color: #c4b5fd; }
 .bg-act.is-wild { border-color: #65a30d; background: linear-gradient(160deg, rgba(163, 230, 53, .22), rgba(163, 230, 53, .05)); } .bg-act.is-wild small { color: #d9f99d; }
@@ -89,10 +90,11 @@ html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
   .bg-pin { margin: 0 -12px 8px; padding: 4px 12px 8px; }
   .bg-grid { gap: 6px; }
   .bg-tname { font-size: 11px; }
-  .bg-card { min-height: 68px; padding: 9px 10px; } .bg-card-name { font-size: 19px; }
-  .bg-act { min-height: 44px; } .bg-act span { font-size: 11.5px; }
+  .bg-card { min-height: 60px; padding: 8px 10px; } .bg-card-name { font-size: 19px; }
+  .bg-act { min-height: 42px; } .bg-act span { font-size: 11.5px; }
+  .bg-tile { aspect-ratio: 5 / 3.4; }
 }
-@media (prefers-reduced-motion: reduce) { .bg-tile.is-hint, .bg-tile.is-good, .bg-tile.is-bad, .bg-card.is-new { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .bg-tile.is-hint, .bg-tile.is-good, .bg-tile.is-bad, .bg-card.is-new, .bg-sheet-in { animation: none; } }
 
 /* ---------- Start ---------- */
 .bg-start { display: grid; gap: 14px; text-align: center; }
@@ -100,17 +102,12 @@ html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
 .bg-logo span { color: var(--gold); }
 .bg-demo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: min(196px, 52vw); margin: 0 auto; padding: 8px; border-radius: 14px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(var(--bg-acc), .3); transform: rotate(-2deg); }
 .bg-mini { position: relative; aspect-ratio: 5 / 4; border-radius: 5px; overflow: hidden; }
-.bg-mini.is-filled .bg-kit { filter: saturate(.55) brightness(.45); }
+.bg-mini.is-filled .bg-kit { filter: saturate(.45) brightness(.55); }
+.bg-mini.is-filled::after { content: ''; position: absolute; inset: 0; background: rgba(163, 230, 53, .5); }
+.bg-mini i { z-index: 1; }
 .bg-mini i { position: absolute; inset: 0; display: grid; place-items: center; font-style: normal; font-size: 13px; }
 .bg-lede { margin: 0; color: var(--muted); font: 600 15px/1.45 var(--font); text-wrap: balance; } .bg-lede b { color: #fff; }
-.bg-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.bg-mode { display: grid; justify-items: start; align-content: start; gap: 4px; min-height: 112px; padding: 12px; border-radius: 14px; text-align: left; cursor: pointer; font: inherit; color: #fff;
-  border: 1.5px solid var(--line); background: linear-gradient(180deg, var(--card2), var(--card)); }
-.bg-mode.is-on { border-color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 6px 20px rgba(var(--bg-acc), .2); }
-.bg-mode-k { padding: 3px 7px; border-radius: 999px; background: rgba(var(--bg-acc), .16); color: #d9f99d; font: 900 9.5px/1 var(--font); letter-spacing: .8px; text-transform: uppercase; }
-.bg-mode b { font: 900 17px/1.15 var(--font); }
-.bg-mode small { font: 600 12.5px/1.35 var(--font); color: var(--muted); text-wrap: balance; }
-.bg-mode em { margin-top: auto; font: 800 11.5px/1.3 var(--font); font-style: normal; color: #d9f99d; text-wrap: balance; }
+.bg-best { margin: -4px 0 0; font: 800 13px/1.35 var(--font); color: #d9f99d; text-wrap: balance; }
 .bg-play { width: 100%; padding: 16px; border-radius: 14px; font: 900 16px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; }
 .bg-play i { font-style: normal; font-size: 12px; margin-left: 6px; }
 .bg-rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0; padding: 0; list-style: none; }
@@ -133,8 +130,6 @@ html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
 .bg-hero-n { font: 900 76px/1 var(--font); color: #fff; letter-spacing: -2px; font-variant-numeric: tabular-nums; animation: ouPop .45s cubic-bezier(.2, 1.4, .4, 1) both; }
 .bg-hero-n small { font-size: 32px; letter-spacing: 0; color: var(--muted); }
 .bg-hero-s { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; font: 800 13px/1.2 var(--font); letter-spacing: .8px; text-transform: uppercase; color: var(--muted); }
-.bg-rank { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); text-align: center; font: 700 14px/1.3 var(--font); color: #e2e8f0; }
-.bg-rank b { color: var(--gold); }
 .bg-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .bg-stats span { display: grid; gap: 4px; justify-items: center; padding: 11px 6px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
 .bg-stats b { font: 900 19px/1 var(--font); color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -172,9 +167,55 @@ html.cg-in-game .bg-pin { top: var(--cg-bar-h, 112px); }
   .bg-head .ou-back { width: 32px; height: 32px; font-size: 15px; }
   .bg-pin { padding-top: 4px; padding-bottom: 6px; }
   .bg-status { margin-bottom: 5px; }
-  .bg-lives, .bg-skips { font-size: 13px; } .bg-count b { font-size: 17px; }
+  .bg-lives { font-size: 13px; } .bg-count b { font-size: 17px; }
   .bg-card { min-height: 58px; padding: 7px 10px; gap: 2px; } .bg-card-name { font-size: 18px; } .bg-card-sub { font-size: 12px; }
   .bg-note { margin-top: 5px; padding: 5px 8px; font-size: 12px; }
   .bg-acts { margin-top: 6px; gap: 6px; } .bg-act { min-height: 40px; padding: 4px; }
-  .bg-grid { gap: 6px; } .bg-tile { aspect-ratio: 5 / 3.5; min-height: 50px; }
+  .bg-grid { gap: 5px; } .bg-tile { aspect-ratio: 5 / 3.05; min-height: 44px; } .bg-tname { padding: 8px 3px 3px; font-size: 11px; }
+  .bg-fill { inset: 0 0 13px; } .bg-fill i { font-size: 13px; } .bg-fill b { font-size: 11px; padding: 1px 4px; }
 }
+/* A phone this short (360 x 640): the six rows still fit under the pinned player */
+@media (max-height: 660px) and (max-width: 899px) {
+  .bg-card { min-height: 50px; padding: 5px 10px; } .bg-card-name { font-size: 17px; } .bg-card-sub { font-size: 11.5px; }
+  .bg-act { min-height: 36px; padding: 3px; } .bg-act span { font-size: 11px; } .bg-act small { font-size: 9px; }
+  .bg-tile { aspect-ratio: 5 / 2.8; min-height: 40px; } .bg-grid { gap: 4px; }
+}
+
+/* ---------- The pop-up after each turn (and the no open tile one): his teams, then the pinned Next Player button ---------- */
+/* In #bgSheetHost on the page's body (js/bingo.js host()), so it carries Bingo's own colours with it */
+.bg-sheet { --gold: #a3e635; --gold-dark: #65a30d; --bg-acc: 163, 230, 53; position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(4, 6, 10, .55); }
+.bg-sheet .btn-primary { background: var(--gold); color: #142004; }
+.bg-sheet .btn-decide-lock { border-color: var(--gold); background: #1b2610; }
+.bg-sheet .btn-decide-lock .lock-fill { background: linear-gradient(90deg, #d9f99d, var(--gold) 55%, var(--gold-dark)); }
+.bg-sheet .btn-decide-lock .btn-decide-lbl { color: var(--gold); }
+.bg-sheet .btn-decide-lock .lock-secs { color: #fff; }
+.bg-sheet-in { width: min(560px, 100%); max-height: calc(100% - 24px); margin: 0 auto; overflow-y: auto; overscroll-behavior: contain; padding: 18px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+  border-radius: 22px 22px 0 0; border: 1.5px solid var(--line); border-bottom: 0; background: linear-gradient(180deg, #161d10, #0b0d0a 70%); text-align: center; box-shadow: 0 -12px 40px rgba(0, 0, 0, .55);
+  animation: bgUp .22s cubic-bezier(.2, .9, .3, 1) both; }
+.bg-sheet.is-good .bg-sheet-in { border-color: rgba(var(--bg-acc), .7); background: radial-gradient(120% 70% at 50% 0%, rgba(var(--bg-acc), .3), transparent 65%), linear-gradient(180deg, #161d10, #0b0d0a 70%); }
+.bg-sheet.is-bad .bg-sheet-in, .bg-sheet.is-nofit .bg-sheet-in { border-color: rgba(248, 113, 113, .55); background: radial-gradient(120% 70% at 50% 0%, rgba(248, 113, 113, .2), transparent 65%), linear-gradient(180deg, #1a1012, #0b0b0d 70%); }
+.bg-pop-h { margin: 0; font: 900 26px/1.1 var(--font); color: #fff; text-wrap: balance; }
+.bg-sheet.is-good .bg-pop-h { color: #d9f99d; } .bg-sheet.is-bad .bg-pop-h, .bg-sheet.is-nofit .bg-pop-h { color: #fecaca; }
+.bg-sheet.is-good .bg-pop-h { animation: bgPop .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+.bg-pop-who { display: grid; gap: 2px; margin: 10px 0 0; } .bg-pop-who b { font: 900 20px/1.15 var(--font); color: #fff; text-wrap: balance; } .bg-pop-who small { font: 700 13px/1.3 var(--font); color: var(--muted); }
+.bg-pop-line { margin: 8px 0 0; font: 700 14.5px/1.4 var(--font); color: #e5e7eb; text-wrap: balance; }
+.bg-pop-lives { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0 0; } .bg-pop-lives b { font: 900 13px/1 var(--font); letter-spacing: .4px; text-transform: uppercase; color: #fecaca; }
+.bg-teams-h { margin: 16px 0 8px; font: 900 11.5px/1 var(--font); letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+.bg-teams { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.bg-team { position: relative; display: grid; justify-items: center; gap: 3px; min-width: 88px; padding: 8px 10px 7px; border-radius: 12px; background: var(--tb); color: var(--tt);
+  box-shadow: inset 0 -4px 0 var(--tf), 0 2px 8px rgba(0, 0, 0, .4); }
+.bg-team b { font: 900 13px/1.1 var(--font); white-space: nowrap; }
+.bg-team em { padding: 2px 6px; border-radius: 999px; background: rgba(0, 0, 0, .45); color: #fff; font: 900 9.5px/1.2 var(--font); font-style: normal; letter-spacing: .6px; text-transform: uppercase; }
+.bg-team.is-open { outline: 3px solid #d9f99d; outline-offset: 2px; } .bg-team.is-open em { background: #a3e635; color: #142004; }
+.bg-team.is-placed { outline: 3px solid #a3e635; outline-offset: 2px; } .bg-team.is-placed em { background: #14532d; color: #d9f99d; }
+.bg-team.is-filled { opacity: .62; }
+.bg-offer-rr { width: 100%; max-width: 360px; margin: 14px auto 0; grid-auto-flow: column; justify-content: space-between; padding: 10px 16px; min-height: 52px; }
+.bg-offer-rr span { font-size: 15px; } .bg-offer-rr small { font-size: 11px; }
+.bg-sheet-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 71; padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, rgba(11, 13, 10, 0), #0b0d0a 32%); pointer-events: none; }
+.bg-sheet-foot .bg-next { pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 6px; width: min(528px, 100%); min-height: 56px; margin: 0 auto; border-radius: 14px; font: 900 16px/1 var(--font); letter-spacing: .6px; text-transform: uppercase; }
+.bg-sheet-foot .bg-next i { font-style: normal; font-size: 12px; }
+.bg-sheet-foot .btn-decide-lock { position: relative; overflow: hidden; }
+@keyframes bgUp { from { transform: translateY(24px); opacity: .3; } to { transform: none; opacity: 1; } }
+
+/* An account toast ("Wild Tile used") sits above the pinned Next Player button while a turn pop-up is open, never on it */
+html.bg-sheet-open .ca-toast { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
