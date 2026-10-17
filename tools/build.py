@@ -44,6 +44,28 @@ def _ver(rel):
     return hashlib.md5(open(os.path.join(HERE, rel), 'rb').read()).hexdigest()[:8]
 
 
+def trim_logos():
+    """Every card logo cropped to its own visible pixels plus a thin even margin (18 Oct 2026, the owner: "the logo bigger
+    for sure"): the final set comes as 600x380 with a lot of clear space around each logo, so on a card the art sat small.
+    Runs on each build, so a new logo dropped into assets/logos is trimmed too; an already trimmed file is left alone"""
+    from PIL import Image
+    s = open(os.path.join(HERE, 'shared', 'cg.js'), encoding='utf-8').read()
+    for name in sorted(set(re.findall(r"L \+ '([\w.-]+\.png)", s))):
+        p = os.path.join(HERE, 'assets', 'logos', name)
+        if not os.path.exists(p):
+            continue
+        im = Image.open(p).convert('RGBA')
+        b = im.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
+        if not b:
+            continue
+        m = max(3, round((b[2] - b[0]) * 0.02))
+        box = (max(0, b[0] - m), max(0, b[1] - m), min(im.width, b[2] + m), min(im.height, b[3] + m))
+        if box[0] <= 2 and box[1] <= 2 and box[2] >= im.width - 2 and box[3] >= im.height - 2:
+            continue
+        im.crop(box).save(p, optimize=True)
+        print('trimmed', name, im.size, '->', (box[2] - box[0], box[3] - box[1]))
+
+
 def version_logos():
     """Every card logo in shared/cg.js (L + 'name.png') carries its own content version (17 Oct 2026: the owner's phone kept
     showing the old logos, because the same address never asked again). Written into cg.js before the bar's version is
@@ -52,6 +74,7 @@ def version_logos():
     s = open(p, encoding='utf-8').read()
     t = re.sub(r"L \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "L + '%s?v=%s'" % (m.group(1), _ver('assets/logos/' + m.group(1))), s)
     t = re.sub(r"TB \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "TB + '%s?v=%s'" % (m.group(1), _ver('assets/tabs/' + m.group(1))), t)  # the bar's icons
+    t = re.sub(r"IC \+ '([\w.-]+\.png)(?:\?v=\w*)?'", lambda m: "IC + '%s?v=%s'" % (m.group(1), _ver('assets/icons/' + m.group(1))), t)  # the switcher's group icons
     if t != s:
         open(p, 'w', encoding='utf-8').write(t)
     # the home page's banner art (js/home.js BN + '<slide>/art-phone@2x.webp'), the same way (17 Oct 2026)
@@ -62,6 +85,7 @@ def version_logos():
         open(p, 'w', encoding='utf-8').write(t)
 
 
+trim_logos()
 version_logos()
 CGV = _ver('shared/cg.js') + _ver('shared/cg.css')[:4]  # the bar's version, so a change reaches every game page
 
@@ -291,7 +315,7 @@ def title_case(line):
 def plain(s):
     """A card's name for a title or a meta tag: the ▲▼ entities as characters, no tags"""
     import html
-    return html.unescape(re.sub(r'<[^>]+>', '', s))
+    return html.unescape(re.sub(r'<[^>]+>', '', s)).replace('\u00a0', ' ')  # no-break spaces only hold card lines together
 
 
 def page_meta(src, g):
@@ -496,7 +520,9 @@ def keep_same_pictures():
             a = Image.open(io.BytesIO(old)).convert('RGBA'); b = Image.open(os.path.join(HERE, rel)).convert('RGBA')
         except Exception:
             continue
-        if a.size == b.size and ImageChops.difference(a, b).getbbox() is None:
+        # every channel compared (18 Oct 2026: getbbox() on an RGBA difference looks at the alpha alone, so a recoloured
+        # icon or a new share picture with the same shape was put back to the old one)
+        if a.size == b.size and a.tobytes() == b.tobytes():
             subprocess.run(['git', '-C', HERE, 'checkout', '--', rel])
 
 

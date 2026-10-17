@@ -24,6 +24,8 @@ a { color: inherit; }
 .cg-strip::-webkit-scrollbar { display: none; }
 .cg-strip::after { content: ''; flex: 0 0 calc(var(--gut) - 10px); } /* the last card's right-hand gutter (Safari leaves out the padding) */
 .cg-strip > * { scroll-snap-align: start; }
+.cg-strip.is-cards { padding-top: 13px; margin-top: -13px; } /* a New or Coming Soon chip sits on a card's top edge */
+.cg-grid { padding-top: 13px; margin-top: -13px; }
 
 /* ---------- Hero: the banner ads (css/hero-banners.css), 110px on phones with the next slide peeking, dots under it ---------- */
 .cg-hero { margin-top: 0; }
@@ -48,26 +50,28 @@ a { color: inherit; }
 .cg-pill { margin-left: auto; flex: none; display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; background: #17171f; border: 1px solid #2a2a38; color: #fff; text-decoration: none; font: 800 12px/1 Inter, sans-serif; white-space: nowrap; }
 @media (hover: hover) { .cg-pill:hover { border-color: rgba(255, 255, 255, .4); } }
 
-/* A game card: 158 x 150 on phones, the sport's colour, the logo, one line */
-.cg-c { position: relative; flex: 0 0 var(--cw); height: 150px; display: flex; flex-direction: column; gap: 5px; padding: 10px; border-radius: 16px; text-decoration: none; color: var(--ink);
+/* A game card (18 Oct 2026, the owner: "text needs to be bigger and the logo bigger for sure, and more obviously
+   incorporated"): the logo is the hero, edge to edge along the top (each logo is trimmed to its own pixels by the build),
+   the line big and right under it. Cards in a row all take the tallest one's height */
+.cg-c { position: relative; flex: 0 0 var(--cw); min-height: 150px; display: flex; flex-direction: column; gap: 7px; padding: 8px 7px 12px; border-radius: 16px; text-decoration: none; color: var(--ink);
   background: linear-gradient(160deg, color-mix(in srgb, var(--c1) 90%, #fff), color-mix(in srgb, var(--c1) 74%, #000)); border: 1px solid rgba(255, 255, 255, .1); -webkit-tap-highlight-color: transparent; }
-.cg-art { position: relative; flex: 1 1 0; min-height: 0; display: grid; place-items: center; }
-.cg-art img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; } /* always inside its box: a chip under it never covers the logo */
-.cg-art.is-mark { font: 900 32px/1 Inter, sans-serif; letter-spacing: -2px; }
+.cg-art { position: relative; flex: none; aspect-ratio: 2.15 / 1; display: grid; place-items: center; }
+.cg-art img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
+.cg-art.is-mark { aspect-ratio: auto; height: 56px; font: 900 32px/1 Inter, sans-serif; letter-spacing: -2px; }
 .cg-nm { flex: none; font: 900 12.5px/1.15 Inter, sans-serif; letter-spacing: -.2px; white-space: nowrap; }
 .cg-tags { flex: none; display: flex; flex-wrap: wrap; gap: 4px; }
 .cg-tag { padding: 3px 7px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 16%, transparent); color: var(--ink); font: 800 10.5px/1.2 Inter, sans-serif; white-space: nowrap; }
-.cg-ln { flex: none; display: block; font: 700 11px/1.3 Inter, sans-serif; color: color-mix(in srgb, var(--ink) 86%, transparent); text-wrap: balance; }
+.cg-ln { flex: none; display: block; padding: 0 2px; font: 700 clamp(16px, 4.4vw, 17px)/1.2 Inter, sans-serif; letter-spacing: -.2px; color: color-mix(in srgb, var(--ink) 94%, transparent); text-wrap: balance; }
 .cg-ln.is-cont { font-weight: 900; color: var(--ink); }
-.cg-ln.is-cont::before { content: '\25B6\FE0E\00A0'; font-size: 9px; vertical-align: 1px; }
+.cg-ln.is-cont::before { content: '\25B6\FE0E\00A0'; font-size: 12px; vertical-align: 2px; }
 @media (hover: hover) { a.cg-c:hover { border-color: rgba(255, 255, 255, .55); } }
 /* Coming Soon: dashed in the sport's colour, no link */
 .cg-c.is-soon { color: #fff; background: color-mix(in srgb, var(--c1) 15%, #0c0c12); border: 1.5px dashed color-mix(in srgb, var(--c1) 75%, transparent); }
 .cg-c.is-soon .cg-ln { color: var(--muted); }
 .cg-c.is-soon .cg-tag { background: rgba(255, 255, 255, .1); color: #fff; }
 .cg-c.is-soon img { opacity: .75; }
-.cg-new-chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
-.cg-soon-chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: var(--c1); color: var(--ink); font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; }
+.cg-new-chip { position: absolute; top: -12px; right: 10px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: #fff; color: #0a0a0f; font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+.cg-soon-chip { position: absolute; top: -12px; right: 10px; z-index: 1; padding: 4px 7px; border-radius: 999px; background: var(--c1); color: var(--ink); font: 900 9px/1 Inter, sans-serif; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; }
 
 /* ---------- Leaderboards: this week's #1 on each game ---------- */
 .cg-lb { flex: 0 0 230px; display: flex; flex-direction: column; padding: 12px; border-radius: 16px; color: #fff;
@@ -123,7 +127,7 @@ a { color: inherit; }
 .cg-sp-t small { display: block; margin-top: 4px; font: 700 12.5px/1.2 Inter, sans-serif; color: var(--muted); }
 .cg-count { margin-left: auto; flex: none; padding: 6px 10px; border-radius: 999px; background: rgba(var(--sc), .22); border: 1px solid rgba(var(--sc), .55); color: #fff; font: 900 11.5px/1 Inter, sans-serif; white-space: nowrap; }
 .cg-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.cg-grid .cg-c { height: 150px; }
+.cg-grid .cg-c { min-height: 150px; }
 .cg-two { display: grid; gap: 10px; margin-top: 24px; }
 .cg-wide { text-decoration: none; display: grid; grid-template-columns: 40px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; width: 100%; min-height: 76px; padding: 12px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); color: #fff; text-align: left; font: inherit; cursor: pointer; }
 .cg-wide span { grid-row: span 2; font-size: 26px; line-height: 1; }
@@ -147,7 +151,8 @@ a { color: inherit; }
   .cg-hero-track > .cgb { flex: 0 0 100%; } /* one slide at a time, sliding */
   .cgb.is-potw .cgb-h.is-long { font-size: clamp(22px, 2.6vw, 27px); }
   .cg-strip.is-cards { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
-  .cg-strip.is-cards .cg-c, .cg-grid .cg-c { height: 156px; }
+  .cg-strip.is-cards .cg-c, .cg-grid .cg-c { min-height: 156px; }
+  .cg-ln { font-size: 16px; } /* seven across, each card is a phone card's width */
   .cg-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .cg-strip.is-daily { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
   .cg-d { height: 156px; }
