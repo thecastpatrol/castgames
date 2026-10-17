@@ -12,6 +12,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=decf32dc" data-site="4000goals"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -108,7 +110,8 @@
     <h2>Where the Numbers Come From</h2>
     <p>Goals count <strong>AFL premiership games from 1990 to now</strong>, home and away and finals. Preseason, State of Origin and International Rules games are not included. Legends in 4000+ are the one exception: they count their whole VFL and AFL careers. AFL data comes from <a href="https://afltables.com/" target="_blank" rel="noopener">AFL Tables</a>, and every player since 1990 is in the game, including players who never kicked a goal.</p>
     <p><strong>AFLW 750+</strong> counts <strong>AFLW premiership goals from 2017 to now</strong>, including finals. AFLW data comes from <a href="https://aflwstats.com.au/" target="_blank" rel="noopener">AFLW Stats</a>.</p>
-    <p>Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p>
+    <p>Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p>
+    <p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
 
     <div class="cta"><a class="btn btn-primary btn-block" href="./">Play 4000 GOALS</a></div>
   </article>
@@ -125,7 +128,8 @@
     <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">4000 GOALS is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the AFL or any AFL club. Club and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>

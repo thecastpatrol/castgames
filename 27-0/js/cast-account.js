@@ -4,7 +4,8 @@
    Privacy by design:
    - Guests: games are kept on this device only. Nothing is sent anywhere and Firebase is not even loaded.
    - Signed in: history syncs to the CAST Games Firebase project (Firestore, Sydney region).
-   - Email addresses stay inside Firebase Auth. They are never written to the database.
+   - Email addresses stay inside Firebase Auth. They are never written with game data (a Contact Us message keeps its
+     reply address in inbox/, server only, read only through Admin: see js/cast-contact.js).
    - Security rules (firebase/firestore.rules) only ever let a player touch their own data.
 
    Host page sets window.CAST_ACCOUNT = { game: '1000tries' | '27-0', track: fn(event, params), privacyUrl, termsUrl }
@@ -1614,6 +1615,7 @@
     el.addEventListener('input', function (e) {
       if (e.target.id === 'caWchQ') { if (mod.wch) { mod.wch.q = e.target.value; var wo = document.getElementById('caWchOpts'); if (wo && mod.wch.pick != null) wo.innerHTML = wchOpts(mod.wch.pick); } return; }
       if (e.target.id === 'caTwQ') { if (mod.tw) { mod.tw.q = e.target.value; var o = document.getElementById('caTwOpts'); if (o && mod.tw.pick != null) o.innerHTML = twOpts(mod.tw.pick); } return; }
+      if (e.target.id && e.target.id.indexOf('caIbNote-') === 0) { (mod.ibDraft = mod.ibDraft || {})[e.target.id.slice(9)] = e.target.value; return; }
       if (e.target.id === 'caFirst') { fanDraft.first = e.target.value; return; }
       if (e.target.id === 'caUser') { lb.draft = e.target.value; return; }
       if (e.target.id === 'caFriendQ') { fsearch.q = e.target.value; return; }
@@ -2243,6 +2245,10 @@
       '<div><dt>Date of birth</dt><dd>' + esc(birthLabel(p.birth)) + '</dd></div></dl>';
     h += '<h3 class="ca-h3">Emails</h3>' +
       '<label class="ca-toggle"><input type="checkbox" data-ca="emails"' + (p.optIn ? ' checked' : '') + '> <span>Email me CAST Games news, new games and challenges, plus offers from our partners and sponsors' + (ageFrom(p.birth) >= 18 ? '' : ' (partner offers are 18+ only, so you get CAST Games news)') + (optinFree() ? ' <b class="ca-free">&#x1F381; Join for a free Reveal.</b>' : '') + '</span></label>';
+    // Help (17 Oct 2026): the Contact Us form (js/cast-contact.js), with the email they sign in with already filled in
+    if (window.CastContact) h += '<h3 class="ca-h3">Help</h3><p class="ca-muted">Something not working, a payment question or an idea? Send us a message and we&rsquo;ll reply by email.</p>' +
+      '<div class="ca-row"><button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button>' +
+      '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-cast-contact="bug">&#x1F41E; Report a Bug</button></div>';
     h += '<div class="ca-row ca-gap"><button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="download">Download My Data</button>' +
       '<button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="signout">Sign Out</button></div>' +
       '<p class="ca-small">Your data comes as a spreadsheet (CSV) that opens in Excel, Numbers or Google Sheets. Want every field exactly as stored?</p><button type="button" class="ca-link" data-ca="download-json">Download the Full Copy (JSON)</button>' +
@@ -3822,9 +3828,11 @@
       // How to claim the custom video (yearly Pass holders, and the two monthly members kept on it)
       var nm = (profile && profile.username) || '';
       if (videoOn()) h += '<div class="ca-pass-claim"><b>&#x1F3A5; Claim Your Custom Video</b>' +
-        '<span>Message us on Instagram at <b>@thecastpatrol</b> or email <b>cast@thecastpatrol.com.au</b>' + (nm ? ' with your leaderboard name (<b>' + esc(nm) + '</b>)' : '') + ', and tell us what you&rsquo;d like.</span>' +
+        '<span>Message us on Instagram at <b>@thecastpatrol</b> or send us a message here' + (nm ? ' (we&rsquo;ll see your leaderboard name, <b>' + esc(nm) + '</b>)' : '') + ', and tell us what you&rsquo;d like.</span>' +
         '<div class="ca-row"><a class="ca-btn ca-btn-ghost ca-btn-sm" href="https://ig.me/m/thecastpatrol" target="_blank" rel="noopener" data-ca="pass-claim" data-v="instagram">Message on Instagram</a>' +
-        '<a class="ca-btn ca-btn-ghost ca-btn-sm" href="mailto:cast@thecastpatrol.com.au?subject=' + encodeURIComponent('CAST Pass custom video' + (nm ? ' (' + nm + ')' : '')) + '" data-ca="pass-claim" data-v="email">Email Us</a></div></div>';
+        // the Contact Us form (js/cast-contact.js, 17 Oct 2026), started for them; the plain email link where a page has no form
+        (window.CastContact ? '<button type="button" class="ca-btn ca-btn-ghost ca-btn-sm" data-ca="pass-claim" data-v="message" data-cast-contact="other" data-cast-contact-msg="CAST Pass custom video: ">Send a Message</button>'
+          : '<a class="ca-btn ca-btn-ghost ca-btn-sm" href="mailto:cast@thecastpatrol.com.au?subject=' + encodeURIComponent('CAST Pass custom video' + (nm ? ' (' + nm + ')' : '')) + '" data-ca="pass-claim" data-v="email">Email Us</a>') + '</div></div>';
       h += passMine(p);
     } else if (paused) h += passMine(p);
     h += passDouble();
@@ -7815,7 +7823,7 @@
     callFn('modQueue').then(function (r) {
       if (r && !r.admin) lsSet(noKey, String(Date.now())); else lsSet(noKey, null);
       if (!user || user.uid !== uid) return;
-      mod.admin = !!(r && r.admin); mod.owner = !!(r && r.owner); mod.open = (r && r.open) || 0; mod.flagsN = (r && r.flags) || 0; mod.items = (r && r.items) || []; mod.verified = (r && r.verified) || []; mod.vrows = (r && r.vrows) || null;
+      mod.admin = !!(r && r.admin); mod.owner = !!(r && r.owner); mod.open = (r && r.open) || 0; mod.flagsN = (r && r.flags) || 0; mod.inboxN = (r && r.inbox) || 0; mod.items = (r && r.items) || []; mod.verified = (r && r.verified) || []; mod.vrows = (r && r.vrows) || null;
       // An admin's ?castwc=1 visit: World Cup shows now, for this visit (everyone else never sees it before the launch)
       if (wcAsk && mod.admin && !wcPreview) {
         wcPreview = true; BOARDS = visibleBoards(); refreshAll();
@@ -7846,8 +7854,9 @@
      The tabs (7 Oct 2026, the owner after a play): Overview first, and Admin opens on it; four on the bar (Overview,
      Players, Fans, Flags), the rest under More, so the row never scrolls. A count on a tab under More (Reports) shows on
      the More button too */
-  var ADMIN_TABS = [['overview', 'Overview'], ['players', 'Players'], ['fans', 'Fans'], ['flags', 'Flags']];
-  // Insights (17 Oct 2026) heads the More list: a fifth tab on the bar does not fit a 390px phone
+  // Inbox (17 Oct 2026, the owner's BUILD IT): every Contact Us and Report a Bug message (js/cast-contact.js), on the bar.
+  // Insights (17 Oct 2026) heads the More list: a sixth tab on the bar does not fit a 390px phone
+  var ADMIN_TABS = [['overview', 'Overview'], ['inbox', 'Inbox'], ['players', 'Players'], ['fans', 'Fans'], ['flags', 'Flags']];
   var ADMIN_MORE = [['insights', 'Insights'], ['analytics', 'Analytics'], ['reports', 'Reports'], ['trends', 'Trends'], ['log', 'Log'], ['words', 'Words']];
   function adminPage() {
     if (status !== 'signed-in' || !mod.admin) return '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
@@ -7860,8 +7869,8 @@
     admOv(); // the tab counts (Flags) come with it, whichever tab opens first
     // 27-0 also has a Dailies tab (under More): what the Daily is on each of the next two weeks
     var more = window.CastDaily && CastDaily.upcoming ? ADMIN_MORE.concat([['dailies', 'Dailies']]) : ADMIN_MORE;
-    var count = function (k) { return k === 'reports' && mod.open ? mod.open : k === 'flags' && mod.ov && mod.ov.data && mod.ov.data.flags ? mod.ov.data.flags : 0; };
-    var nb = function (n) { return n ? ' <b class="ca-adm-n">' + n + '</b>' : ''; };
+    var count = function (k) { return k === 'reports' && mod.open ? mod.open : k === 'flags' && mod.ov && mod.ov.data && mod.ov.data.flags ? mod.ov.data.flags : k === 'inbox' ? mod.inboxN || 0 : 0; };
+    var nb = function (n) { return n ? ' <b class="ca-adm-n">' + (n > 99 ? '99+' : n) + '</b>' : ''; };
     var inMore = more.filter(function (t) { return t[0] === tab; })[0], moreN = more.reduce(function (n, t) { return n + count(t[0]); }, 0);
     var h = '<div class="ca-adm-tabbar" role="tablist">' + ADMIN_TABS.map(function (t) {
       return '<button type="button" role="tab" aria-selected="' + (tab === t[0]) + '" class="ca-adm-tab' + (tab === t[0] ? ' is-on' : '') + '" data-ca="adm-tab" data-v="' + t[0] + '">' + t[1] + nb(count(t[0])) + '</button>';
@@ -7879,10 +7888,107 @@
     if (tab === 'insights') return h + admInsights();
     if (tab === 'reports') return h + '<h3 class="ca-h3">Reports</h3>' + reportList();
     if (tab === 'flags') return h + admFlags();
+    if (tab === 'inbox') return h + admInbox();
     if (tab === 'log') return h + admLog();
     if (tab === 'words') return h + admWords();
     if (tab === 'dailies' && window.CastDaily && CastDaily.upcoming) return h + admDailies();
     return h + admOverview();
+  }
+  /* Admin > Inbox (17 Oct 2026, the owner's BUILD IT): every Contact Us and Report a Bug message, newest first, from
+     adminInbox (inbox/, server only). Chips filter by status (New, In Progress, Done, All) and type; each card shows the
+     message, who sent it and what the form sent with it (game, page, version, device, screen, errors), sets its status,
+     takes notes and has Reply by Email (their email, the reference in the subject). The New count is on the tab, the
+     Admin button and Overview's glance row. */
+  var IB_TYPES = [['bug', '&#x1F41E;', 'Report a Bug'], ['pay', '&#x1F4B3;', 'Payment or Purchase'], ['account', '&#x1F464;', 'My Account'], ['idea', '&#x1F4A1;', 'Idea or Feedback'], ['other', '&#x1F4AC;', 'Something Else']];
+  var IB_ST = [['new', 'New', '248,113,113'], ['prog', 'In Progress', '96,165,250'], ['done', 'Done', '74,222,128']]; // red, blue, green: never gold
+  var IB_SITES = { '1000tries': '1000TRIES', '27-0': '27-0', '4000goals': '4000 GOALS', bigbash: '25000 RUNS', tests: '60000 RUNS', nfl: '777 TDS', racing: 'G1 WINNER SPINNER', epl: '650 GOALS', castgames: 'CAST Games' };
+  function ibType(k) { return IB_TYPES.filter(function (t) { return t[0] === k; })[0] || ['other', '&#x1F4AC;', 'Something Else']; }
+  function ibSt(k) { return IB_ST.filter(function (t) { return t[0] === k; })[0] || IB_ST[0]; }
+  // When: "5 mins ago" for the last hour, then the day and time in Sydney ("Today 4:12pm", "Thu 16 Oct 4:12pm")
+  function ibWhen(at) {
+    if (!at) return '';
+    var m = Math.floor((Date.now() - at) / 60000);
+    if (m < 60) return m < 1 ? 'Just now' : m === 1 ? '1 min ago' : m + ' mins ago';
+    var o = { timeZone: 'Australia/Sydney' }, day = function (t) { return new Date(t).toLocaleDateString('en-AU', Object.assign({ year: 'numeric', month: '2-digit', day: '2-digit' }, o)); };
+    var time = new Date(at).toLocaleTimeString('en-AU', Object.assign({ hour: 'numeric', minute: '2-digit', hour12: true }, o)).replace(/\s/g, '').toLowerCase();
+    if (day(at) === day(Date.now())) return 'Today ' + time;
+    if (day(at) === day(Date.now() - 86400000)) return 'Yesterday ' + time;
+    return new Date(at).toLocaleDateString('en-AU', Object.assign({ weekday: 'short', day: 'numeric', month: 'short' }, o)).replace(/,/g, '') + ' ' + time;
+  }
+  function ibFilter() { return mod.ibF || (mod.ibF = { status: 'new', type: 'all' }); }
+  function ibLoad(force) { admFetch('ib', 'adminInbox', ibFilter(), force); }
+  function admInbox() {
+    var f = ibFilter();
+    ibLoad(false);
+    var x = mod.ib, d = x && x.data;
+    var h = admRefresh('ib') + '<div class="ca-ov-h"><h3 class="ca-h3">Inbox</h3></div>';
+    if (!d) return h + admWait(x);
+    if (x.err) h += '<p class="ca-lb-err" role="alert">' + esc(x.err) + '</p>';
+    var c = d.counts || {}, ty = d.types || {};
+    h += '<div class="ca-ib-st">' + IB_ST.concat([['all', 'All', '226,232,240']]).map(function (s) {
+      return '<button type="button" class="ca-ib-stb' + (f.status === s[0] ? ' is-on' : '') + '" style="--oc:' + s[2] + '" data-ca="adm-ib-f" data-k="status" data-v="' + s[0] + '" aria-pressed="' + (f.status === s[0]) + '">' +
+        '<b>' + fmt(c[s[0]] || 0) + '</b><small>' + s[1].replace(' ', '&nbsp;') + '</small></button>';
+    }).join('') + '</div>';
+    h += '<div class="ca-chips ca-ib-types">' + [['all', '', 'All Types']].concat(IB_TYPES).map(function (t) {
+      var n = ty[t[0]] || 0;
+      return '<button type="button" class="ca-chip' + (f.type === t[0] ? ' is-on' : '') + '" data-ca="adm-ib-f" data-k="type" data-v="' + t[0] + '" aria-pressed="' + (f.type === t[0]) + '">' + (t[1] ? '<span aria-hidden="true">' + t[1] + '</span> ' : '') + t[2] + ' <span class="ca-ib-n">' + fmt(n) + '</span></button>';
+    }).join('') + '</div>';
+    if (x.loading) h += '<div class="ca-center"><div class="ca-spin" aria-hidden="true"></div></div>';
+    else if (!d.items.length) h += '<div class="ca-ib-empty"><span aria-hidden="true">&#x1F4ED;</span><b>' + (f.status === 'new' && f.type === 'all' ? 'All Caught Up' : 'Nothing Here') + '</b><small>' + (f.status === 'new' && f.type === 'all' ? 'No new messages. New ones show here and on the Admin button.' : 'No messages match these filters.') + '</small></div>';
+    return h + d.items.map(ibCard).join('');
+  }
+  function ibCard(m) {
+    var t = ibType(m.type), s = ibSt(m.status), busy = mod.ibBusy === m.ref;
+    var row = function (k, v) { return v ? '<div><dt>' + k + '</dt><dd>' + v + '</dd></div>' : ''; };
+    var subj = 'Re: ' + m.ref + ' (' + t[2] + ')', body = '\n\n\n---\nYou wrote (' + m.ref + '):\n' + String(m.msg || '').slice(0, 600);
+    var h = '<article class="ca-ib-card" style="--oc:' + s[2] + '">' +
+      '<div class="ca-ib-top"><span class="ca-ib-type"><span aria-hidden="true">' + t[1] + '</span> ' + t[2] + '</span><span class="ca-ib-ref">' + esc(m.ref) + '</span></div>' +
+      '<p class="ca-ib-when">' + esc(ibWhen(m.at)) + ' &middot; ' + esc(IB_SITES[m.site] || m.site || 'Unknown game') + ' &middot; ' + (m.username ? '<b>' + esc(m.username) + '</b>' : m.uid ? 'Signed in, no name yet' : 'Guest') + '</p>' +
+      '<p class="ca-ib-msg">' + esc(m.msg) + '</p>' +
+      (m.doing ? '<p class="ca-ib-doing"><b>What they were doing:</b> ' + esc(m.doing) + '</p>' : '') +
+      '<dl class="ca-ib-dl">' +
+        row('Email', esc(m.email)) +
+        row('Account', m.uid ? (m.username ? esc(m.username) + ' ' : '') + '<small>' + esc(m.uid) + '</small>' : 'Guest (not signed in)') +
+        row('Screen', esc(m.screen)) + row('Page', esc(String(m.url || '').replace(/^https?:\/\//, ''))) + row('Version', esc(m.ver)) +
+        row('Device', esc(m.dev || m.ua)) + row('Screen Size', esc(String(m.scr || '').replace('@', ' at ') + (m.scr ? 'x' : ''))) +
+        row('Errors', (m.errs || []).length ? '<ol class="ca-ib-errs">' + m.errs.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ol>' : '<span class="ca-muted">None</span>') +
+      '</dl>' +
+      (m.ua ? '<details class="ca-ib-ua"><summary>Full Browser Details</summary><p>' + esc(m.ua) + '</p></details>' : '') +
+      '<div class="ca-ib-act">' +
+        '<div class="ca-seg ca-ib-seg" role="group" aria-label="Status">' + IB_ST.map(function (x) {
+          return '<button type="button" class="ca-seg-btn' + (m.status === x[0] ? ' is-on' : '') + '" style="--oc:' + x[2] + '" data-ca="adm-ib-st" data-ref="' + esc(m.ref) + '" data-v="' + x[0] + '" aria-pressed="' + (m.status === x[0]) + '"' + (busy ? ' disabled' : '') + '>' + x[1] + '</button>';
+        }).join('') + '</div>' +
+        (m.statusBy ? '<p class="ca-ib-by">' + esc(ibSt(m.status)[1]) + ' &middot; ' + esc(m.statusBy) + (m.statusAt ? ', ' + esc(ibWhen(m.statusAt)) : '') + '</p>' : '') +
+        '<div class="ca-row">' +
+          (m.email ? '<a class="ca-btn ca-btn-quiet ca-btn-sm" href="mailto:' + esc(m.email) + '?subject=' + encodeURIComponent(subj) + '&amp;body=' + encodeURIComponent(body) + '">&#x2709;&#xFE0F; Reply by Email</a>' : '') +
+          (m.uid ? '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm" data-ca="adm-find-name" data-n="' + esc(m.uid) + '">&#x1F464; See Player</button>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="ca-ib-notes">' + (m.notes || []).map(function (n) {
+        return '<div class="ca-ib-note"><p>' + esc(n.t) + '</p><small>' + esc(n.by) + ' &middot; ' + esc(ibWhen(n.at)) + '</small></div>';
+      }).join('') +
+        '<label class="ca-ib-lbl" for="caIbNote-' + esc(m.ref) + '">Add a Note</label>' +
+        '<textarea class="ca-field ca-ib-ta" id="caIbNote-' + esc(m.ref) + '" maxlength="1000" rows="2" placeholder="For example: refunded the Reroll, replied 17 Oct">' + esc((mod.ibDraft || {})[m.ref] || '') + '</textarea>' +
+        '<button type="button" class="ca-btn ca-btn-quiet ca-btn-sm ca-ib-add" data-ca="adm-ib-note" data-ref="' + esc(m.ref) + '"' + (busy ? ' disabled' : '') + '>Add Note</button>' +
+      '</div></article>';
+    return h;
+  }
+  // Status or a note: the card changes straight away, then the server's copy replaces it (the counts with it)
+  function ibAct(ref, data) {
+    var d = mod.ib && mod.ib.data, it = d && d.items.filter(function (m) { return m.ref === ref; })[0];
+    if (!it || mod.ibBusy) return;
+    mod.ibBusy = ref; render();
+    callFn('adminInboxAct', Object.assign({ ref: ref }, data)).then(function (r) {
+      mod.ibBusy = null;
+      if (data.note != null && mod.ibDraft) delete mod.ibDraft[ref];
+      if (r && r.item && mod.ib && mod.ib.data) {
+        var D = mod.ib.data, was = it.status;
+        D.items = D.items.map(function (m) { return m.ref === ref ? r.item : m; });
+        if (was !== r.item.status && D.counts) { D.counts[was] = Math.max(0, (D.counts[was] || 0) - 1); D.counts[r.item.status] = (D.counts[r.item.status] || 0) + 1; }
+      }
+      if (r && typeof r.inboxNew === 'number') { mod.inboxN = r.inboxNew; if (mod.ov && mod.ov.data) mod.ov.data.inboxNew = r.inboxNew; refreshButtons(); }
+      render();
+    }, function (err) { mod.ibBusy = null; flash(fnError(err)); });
   }
   // Admin > Dailies (27-0): the next 14 Dailies, the planned ones marked (edit the calendar in js/daily.js)
   // Admin > Dailies: this game's next 14 (each site knows its own; the button opens the other game's list there)
@@ -7913,6 +8019,8 @@
     callFn(fn, data || {}).then(function (r) {
       mod[key] = { data: r, at: Date.now() };
       if (key === 'ov') { ovSave(r); if (typeof r.flags === 'number' && r.flags !== mod.flagsN) { mod.flagsN = r.flags; refreshButtons(); } } // the Admin button's badge
+      if (key === 'ov' && typeof r.inboxNew === 'number' && r.inboxNew !== mod.inboxN) { mod.inboxN = r.inboxNew; refreshButtons(); } // and the Inbox's New
+      if (key === 'ib' && r && r.counts && typeof r.counts.new === 'number' && r.counts.new !== mod.inboxN) { mod.inboxN = r.counts.new; refreshButtons(); }
       render();
     },
       function (err) { mod[key] = { err: fnError(err), data: cur && cur.data, at: cur && cur.at }; render(); });
@@ -8123,12 +8231,14 @@
       ['CAST Profiles', admNum(d.accounts), 'All time', 'accounts', 'Accounts'],
       ['New Accounts', admNum(d.new1), 'Last 24 hours ' + delta(d.new1, d.newPrev), 'new1', 'New in 24 Hours'],
       ['Players Today', admNum(playersToday), 'Everyone, guests too', null],
-      ['Games Today', admNum(d.games1), 'Last 24 hours ' + delta(d.games1, d.gamesPrev), 'games1', 'Games in 24 Hours']
+      ['Games Today', admNum(d.games1), 'Last 24 hours ' + delta(d.games1, d.gamesPrev), 'games1', 'Games in 24 Hours'],
+      // Contact Us and bug reports waiting (17 Oct 2026): taps through to the Inbox. The row's full width on its own
+      ['New Messages', admNum(d.inboxNew == null ? mod.inboxN : d.inboxNew), 'Contact Us and bug reports waiting', '#inbox', 'Inbox', true]
     ];
     var h = admRefresh('ov') + '<div class="ca-ov-h"><h3 class="ca-h3">Today at a Glance</h3></div><div class="ca-ov-glance">' + glance.map(function (x) {
       var inner = '<small>' + x[0] + '</small><b>' + x[1] + '</b><em>' + x[2] + '</em>';
-      var gc = ' style="--oc:' + ['96,165,250', '74,222,128', '192,132,252', '251,146,60'][glance.indexOf(x)] + '"';
-      return x[3] ? '<button type="button" class="ca-ov-big is-tap"' + gc + ' data-ca="adm-list" data-v="' + x[3] + '" data-l="' + esc(x[4]) + '">' + inner + '</button>' : '<div class="ca-ov-big"' + gc + '>' + inner + '</div>';
+      var gc = ' style="--oc:' + ['96,165,250', '74,222,128', '192,132,252', '251,146,60', '248,113,113'][glance.indexOf(x)] + '"';
+      return x[3] ? '<button type="button" class="ca-ov-big is-tap' + (x[5] ? ' is-wide' : '') + '"' + gc + ' data-ca="adm-list" data-v="' + x[3] + '" data-l="' + esc(x[4]) + '">' + inner + '</button>' : '<div class="ca-ov-big"' + gc + '>' + inner + '</div>';
     }).join('') + '</div>';
     // Games: one table, a row per game and mode, the board's players alongside
     var bp = {}; (d.boards || []).forEach(function (b) { bp[b.id] = b.players; });
@@ -10099,7 +10209,8 @@
   function reportBox(id, top) {
     if (lb.reportMsg) return '<p class="ca-muted ca-center ca-lb-note">' + esc(lb.reportMsg) + '</p>';
     if (!lb.reportOpen) return '<div class="ca-lb-report-row"><button type="button" class="ca-link ca-lb-report" data-ca="lb-report-open">Report a Name</button></div>'; // its own centred row (the owner, 15 Oct 2026: it sat jammed under the note)
-    if (status !== 'signed-in') return '<p class="ca-muted ca-center ca-lb-note">Sign in to report a name. Or email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p>';
+    if (status !== 'signed-in') return '<p class="ca-muted ca-center ca-lb-note">Sign in to report a name, or send us a message about it.</p>' +
+      (window.CastContact ? '<div class="ca-lb-report-row"><button type="button" class="ca-link" data-cast-contact="other" data-cast-contact-msg="A leaderboard name I want to report: ">&#x2709;&#xFE0F; Contact Us</button></div>' : '');
     var mine = profile && profile.username;
     return '<div class="ca-lb-name"><label for="caReport"><b>Which Name Is Offensive?</b></label><div class="ca-lb-name-row">' +
       '<select id="caReport"><option value="">Choose a name</option>' + top.filter(function (r) { return r.n !== mine; }).map(function (r) { return '<option>' + esc(r.n) + '</option>'; }).join('') + '</select>' +
@@ -10496,7 +10607,7 @@
       case 'adm-wc': admWc(t.getAttribute('data-v') === 'on'); break;
       case 'adm-imm-cancel': mod.immL = {}; render(); break;
       case 'adm-imm': admImm(t.getAttribute('data-v') === 'on'); break;
-      case 'adm-refresh': { var ak = t.getAttribute('data-v'); admFetch(ak, { ov: 'adminOverview', flags: 'adminFlags', log: 'adminLog', fans: 'adminFans', ins: 'adminInsights' }[ak], ak === 'ov' ? { fresh: true } : {}, true); if (ak === 'ov') { var sb = mod.suBy || '24h'; admFetch('su_' + sb, 'adminSignups', { by: sb, fresh: true }, true); } render(); break; }
+      case 'adm-refresh': { var ak = t.getAttribute('data-v'); admFetch(ak, { ov: 'adminOverview', flags: 'adminFlags', log: 'adminLog', fans: 'adminFans', ins: 'adminInsights', ib: 'adminInbox' }[ak], ak === 'ov' ? { fresh: true } : ak === 'ib' ? ibFilter() : {}, true); if (ak === 'ov') { var sb = mod.suBy || '24h'; admFetch('su_' + sb, 'adminSignups', { by: sb, fresh: true }, true); } render(); break; }
       case 'adm-fans-cat': mod.fansCat = t.getAttribute('data-v'); render(); break;
       case 'adm-ins-seg': mod.insSeg = t.getAttribute('data-v'); mod.insSort = 'pot'; render(); { var ip = el.querySelector('.ca-panel'); if (ip) ip.scrollTop = 0; } break;
       case 'adm-ins-back': mod.insSeg = null; render(); break;
@@ -10515,6 +10626,13 @@
       case 'adm-fan-clear': mod.fanClearAsk = false; admFanSet(true); break;
       case 'adm-find': { var fi = document.getElementById('caFind'); admFind(fi ? fi.value : ''); break; }
       case 'adm-find-name': mod.tab = 'players'; admFind(t.getAttribute('data-n')); break;
+      case 'adm-ib-f': { var ibf = ibFilter(); ibf[t.getAttribute('data-k') === 'type' ? 'type' : 'status'] = t.getAttribute('data-v'); ibLoad(true); render(); break; }
+      case 'adm-ib-st': ibAct(t.getAttribute('data-ref'), { status: t.getAttribute('data-v') }); break;
+      case 'adm-ib-note': {
+        var ibr = t.getAttribute('data-ref'), ibta = document.getElementById('caIbNote-' + ibr), ibv = ibta ? ibta.value.trim() : '';
+        if (!ibv) { flash('Write a note first.'); break; }
+        (mod.ibDraft = mod.ibDraft || {})[ibr] = ibv; ibAct(ibr, { note: ibv }); break;
+      }
       case 'adm-vf-open': {
         mod.tab = 'players'; admFind(t.getAttribute('data-n'));
         var vp = el.querySelector('.ca-panel');
@@ -10786,9 +10904,9 @@
       b.parentNode.insertBefore(a, b);
     }
     // The badge: reported names and flagged scores waiting (flags from 11 Oct 2026, the owner: "so you know to click on it")
-    var n = (mod.open || 0) + (mod.flagsN || 0);
+    var n = (mod.open || 0) + (mod.flagsN || 0) + (mod.inboxN || 0); // and new Contact Us messages (17 Oct 2026)
     a.innerHTML = SHIELD + '<span class="ca-head-lbl">Admin</span>' + (n ? '<span class="ca-head-mod" aria-hidden="true">' + (n > 9 ? '9+' : n) + '</span>' : '');
-    a.setAttribute('aria-label', 'Admin' + (mod.open ? ', ' + mod.open + ' reported name' + (mod.open === 1 ? '' : 's') + ' to review' : '') + (mod.flagsN ? ', ' + mod.flagsN + ' flagged score' + (mod.flagsN === 1 ? '' : 's') : ''));
+    a.setAttribute('aria-label', 'Admin' + (mod.open ? ', ' + mod.open + ' reported name' + (mod.open === 1 ? '' : 's') + ' to review' : '') + (mod.flagsN ? ', ' + mod.flagsN + ' flagged score' + (mod.flagsN === 1 ? '' : 's') : '') + (mod.inboxN ? ', ' + mod.inboxN + ' new message' + (mod.inboxN === 1 ? '' : 's') : ''));
   }
   function openAdmin() {
     if (status !== 'signed-in' || !mod.admin) return;
@@ -12967,7 +13085,15 @@
     useKey: useKey,
     // Challenges: is this game (by its seed) a friend's challenge? (no Vault keys in one)
     inChallenge: inChallenge,
-    playChallenge: playChallenge
+    playChallenge: playChallenge,
+    // Contact Us and Report a Bug (js/cast-contact.js, 17 Oct 2026): who is asking (the form locks a signed-in player's
+    // email), and the send, through this page's own Firebase so the server knows who it is
+    contactWho: function () {
+      if ((status === 'signed-in' || status === 'needs-age') && user) return { state: 'in', email: user.email || '', username: (profile && profile.username) || null };
+      if (status === 'loading' || (status === 'guest' && ENABLED && !inApp && lsGet(LS_FLAG) === '1' && !fb)) return { state: 'loading' };
+      return { state: 'out' };
+    },
+    contactSend: function (data) { return callFn('contactSend', data); }
   };
 
   // A scroll lock must never outlive its pop-up: a page left locked can't scroll (in 27-0, down to the players).

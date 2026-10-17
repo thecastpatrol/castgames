@@ -1725,7 +1725,12 @@
     CastAccount.useKey('legend', 'plus').then(function () {
       busy = false;
       // The key is already spent: if the game moved on meanwhile, say so (the review, 9 Oct 2026; it was silent)
-      if (T.state() !== S || !T.useLegendKey()) { toast('The offer changed before your Legend Key opened. Email cast@thecastpatrol.com.au and we\u2019ll put it back.'); if (T.state() === S) renderDraft(); return; }
+      // The Contact Us form opens for them, ready to send (17 Oct 2026: it was an email address in the toast)
+      if (T.state() !== S || !T.useLegendKey()) {
+        toast('The offer changed before your Legend Key opened. Send us a message and we\u2019ll put it back.');
+        if (window.CastContact) setTimeout(function () { window.CastContact.open('pay', { msg: 'My Legend Key was used, but the offer changed before it opened. Please put it back. ' }); }, 1400);
+        if (T.state() === S) renderDraft(); return;
+      }
       T.track('vault_key', { key: 'legend', mode: S.mode.name });
       var offer = T.rollOffer();
       if (offer && offer.special) packIntro(offer.special, renderDraft, false); else renderDraft();

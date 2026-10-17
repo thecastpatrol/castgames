@@ -12,6 +12,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="/27-0/js/cast-contact.js?v=20261017.1" data-site="27-0"></script>
 <title>27-0 | Page Not Found | CAST Games</title>
 <meta name="description" content="That page does not exist. Head back to 27-0 and build your NRL era 13.">
 <meta name="robots" content="noindex">
@@ -58,10 +60,11 @@
     <p>That page didn't make it over the line. It doesn't exist, or it has moved.</p>
     <a class="btn" href="/27-0/">Play 27-0</a>
     <a class="link" href="/27-0/how-it-works.html">How It Works</a>
+    <p class="ctc-pills">Followed a broken link? <button type="button" class="ctc-pill" data-cast-contact="bug" data-cast-contact-msg="I followed a link to a page that does not exist: ">&#x1F41E; Report a Bug</button></p>
   </section>
 </main>
 <footer>
-  <p class="footer-links"><a href="/27-0/how-it-works.html">How It Works</a><a href="/27-0/privacy.html">Privacy</a><a href="/27-0/terms.html">Terms</a><a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a></p>
+  <p class="footer-links"><a href="/27-0/how-it-works.html">How It Works</a><a href="/27-0/privacy.html">Privacy</a><a href="/27-0/terms.html">Terms</a><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button><button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
   <p>&copy; <span data-year>2026</span> The Cast Patrol</p>
   <script>document.querySelectorAll('[data-year]').forEach(function (e) { e.textContent = new Date().getFullYear(); });</script>
 </footer>

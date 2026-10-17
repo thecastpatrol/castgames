@@ -12,6 +12,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=20261017.1" data-site="1000tries"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -62,7 +64,7 @@
   <article class="wrap doc">
     <a class="back-link" href="./">&larr; Back to the game</a>
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: 7 October 2026</p>
+    <p class="updated">Last updated: 17 October 2026</p>
 
     <p><strong>1000TRIES</strong> is a free browser game available at <strong>castgames.com.au/1000tries/</strong>, made by The Cast Patrol. We collect very little data, accounts are optional, and we do not sell your data.</p>
 
@@ -73,7 +75,7 @@
     <p>Our games don’t show ads. If that ever changes, we’ll update this policy first.</p>
 
     <h2>Playing as a Guest</h2>
-    <p>If you play without an account, we do not collect your name, email or any personally identifiable information. Your game history and sound preference are saved in your own browser only. The one exception: after your first finished game, that game&rsquo;s score and team (with no name or account) are sent once so we can show where it would rank on today&rsquo;s leaderboard. We don&rsquo;t keep it.</p>
+    <p>If you play without an account, we do not collect your name, email or any personally identifiable information. Your game history and sound preference are saved in your own browser only. If you send us a message, see Contact Us and Bug Reports below. The one exception: after your first finished game, that game&rsquo;s score and team (with no name or account) are sent once so we can show where it would rank on today&rsquo;s leaderboard. We don&rsquo;t keep it.</p>
 
     <h2 id="cast-account">CAST Games Accounts (Optional)</h2>
     <p>You can create a free CAST Games account to back up your game history and see your stats across 1000TRIES, 27-0 and other CAST Games. Accounts are optional and are for people aged 13 and over.</p>
@@ -99,6 +101,11 @@
     <h2 id="cast-pass">CAST Pass Payments</h2>
     <p>If you buy CAST Pass, the payment is handled by Stripe (stripe.com), which receives your card details, your email address (for receipts) and your billing country under its own privacy policy. We never see or store your card number. We keep a small record with your account: whether you have a Pass, your plan, when it renews or ends, and the Stripe customer and subscription numbers that link it to your account. If you delete your account, we cancel the subscription and delete that record. Stripe keeps its own payment records as the law requires.</p>
 
+    <h2 id="contact-form">Contact Us and Bug Reports</h2>
+    <p>When you send us a message with the Contact Us or Report a Bug form, we receive what you write, the topic you pick and your email address so we can reply. If you are signed in, we use the email on your CAST Profile and also see your account ID and username.</p>
+    <p>To help us fix problems, the form also sends which game and page you were on, the game&rsquo;s version, your browser and device type, your screen size and the last few error messages from that page. The form shows you this before you send. It never sends your game data, passwords or payment details.</p>
+    <p>Messages are stored in Cloud Firestore in Google&rsquo;s Sydney, Australia region. Only The Cast Patrol&rsquo;s admins can read them, and we only use them to answer you and fix what you tell us about. To stop the form being flooded, we keep a scrambled code made from your internet connection&rsquo;s address with the times of your last few messages; the address itself is never stored. We keep messages until we have dealt with them and no longer need them, and you can ask us to delete yours at any time.</p>
+
     <h2>Hosting</h2>
     <p>1000TRIES is a static website. Standard technical information (IP addresses, browser info, request logs) may be processed by our hosting and CDN provider for security and performance purposes.</p>
 
@@ -106,7 +113,8 @@
     <p>We may update this policy from time to time. The date above reflects the latest update.</p>
 
     <h2>Contact</h2>
-    <p>Questions about this policy? Email us at <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p>
+    <p>Questions about this policy? Email us at <strong>cast@thecastpatrol.com.au</strong>, or send us a message here.</p>
+    <p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
   </article>
 </main>
 
@@ -121,7 +129,8 @@
     <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">1000TRIES is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the NRL or any NRL club. Club and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>

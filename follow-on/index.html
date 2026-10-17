@@ -19,6 +19,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=decf32dc" data-site="tests"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -52,7 +54,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css?v=6f628525">
-<link rel="stylesheet" href="css/cast-account.css?v=76314fb5">
+<link rel="stylesheet" href="css/cast-account.css?v=1f98142d">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
@@ -144,7 +146,8 @@
           <details class="faq-item" name="faq"><summary><span>What does the Luck number mean?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>After each game we compare the runs on every card you were offered with what an average game deals you. <strong>Luck +23%</strong> means you drew 23% more runs than usual; a minus number means a tough draw. Your first offer and any Legends Pick are left out. You see it on your results and on leaderboard team sheets.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are wildcards?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Reroll (Respin in Team Spin) gives you a fresh offer, Reveal Runs shows the runs for everyone on the current offer, and Remove Player takes one player out of your XI so you can draft again. Each can be used once per game.</p></details>
           <details class="faq-item" name="faq"><summary><span>Which runs count?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Runs in Test cricket since the first Test in 1877, for every Test nation (and the ICC World XI&rsquo;s one Test in 2005). One-day, T20 and first-class runs are not included.</p></details>
-          <details class="faq-item" name="faq"><summary><span>Where do the run numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Test records from ESPNcricinfo&rsquo;s Statsguru, names from Wikidata. Every player&rsquo;s runs and wickets are their Test career totals. Each player&rsquo;s role (batter, keeper or bowler) comes from their runs, their catches and stumpings as keeper and how much they bowled. Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Where do the run numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Test records from ESPNcricinfo&rsquo;s Statsguru, names from Wikidata. Every player&rsquo;s runs and wickets are their Test career totals. Each player&rsquo;s role (batter, keeper or bowler) comes from their runs, their catches and stumpings as keeper and how much they bowled. Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
+          <details class="faq-item" name="faq"><summary><span>How do I contact you or report a bug?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Use the form: pick what it&rsquo;s about, tell us what happened and we&rsquo;ll reply by email. Every message gets a reference number, so nothing gets lost.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
           <details class="faq-item" name="faq"><summary><span>Is 60000 RUNS free to play?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Completely free. No download needed. Open your browser, draft your XI and play.</p></details>
           <details class="faq-item" name="faq"><summary><span>Who made 60000 RUNS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the team behind CAST Games.</p></details>
           <details class="faq-item" name="faq"><summary><span>Is 60000 RUNS affiliated with the ICC?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. 60000 RUNS is an independent, fan-made game. It is not affiliated with, endorsed by, or associated with the ICC, Cricket Australia or any national board.</p></details>
@@ -201,7 +204,8 @@
     <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">Test records from <a href="https://stats.espncricinfo.com/ci/engine/stats/index.html" target="_blank" rel="noopener">ESPNcricinfo&rsquo;s Statsguru</a>, names from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>.</p>
@@ -229,7 +233,7 @@
 <script src="js/render.js?v=5b7978ac"></script>
 <script src="js/share-card.js?v=3decceb8"></script>
 <script src="js/cast-celebrate.js?v=eacfb009"></script>
-<script src="js/app.js?v=a9a096a3"></script>
+<script src="js/app.js?v=d35ae087"></script>
 <script src="js/cast-daily.js?v=a0d50a5c"></script>
 <script src="js/tests-daily.js?v=67db61ef"></script>
 <script src="js/daily.js?v=8c234cd9"></script>
@@ -249,6 +253,6 @@
 <script src="js/cast-picks.js?v=08f42325"></script>
 <script src="js/ou-engine.js?v=fc6246d6"></script>
 <script src="js/overunder.js?v=a705f865"></script>
-<script src="js/cast-account.js?v=2cfb06b0"></script>
+<script src="js/cast-account.js?v=267be2fa"></script>
 </body>
 </html>

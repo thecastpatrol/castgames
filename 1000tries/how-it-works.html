@@ -12,6 +12,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=20261017.1" data-site="1000tries"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -110,7 +112,8 @@
     <p>Tries count <strong>NRL premiership games from 1998 to now</strong>. The 1997 Super League and ARL seasons are not included, and neither are Origin, Tests or other representative games. Legends and Immortals in 1000+ are the one exception: they count their whole premiership careers. The player list matches the 27-0 player pool (apart from a handful of greats who now appear only as Legends), and only players with a confirmed try count are in the game, including players who never scored.</p>
     <p><strong>NRLW 250+</strong> counts <strong>NRLW premiership tries from 2018 to now</strong>, including finals. Women&rsquo;s Origin, Tests, All Stars and one-off exhibition games are not included. NRLW data comes from <a href="https://www.rugbyleagueproject.org/" target="_blank" rel="noopener">Rugby League Project</a>, with the top tryscorers checked against official club pages. Players who have only ever played off the bench take the position they have played in other competitions.</p>
     <p data-cast-wc hidden><strong>World Cup 200+</strong> counts <strong>senior Test tries</strong> for the ten 2026 World Cup nations (Australia, New Zealand, England, France, Samoa, Tonga, Fiji, Papua New Guinea, Lebanon and the Cook Islands), plus Great Britain, Scotland and Italy, from <a href="https://www.rugbyleagueproject.org/" target="_blank" rel="noopener">Rugby League Project</a>. During the 2026 World Cup, each game&rsquo;s tries and Test appearances are added once it finishes. <strong>World Legends</strong>, the international greats, sit out the normal offers: one can turn up in an offer, and a <strong>World Legend Pick</strong> lets you choose one, with his Test tries. Sign in free with a CAST Profile to play.</p>
-    <p>Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p>
+    <p>Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p>
+    <p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
 
     <div class="cta"><a class="btn btn-primary btn-block" href="./">Play 1000TRIES</a></div>
   </article>
@@ -127,7 +130,8 @@
     <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">1000TRIES is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the NRL or any NRL club. Club and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>

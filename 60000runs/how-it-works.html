@@ -12,6 +12,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=decf32dc" data-site="tests"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -105,7 +107,8 @@
     <h2>Where the Numbers Come From</h2>
     <p>Runs count <strong>Test matches from the first Test in 1877 to now</strong>, for every Test nation (and the ICC World XI&rsquo;s one Test in 2005). One-day, T20 and first-class runs are not included.</p>
     <p>Test records from <a href="https://stats.espncricinfo.com/ci/engine/stats/index.html" target="_blank" rel="noopener">ESPNcricinfo&rsquo;s Statsguru</a>, names from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>. The runs on each card are the player&rsquo;s Test career total. Roles come from each player&rsquo;s runs, their catches and stumpings as keeper and how much they bowled.</p>
-    <p>Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p>
+    <p>Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p>
+    <p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
 
     <div class="cta"><a class="btn btn-primary btn-block" href="./">Play 60000 RUNS</a></div>
   </article>
@@ -122,7 +125,8 @@
     <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">60000 RUNS is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the ICC, Cricket Australia or any national board. Nation and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>

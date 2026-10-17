@@ -22,6 +22,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="js/cast-contact.js?v=decf32dc" data-site="4000goals"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -61,7 +63,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css?v=20261016.10">
-<link rel="stylesheet" href="css/cast-account.css?v=76314fb5">
+<link rel="stylesheet" href="css/cast-account.css?v=1f98142d">
 <!-- Google AdSense (publisher pub-7181866336117456) -->
 </head>
 <body>
@@ -160,7 +162,8 @@
           <details class="faq-item" name="faq"><summary><span>What does the Luck number mean?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>After each game we compare the goals on every card you were offered with what an average game deals you. <strong>Luck +23%</strong> means you drew 23% more goals than usual; a minus number means a tough draw. Your first offer and any Legends Pick are left out. You see it on your results and on leaderboard team sheets.</p></details>
           <details class="faq-item" name="faq"><summary><span>What are wildcards?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Reroll (Respin in Team Spin) gives you a fresh offer, Reveal Goals shows the goals for everyone on the current offer, and Remove Player takes one player out of your 18 so you can draft again. Each can be used once per game.</p></details>
           <details class="faq-item" name="faq"><summary><span>Which goals count?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>VFL/AFL premiership goals from 1990, when the competition became the AFL, to now, finals included. Pre-season, State of Origin and international rules games are not included. Legends count their whole VFL/AFL careers.</p></details>
-          <details class="faq-item" name="faq"><summary><span>Where do the goal numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>From AFL Tables (afltables.com), the public record of every VFL/AFL game since 1897. Each player&rsquo;s position (back, midfield or forward) is worked out from his career stats. Spot something that looks wrong? Email <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>.</p></details>
+          <details class="faq-item" name="faq"><summary><span>Where do the goal numbers come from?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>From AFL Tables (afltables.com), the public record of every VFL/AFL game since 1897. Each player&rsquo;s position (back, midfield or forward) is worked out from his career stats. Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
+          <details class="faq-item" name="faq"><summary><span>How do I contact you or report a bug?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Use the form: pick what it&rsquo;s about, tell us what happened and we&rsquo;ll reply by email. Every message gets a reference number, so nothing gets lost.</p><p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p></details>
           <details class="faq-item" name="faq"><summary><span>Is 4000 GOALS free to play?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>Completely free. No download needed. Open your browser, draft your 18 and play.</p></details>
           <details class="faq-item" name="faq"><summary><span>Who made 4000 GOALS?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>The Cast Patrol, the team behind CAST Games.</p></details>
           <details class="faq-item" name="faq"><summary><span>Is 4000 GOALS affiliated with the AFL?</span><span class="faq-ico" aria-hidden="true">+</span></summary><p>No. 4000 GOALS is an independent, fan-made game. It is not affiliated with, endorsed by, or associated with the AFL or any AFL club.</p></details>
@@ -216,7 +219,8 @@
     <a href="how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">4000 GOALS is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with the AFL or any AFL club. Club and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>
@@ -243,7 +247,7 @@
 <script src="js/render.js?v=20261016.6"></script>
 <script src="js/share-card.js?v=20261012.4"></script>
 <script src="js/cast-celebrate.js?v=20261012.3"></script>
-<script src="js/app.js?v=20261016.12"></script>
+<script src="js/app.js?v=20261016.13"></script>
 <script src="js/cast-daily.js?v=20261014.1"></script>
 <script src="js/afl-daily.js?v=20261012.4"></script>
 <script src="js/daily.js?v=20261012.4"></script>
@@ -262,7 +266,7 @@
 <script src="js/upgrades-data.js?v=20261006.1"></script>
 <script src="js/cast-upgrades.js?v=20261006.1"></script>
 <script src="js/cast-picks.js?v=20261001.3"></script>
-<script src="js/cast-account.js?v=2cfb06b0"></script>
+<script src="js/cast-account.js?v=267be2fa"></script>
 <script src="js/ou-engine.js?v=20261016.7"></script>
 <script src="js/overunder.js?v=14d5b5df"></script>
 <div id="cgSoon" style="--c1:#5a1a1a;--c2:#1c0b10;--soon-rgb:150,40,52"><div class="cg-soon-box"><span class="cg-soon-mark" aria-hidden="true">&#x25B2;&#x25BC;</span><span class="cg-soon-k">Over or Under</span><h1>Play On Opens Soon</h1><p>Call AFL players' career goals over or under before the clock runs out.</p><a class="cg-soon-btn" href="/4000goals/">Play 4000 GOALS</a><a class="cg-soon-alt" href="/">All Games</a></div></div>

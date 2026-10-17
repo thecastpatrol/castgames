@@ -12,6 +12,8 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, unit=no">
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
+<!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
+<script src="/25000runs/js/cast-contact.js?v=20261017.1" data-site="bigbash"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -59,6 +61,7 @@
     <p class="nf-sub">That page was short of its ground. It does not exist, or it has moved.</p>
     <a class="btn btn-primary btn-block nf-btn" href="/25000runs/">Play 25000 RUNS</a>
     <a class="text-link center" href="/25000runs/how-it-works.html">How It Works</a>
+    <p class="ctc-pills">Followed a broken link? <button type="button" class="ctc-pill" data-cast-contact="bug" data-cast-contact-msg="I followed a link to a page that does not exist: ">&#x1F41E; Report a Bug</button></p>
   </section>
 </main>
 
@@ -73,7 +76,8 @@
     <a href="/25000runs/how-it-works.html">How It Works</a> <span aria-hidden="true">|</span>
     <a href="/25000runs/privacy.html">Privacy</a> <span aria-hidden="true">|</span>
     <a href="/25000runs/terms.html">Terms</a> <span aria-hidden="true">|</span>
-    <a href="mailto:cast@thecastpatrol.com.au">cast@thecastpatrol.com.au</a>
+    <button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <span aria-hidden="true">|</span>
+    <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button>
   </p>
   <p class="footer-copy">&copy; <span data-year>2026</span> The Cast Patrol</p>
   <p class="footer-legal">25000 RUNS is a free, independent, fan-made game by The Cast Patrol. It is not affiliated with, endorsed by, or associated with Cricket Australia, the BBL or any club. Club and player names are used for descriptive purposes only. All trademarks belong to their respective owners.</p>
