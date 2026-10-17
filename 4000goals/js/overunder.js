@@ -436,6 +436,7 @@
     // Open the start screen (the mode card, ?play=ou, the board's Play button). cat: a category to start on
     open: function (cat) {
       if (st.view === 'play' && !st.done) return;
+      if (!cat && st.view === 'start' && root() && root().offsetParent) return; // already open (the page's own start-up got here first)
       st = { view: 'start', cat: E.CATS[cat] && E.gameOf(cat) === '4000goals' ? cat : E.CATS[lsGet(LS_CAT)] && E.gameOf(lsGet(LS_CAT)) === '4000goals' ? lsGet(LS_CAT) : 'goals' };
       if (T.showScreen) T.showScreen('ou');
       primeVault();
@@ -449,6 +450,15 @@
   // ?play=ou (a board's Play button, a share) or the owner's private link (?po=...): straight in once the page (and the
   // account module, which knows if it's on) has loaded
   if (T.ouWanted || /[?&](play=ou|po=[a-z0-9]+)(?=&|#|$)/.test(location.search)) { // ouWanted: the page asked before this loaded (js/app.js playMode)
-    window.addEventListener('load', function () { setTimeout(function () { if (T.ou.on()) T.ou.open(); }, 50); });
+    // Straight in (17 Oct 2026: it waited for every picture on the page and showed the game's home first). The rest of
+    // the page stays hidden until it opens; if it isn't on (not launched, no private link) the home shows as before
+    var docEl = document.documentElement, boot = document.createElement('style'), tries = 0;
+    boot.textContent = 'html.ou-boot .screen:not(#screen-ou) { display: none !important; }';
+    document.head.appendChild(boot);
+    docEl.classList.add('ou-boot');
+    (function go() {
+      if (T.showScreen && T.ou.on()) { T.ou.open(); docEl.classList.remove('ou-boot'); return; }
+      if (++tries < 80) setTimeout(go, 100); else docEl.classList.remove('ou-boot');
+    })();
   }
 })();

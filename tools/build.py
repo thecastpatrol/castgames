@@ -331,7 +331,9 @@ def main():
         src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
         src = src.replace("window.CG_GAME = '%s'" % dict((x[0], x[2]) for x in GAMES).get(game, game), "window.CG_GAME = '%s'" % gid)  # its game's cg.js id (777tds keeps '700tds')
         src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
-                          '<script>if (!/[?&](play=ou|%s=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>\n'
+                          '<script>if (!/[?&](play=ou|%s=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash); document.documentElement.classList.add("ou-boot");</script>\n'
+                          # nothing of the game's home shows while it opens (17 Oct 2026: it showed for seconds first)
+                          '<style>html.ou-boot .screen:not(#screen-ou) { display: none !important; }</style>\n'
                           '<script src="../shared/cg.js?v=%s"></script>\n'
                           # its back arrow goes to the CAST Games home (on its own page there's no game home to go to)
                           '<script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>' % (key, CGV), 1)

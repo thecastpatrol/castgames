@@ -63,7 +63,8 @@
 </head>
 <body>
 <script>window.CG_GAME = 'six-again'; window.CG_PLAY = function () { var b = document.querySelector('[data-action="new-game"]'); if (b && getComputedStyle(b).display !== 'none' && document.body.getAttribute('data-screen') === 'draft') { b.click(); return true; } return false; };</script>
-<script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash);</script>
+<script>if (!/[?&](play=ou|ou=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=ou" + location.hash); document.documentElement.classList.add("ou-boot");</script>
+<style>html.ou-boot .screen:not(#screen-ou) { display: none !important; }</style>
 <script src="../shared/cg.js?v=870a2e8d4261"></script>
 <script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>
 
@@ -271,7 +272,7 @@
 <script src="js/cast-celebrate.js?v=20261008.6"></script>
 <script src="js/app.js?v=20261015.7"></script>
 <script src="js/ou-engine.js?v=20261015.6"></script>
-<script src="js/overunder.js?v=20261015.14"></script>
+<script src="js/overunder.js?v=20261015.15"></script>
 <script src="js/cast-daily.js?v=20260929.17"></script>
 <script src="js/daily.js?v=20260927.30"></script>
 <script>
