@@ -1,6 +1,7 @@
 /* The CAST Games home page (the owner's "box of games" design, 17 Oct 2026; phone first, 390 wide). Top to bottom:
      Hero          the banner ads that turn by themselves (110px on phones, one 200px slide at a time on desktop): Welcome,
-                   The Sports, Just Dropped, More, CAST Pass, the Gameday Bag, the World Cup, Player of the Week
+                   Invite a Mate (always second), The Sports, Just Dropped, More, CAST Pass, the Gameday Bag, the World
+                   Cup, Player of the Week
      All Games     one row per sport (CG.SPORTS order): every card, most played first, Coming Soon last, See All to the
                    sport's page. A game in progress says "Continue: 7 of 13" on its own card
      Leaderboards  this week's #1 on each live game's main board, and the signed-in player's place
@@ -204,6 +205,7 @@
   var BN = 'assets/banners/';
   var ART = {
     welcome: [BN + 'welcome/art-phone@2x.webp?v=70caf0fc', BN + 'welcome/art-desktop@2x.webp?v=cfd76af6'],
+    invite: [BN + 'invite/art-phone@2x.webp', BN + 'invite/art-desktop@2x.webp'],
     sports: [BN + 'sports/art-phone@2x.webp?v=8df9958f', BN + 'sports/art-desktop@2x.webp?v=d57b9ad1'],
     'new': [BN + 'new/art-phone@2x.webp?v=8217f4df', BN + 'new/art-desktop@2x.webp?v=49facfc3'],
     more: [BN + 'more/art-phone@2x.webp?v=c5c057d0', BN + 'more/art-desktop@2x.webp?v=660db766'],
@@ -270,7 +272,46 @@
         ld: me ? 'That’s you! Well played this week.' : 'This week’s CAST Player of' + NB + 'the' + NB + 'Week. See their stats, best scores and trophies.',
         b: me ? 'See My Stats' : 'See Stats', open: 'potw', trim: tc2 && tc2.c1 ? [tc2.c1, tc2.c2 || tc2.c1] : null });
     }
+    var inv = inviteSlide();
+    if (inv) out.splice(Math.min(1, out.length), 0, inv); // always second (the owner, 17 Oct 2026)
     return out;
+  }
+  /* Invite a Mate (growth, 17 Oct 2026, the owner: "Make sure the share and invite a friend is clear in the banner ... new
+     people = money"): always the second slide, for everyone. A signed-in player's tap opens the phone's share sheet with
+     their invite link (a computer copies it and the button says Copied); a guest makes a free profile first and then
+     lands on Friends > Add Friends with Share Invite at the top (CastAccount.invite). The offer is the real one (the
+     server's referral reward): a new mate gets 3 free Rerolls after their first game and the inviter 3 once they count.
+     Under 15s and anyone past 10 rewarded mates this month see it without the offer. GA: invite_banner_view (once a
+     visit, when it's in view) and invite_banner_tap, each with state guest or in */
+  var invCopiedAt = 0;
+  function invState() { var a = A(); try { return a && a.inviteState ? a.inviteState() : null; } catch (e) { return null; } }
+  function inviteSlide() {
+    var st = invState();
+    if (!st || !st.on) return null;
+    var inn = st.signedIn, offer = st.reward, copied = Date.now() - invCopiedAt < 2500;
+    var b = copied ? '\u2705 Copied' : !inn ? 'Invite a Mate' : st.mode === 'copy' ? 'Copy Invite Link' : 'Share Invite';
+    // one line on a phone (Bring Your Mates took two there, with MATES alone), the longer one from 900px up
+    return { id: 'invite', k: 'Invite a Mate', h: 'Bring a Mate', hd: 'Bring Your Mates',
+      lp: offer ? 'You both get 3' + NB + 'free Rerolls.' : 'Add them and take them on.',
+      ld: !offer ? 'Send your link to the group chat and take your mates on, on every board.'
+        : inn ? 'Send your link to the group chat. When a mate signs up, you both get 3' + NB + 'free Rerolls.'
+          : 'Make a free profile and share your link. When a mate signs up, you both get 3' + NB + 'free Rerolls.',
+      b: b, open: 'invite' };
+  }
+  // Seen: once a visit, when most of the slide is on screen (on a phone, once the banner turns to it)
+  var invSeen = false, invObs = null;
+  function inviteWatch() {
+    if (invSeen) return;
+    var s = el.querySelector('.cgb.is-invite');
+    if (!s) return;
+    if (!('IntersectionObserver' in window)) { invSeen = true; CG.track('invite_banner_view', { where: 'home', state: signedIn() ? 'in' : 'guest' }); return; }
+    if (invObs) invObs.disconnect();
+    invObs = new IntersectionObserver(function (es) {
+      if (invSeen || !es.some(function (e) { return e.isIntersecting && e.intersectionRatio >= 0.6; })) return;
+      invSeen = true; invObs.disconnect();
+      CG.track('invite_banner_view', { where: 'home', state: signedIn() ? 'in' : 'guest' });
+    }, { threshold: [0.6] });
+    invObs.observe(s);
   }
   // 8-0 and 27-0 never break at the hyphen
   function hl(t) { return esc(t).replace(/(\S*\d-\d\S*)/g, '<span class="nw">$1</span>'); }
@@ -279,10 +320,10 @@
     var st = '--art-p:url(\'' + CG.url(art[0]) + '\');--art-d:url(\'' + CG.url(art[1]) + '\')' + (p.trim ? ';--t1:' + p.trim[0] + ';--t2:' + p.trim[1] : '');
     var hc = p.id === 'potw' && p.h.length > 12 ? ' is-long' : '';
     var inner = (p.trim ? '<i class="cgb-trim" aria-hidden="true"></i>' : '') + (p.bar ? '<i class="cgb-7" aria-hidden="true"></i>' : '') + '<span class="cgb-t">' +
-      '<span class="cgb-k">' + esc(p.k) + '</span><b class="cgb-h' + hc + '"><span>' + hl(p.h) + '</span></b>' +
+      '<span class="cgb-k">' + esc(p.k) + '</span><b class="cgb-h' + hc + '">' + (p.hd ? '<span class="cgb-hp">' + hl(p.h) + '</span><span class="cgb-hd">' + hl(p.hd) + '</span>' : '<span>' + hl(p.h) + '</span>') + '</b>' +
       '<span class="cgb-l"><span class="cgb-lp">' + hl(p.lp) + '</span><span class="cgb-ld">' + hl(p.ld) + '</span></span>' +
       '<span class="cgb-b" aria-hidden="true">' + esc(p.b) + '</span></span>';
-    var at = ' class="cgb is-' + p.id + (p.kp ? ' has-kp' : '') + '" style="' + esc(st) + '" aria-label="' + esc(p.k + ': ' + p.h + '. ' + p.b) + '" data-slide="' + i + '"';
+    var at = ' class="cgb is-' + p.id + (p.kp ? ' has-kp' : '') + '" style="' + esc(st) + '" aria-label="' + esc(p.k + ': ' + (p.hd || p.h) + '. ' + p.b) + '" data-slide="' + i + '"';
     return p.open ? '<button type="button"' + at + ' data-open="' + p.open + '">' + inner + '</button>' : '<a' + at + ' href="' + esc(p.href) + '" data-tap="hero" data-g="' + esc(p.g || p.id) + '">' + inner + '</a>';
   }
   function heroHtml() {
@@ -332,6 +373,7 @@
     tr.addEventListener('scroll', function () {
       clearTimeout(t);
       t = setTimeout(function () {
+        if (!tr.isConnected) return; // the banner was drawn again meanwhile (a sign-in, the invite's Copied): the new one keeps count
         var stops = heroStops(tr), best = 0;
         stops.forEach(function (x, i) { if (Math.abs(x - tr.scrollLeft) < Math.abs(stops[best] - tr.scrollLeft)) best = i; });
         if (best !== heroAt) { heroAt = best; heroDots(tr); }
@@ -485,7 +527,7 @@
       drawn[s[0]] = h;
       keepScroll(box, function () { box.innerHTML = h; });
       box.hidden = !h;
-      if (s[0] === 'cgHero') heroWire();
+      if (s[0] === 'cgHero') { heroWire(); inviteWatch(); }
     });
     watchBoards();
     if (bdNear) loadBoards(); // a launch or a sign-in since: any board not read yet
@@ -516,6 +558,16 @@
     else if (k === 'potw' && a.openPotw) a.openPotw();
     else if (k === 'profile' && a.openProfile) a.openProfile();
     else if (k === 'join') { if (a.requireSignIn) a.requireSignIn(null, 'home_hero'); else if (a.openProfile) a.openProfile(); }
+    else if (k === 'invite') {
+      CG.track('invite_banner_tap', { where: 'home', state: signedIn() ? 'in' : 'guest' });
+      var r = a.invite ? a.invite('home_banner') : (a.openFriends ? (a.openFriends('add'), 'friends') : '');
+      if (r === 'copy') { // the button says Copied for a moment
+        invCopiedAt = Date.now();
+        var cb = o.querySelector('.cgb-b');
+        if (cb) cb.textContent = '\u2705 Copied';
+        setTimeout(paint, 2600);
+      }
+    }
   });
   paint();
   heroTurn();

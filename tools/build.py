@@ -253,6 +253,16 @@ def fit_page(path, folder, gid, hide_css, play_js, base=None, card=None):
     open(path, 'w', encoding='utf-8').write(s)
 
 
+# The address printed on the share pictures (growth, 17 Oct 2026): on CAST Games every picture names CASTGAMES.COM.AU, in
+# the capitals the owner's graphics use, never an old address that will only redirect (the games' own sites keep theirs).
+# Exact strings from the pictures' drawing code: 1000TRIES and 4000 GOALS share-card.js, 27-0 share-story.js, its season
+# card (game-data-sim.js), its 27-0 celebration and World Cup 8-0's pictures (world-cup.js)
+SHARE_MARKS = [("'CAN YOU BEAT IT?  1000TRIES.COM.AU'", "'CAN YOU BEAT IT?  CASTGAMES.COM.AU'"), ("'1000TRIES.COM.AU'", "'CASTGAMES.COM.AU'"),
+               ("'CAN YOU BEAT IT?  4000GOALS.COM.AU'", "'CAN YOU BEAT IT?  CASTGAMES.COM.AU'"), ("'4000GOALS.COM.AU'", "'CASTGAMES.COM.AU'"),
+               ("'CAN YOU GO 27-0?  27-0.APP'", "'CAN YOU GO 27-0?  CASTGAMES.COM.AU'"), ("fillText('27-0.APP'", "fillText('CASTGAMES.COM.AU'"),
+               ("tx('27-0.app'", "tx('CASTGAMES.COM.AU'"), ("center('27-0.app'", "center('CASTGAMES.COM.AU'")]
+
+
 def fit_code(dst, folder):
     for root, _, files in os.walk(dst):
         for f in files:
@@ -261,6 +271,9 @@ def fit_code(dst, folder):
             p = os.path.join(root, f)
             s = open(p, encoding='utf-8').read()
             t = rewrite_links(s, True) if f.endswith('.js') else s
+            if f.endswith('.js'):
+                for old, new in SHARE_MARKS:
+                    t = t.replace(old, new)
             if folder in ('4000goals', '25000runs', '60000runs', '650goals', '100000points') and f.endswith('.js'):
                 key = KEEP_KEY.get(folder, folder)  # 650 GOALS keeps 500 GOALS' saved data (17 Oct 2026)
                 t = t.replace("'1000tries_", "'" + key + "_")  # its own saved data here (sound, draft, played...)

@@ -44,6 +44,7 @@
 /* ---------- each slide's colours (--ac button, --ai its ink, --ak kicker, --sc0 the scrim and the base, --bd the edge) ---------- */
 .cgb.is-welcome { --sc0: 6, 8, 16; --ak: #cbd5e1; }
 .cgb.is-sports { --sc0: 6, 8, 16; --ak: #cbd5e1; }
+.cgb.is-invite { --sc0: 4, 18, 25; --ac: 94, 234, 212; --ai: #04342c; --ak: #5eead4; --bd: 94, 234, 212; } /* Invite a Mate: the free Rerolls' teal (growth, 17 Oct 2026) */
 .cgb.is-new { --sc0: 9, 7, 26; --ak: #67e8f9; --bd: 103, 232, 249; }
 .cgb.is-more { --sc0: 4, 16, 24; --ak: #5eead4; --bd: 94, 234, 212; }
 .cgb.is-pass { --sc0: 13, 10, 4; --ac: 241, 192, 115; --ai: #1a1204; --ak: #ffe2a8; --bd: 241, 192, 115; } /* gold: CAST Pass only */
