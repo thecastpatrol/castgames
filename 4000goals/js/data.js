@@ -333,7 +333,7 @@
     return null;
   }
   T.aflwGoals = function () {
-    var emu = /[?&]castemu=1/.test(location.search);
+    var emu = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && /[?&]castemu=1(&|$)/.test(location.search); // local testing only, like the account's
     var url = emu ? 'http://127.0.0.1:8085/v1/' + AFLW_DOC.replace('cast-games-bd641', 'demo-cast-games')
       : 'https://firestore.googleapis.com/v1/' + AFLW_DOC + '?key=AIzaSyC76_SWOqYJbwfqPWhx0eVX2WwruE5ryRU'; // the CAST web key (public, locked to our domains)
     return fetch(url, { cache: 'no-cache' }).then(function (r) {
@@ -364,7 +364,7 @@
     d.starCut = null;
   };
 
-  // Big goalkickers (top 5% of a pack) for the first-offer 'false hope'. Cached per pack.
+  // Big goalkickers (top 5% of a pack) for the first offer. Cached per pack.
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {

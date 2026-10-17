@@ -310,7 +310,7 @@
     return d.loading;
   };
 
-  // Big scorers (top 5% of a pack) for the first-offer 'false hope'. Cached per pack.
+  // Big scorers (top 5% of a pack) for the first offer. Cached per pack.
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {

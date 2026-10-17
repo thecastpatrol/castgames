@@ -39,10 +39,10 @@
     }
   };
 
-  /* Offer weighting. Offers are random, weighted by (wins + OFFER_WEIGHT_BASE). Raise the base to make the game
-     harder, lower it to make it easier. Each pack sets its own in T.DATASETS (tuned with the private simulator) */
+  /* Offer weighting. Offers are random, weighted by (wins + OFFER_WEIGHT_BASE).
+     Each pack sets its own in T.DATASETS (tuned with the private simulator) */
   T.OFFER_WEIGHT_BASE = 8;
-  // The first offer of a game often shows a big winner (top 5% of the pack): false hope
+  // The first offer of a game often shows a big winner (top 5% of the pack)
   T.FIRST_STAR_CHANCE = 0.7;
   T.OFFER_SIZE = 3;
   T.IL_NATURAL = 0.5; // World Cup 200+: games with a free World Legend (T.newGame)

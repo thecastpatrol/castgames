@@ -20,8 +20,7 @@
   var CITIES = { sydney: ['sixers', 'thunder'], melbourne: ['stars', 'renegades'], rest: ['strikers', 'heat', 'hurricanes', 'scorchers'] };
   function anySeason(clubs) { var o = {}; clubs.forEach(function (c) { o[c] = []; }); return o; }
 
-  /* Targets (15 Oct 2026): [normal, hard (Sundays)], where a thoughtful fan wins about 1 in 4 days and 1 in 10 Sundays,
-     like 1000TRIES' Daily since 7 Oct (the real engine, ~/cast-dev/bigbash/tools/strat.js with each theme's pool) */
+  /* Targets (15 Oct 2026): [normal, hard (Sundays)] */
   var TARGETS = {
     'club:strikers': [19300, 20250], 'club:heat': [16300, 17075], 'club:hurricanes': [16250, 17000], 'club:renegades': [17875, 19225],
     'club:stars': [19050, 19875], 'club:scorchers': [17650, 18800], 'club:sixers': [17175, 18025], 'club:thunder': [14525, 15475],

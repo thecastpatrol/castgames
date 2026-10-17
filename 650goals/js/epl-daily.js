@@ -48,8 +48,7 @@
   };
   // @end
 
-  /* Targets: [normal, hard (Sundays)], where a thoughtful fan wins about 1 in 4 days and 1 in 10 Sundays, like 1000TRIES'
-     Daily (the real engine, ~/cast-dev/epl/tools/strat.js with each theme's pool) */
+  /* Targets: [normal, hard (Sundays)] */
   // @targets (tools/daily_targets.sh; rerun for the formations, the recognisable pool, loose back-three wide spots and the stricter wide and midfield spots, 17 Oct 2026)
   var TARGETS = {
     'club:arsenal': [455, 495], 'club:manutd': [610, 660], 'club:liverpool': [610, 650], 'club:mancity': [470, 510],

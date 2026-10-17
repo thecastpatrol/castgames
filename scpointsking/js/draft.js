@@ -25,7 +25,7 @@
   /* Offer weighting. Offers are random, but a season's chance of turning up scales with (SC points +
      OFFER_WEIGHT_BASE), so every season with a game can come up and the big ones come up more. */
   T.OFFER_WEIGHT_BASE = 100; // each pack sets its own in T.DATASETS
-  // First offer of a game shows a big season (top 5% of the pack) this often: false hope
+  // How often the first offer of a game shows a big season (top 5% of the pack)
   T.FIRST_STAR_CHANCE = 0.7;
   T.OFFER_SIZE = 3;
   T.HARD = { weight: 100, legends: 0, immortal: 0, lifeline: 0, firstStar: 0.7 };

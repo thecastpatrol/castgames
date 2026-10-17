@@ -242,7 +242,7 @@
 
   /* The free World Legend: once his pick comes, the next spin of a nation he played for (Great Britain's for
      England) that has an open spot he plays puts him at the top of its squad, after the World Legend reveal */
-  var IL_NATURAL = 1 / 3; // the owner, 9 Oct 2026 (was 1 in 4)
+  var IL_NATURAL = 1 / 3; // the owner, 9 Oct 2026
   // A player's first World Cup game always has a free World Legend (9 Oct 2026, the owner), marked on this device for their
   // account once he has been shown (a game left before he came keeps the promise for the next one)
   function ilFirstKey() { var u = window.CastAccount && window.CastAccount.uid ? window.CastAccount.uid() : ''; return 'wc_il_first' + (u ? '_' + u : ''); }

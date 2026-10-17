@@ -246,7 +246,7 @@
     return d.loading;
   };
 
-  // The big winners (top 5% of a pack) for the first offer's 'false hope'. Cached per pack.
+  // The big winners (top 5% of a pack) for the first offer. Cached per pack.
   T.starCut = function () {
     var d = T.DATASETS[T.DATASET];
     if (d.starCut == null) {

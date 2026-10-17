@@ -41,12 +41,9 @@
     }
   };
 
-  /* Offer weighting. Offers are random, but a player's chance of turning up
-     scales with (TDs + OFFER_WEIGHT_BASE). With a flat random draw most of the
-     pack is low scorers (median 12) and 777 is out of reach even with perfect
-     knowledge. Raise the base to make the game harder, lower it to make it easier. */
+  /* Offer weighting: offers are random, each player weighted by (TDs + OFFER_WEIGHT_BASE). */
   T.OFFER_WEIGHT_BASE = 40; // AFL default; each pack sets its own in T.DATASETS (tuned with tools/simulate.py)
-  // First offer of a game shows a big TD scorer (top 5% of the pack) this often: false hope
+  // How often the first offer of a game shows a big TD scorer (top 5% of the pack)
   T.FIRST_STAR_CHANCE = 0.7;
   T.OFFER_SIZE = 3;
   T.IL_NATURAL = 0.5; // World Cup 200+: games with a free World Legend (T.newGame)

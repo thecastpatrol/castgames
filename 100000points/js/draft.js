@@ -41,10 +41,9 @@
     }
   };
 
-  /* Offer weighting. Offers are random, but a player's chance of turning up
-     scales with (points + OFFER_WEIGHT_BASE). Raise the base to make the game harder, lower it to make it easier. */
+  /* Offer weighting: offers are random, each player weighted by (points + OFFER_WEIGHT_BASE). */
   T.OFFER_WEIGHT_BASE = 6000; // each pack sets its own in T.DATASETS
-  // First offer of a game shows a big scorer (top 5% of the pack) this often: false hope
+  // How often the first offer of a game shows a big scorer (top 5% of the pack)
   T.FIRST_STAR_CHANCE = 0.7;
   T.OFFER_SIZE = 3;
   T.IL_NATURAL = 0.5; // World Cup 200+: games with a free World Legend (T.newGame)
