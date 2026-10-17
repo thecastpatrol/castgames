@@ -54,7 +54,7 @@
   }
 
   function posChips(p) {
-    return T.positionsOf(p).map(function (c) {
+    return T.rolesOf(p).map(function (c) {
       return '<span class="chip" title="' + esc(T.POS_NAMES[c] || c) + '">' + esc(T.posLabel(c)) + '</span>';
     }).join('');
   }
@@ -209,8 +209,8 @@
     return { color: '#3b5b8a', glow: 'rgba(59,91,138,.3)', stage: 'cold' };
   };
 
-  // The ground from above: the top six batting across the top two rows, the keeper at the stumps on the pitch, the four
-  // bowlers below (as 25000 RUNS, 15 Oct 2026)
+  // The ground from above: the top six batting across the top two rows (the all-rounder at 6, the end of the second), the
+  // keeper at the stumps on the pitch, the four bowlers below (as 25000 RUNS, 15 Oct 2026; the All-Rounder spot, 17 Oct 2026)
   var ROWS = [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9, 10]];
 
   R.pitch = function (S, flashIdx) {
@@ -472,7 +472,7 @@
 
   // Squad sort for Team Spin (squads can run to 30+ players)
   T.spinSort = T.spinSort || { key: 'pos', dir: 1 };
-  var POS_ORDER = ['B', 'K', 'W'];
+  var POS_ORDER = ['B', 'A', 'K', 'W'];
 
   // Group under the player's main listed position that is still open in your XI
   function groupPos(p) {
@@ -553,7 +553,7 @@
     return '<div class="panel-head"><span class="panel-title">Choose a position</span><span class="panel-meta">Then we spin</span></div>' +
       R.wildcardBar(S) +
       '<p class="pp-intro">Pick the spot you want to fill. We then spin a nation and year, and you can only pick from that Test squad\'s players in that position. No backing out.</p>' +
-      '<div class="pp-grid">' + order.map(function (code) {
+      '<div class="pp-grid' + (order.length === 4 ? ' is-four' : '') + '">' + order.map(function (code) {
         return '<button type="button" class="pp-btn" data-action="spin-pos" data-pos="' + code + '">' +
           '<span class="pp-code">' + T.posLabel(code) + '</span><span class="pp-name">' + esc(T.POS_NAMES[code]) + '</span>' +
           (counts[code] > 1 ? '<span class="pp-count">' + counts[code] + ' open</span>' : '') + '</button>';
@@ -562,7 +562,7 @@
   };
 
   R.spinning = function (S) {
-    return '<div class="panel-head"><span class="panel-title">Spinning' + (S.spinPos ? ' for a ' + esc(T.POS_NAMES[S.spinPos]) : '') + '</span><span class="panel-meta">Nation and year</span></div>' +
+    return '<div class="panel-head"><span class="panel-title">Spinning' + (S.spinPos ? ' for ' + esc(T.aPos(S.spinPos)) : '') + '</span><span class="panel-meta">Nation and year</span></div>' +
       R.wildcardBar(S) +
       '<div id="reelWrap">' + R.reel(null, null, false) + '</div>';
   };

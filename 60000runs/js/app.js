@@ -790,7 +790,7 @@
       };
       var pool = Object.keys(T.CLUBS).filter(function (k) { return T.CLUB_COLORS[k]; });
       pool.forEach(side);
-      var reels = three.map(function (p) { var k = T.lastClub(p); side(k); return { nation: k, name: p.name, sub: T.positionsOf(p).join('/') }; });
+      var reels = three.map(function (p) { var k = T.lastClub(p); side(k); return { nation: k, name: p.name, sub: T.rolesOf(p).map(T.posLabel).join('/') }; }); // BAT/BOWL
       // The GOAT, when a free Legends Pick deals him, is named as the GOAT under his tile (17 Oct 2026, the owner)
       reels.forEach(function (r, i) { if (T.isGoat(three[i])) r.nationName = '\uD83D\uDC10 The GOAT'; });
       busy = true;
@@ -831,7 +831,7 @@
     busy = true;
     try {
       CI.reveal({
-        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.positionsOf(p).map(T.posLabel).join('/') : T.positionsOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), // three: short, so they line up
+        reels: list.slice(0, 3).map(function (p) { return { nation: T.lastClub(p), name: p.name, sub: paid ? T.rolesOf(p).map(T.posLabel).join('/') : T.rolesOf(p).map(function (c) { return T.POS_NAMES[c] || c; }).join('/') }; }), // three: short, so they line up
         kicker: paid ? 'World Legend Pick' : 'World Legend', title: paid ? 'Your World Legends' : '',
         done: function () { busy = false; done(); }
       });
@@ -1200,10 +1200,11 @@
     var line = function (code, f) { return S.slots.filter(function (s) { return s.code === code && s.player; }).map(function (s) { return s.player[f || 'tries_1998_plus'] || 0; }); };
     var sum = function (a) { return a.reduce(function (t, x) { return t + x; }, 0); };
     var B = line('B'), K = line('K'), W = line('W'), WK = line('W', 'wkts');
+    var top6 = B.concat(line('A')); // the top six: the 5 batters and the all-rounder (17 Oct 2026)
     if (players.some(function (p) { return p.name === 'Don Bradman'; })) ids.push('ts_don'); // The Don
     if (players.some(function (p) { return p.tries_1998_plus >= M.ten; })) ids.push('ts_10k'); // Ten Thousand Club
     if (players.filter(function (p) { return p.tries_1998_plus >= M.five; }).length >= 5) ids.push('ts_five'); // Five Grand
-    if (B.length === 6 && B.every(function (r) { return r >= M.top; })) ids.push('ts_toporder'); // Top Order
+    if (top6.length === 6 && top6.every(function (r) { return r >= M.top; })) ids.push('ts_toporder'); // Top Order
     if (K.length === 1 && K[0] >= M.gloves) ids.push('ts_gloves'); // Keeper Who Bats
     if (W.length === 4 && sum(W) >= M.tail) ids.push('ts_tail'); // The Tail Wags
     if (WK.length === 4 && sum(WK) >= M.wkts) ids.push('ts_attack'); // Strike Force
@@ -1345,6 +1346,8 @@
           // seed: the draft, so this game can be sent to a friend as a challenge; key: boosted with a Vault key (CAST Pass)
           S.seed ? { seed: S.seed } : {}, S.keyUsed ? { key: S.keyUsed } : {}, S.keysUsed ? { lks: S.keysUsed } : {}, S.qd ? { qd: 1 } : {}, S.goatUsed ? { goat: 1 } : {}, S.immUsed ? { imm: S.immUsed } : {}, S.ilegUsed ? { ileg: S.ilegUsed } : {},
           S.daily ? { daily: S.daily.n, date: S.daily.date, go: S.daily.go } : {},
+          // ar: drafted with the All-Rounder spot (17 Oct 2026): the team sheet labels it, and the server checks the XI on it
+          S.slots.some(function (s) { return s.code === 'A'; }) ? { ar: 1 } : {},
           // World Cup 200+: how many World Cup games' runs the pack had (the board adds the total up at that tally)
           S.mode.id === 'wc' ? { wv: T.DATASETS.wc.wv || 0 } : {},
           // The hidden second pack: how many matches since the pack was built it had (the board adds the runs up at that tally)
@@ -1992,6 +1995,10 @@
     });
     return best;
   }
+  // The draft was started on this XI's spots: one from before the All-Rounder spot (17 Oct 2026) has 6 batters' spots
+  function draftSpotsFit(d) {
+    try { var x = JSON.parse(d.s); return !!x && Array.isArray(x.slots) && x.slots.map(function (sl) { return sl && sl.code; }).join() === T.SLOTS.join(); } catch (e) { return false; }
+  }
   function resumeDraft(d) {
     var go = function () {
       var miss = false, S = null;
@@ -2004,7 +2011,9 @@
           return v;
         });
       } catch (e) { miss = true; }
-      if (miss || !S || !S.mode || !Array.isArray(S.slots) || S.finished) { dropKey(d.key); toast('That draft could not be brought back. Sorry!'); return; }
+      // A draft started on the XI's old spots (6 batters, before the All-Rounder spot on 17 Oct 2026) can't go on with them
+      var spots = Array.isArray(S && S.slots) ? S.slots.map(function (x) { return x && x.code; }).join() : '';
+      if (miss || !S || !S.mode || spots !== T.SLOTS.join() || S.finished) { dropKey(d.key); toast('That draft could not be brought back. Sorry!'); return; }
       S.promoDef = window.CAST_PROMO && window.CAST_PROMO.of ? window.CAST_PROMO.of(S.seed) : null;
       T.adopt(S);
       if (d.target) T.TARGET = d.target;
@@ -2090,6 +2099,7 @@
       if (document.documentElement.classList.contains('ca-open')) { setTimeout(ask, 1500); return; } // a CAST pop-up first (a gift, the Pass page)
       var now = savedDraft(draftModeOf(d));
       if (!now || now.at !== d.at || draftWho() !== d.who || document.body.getAttribute('data-screen') !== 'home' || !$('sheet').hidden) return;
+      if (!draftSpotsFit(now)) { dropKey(now.key); toast('That draft could not be brought back. Sorry!'); return; } // never offered, as it can't go on
       T.track('draft_resume_offer', { mode: d.name, picks: d.picks });
       offered = d;
       openSheet(R.resumeSheet(d.name, d.picks));

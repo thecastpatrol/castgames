@@ -327,6 +327,8 @@
    buzzes as he locks in. Anything that goes wrong goes straight on to done(), so the game never waits on it.
      CastCelebrate.goat(o)       o.tone(freq, dur, type, when, vol): the page's sound (it stays quiet when Sound is off);
                                  o.done(): after it closes. The GOAT, his number and the greats come from the game (window.T)
+                                 o.head: the game's own headline on his card ("IT'S TURBO TIME", SC POINTS KING, 17 Oct
+                                 2026), else window.T.GOAT_HEADLINE, else none
      CastCelebrate.goatLand(el, o)  as his card goes into its spot: a gold ring and a small burst of goats on that spot */
 (function () {
   'use strict';
@@ -370,6 +372,7 @@
     '.cg.is-card .cg-card{animation:cgSlam .42s cubic-bezier(.2,1.35,.4,1) forwards}',
     '@keyframes cgSlam{0%{opacity:0;transform:translate(-50%,-50%) scale(1.7)}60%{opacity:1;transform:translate(-50%,-50%) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}',
     '.cg.is-card .cg-mid{opacity:0;transform:translate(-50%,-50%) scale(.92);transition:opacity .2s ease,transform .2s ease}',
+    '.cg-hl{margin:-2px 0 12px;font-size:25px;font-weight:900;font-style:italic;line-height:1.05;letter-spacing:.02em;color:#ffd76a;text-shadow:0 2px 0 rgba(0,0,0,.45),0 0 18px rgba(241,192,115,.6);text-wrap:balance;overflow-wrap:anywhere}',
     '.cg-tag{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.16em;padding:5px 11px;border-radius:999px;background:' + GOLD + ';color:#1a1204}',
     '.cg-name{margin-top:12px;font-size:24px;font-weight:900;line-height:1.12;text-wrap:balance}',
     '.cg-num{margin-top:8px;font-size:52px;font-weight:900;line-height:1;color:#ffd76a;font-variant-numeric:tabular-nums;text-shadow:0 2px 0 rgba(0,0,0,.35)}',
@@ -391,7 +394,7 @@
     '.cg-ring{position:fixed;z-index:99998;pointer-events:none;border-radius:12px;animation:cgRing 1.1s ease-out forwards}',
     '@keyframes cgRing{0%{box-shadow:0 0 0 0 rgba(255,215,106,.95),inset 0 0 0 2px rgba(255,215,106,.9)}40%{box-shadow:0 0 0 7px rgba(255,215,106,.45),0 0 34px 8px rgba(255,215,106,.55),inset 0 0 0 2px rgba(255,215,106,.9)}100%{box-shadow:0 0 0 14px rgba(255,215,106,0),inset 0 0 0 2px rgba(255,215,106,0)}}',
     '.cg-lbits{position:fixed;z-index:99999;width:0;height:0;pointer-events:none}',
-    '@media (min-width:900px){.cg-mid{width:400px}.cg-row{font-size:19px}.cg-card{width:340px;padding:28px 22px}.cg-name{font-size:30px}.cg-num{font-size:68px}.cg-kick{font-size:14px}}'
+    '@media (min-width:900px){.cg-mid{width:400px}.cg-row{font-size:19px}.cg-card{width:340px;padding:28px 22px}.cg-name{font-size:30px}.cg-hl{font-size:32px}.cg-num{font-size:68px}.cg-kick{font-size:14px}}'
   ].join('\n');
 
   function addCss() {
@@ -473,7 +476,8 @@
         return '<div class="cg-row' + (i === at ? ' is-goat' : '') + '"><span>' + esc(name(p)) + (i === at ? ' &#x1F410;' : '') + '</span><b>' + esc(num(p)) + '</b></div>';
       }).join('');
       var unit = o.unit || T.TRY_LABEL || '';
-      var label = 'The GOAT: ' + name(g) + ', ' + num(g) + (unit ? ' ' + unit : '');
+      var head = String(o.head || T.GOAT_HEADLINE || '');
+      var label = (head ? head + '. ' : '') + 'The GOAT: ' + name(g) + ', ' + num(g) + (unit ? ' ' + unit : '');
 
       root = document.createElement('div');
       root.className = 'cg' + (still ? ' is-calm' : '');
@@ -487,7 +491,7 @@
         '<svg class="cg-bolts" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
         '<path d="M16 0 L21 9 L17 10 L24 21 L19 22 L27 36 L22 37 L30 52"/><path d="M85 2 L80 12 L84 13 L77 25 L81 26 L73 40 L77 41 L70 55"/></svg>' +
         '<div class="cg-mid" aria-hidden="true"><div class="cg-kick">&#x1F410; THE GOAT</div><div class="cg-reel"><div class="cg-strip">' + rows + '</div><div class="cg-win"></div></div></div>' +
-        '<div class="cg-card"><span class="cg-tag">&#x1F410; THE GOAT</span><div class="cg-name">' + esc(name(g)) + '</div>' +
+        '<div class="cg-card">' + (head ? '<div class="cg-hl">' + esc(head) + '</div>' : '') + '<span class="cg-tag">&#x1F410; THE GOAT</span><div class="cg-name">' + esc(name(g)) + '</div>' +
         '<div class="cg-num">' + esc(num(g)) + '</div>' + (unit ? '<div class="cg-unit">' + esc(unit) + '</div>' : '') + '<i class="cg-shine"></i></div>' +
         '<div class="cg-bits" aria-hidden="true">' + (still ? '' : bits(26, '&#x1F410;', Math.min(window.innerWidth, 520) * 0.62, true)) + '</div>' +
         '<div class="cg-skip">Tap to skip</div>';

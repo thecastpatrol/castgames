@@ -2516,7 +2516,7 @@
       ['settled', '&#x1F91D;', 'Score Settled', 'Beat a mate\u2019s challenge score'],
       ['potw', '&#x1F31F;', 'Player of the Week', 'Be named CAST Player of the Week'],
       ['bb_machine', '&#x1F3CF;', 'Two Thousand Club', '5 players with 2000+ runs in your XI'],
-      ['bb_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 1500+ runs'],
+      ['bb_toporder', '&#x1F9F1;', 'Top Order', 'Your top 6 on 1500+ runs'],
       ['bb_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 2000+ runs'],
       ['bb_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 2000+ runs between them'],
       ['bb_league', '&#x1F5FA;&#xFE0F;', 'The Whole League', 'Players from all 8 clubs'],
@@ -2570,7 +2570,7 @@
   ['ts_don', '&#x1F451;', 'The Don', 'Don Bradman in your XI'],
   ['ts_10k', '&#x1F51F;', 'Ten Thousand Club', 'A player with 10000+ Test runs in your XI'],
   ['ts_five', '&#x1F3CF;', 'Five Grand', '5 players with 5000+ runs in your XI'],
-  ['ts_toporder', '&#x1F9F1;', 'Top Order', 'All 6 batters on 3000+ runs'],
+  ['ts_toporder', '&#x1F9F1;', 'Top Order', 'Your top 6 on 3000+ runs'],
   ['ts_gloves', '&#x1F9E4;', 'Keeper Who Bats', 'Your keeper has 5000+ runs'],
   ['ts_tail', '&#x1F415;', 'The Tail Wags', 'Your 4 bowlers have 5000+ runs between them'],
   ['ts_attack', '&#x1F3AF;', 'Strike Force', 'Your 4 bowlers have 1000+ Test wickets between them'],
@@ -3111,7 +3111,7 @@
     'bigbash:marathon': 'You played 10 games in one day.',
     'bigbash:settled': 'You beat a mate\u2019s score on their challenge.',
     'bigbash:bb_machine': 'Your XI had 5 players with 2000 or more BBL runs.',
-    'bigbash:bb_toporder': 'All 6 of your batters had 1500 or more runs.',
+    'bigbash:bb_toporder': 'All of your top 6, the batters and the all-rounder, had 1500 or more runs.',
     'bigbash:bb_gloves': 'Your keeper had 2000 or more BBL runs.',
     'bigbash:bb_tail': 'Your 4 bowlers made 2000 or more runs between them.',
     'bigbash:bb_league': 'Your XI had players from all 8 BBL clubs.',
@@ -3160,7 +3160,7 @@
     'tests:ts_don': 'Don Bradman was in your XI. The Don.',
     'tests:ts_10k': 'Your XI had a player with 10000 or more Test runs.',
     'tests:ts_five': 'Your XI had 5 players with 5000 or more Test runs.',
-    'tests:ts_toporder': 'All 6 of your batters had 3000 or more runs.',
+    'tests:ts_toporder': 'All of your top 6, the batters and the all-rounder, had 3000 or more runs.',
     'tests:ts_gloves': 'Your keeper had 5000 or more Test runs.',
     'tests:ts_tail': 'Your 4 bowlers made 5000 or more runs between them.',
     'tests:ts_attack': 'Your 4 bowlers had 1000 or more Test wickets between them.',
@@ -6238,6 +6238,9 @@
   // 25000 RUNS (15 Oct 2026): an XI on a cricket ground, the top six across the top, the keeper on the pitch, the bowlers below
   var POS11 = ['BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'WK', 'BOWL', 'BOWL', 'BOWL', 'BOWL']; // shown as the cricket labels (16 Oct 2026)
   var FIELD11 = [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9, 10]];
+  // Both cricket games since 17 Oct 2026: the all-rounder at 6 (the game saves d.ar). A game from before keeps its 6 batters
+  var POS11A = ['BAT', 'BAT', 'BAT', 'BAT', 'BAT', 'AR', 'WK', 'BOWL', 'BOWL', 'BOWL', 'BOWL'];
+  function cricketAr(x) { return !!(x && x.d && x.d.ar); }
   // 777 TDS (16 Oct 2026): the offence lined up from behind, as the game's field (js/render.js ROWS). 10 spots since 17 Oct
   // 2026, in a spread look (17 Oct 2026): the wide receivers and the tight end on the line, the slot receivers, the FLEX
   // spots either side of the quarterback, the two backs. A 9-spot game from before (700 TDS) keeps its own
@@ -6280,7 +6283,7 @@
   function eplFm(x) { var f = x && x.game === 'epl' && x.d && x.d.fm; return f && Object.prototype.hasOwnProperty.call(FM10E, f) ? FM10E[f] : null; }
   function fmPos(rows) { return [].concat.apply([], rows); }
   function fmField(rows) { var i = 0; return rows.map(function (r) { return r.map(function () { return i++; }); }).reverse(); }
-  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? POS11 : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : x && x.game === 'nba' ? POS5 : x && x.game === 'sc' ? POS13SC : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
+  function posList(x) { return x && x.game === '4000goals' ? POS18 : x && (x.game === 'bigbash' || x.game === 'tests') ? (cricketAr(x) ? POS11A : POS11) : x && x.game === 'nfl' ? (nfl9(x) ? POS9 : POS10) : x && x.game === 'racing' ? POS8 : x && x.game === 'epl' ? (eplFm(x) ? fmPos(eplFm(x)) : POS10E) : x && x.game === 'nba' ? POS5 : x && x.game === 'sc' ? POS13SC : POS13; } // 60000 RUNS: the same XI (16 Oct 2026)
   function fieldRows(x) { return x && x.game === '4000goals' ? FIELD18 : x && (x.game === 'bigbash' || x.game === 'tests') ? FIELD11 : x && x.game === 'nfl' ? (nfl9(x) ? FIELD9 : FIELD10) : x && x.game === 'racing' ? FIELD8 : x && x.game === 'epl' ? (eplFm(x) ? fmField(eplFm(x)) : FIELD10E) : x && x.game === 'nba' ? FIELD5 : x && x.game === 'sc' ? FIELD13SC : FIELD; }
   var sheet = null, sheets = {}, sheetMode = lsGet('cast_sheet_view') === 'list' ? 'list' : 'field';
   // Saved names can carry a tag: namesakes ("Ben Jones (Raiders)") and 1000TRIES greats ("Ken Irvine (Legend)")

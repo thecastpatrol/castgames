@@ -559,5 +559,6 @@
     wmagpies: {"base":"#111111","collar":"#FFFFFF","layers":[{"t":"v","top":0.02,"point":0.27,"bands":[["#FFFFFF",0.04],["#111111",0.04],["#FFFFFF",0.12]]}]}
   };
   /* KITS-NRL:END */
-  window.CastIntl = { reveal: reveal, JERSEYS: JERSEYS };
+  // fill: a club's jersey filling a w x h box (NRL Bingo's tiles, 17 Oct 2026), the same drawing as the club reveal's
+  window.CastIntl = { reveal: reveal, JERSEYS: JERSEYS, fill: nrlFill };
 })();

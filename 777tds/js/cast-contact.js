@@ -64,7 +64,7 @@
     if (/4000goals/.test(h)) return '4000goals';
     return 'castgames';
   }
-  var SITE_NAMES = { '1000tries': '1000TRIES', '27-0': '27-0', '4000goals': '4000 GOALS', bigbash: '25000 RUNS', tests: '60000 RUNS', nfl: '777 TDS', racing: 'G1 WINNER SPINNER', epl: '650 GOALS', castgames: 'CAST Games' };
+  var SITE_NAMES = { '1000tries': '1000TRIES', '27-0': '27-0', '4000goals': '4000 GOALS', bigbash: '25000 RUNS', tests: '60000 RUNS', nfl: '777 TDS', racing: 'G1 WINNER SPINNER', epl: '650 GOALS', nba: '100000 POINTS', sc: 'SC POINTS KING', castgames: 'CAST Games' };
   // Where in the game: the page's own hook, else the screen and mode the game marks on <body>, else the page's name
   function screenNow() {
     var s = '';

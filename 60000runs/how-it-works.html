@@ -13,7 +13,7 @@
 <!-- GitHub Pages sends no security headers we can set, so the few rules a meta tag can carry (4 Oct 2026): never load over plain http, no plugins, no base-URL swaps. Scripts, frames and connections stay unrestricted (Firebase, Stripe, ads) -->
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'">
 <!-- Contact Us and Report a Bug (17 Oct 2026): the form behind every data-cast-contact button, early so it also notes the page's errors -->
-<script src="js/cast-contact.js?v=0426147b" data-site="tests"></script>
+<script src="js/cast-contact.js?v=be30756c" data-site="tests"></script>
 <script>
   // Only the home-screen app draws under the status bar, so only it needs viewport-fit=cover (as on 27-0). In a browser
   // tab (e.g. Chrome on iPhone) cover let the page slide under the address bar: the top was clipped and would not scroll back
@@ -65,7 +65,7 @@
     <p>Draft a Test XI from every Test cricketer since 1877. Every player carries their career <strong>Test runs</strong>, but you do not see the number until you pick them. Add up your XI and try to reach 60000.</p>
 
     <h2>The Team</h2>
-    <p>You fill 11 spots on the ground: <strong>6 batters, a keeper and 4 bowlers</strong>. Players can go into any role they are listed for, so an all-rounder can fill a batting or a bowling spot, and a keeper who bats can fill either the gloves or the top six. If a player fits more than one open spot, you choose where they go.</p>
+    <p>You fill 11 spots on the ground: <strong>5 batters, an all-rounder, a keeper and 4 bowlers</strong>. The All-Rounder spot is only for a player who both bats and bowls (BAT and BOWL on their card), so a pure batter, a pure bowler or a keeper who bats can&rsquo;t fill it. Players can go into any role they are listed for, so an all-rounder can also fill a batting or a bowling spot, and a keeper who bats can fill either the gloves or a batting spot. If a player fits more than one open spot, you choose where they go.</p>
 
     <h2>The Modes</h2>
     <table>
@@ -107,7 +107,7 @@
 
     <h2>Where the Numbers Come From</h2>
     <p>Runs count <strong>Test matches from the first Test in 1877 to now</strong>, for every Test nation (and the ICC World XI&rsquo;s one Test in 2005). One-day, T20 and first-class runs are not included.</p>
-    <p>Test records from <a href="https://stats.espncricinfo.com/ci/engine/stats/index.html" target="_blank" rel="noopener">ESPNcricinfo&rsquo;s Statsguru</a>, names from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>. The runs on each card are the player&rsquo;s Test career total. Roles come from each player&rsquo;s runs, their catches and stumpings as keeper and how much they bowled.</p>
+    <p>Test records from <a href="https://stats.espncricinfo.com/ci/engine/stats/index.html" target="_blank" rel="noopener">ESPNcricinfo&rsquo;s Statsguru</a>, names from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>. The runs on each card are the player&rsquo;s Test career total. Roles come from each player&rsquo;s runs, their catches and stumpings as keeper and how much they bowled, and a player who is both a batter and a bowler is an all-rounder.</p>
     <p>Spot something that looks wrong? Let us know and we&rsquo;ll check it.</p>
     <p class="ctc-pills is-left"><button type="button" class="ctc-pill" data-cast-contact="contact">&#x2709;&#xFE0F; Contact Us</button> <button type="button" class="ctc-pill" data-cast-contact="bug">&#x1F41E; Report a Bug</button></p>
 
