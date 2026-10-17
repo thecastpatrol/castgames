@@ -144,6 +144,8 @@
   function acct() { return window.CastAccount || null; }
   function launched(key) {
     if (!key) return true;
+    // The owner's preview device (?castlaunch=1, remembered): every game shows and plays before launch day (17 Oct 2026)
+    try { if (localStorage.getItem('cast_launch_preview') === '1') return true; } catch (e) { /* storage blocked */ }
     var A = acct();
     try { if (A && A.isLaunched && A.isLaunched(key)) return true; } catch (e) { /* not ready */ }
     if (key === 'ou' && A && A.ouOn) { try { return !!A.ouOn(); } catch (e) { return false; } }

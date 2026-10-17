@@ -136,6 +136,8 @@ EXPLAIN = {
     '777tds': 'Draft an NFL offence with their touchdowns hidden. Can you reach <strong>777 career touchdowns</strong>?',
     '650goals': 'Draft a Premier League XI with their goals hidden. Can you reach <strong>650 Premier League goals</strong>?',
     'g1winner': 'Draft 8 jockeys for a Group 1 card with their wins hidden. Can you reach <strong>550 Group 1 wins</strong>?',
+    'scpointsking': 'Spin NRL player seasons from 2009 to 2026 and build the biggest SC 13. The top of the board wears the <strong>crown</strong>.',
+    '100000points': 'Draft an NBA starting five with their points hidden. Can you reach <strong>100000 career points</strong>?',
 }
 
 
