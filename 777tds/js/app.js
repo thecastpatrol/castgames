@@ -1761,9 +1761,17 @@
   function acctMode(id) { return id === 'nrlw' ? 'wnfl' : id; }
   function gameMode(id) { return id === 'wnfl' ? 'nrlw' : id; }
   T.acctMode = acctMode;
+  /* A Daily Challenge link (?play=daily: the CAST Games home's Daily Challenge cards) can be read before js/daily.js and
+     the account have run, as the players often arrive first, and then the Daily never started (17 Oct 2026, the bug hunt:
+     the game's own card showed instead, for guests and signed-in players alike). It starts once both are there */
+  function dailyWhenReady(n) {
+    n = n || 0;
+    if (T.dailyStart && T.players.length && (!window.CAST_ACCOUNT || window.CastAccount)) { T.dailyStart(); return; }
+    if (n < 75) setTimeout(function () { dailyWhenReady(n + 1); }, 200);
+  }
   function playMode(modeId) {
     modeId = gameMode(modeId);
-    if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
+    if (modeId === 'daily') { dailyWhenReady(); return; }
     // Two Point (js/overunder.js). Not loaded yet (the players can arrive first): it opens itself once it is (T.ouWanted)
     if (modeId === 'ou') { if (!T.ou) T.ouWanted = true; else if (T.ou.on()) { selectedMode = 'ou'; T.ou.open(); } return; }
     if (!T.MODES[modeId]) return;

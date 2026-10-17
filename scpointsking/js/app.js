@@ -1114,8 +1114,16 @@
   $('soundToggle').addEventListener('click', function () { setSound(!sound); if (sound) { unlockAudio(); sfx.pick(); } });
   $('startBtn').addEventListener('click', function () { if (T.players.length) newGame(selectedMode); });
 
+  /* A Daily Challenge link (?play=daily: the CAST Games home's Daily Challenge cards) can be read before js/daily.js and
+     the account have run, as the players often arrive first, and then the Daily never started (17 Oct 2026, the bug hunt:
+     the game's own card showed instead, for guests and signed-in players alike). It starts once both are there */
+  function dailyWhenReady(n) {
+    n = n || 0;
+    if (T.dailyStart && T.players.length && (!window.CAST_ACCOUNT || window.CastAccount)) { T.dailyStart(); return; }
+    if (n < 75) setTimeout(function () { dailyWhenReady(n + 1); }, 200);
+  }
   function playMode(modeId) {
-    if (modeId === 'daily') { if (T.dailyStart && T.players.length) T.dailyStart(); return; }
+    if (modeId === 'daily') { dailyWhenReady(); return; }
     if (!T.MODES[modeId] || T.MODES[modeId].off) return;
     if (!T.players.length) { startWhenReady = modeId; return; }
     var mid = document.body.getAttribute('data-screen') === 'draft' && !T.state().finished && T.filledCount() > 0;
