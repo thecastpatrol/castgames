@@ -63,7 +63,7 @@
     // link; its Daily's link is ?play=bingo-daily (dplay)
     { id: 'nrl-bingo', sport: 'nrl', name: 'NRL BINGO', path: 'nrl-bingo/', folder: '1000tries', mode: 'bingo', logo: '', mark: '&#x2705;', status: 'live', launch: 'bingo',
       line: 'Tap his clubs, fill the card', long: 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House.', board: 'bgfree', daily: true, dplay: 'bingo-daily' },
-    { id: 'sc', sport: 'nrl', name: 'SC', path: '', logo: '', mark: '&#x1F4C8;', status: 'soon', line: 'Spin 3 seasons, top the SC points' },
+    { id: 'sc', sport: 'nrl', name: 'SC POINTS KING', path: '', logo: '', mark: '&#x1F4C8;', status: 'soon', line: 'Chase the top of the SC board' },
     // AFL
     { id: '4000goals', sport: 'afl', name: '4000 GOALS', path: '4000goals/', folder: '4000goals', mode: 'plus', logo: L + '4000goals.png', status: 'live',
       line: 'Draft 18 to 4000 goals', long: 'Draft an AFL 18 with their goals hidden and reach 4000 career goals.', of: 18, draft: '4000goals_draft_v1', board: '4000plus', daily: true, stats: '4000goals' },
