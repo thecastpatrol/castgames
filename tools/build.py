@@ -5,7 +5,7 @@ The games stay where they are (their own repos, still live on their own domains 
 one into its folder here and fits it to CAST Games, so there's only ever one version of a game to fix:
 
     27-0 Game/27-0-nrl  -> 27-0/
-    1000TRIES Game      -> 1000tries/   (and six-again/, its Six Again page)
+    1000TRIES Game      -> 1000tries/   (and six-again/, its Six Again page, and nrl-bingo/, NRL Bingo's)
     4000 GOALS Game     -> 4000goals/   (and play-on/, its Play On page)
 
 For each copied page: the CAST Games bar (shared/cg.js, cg.css) at the top, the game's own header hidden, links to the
@@ -25,8 +25,11 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # this repo
-GAMES_DIR = os.path.dirname(HERE)  # CAST Games
+# CAST Games (CG_GAMES_DIR: another folder holding the game folders by the same names, for a build from working copies)
+GAMES_DIR = os.environ.get('CG_GAMES_DIR') or os.path.dirname(HERE)
 LIVE = '--live' in sys.argv
+# --only 1000tries,27-0: copy only these game folders again (the others stay as they are in this repo)
+ONLY = next((a.split('=', 1)[1].split(',') for a in sys.argv if a.startswith('--only=')), None)
 SITE = 'https://castgames.com.au/'
 # Testers only until the switch-over (16 Oct 2026, the owner): shared/cg-gate.js hides every page until the tester password
 GATE = '' if LIVE else '<script src="/shared/cg-gate.js?v=2"></script><!-- CG_GATE -->\n'
@@ -72,7 +75,7 @@ DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
 SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus']}
 SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('nfl', 'NFL'), ('racing', 'Horse Racing'), ('epl', 'Premier League')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
-SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
+SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'shots', 'bingo-reps.json', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
 
 
 def copy_game(folder, src):
@@ -223,12 +226,14 @@ OU_META = {
     'two-point': ('NFL', 'Over or under? Call NFL career touchdowns before the clock runs out. A free NFL game from The Cast Patrol.'),
     'extra-time': ('Premier League', 'Over or under? Call Premier League goals, assists and appearances before the clock runs out. A free football game from The Cast Patrol.'),
     'photo-finish': ('Racing', 'Over or under? Call jockeys, big races and horses before the clock runs out. A free horse racing game from The Cast Patrol.'),
+    # NRL Bingo (17 Oct 2026): not an over/under, but its page is made the same way
+    'nrl-bingo': ('NRL', 'A player comes up: tap a club he played for. Fill all 20 tiles of the card for a Full House. A free NRL game from The Cast Patrol.'),
 }
 
 
 def ou_meta(src, page, title):
     line, desc = OU_META[page]
-    full = '%s | %s Over or Under | CAST Games' % (title, line)
+    full = '%s | %s | CAST Games' % (title, BINGO_LINE) if page in BINGO_PAGES else '%s | %s Over or Under | CAST Games' % (title, line)
     tags = [(r'<meta name="description" content="[^"]*">', '<meta name="description" content="%s">' % desc),
             (r'<link rel="canonical" href="[^"]*">', '<link rel="canonical" href="%s%s/">' % (SITE, page)),
             (r'<meta property="og:url" content="[^"]*">', '<meta property="og:url" content="%s%s/">' % (SITE, page)),
@@ -244,7 +249,13 @@ def ou_meta(src, page, title):
 # An over/under page before its Launch (audit X7, 16 Oct 2026: /play-on/ showed the whole 4000 GOALS home): an Opens Soon
 # card instead, until CastAccount says it is on (the owner's Launch, or his private preview link). page: (the account's
 # check, its game's folder, its game, its sport's words)
-SOON = {'play-on': ('poOn', '4000goals', '4000 GOALS', 'Call AFL players\' career goals over or under before the clock runs out.')}
+SOON = {'play-on': ('poOn', '4000goals', '4000 GOALS', 'Call AFL players\' career goals over or under before the clock runs out.'),
+        # NRL Bingo (17 Oct 2026): Opens Soon until the owner's Launch (or his private link, ?bingo=...)
+        'nrl-bingo': ('bingoOn', '1000tries', '1000TRIES', 'A player comes up: tap a club he played for. Fill all 20 tiles for a Full House.')}
+# NRL Bingo's page (17 Oct 2026): 1000TRIES opened on the mode, like Six Again's, with its own words
+BINGO_PAGES = {'nrl-bingo': ('1000tries', 'NRL Bingo')}
+BINGO_LINE = 'Fill the Card'
+SOON_KICK = {'nrl-bingo': 'NRL Bingo'}
 SOON_CSS = ('<style>html.cg-soon-on body > *:not(.cg-bar):not(#cgSoon):not(script) { display: none !important; }'
             '#cgSoon { display: grid; place-items: center; min-height: calc(100vh - var(--cg-bar-h, 112px)); min-height: calc(100dvh - var(--cg-bar-h, 112px)); padding: 32px 16px; box-sizing: border-box;'
             ' background: radial-gradient(70% 50% at 50% 20%, rgba(var(--soon-rgb), .35), transparent 70%), #0a0a0f; color: #fff; font-family: Inter, -apple-system, system-ui, sans-serif; }'
@@ -259,12 +270,16 @@ SOON_CSS = ('<style>html.cg-soon-on body > *:not(.cg-bar):not(#cgSoon):not(scrip
             '</style>\n')
 
 
+SOON_LOOK = {'nrl-bingo': ('#2b3a12', '#0c1206', '163,230,53', '&#x2705;')}
+
+
 def soon(src, page, title):
     check, game, gname, pitch = SOON[page]
     g = [x for x in GAMES if x[0] == game]
     head = '<script>document.documentElement.classList.add("cg-soon-on");</script>\n' + SOON_CSS
     src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + head, src, count=1)
-    box = ('<div id="cgSoon" style="--c1:#5a1a1a;--c2:#1c0b10;--soon-rgb:150,40,52"><div class="cg-soon-box"><span class="cg-soon-mark" aria-hidden="true">&#x25B2;&#x25BC;</span>'
+    look = SOON_LOOK.get(page, ('#5a1a1a', '#1c0b10', '150,40,52', '&#x25B2;&#x25BC;'))
+    box = ('<div id="cgSoon" style="--c1:' + look[0] + ';--c2:' + look[1] + ';--soon-rgb:' + look[2] + '"><div class="cg-soon-box"><span class="cg-soon-mark" aria-hidden="true">' + look[3] + '</span>'
            '<span class="cg-soon-k">%s</span><h1>%s Opens Soon</h1><p>%s</p>'
            '<a class="cg-soon-btn" href="/%s/">Play %s</a><a class="cg-soon-alt" href="/">All Games</a></div></div>\n'
            '<script>(function () {\n'
@@ -272,7 +287,7 @@ def soon(src, page, title):
            '  function on() { var A = window.CastAccount; try { return !!(A && A.%s && A.%s()); } catch (e) { return false; } }\n'
            '  function check() { var off = !on(); el.hidden = !off; document.documentElement.classList.toggle("cg-soon-on", off); }\n'
            '  check(); document.addEventListener("DOMContentLoaded", check); window.addEventListener("load", check); window.addEventListener("cast:launch", check);\n'
-           '})();</script>\n') % ('Over or Under', title, pitch, game, gname, check, check)
+           '})();</script>\n') % (SOON_KICK.get(page, 'Over or Under'), title, pitch, game, gname, check, check)
     i = src.rfind('</body>')  # the page's own end (an earlier '</body>' can sit inside a script's string)
     return src[:i] + box + src[i:] if g and i > 0 else src
 
@@ -310,6 +325,8 @@ def main():
         if os.path.exists(os.path.join(HERE, rel)):
             clear_byline(os.path.join(HERE, rel))
     for folder, src, gid, hide, play in GAMES:
+        if ONLY and folder not in ONLY:
+            continue
         dst = copy_game(folder, src)
         fit_code(dst, folder)
         for rel in LOGOS:
@@ -319,6 +336,19 @@ def main():
             if f.endswith('.html'):
                 fit_page(os.path.join(dst, f), folder, gid, hide, play)
         print('built', folder)
+    if ONLY:
+        # The game folders not copied again keep their pages: only their links to the bar's files take its new version
+        for folder, src, gid, hide, play in GAMES:
+            if folder in ONLY:
+                continue
+            for root, _, files in os.walk(os.path.join(HERE, folder)):
+                for f in files:
+                    if f.endswith('.html'):
+                        p = os.path.join(root, f)
+                        t = open(p, encoding='utf-8').read()
+                        t2 = re.sub(r'(shared/cg\.(?:js|css))\?v=\w+', lambda m: m.group(1) + '?v=' + CGV, t)
+                        if t2 != t:
+                            open(p, 'w', encoding='utf-8').write(t2)
     old_paths()  # 17 Oct 2026: /700tds/ sends old links on to /777tds/, /500goals/ on to /650goals/
     # Six Again and Play On: their game's page opened on the mode, each with its own address (the owner's call)
     for page, game, gid, key, title in (('six-again', '1000tries', 'six-again', 'ou', 'Six Again'), ('play-on', '4000goals', 'play-on', 'po', 'Play On'),
@@ -339,6 +369,24 @@ def main():
                           '<script>window.addEventListener("load", function () { if (window.T && window.CG) T.ouHome = function () { location.href = CG.url(""); }; });</script>' % (key, CGV), 1)
         src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % game, src, count=1)
         src = re.sub(r'<title>[^<]*</title>', '<title>%s | %s Over or Under | CAST Games</title>' % (title, OU_META[page][0]), src, count=1)
+        src = ou_meta(src, page, title)
+        if page in SOON:
+            src = soon(src, page, title)
+        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(src)
+        print('built', page)
+    # NRL Bingo's page (17 Oct 2026): 1000TRIES opened on the mode (?play=bingo), its back arrow to the CAST Games home
+    for page, (game, title) in BINGO_PAGES.items():
+        out = os.path.join(HERE, page)
+        os.makedirs(out, exist_ok=True)
+        src = open(os.path.join(HERE, game, 'index.html'), encoding='utf-8').read()
+        src = src.replace("window.CG_GAME = '%s'" % dict((x[0], x[2]) for x in GAMES).get(game, game), "window.CG_GAME = '%s'" % page)
+        src = src.replace('<script src="../shared/cg.js?v=%s"></script>' % CGV,
+                          '<script>if (!/[?&](play=(bingo|bingod|bingo-daily)|bingo=)/.test(location.search)) history.replaceState(null, "", location.pathname + "?play=bingo" + location.hash); document.documentElement.classList.add("bg-boot");</script>\n'
+                          '<style>html.bg-boot .screen:not(#screen-bingo) { display: none !important; }</style>\n'
+                          '<script src="../shared/cg.js?v=%s"></script>\n'
+                          '<script>window.addEventListener("load", function () { if (window.T && window.CG) T.bingoHome = function () { location.href = CG.url(""); }; });</script>' % CGV, 1)
+        src = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n<base href="../%s/">' % game, src, count=1)
+        src = re.sub(r'<title>[^<]*</title>', '<title>%s | %s | CAST Games</title>' % (title, BINGO_LINE), src, count=1)
         src = ou_meta(src, page, title)
         if page in SOON:
             src = soon(src, page, title)

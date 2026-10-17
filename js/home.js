@@ -36,7 +36,7 @@
     var g = newest();
     if (g) out.push({ k: 'New Game · ' + ((CG.sportOf(g.sport) || {}).name || ''), t: g.name, p: g.line, b: 'Play Free', href: g.path, art: g.logo, c1: g.c1, c2: g.c2, ac: (CG.sportOf(g.sport) || {}).c || '255,255,255' });
     var dg = CG.popular(0).filter(function (x) { return x.daily && dailyOf(x.id); })[0];
-    if (dg) { var dx = dailyOf(dg.id); out.push({ k: 'Daily Challenge', t: dg.name + ' Daily', p: dx.head + (dx.reward ? '. ' + dx.reward.trim() : ''), b: 'Play Today', href: dg.path + '?play=daily', art: dg.logo, c1: dg.c1, c2: dg.c2, ac: (CG.sportOf(dg.sport) || {}).c || '255,255,255' }); }
+    if (dg) { var dx = dailyOf(dg.id); out.push({ k: 'Daily Challenge', t: dg.name + ' Daily', p: dx.head + (dx.reward ? '. ' + dx.reward.trim() : ''), b: 'Play Today', href: dg.path + '?play=' + (dg.dplay || 'daily'), art: dg.logo, c1: dg.c1, c2: dg.c2, ac: (CG.sportOf(dg.sport) || {}).c || '255,255,255' }); }
     if (!out.length) out.push({ k: 'Welcome', t: 'Pick a Sport, Pick a Game', p: 'Draft games for NRL, AFL, cricket, NFL and horse racing fans.', b: 'Browse Games', href: '#cgSports', art: 'assets/logos/castgames.png', c1: '#0c2747', c2: '#081322', ac: '56,189,248' });
     return out;
   }
@@ -110,6 +110,8 @@
   var CAL = { '27-0': ['CG_DAILY_NRL', '27-0'], '1000tries': ['CG_DAILY_NRL', '1000tries'], '4000goals': ['CG_DAILY_AFL', '4000goals'],
     '25000runs': ['CG_DAILY_BBL', 'bigbash'], '60000runs': ['CG_DAILY_TESTS', 'tests'], '700tds': ['CG_DAILY_NFL', 'nfl'], 'g1winner': ['CG_DAILY_RACING', 'racing'], '500goals': ['CG_DAILY_EPL', 'epl'] };
   function dailyOf(id) {
+    // NRL Bingo's Daily (17 Oct 2026): the same card of players for everyone, one go, no reward of its own
+    if (id === 'nrl-bingo') return { head: 'Fill all 20 tiles', icon: '', reward: '' };
     var cal = CAL[id], C = cal && window[cal[0]];
     if (!C || !C.day) return null;
     try {
@@ -129,20 +131,20 @@
   }
   function dailyCard(g) {
     var x = dailyOf(g.id);
-    return '<a class="cg-card cg-dcard" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g) +
+    return '<a class="cg-card cg-dcard" href="' + esc(CG.url(g.path + '?play=' + (g.dplay || 'daily'))) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g) +
       '<span class="cg-card-t"><b>' + comp(g) + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
       (x && x.reward ? '<small class="cg-dreward">' + esc(x.reward) + '</small>' : '') + '</span><span class="cg-cta">Play</span></a>';
   }
   var dAll = false; // the Daily grid is open (View All)
   function dailyMini(g) {
     var x = dailyOf(g.id);
-    return '<a class="cg-dmini" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
+    return '<a class="cg-dmini" href="' + esc(CG.url(g.path + '?play=' + (g.dplay || 'daily'))) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
       '<b>' + comp(g) + esc(g.name) + '</b><small class="cg-dhead">' + esc(x ? x.head : 'New today') + '</small>' +
       '<span class="cg-dfoot">' + (x && x.reward ? '<small class="cg-dreward">' + esc(x.reward) + '</small>' : '<i></i>') + '<span class="cg-cta">Play</span></span></a>';
   }
   function dailyTile(g) {
     var x = dailyOf(g.id);
-    return '<a class="cg-dtile" href="' + esc(CG.url(g.path + '?play=daily')) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
+    return '<a class="cg-dtile" href="' + esc(CG.url(g.path + '?play=' + (g.dplay || 'daily'))) + '" style="--c1:' + g.c1 + ';--c2:' + g.c2 + '">' + art(g, 'cg-dlogo') +
       '<b>' + comp(g) + esc(g.name) + '</b><small>' + esc(x ? x.head : 'New today') + '</small></a>';
   }
   function card(g, sub, cta, href, done) {
