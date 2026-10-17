@@ -1904,6 +1904,7 @@ body[data-screen="draft"] .header-nav .nav-new { display: inline-flex; }
 
 /* 3-5-2: the wide mids a touch higher than the centre mids (17 Oct 2026) */
 .pitch-row.is-wings-up > :first-child, .pitch-row.is-wings-up > :last-child { transform: translateY(-26%); }
+.pitch-row.is-diamond > :first-child, .pitch-row.is-diamond > :last-child { transform: translateY(-56%); } /* 4-3-1-2: the CMs halfway up to the CAM, a diamond */
 
 /* The Classic card shows the game's logo (17 Oct 2026) */
 .mode-main .mode-ico.is-logo { display: grid; place-items: center; }

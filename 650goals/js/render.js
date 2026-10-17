@@ -240,7 +240,9 @@
     return R.rows(S).map(function (row) {
       // 3-5-2's wide mids sit a touch higher than its centre mids (17 Oct 2026, the owner)
       var up = S.fm === '3-5-2' && row.length === 4 && S.slots[row[0]].code === 'LM';
-      return '<div class="pitch-row is-n' + row.length + (up ? ' is-wings-up' : '') + '">' + row.map(function (i) {
+      // 4-3-1-2: a diamond, the CMs halfway between the CDM and the CAM (17 Oct 2026, the owner, like FIFA)
+      var diamond = row.length === 3 && S.slots[row[0]].code === 'CM' && S.slots[row[1]].code === 'DM' && S.slots[row[2]].code === 'CM';
+      return '<div class="pitch-row is-n' + row.length + (up ? ' is-wings-up' : '') + (diamond ? ' is-diamond' : '') + '">' + row.map(function (i) {
         var s = S.slots[i];
         var p = s.player;
         var tweakable = S.tweakMode && p;

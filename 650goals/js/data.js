@@ -48,7 +48,7 @@
     D: 'Defender', M: 'Midfielder', F: 'Forward' // the lines of the games before the formations
   };
   // What the spots and chips show: the real spot names. The old lines (D, M, F) read DEF, MID, FWD
-  T.POS_SHORT = { D: 'DEF', M: 'MID', F: 'FWD' };
+  T.POS_SHORT = { D: 'DEF', M: 'MID', F: 'FWD', AM: 'CAM', DM: 'CDM' }; // CAM and CDM on screen, as FIFA shows them (17 Oct 2026, the owner); the codes stay AM and DM
   T.posLabel = function (code) { return T.POS_SHORT[code] || code; };
   // The spots from the back to the front (Team Spin's squad order)
   T.SPOT_ORDER = ['LB', 'LWB', 'CB', 'RB', 'RWB', 'DM', 'CM', 'LM', 'RM', 'AM', 'LW', 'RW', 'ST'];
