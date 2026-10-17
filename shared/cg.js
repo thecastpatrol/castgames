@@ -381,11 +381,11 @@
       (on ? '<button type="button" class="cg-idle-btn" data-cg-idle-play>Play</button>' : '<span class="cg-idle-soon">Opens Soon</span>') +
       '<a class="cg-idle-alt" href="' + url('') + '">&#x1F3E0; All Games</a></div>';
     idleEl.hidden = false;
-    document.documentElement.classList.add('cg-idle');
+    document.documentElement.classList.add('cg-idle-on');
   }
   function bootDone() {
     if (idleEl) idleEl.hidden = true;
-    document.documentElement.classList.remove('cg-idle');
+    document.documentElement.classList.remove('cg-idle-on');
   }
 
   window.CG = { SPORTS: SPORTS, GAMES: GAMES, liveGames: liveGames, popular: popular, sportOf: sportOf, game: game, forMode: forMode, continueOf: continueOf, inProgress: inProgress,
