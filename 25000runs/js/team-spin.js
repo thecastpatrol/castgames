@@ -4,6 +4,7 @@
 
   var MIN_YEAR = 2011; // 25000 RUNS: BBL01, 2011/12
   var MAX_YEAR = 2025; // seasons go by the year they start (2025/26)
+  T.SPIN_LIFT = 0.072; // see spinOffer
 
   function clubsInYear(year) {
     return Object.keys(T.CLUBS).filter(function (slug) {
@@ -68,7 +69,10 @@
     // First spin of a game: most of the time land on a club and season with a big run scorer in that position
     var first = !S.firstOfferDone;
     S.firstOfferDone = true;
-    if (first && R() < T.FIRST_STAR_CHANCE) {
+    // Now and then a later spin lands the same way (T.SPIN_LIFT, on its own seeded stream, so the other spins are dealt as
+    // before): Team Spin set again on 17 Oct 2026, when the GOAT became rare in free play, so it stays as hard as it was
+    var lift = !first && T.SPIN_LIFT > 0 && T.stream('spinlift' + S.spinNo)() < T.SPIN_LIFT;
+    if ((first && R() < T.FIRST_STAR_CHANCE) || lift) {
       var stars = T.players.filter(function (p) {
         return !S.used[p.id] && !T.goatOut(p) && p.tries_1998_plus >= T.starCut() && (pos ? T.canFill(p, pos) : T.fitsEmpty(p));
       });

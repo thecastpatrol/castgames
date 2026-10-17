@@ -989,6 +989,40 @@ html.ca-open, html.ca-open body { overflow: hidden; }
 .ca-adm-launch > .ca-btn { width: auto; margin: 0; min-height: 42px; }
 .ca-adm-launch .ca-row { margin: 0; flex: 1 1 100%; }
 .ca-adm-launch .ca-row .ca-btn { margin: 0; min-height: 42px; }
+/* Launch All (17 Oct 2026): every key still to launch as a tick row, then one button; ticked rows go green (gold stays the
+   CAST Pass's) */
+.ca-adm-launch.is-all > * { flex: 1 1 100%; }
+.ca-adm-launch.is-all > .ca-btn { width: 100%; }
+.ca-la-list { display: grid; gap: 6px; min-width: 0; }
+.ca-la-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 4px 0 0; font: 900 11px/1.3 Inter, sans-serif; letter-spacing: .5px; text-transform: uppercase; color: #fff; }
+.ca-la-h small { font-weight: 800; letter-spacing: .3px; color: var(--ca-muted); }
+.ca-la-note { margin: -2px 0 2px; font-size: 12px; line-height: 1.45; color: var(--ca-muted); }
+.ca-la-row { display: grid; grid-template-columns: 22px 24px minmax(0, 1fr); align-items: center; gap: 10px; width: 100%; min-height: 52px; margin: 0; padding: 9px 12px; box-sizing: border-box;
+  border-radius: 12px; border: 1.5px solid var(--ca-line); background: rgba(0, 0, 0, .2); color: #fff; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ca-la-row.is-on { border-color: rgba(74, 222, 128, .6); background: rgba(74, 222, 128, .09); }
+.ca-la-row:disabled { cursor: default; }
+.ca-la-box { display: grid; place-items: center; width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; border: 2px solid rgba(255, 255, 255, .45); font: normal 900 14px/1 Inter, sans-serif; color: #052e16; }
+.ca-la-row.is-on .ca-la-box { background: #4ade80; border-color: #4ade80; }
+.ca-la-ico { font-size: 19px; line-height: 1; text-align: center; }
+.ca-la-nm { display: grid; gap: 2px; min-width: 0; }
+.ca-la-nm b { font-size: 14px; line-height: 1.25; color: #fff; }
+.ca-la-nm small { font-size: 12px; line-height: 1.35; color: var(--ca-muted); overflow-wrap: anywhere; }
+@media (hover: hover) { .ca-la-row:not(:disabled):hover { border-color: rgba(255, 255, 255, .5); } .ca-la-row.is-on:not(:disabled):hover { border-color: #4ade80; } }
+.ca-la-names { color: #fff; font-weight: 600; }
+.ca-la-res { display: grid; gap: 6px; padding: 12px; border-radius: 12px; background: rgba(0, 0, 0, .25); border: 1px solid var(--ca-line); }
+.ca-la-res b { font-size: 14px; }
+.ca-la-res b.is-ok { color: #86efac; }
+.ca-la-res b.is-bad { color: #fca5a5; }
+.ca-la-res ul { display: grid; gap: 6px; margin: 0 0 4px; padding: 0; list-style: none; }
+.ca-la-res li { font-size: 13px; line-height: 1.4; color: #fff; font-weight: 700; }
+.ca-la-res li small { display: block; font-weight: 500; font-size: 12px; color: var(--ca-muted); }
+.ca-la-res ul.is-ok { display: flex; flex-wrap: wrap; gap: 6px; }
+.ca-la-res ul.is-ok li { padding: 5px 10px; border-radius: 999px; background: rgba(74, 222, 128, .12); border: 1px solid rgba(74, 222, 128, .4); font-size: 12.5px; line-height: 1.2; white-space: nowrap; }
+.ca-la-res ul.is-ok li small { display: inline; margin-left: 4px; font-size: 11px; }
+/* Yes, Launch All keeps to one line on a phone: the Yes button takes the wider share */
+.ca-adm-launch.is-all .ca-row { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+.ca-adm-launch.is-all .ca-row .ca-btn { white-space: nowrap; }
+.ca-la-res .ca-btn { margin: 4px 0 0; }
 
 /* ---- New game pop-up (CastAccount.promo): 1000TRIES on 27-0 once it is launched ---- */
 .ca-promo .ca-body { text-align: center; }
@@ -4163,3 +4197,22 @@ html.cp-wch-open, html.cp-wch-open body { overflow: hidden; }
 .ca-bg-tile.is-filled svg { filter: saturate(.55) brightness(.42); }
 .ca-bg-tile b { position: absolute; left: 3px; right: 3px; top: 22%; text-align: center; font: 900 10.5px/1.15 Inter, sans-serif; color: #fff; text-transform: uppercase; overflow-wrap: anywhere; text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
 .ca-bg-tile small { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 2px 4px; background: linear-gradient(180deg, transparent, rgba(4, 6, 10, .85) 55%); text-align: center; font: 800 10px/1.1 Inter, sans-serif; color: #fff; white-space: nowrap; }
+
+/* SC POINTS KING's SC Captain (17 Oct 2026): orange, its own wildcard colour (never gold: CAST Pass and the GOAT) */
+.ca-rr.is-captain .ca-rr-kicker, .ca-rr.is-captain .ca-rr-pack small strong { color: #fed7aa; }
+.ca-rr.is-captain .ca-rr-badge { border-color: #f97316 !important; box-shadow: 0 0 26px rgba(249, 115, 22, .35) !important; }
+.ca-rr.is-captain .ca-rr-hook { border-color: rgba(249, 115, 22, .45); background: rgba(249, 115, 22, .1); }
+.ca-rr.is-captain .ca-rr-pack { border-color: rgba(249, 115, 22, .35); background: linear-gradient(160deg, rgba(249, 115, 22, .12), rgba(255, 255, 255, .03)); }
+.ca-rr.is-captain .ca-rr-pack.is-best { border-color: #f97316; background: linear-gradient(160deg, rgba(249, 115, 22, .26), rgba(249, 115, 22, .06)); box-shadow: 0 0 22px rgba(249, 115, 22, .28); }
+.ca-rr.is-captain .ca-rr-pack em { background: #f97316; color: #1f0a02; }
+.ca-rr.is-captain .ca-rr-pack em.is-quick { background: #fff; color: #111; }
+@media (hover: hover) { .ca-rr.is-captain .ca-rr-pack:hover { border-color: #fed7aa; } }
+.ca-vl-chip.is-cap, .ca-vl-row.is-cap { --it: 249, 115, 22; --itl: #fed7aa; }
+.ca-shop-it.is-cap { --it: 249, 115, 22; --itc: #f97316; --itl: #fed7aa; --itd: #1f0a02; }
+.ca-wild.is-cap { --it: 249, 115, 22; --itc: #f97316; --itl: #fed7aa; --itd: #1f0a02; border-color: rgba(249, 115, 22, .65); }
+/* On a team sheet: the Captain's spot and its key */
+.is-src-cap { --src: #f97316; }
+.ca-spot.is-cap { box-shadow: inset 0 0 0 2px #f97316, 0 0 12px rgba(249, 115, 22, .45); }
+.ca-spot-meta .ca-spot-cap { padding: 0 4px; border-radius: 4px; background: #c2410c; color: #fff; font-weight: 900; }
+/* Each SC POINTS KING board's #1 wears the crown */
+.ca-lb-crown { font-size: 1.05em; line-height: 1; }
