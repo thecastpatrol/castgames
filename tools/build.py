@@ -130,7 +130,10 @@ DOMAINS = [('https://27-0.thecastpatrol.com.au', '27-0'), ('https://27-0.app', '
            ('https://1000tries.app', '1000tries'), ('https://4000goals.com.au', '4000goals')]
 SPORT_BOARDS = {'nrl': ['1000plus', '270best'], 'afl': ['4000plus'], 'cricket': ['bbplus', 'tsplus'], 'nfl': ['nflplus'], 'racing': ['rcplus'], 'epl': ['eplplus'], 'nba': ['nbaplus']}
 SPORT_PAGES = [('nrl', 'NRL'), ('afl', 'AFL'), ('cricket', 'Cricket'), ('racing', 'Horse Racing'), ('epl', 'Premier League'), ('nfl', 'NFL'), ('nba', 'NBA')]  # each sport with live games gets a See All page (shared/cg.js SPORTS path)
-SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'shots', 'bingo-reps.json', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store']
+# /shared: 1000TRIES's masters (its own site never publishes them; the game reads its js/ and data/ copies). The repo's
+# .gitignore and .gitattributes aren't for the website either (17 Oct 2026, the security review)
+SKIP = ['.git', 'firebase', 'tools', '__', 'node_modules', 'shots', 'bingo-reps.json', 'CNAME', 'README.md', '_config.yml', 'brand', 'email', 'sitemap.xml', 'robots.txt', 'ads.txt', '.DS_Store',
+        '/shared', '.gitignore', '.gitattributes']
 
 
 def committed_copy(path):

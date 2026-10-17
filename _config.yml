@@ -1,0 +1,11 @@
+# GitHub Pages builds this site with its standard (Jekyll) build from 17 Oct 2026 (it was .nojekyll), like 1000TRIES and
+# 27-0 since 7 Oct 2026, so the files below stay off the website: the build tool, the notes and 1000TRIES's shared masters
+# (the game reads its own js/ and data/ copies). Every other file is published exactly as it is (none has front matter).
+# Jekyll also skips any file or folder whose name starts with _ or . (the .gitignore files, assets/logos/_logo.html), so a
+# new site file named like that needs adding to include. __ is Firebase sign-in's own pages (/__/auth/), if they come here.
+include:
+  - __
+exclude:
+  - tools
+  - README.md
+  - 1000tries/shared
